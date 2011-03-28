@@ -1,1 +1,2 @@
-esto debe de copiarse a la carpeta plugins del tortugarte
+butiaAPI.py  butia_plugin.py  butia_support must be copied to the plugins directory of turtleart
+
