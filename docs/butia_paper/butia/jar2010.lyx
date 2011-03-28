@@ -1,0 +1,597 @@
+#LyX file created by tex2lyx 1.6.4
+\lyxformat 264
+\begin_document
+\begin_header
+\textclass llncs
+\begin_preamble
+% This is LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.2 for LaTeX2e
+% allows for indexgeneration
+\usepackage{alltt}\usepackage{subfigure}\usepackage{graphics}\columnseprule=0.4pt
+\end_preamble
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+Plataforma robótica genérica y constructiva para la enseñansa de la informática
+\end_layout
+
+\begin_layout Running LaTeX Title
+
+Robótica - XO Computers
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%                                     also used for the TOC unless
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%                                     
+\backslash
+toctitle is used
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+
+ Gonzalo Tejera 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+and
+\end_layout
+
+\end_inset
+
+ Andrés Aguirre 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+and
+\end_layout
+
+\end_inset
+
+ Federico Andrade 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+and
+\end_layout
+
+\end_inset
+
+ Pablo Guindel 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+and
+\end_layout
+
+\end_inset
+
+ Santiago Margini 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+and
+\end_layout
+
+\end_inset
+
+ Jorge Visca 
+\end_layout
+
+\begin_layout Author Running
+
+G. Tejera et al.
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+% abbreviated author list (for running head)
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Institute
+
+Instituto de Computación, Facultad de Ingenier
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+'{i}
+\end_layout
+
+\end_inset
+
+a, Universidad de la República
+\newline
+ J. Herrera y Reissig 565, Montevideo, Uruguay
+\newline
+ \InsetSpace ~
+
+\newline
+ 
+\end_layout
+
+\begin_layout Email
+
+{gtejera|aaguirre|fandrade|pablod|smargni|jvisca}@fing.edu.uy 
+\end_layout
+
+\begin_layout Institute
+
+
+\newline
+ \InsetSpace ~
+
+\newline
+ 
+\family typewriter
+http://www.fing.edu.uy/inco/grupos/mina
+\family default
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+% typeset the title of the contribution
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+setcounter{footnote}{0}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Abstract
+
+
+\begin_inset Include \input{Abstract.lyx}
+preview false
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+
+Introducción
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "intro"
+
+\end_inset
+
+ 
+\begin_inset Include \input{intro.lyx}
+preview false
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+
+La robótica y la educación
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "robyedu"
+
+\end_inset
+
+ 
+\begin_inset Include \input{robyedu.lyx}
+preview false
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%=======================================================================
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+
+Arquitectura del la plataforma butiá
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "arq"
+
+\end_inset
+
+ 
+\begin_inset Include \input{arq.lyx}
+preview false
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%=======================================================================
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+
+Implementación del prototipo para la computadora XO
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "proto"
+
+\end_inset
+
+ 
+\begin_inset Include \input{proto.lyx}
+preview false
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%=======================================================================
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+
+Observaciones finales y trabajo futuro
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "obsytrabfuturo"
+
+\end_inset
+
+ 
+\begin_inset Include \input{obsytrabfuturo.lyx}
+preview false
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+
+Conclusiones
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "conclusiones"
+
+\end_inset
+
+ 
+\begin_inset Include \input{conclusiones.lyx}
+preview false
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%~
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+%
+\backslash
+noindent 
+\backslash
+textbf{Acknowledgements.}
+\end_layout
+
+\begin_layout Standard
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+bibliographystyle{unsrt}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset LatexCommand bibtex
+bibfiles "jar2010.bib"
+options "unsrt"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

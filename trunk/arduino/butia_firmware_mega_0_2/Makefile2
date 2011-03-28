@@ -1,0 +1,187 @@
+#####################################################
+# * Butiá Arduino Firmware - Makefile
+# * version:     0.2
+# * date:        19-8-2010
+# * Authors:	Andrés Aguirre, Pablo Gindel, Jorge Visca, Gonzalo Tejera,
+# *             Santiago Margni, Federico Andrade, Guillermo Reisch
+# *
+# * (c) MINA Group, Facultad de Ingeniería, Universidad de la República, Uruguay. 
+#####################################################
+
+OBJS       = ax12.o conector.o \
+		info.o perifericos.o comunicacion.o \
+		modulos.o pnp.o servicios.o \
+		butia_firmware_mega_0_2.o 
+
+ARDCOREOBJS    = HardwareSerial.o main.o \
+		wiring_analog.o   wiring_digital.o  wiring_shift.o \
+		wiring.o              wiring_pulse.o pins_arduino.o \
+		Print.o Tone.o   WString.o   WMath.o \
+		WInterrupts.o
+
+ARDLIBOBJS     = Wire.o twi.o
+
+
+SALIDA	   = butia
+
+
+ifeq ('$(ARDUINO)','')
+  # usign arduino default location from arduino package from apt
+  ARDUINO = /usr/share/arduino/
+endif
+
+ARDUINO_SRC = $(ARDUINO)/hardware/arduino/cores/arduino
+ARDUINO_LIBS = $(ARDUINO)/libraries/
+# Arduino Libs 
+# EEPROM  Ethernet  Firmata  LiquidCrystal  Matrix  NewSoftSerial
+# Servo  SoftwareSerial  Sprite  Stepper  Wire
+ARDUINO_ILIBS = -I$(ARDUINO_LIBS)EEPROM -I$(ARDUINO_LIBS)Ethernet \
+		-I$(ARDUINO_LIBS)Wire -I$(ARDUINO_LIBS)LiquidCrystal \
+		-I$(ARDUINO_LIBS)Matrix -I$(ARDUINO_LIBS)NewSoftSerial \
+		-I$(ARDUINO_LIBS)Servo -I$(ARDUINO_LIBS)SoftwareSerial \
+		-I$(ARDUINO_LIBS)Sprite -I$(ARDUINO_LIBS)Firmata \
+		-I$(ARDUINO_LIBS)Stepper -I$(ARDUINO_LIBS)Wire/utility
+
+ARDUINO_OBJS = HardwareSerial.o
+
+AVRDUDE_NINSTALL = "\n\nAVRDUDE IS NOT INSTALLED, sudo apt-get install avrdude \n   \
+	AVRDUDE is needed to upload de firmware to arduino   \n\n"
+
+ARDUINO_NFOUND = "\n\nARDUINO SRC NOT FOUND. ARDUINO IS NEEDED TO COMPILE THIS FIRMWARE   \n    \
+	You can \"sudo apt-get install arduino\", if you want to use ardino package from apt \n   \
+	or you can expecific a path to arduino using \"export ARDUINO=path_to_arduino\" \n\n   "
+
+AVR_GCC_NINSTALL = "\n\nAVR-GCC IS NOT INSTALED. apt-get install avr-gcc   \n    \
+	AVR-GCC is needed to compile the firmware  \n\n"
+
+#LIBUSB_SRC = ../libs/libusb-0.1.12  #change with your libusb sources folder
+#LUA_SRC = ../libs/lua-5.1.4/src/    #change with your lua sources folder
+
+OPTS       = -Wall 
+#-o3
+DEFS = -D__AVR_ATmega1280__ -DF_CPU=16000000UL
+# //TODO definir bien la frecuencia.... (seria buena idea no?)
+CFLAGS     = -mmcu=avr5  $(DEFS) $(OPTS) -I$(ARDUINO_SRC) $(ARDUINO_ILIBS) 
+LDFLAGS    = 
+#-lstdc
+
+CC = avr-gcc
+LD = avr-gcc
+
+all: $(OBJS) $(SALIDA)
+
+
+
+linker: compile
+	$(LD) $(OBJS) $(ARDCOREOBJS) $(ARDLIBOBJS) $(LDFLAGS) -o $(SALIDA)
+
+compile: $(OBJS) $(ARDCOREOBJS) $(ARDLIBOBJS)
+
+upload: $(SALIDA)
+
+
+
+SALIDA:
+	echo ejejeje > blablabla
+
+
+
+clean:
+	rm -f $(OBJS) $(SALIDA) $(ARDCOREOBJS) $(ARDLIBOBJS)
+
+
+gcc_avr_is_installed:
+	if [ `whereis -b avr-gcc` = avr-gcc: ] ; then echo $(AVR_GCC_NINSTALL) ; exit -1; fi
+
+avrdude_is_installed:
+	if [ `whereis -b avrdude` = avrdude: ] ; then echo $(AVRDUDE_NINSTALL) ; exit -1; fi
+
+arduino_dir_is_correct:
+	if [ ! -d $(ARDUINO_SRC) ] ; then echo $(ARDUINO_NFOUND) ; exit -1; fi
+## not realy needed to make a execive check of arduino , lets think everything is ok if
+#  exist the SRC CORE Directory of arduino, then everyelse should be ok....
+#	if [ ! -d $(ARDUINO_LIBS)EEPROM ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)Ethernet ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)Firmata ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)Wire ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)LiquidCrystal ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)Matrix ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)NewSoftSerial ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)Servo ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)SoftwareSerial ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)Sprite ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+#	if [ ! -d $(ARDUINO_LIBS)Stepper ] ; then echo $(ARD_NOTFOUND_MSG) ; exit 1; fi
+
+
+%.o : %.cpp checks
+	$(CC) $(CFLAGS) -c $<
+
+%.o : %.pde checks
+	$(CC) $(CFLAGS) -x c++ -c $<
+
+
+####### ARDUINO CORE OBJECTS ######
+
+main.o : $(ARDUINO_SRC)/main.cpp
+	$(CC) $(CFLAGS) -c $<
+
+
+wiring_analog.o : $(ARDUINO_SRC)/wiring_analog.c
+	$(CC) $(CFLAGS) -c $<
+
+
+wiring_digital.o : $(ARDUINO_SRC)/wiring_digital.c
+	$(CC) $(CFLAGS) -c $<
+
+
+wiring_shift.o : $(ARDUINO_SRC)/wiring_shift.c
+	$(CC) $(CFLAGS) -c $<
+
+
+wiring.o : $(ARDUINO_SRC)/wiring.c
+	$(CC) $(CFLAGS) -c $<
+
+
+wiring_pulse.o : $(ARDUINO_SRC)/wiring_pulse.c
+	$(CC) $(CFLAGS) -c $<
+
+
+pins_arduino.o : $(ARDUINO_SRC)/pins_arduino.c
+	$(CC) $(CFLAGS) -c $<
+
+
+Print.o :  $(ARDUINO_SRC)/Print.cpp
+	$(CC) $(CFLAGS) -c $<
+
+Tone.o :  $(ARDUINO_SRC)/Tone.cpp
+	$(CC) $(CFLAGS) -c $<
+
+WString.o : $(ARDUINO_SRC)/WString.cpp
+	$(CC) $(CFLAGS) -c $<
+
+HardwareSerial.o : $(ARDUINO_SRC)/HardwareSerial.cpp
+	$(CC) $(CFLAGS) -c $<
+
+WMath.o : $(ARDUINO_SRC)/WMath.cpp
+	$(CC) $(CFLAGS) -c $<
+
+WInterrupts.o : $(ARDUINO_SRC)/WInterrupts.c
+	$(CC) $(CFLAGS) -c $<
+
+
+
+###### ARDUINO LIBRARY OBJECTS ########
+
+Wire.o : $(ARDUINO_LIBS)Wire/Wire.cpp
+	$(CC) $(CFLAGS) -c $<
+
+twi.o : $(ARDUINO_LIBS)Wire/utility/twi.c
+	$(CC) $(CFLAGS) -c $<
+
+
+
+
+butia: linker
+
+
+checks: gcc_avr_is_installed arduino_dir_is_correct

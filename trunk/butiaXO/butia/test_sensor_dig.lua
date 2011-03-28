@@ -1,0 +1,1 @@
+../../bobot/test_sensor_dig.lua

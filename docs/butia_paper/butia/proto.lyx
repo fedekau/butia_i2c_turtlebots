@@ -1,0 +1,97 @@
+#LyX file created by tex2lyx 1.6.4
+\lyxformat 264
+\begin_document
+\begin_header
+\textclass llncs
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+
+In Section\InsetSpace ~
+
+\begin_inset LatexCommand ref
+reference "pmc"
+
+\end_inset
+
+ bla bla bla.
+\end_layout
+
+\begin_layout Subsection
+
+Implementation details
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "imple"
+
+\end_inset
+
+ 
+\begin_inset Include \input{imple.lyx}
+preview false
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsection
+
+Prototipo en tortugarte
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "tortugarte"
+
+\end_inset
+
+ 
+\begin_inset Include \input{tortugarte}
+preview false
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

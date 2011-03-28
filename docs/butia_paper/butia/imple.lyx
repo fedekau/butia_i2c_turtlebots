@@ -1,0 +1,143 @@
+#LyX file created by tex2lyx 1.6.4
+\lyxformat 264
+\begin_document
+\begin_header
+\textclass llncs
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+
+En la sección \InsetSpace ~
+
+\begin_inset LatexCommand ref
+reference "servbobot"
+
+\end_inset
+
+pudimos En esta sección hablamos de los detalles de implementación, desde el AX12 hasta particularidades en arduino Ejemplo de cita bibliográfica
+\begin_inset LatexCommand cite
+after ""
+key "Trivedi00modelingand"
+
+\end_inset
+
+. Ejemplo de inserción de figura: Figure\InsetSpace ~
+
+\begin_inset LatexCommand ref
+reference "fig:kernelchanges"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset Float figure
+placement phtb
+wide false
+sideways false
+status open
+
+
+\begin_layout Standard
+
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+rotatebox{270}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics 
+	filename graphics/pgsaKernelMap.pdf
+	width 80mm
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Caption
+
+\begin_layout StandardChanges introduced to Linux kernel
+\end_layout
+
+\end_inset
+
+\end_layout
+
+\begin_layout Standard
+\align center
+
+
+\begin_inset LatexCommand label
+name "fig:kernelchanges"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

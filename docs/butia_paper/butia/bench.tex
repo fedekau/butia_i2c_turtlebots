@@ -1,0 +1,60 @@
+Performance considerations are central to the success of the prototype.
+Despite of reliability, availability and safety consequences of automatic and general-purpose software rejuvenation, it has to remain performant.
+In order to monitor changes, system memory has to be completely scanned periodically, turning the prototype into a memory/CPU-bound application, with no IO impact.
+This introduces competition for memory access and loss of locality.
+
+\begin{figure*}[phtb]
+\begin{center}
+\subfigure[LAMP: service time]{%
+  \label{fig:laya}
+  \includegraphics[scale=0.27]{graphics/fig_17.png}
+  }
+\subfigure[POV-Ray: render time]{%
+  \label{fig:layb}
+  \includegraphics[scale=0.27]{graphics/fig_26.png}
+  }
+\caption{Performance impact on different applications}
+\label{fig:bench}
+\end{center}
+\end{figure*}
+
+
+We addressed two different application scenarios: CPU bound applications and IO bound ones.
+The CPU bound application selected is POV-Ray~\cite{povray}, and the IO bound one is a LAMP\footnote{Linux, Apache, MySQL, PHP} server.
+To measure the impact on system performance we used their own benchmarking tools, comparing their throughput on the same system with and without memory corruption correction routines.
+When memory corruption and correction routines are enabled, they can be applied to all read only frames of the whole system (mode 142) or to a subset of registered processes (mode 146).
+Tests were run in both modes.
+
+Benchmarked results are consistent with intuition, as shown in Figure~\ref{fig:bench}.
+Performance impact on a LAMP server is marginal, as it can be seen on Figure~\ref{fig:laya}, while the impact on raytracing is significant, as shown in Figure~\ref{fig:layb}.
+In other words, memory corruption correction routines almost do not compete with IO bound task while it does with CPU bound ones.
+Despite of the degradation measured, results are promising.
+Implementation is applicable in different scenario already.
+
+\begin{figure}[phtb]
+\begin{center}
+\begin{tabular}[t]{r||c|c|c|c|c|c|c|c|}
+ & \multicolumn{4}{|c|}{MySQL} & \multicolumn{4}{|c|}{Apache httpd} \\
+ & \multicolumn{2}{|c|}{Father} & \multicolumn{2}{|c|}{Child}  & \multicolumn{2}{|c|}{Father} & \multicolumn{2}{|c|}{Child}  \\
+\hline
+\hline
+RO frames & 287 & 47\% & 614 & 13\% & 930 & 38\%  & 952 & 23\% \\
+\hline
+RW frames & 330 & 53\% & 4235 & 87\% & 1487 & 62\%  & 3245 & 77\% \\
+\hline
+\end{tabular}
+\caption{RO / RW memory frames on used software}
+\label{table:rovsrw}
+\end{center}
+\end{figure}
+
+
+As a last remark regarding the impact on running software, not all systems have the same read only/read write ratio.
+Analyzing Apache and MySQL from previous experiments, we found that both share the same fork based client attention mechanism. 
+Father processes have a higher ratio that children processes as we can see from Figure~\ref{table:rovsrw}.
+Observed results are consistent with the idea that father processes mostly do not contain actual execution data used for answering a single client request.
+The process that handles requests are children ones.
+Father processes are longer lived than children in this scenario, and those are the processes that get the most important benefit from the memory corruption correction algorithms.
+
+The impact of a soft error on a child process, may affect only a single session while a similar error on a father process may affect the whole service from there on.
+Corruption detection has more relevance on father processes, where RO/RW ratio is higher.

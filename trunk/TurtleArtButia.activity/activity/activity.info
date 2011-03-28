@@ -1,0 +1,9 @@
+[Activity]
+name = TurtleArtButia
+activity_version = 2
+license = MIT
+service_name = uy.fing.TurtleArtButia
+exec = execute.sh 
+icon = logo_butia_vec
+show_launcher = yes
+mime_types = application/x-turtle-art

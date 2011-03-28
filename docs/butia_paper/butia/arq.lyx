@@ -1,0 +1,139 @@
+#LyX file created by tex2lyx 1.6.4
+\lyxformat 264
+\begin_document
+\begin_header
+\textclass llncs
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+
+In Section\InsetSpace ~
+
+\begin_inset LatexCommand ref
+reference "robyedu"
+
+\end_inset
+
+ we studied ....
+\end_layout
+
+\begin_layout Subsection
+
+Plataforma mecánica constructiva
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "pmc"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+Santi completame :D
+\end_layout
+
+\begin_layout Subsection
+
+Conectores Plug and Play
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "cp&p"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+la magia del plug and play a nivel abstracto y de los conectores, luego en implementación explicamos como se hizo para arduino, Palmera completame
+\end_layout
+
+\begin_layout Subsection
+
+Servidor Bobot
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "servbobot"
+
+\end_inset
+
+ 
+\begin_inset Include \input{servbobot.lyx}
+preview false
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+
+Extendiendo los servicios del Robot
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "drivers"
+
+\end_inset
+
+ 
+\begin_inset Include \input{drivers}
+preview false
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

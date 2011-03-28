@@ -1,0 +1,97 @@
+#LyX file created by tex2lyx 1.6.4
+\lyxformat 264
+\begin_document
+\begin_header
+\textclass llncs
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+
+El aprendisaje de la robótica en los niveles iniciales de la educación es una herramienta poderosa para trasmitir a los profesores, estudiantes y sus familias conocimientos básicos sobre las nuevas tecnolog
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+'{i}
+\end_layout
+
+\end_inset
+
+as y sus aplicaciones. Existen muchos mitos sobre las computadoras y los robots, desconocimientos básicos tanto sobre lo que pueden como lo que no pueden hacer, en ambos sentidos, y que genera por un lado miedos infundados y por otro expectativas desmedidas; que la incorporación de los robots y de la inteligencia computacional se est
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+'{á}
+\end_layout
+
+\end_inset
+
+ dando de manera progresiva en nuestra sociedad, y es importante entonces contribuir a mejorar el conocimiento de estas tecnolog
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+'{i}
+\end_layout
+
+\end_inset
+
+as. Para esto es necesario contruir una plataforma simple y económica que permita a los alumnos de liceos públicos en coordinación con los docentes, interiorizarse con la programación del comportamiento de robots. 
+\newline
+ 
+\newline
+ 
+\shape italic
+
+\series bold
+Keywords
+\series default
+: educación, robotica, computadora XO
+\shape default
+ 
+\end_layout
+
+\end_body
+\end_document

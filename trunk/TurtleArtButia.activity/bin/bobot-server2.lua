@@ -1,0 +1,1 @@
+./../../bobot/bobot-server2.lua

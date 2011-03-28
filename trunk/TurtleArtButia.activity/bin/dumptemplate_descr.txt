@@ -1,0 +1,1 @@
+./../../bobot/dumptemplate_descr.txt

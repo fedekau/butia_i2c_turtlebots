@@ -1,0 +1,219 @@
+#LyX file created by tex2lyx 1.6.4
+\lyxformat 264
+\begin_document
+\begin_header
+\textclass llncs
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+
+Uno de los requerimientos de la plataforma es ser altamente portable. Se espera que Butiá soporte al menos las siguientes plataformas:
+\end_layout
+
+\begin_layout Itemize
+
+OLPC XO. Este es la plataforma del Plan Ceibal. El hardware contiene un procesador AMD Geode, con arquitectura x86. Los primeros modelos poseían 256Mb RAM. El disco duro es de estado sólido. El software consiste en un kernel Linux con Sugar como interfaz de usuario. 
+\end_layout
+
+\begin_layout Itemize
+
+Intel Classmate. Es la plataforma para enseñanza de Intel, y es un nombre genérico para una línea de productos de distintos fabricantes. El hardware es t
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+'{i}
+\end_layout
+
+\end_inset
+
+pico para un Netbook de bajo costo: procesador Intel Atom (x86), a partir de 512Mb de RAM, disco duro magnético. 
+\end_layout
+
+\begin_layout Itemize
+
+Router Inalámbrico. Plataforma de costo y poder de cómputo m 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+'{i}
+\end_layout
+
+\end_inset
+
+nimo prevista. Un ejemplo típico es un router Asus 520GU. Conssite en un sistema embebido con un procesador Broadcomm, con 32Mb de RAM y 8Mb de almacenamiento Flash. En nuestro uso, se le instala OpenWRT, una distribución de Linux para sistemas embebidos. 
+\end_layout
+
+\begin_layout Itemize
+
+Smartphones. Hay multitud de fabricantes y de plataformas de software. Usualmente contienen un procesador ARM, más de 64Mb de RAM y almacenamiento flash. El sistema operativo puede estar basado en Linux, Windows ME, u otros sistemas dedicados. 
+\end_layout
+
+\begin_layout Standard
+
+Se plantea la necesidad de disponer de un componente que pueda ser desplegado con m
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+'{i}
+\end_layout
+
+\end_inset
+
+nimas modificaciones en todas las plataformas de interés, y que implemente las siguientes funcionalidades:
+\end_layout
+
+\begin_layout Itemize
+
+Acceda a la placa del Microprocesador implementando el protocolo 
+\shape italic
+USB4all
+\shape default
+ sobre el tipo de conexión asociado (USB o Serial) 
+\end_layout
+
+\begin_layout Itemize
+
+Ofrezca una API que permita acceder las funcionalidades provistas por Butiá desde las aplicaciones de usuario. 
+\end_layout
+
+\begin_layout Standard
+
+Este componente se implementó en dos partes: una librería que implementa la comunicación con la placa (
+\shape italic
+bobot
+\shape default
+, y una aplicación que usa esta librería y exporta su funcionalidad mediante un socket (
+\shape italic
+bobot-server
+\shape default
+). Esta solución es la solución de referencia, de máxima portabilidad. Para plataformas específicas es perfectamente posible desarrollar soluciones particulares.
+\end_layout
+
+\begin_layout Standard
+
+Este componente se implementó en Lua. Este es un lenguaje de scripting dinámico basado en una máquina virtual. Está escrito en ANSI C99 por lo que es altamente portable, y es muy compacto: la máquina virtual ocupa unos 800kb de RAM. Es un lenguaje muy eficiente y provee varias funcionalidades potentes, tales como expresiones regulares, mapas asociativos basados en hash, funciones como miembros de primera clase, etc.
+\end_layout
+
+\begin_layout Subsubsection*
+
+bobot
+\end_layout
+
+\begin_layout Standard
+
+Como se mencionó, esta librería accede la placa microcontroladora mediante USB o Serial. Para lo primer opción, se enlaza con libusb, una librería portable de espacio de usuario para manipular dispositivos USB. Este enlace se realiza mediante un binding desarrollado, llamado 
+\shape italic
+lualibusb
+\shape default
+. Para acceder mediante serial se utiliza una pequeña librería en C que implementa una comunicación orientada a mensajes sobre Serial llamada 
+\shape italic
+serialcomm
+\shape default
+. Esta librería es fácilmente extensible para agregar soporte a nuevos módulos de la placa controladora (
+\shape italic
+USB4all/Arduinoi
+\shape default
+). Esto se logra mediante drivers cargados dinámicamente de acuerdo a los módulos declarados por la placa controladora. Para agregar soporte para un nuevo módulo, basta con agregar el driver apropiado a la directorio de drivers. 
+\end_layout
+
+\begin_layout Subsubsection*
+
+bobot-server
+\end_layout
+
+\begin_layout Standard
+
+Esta aplicación exporta la funcionalidad subyacente de Butiá a las aplicaciones de usuario. Lo hace mediante un protocolo muy sencillo en un socket TCP (por defecto en el puerto 2009). Para utilizarlo las aplicaciones de usuario deben abrir una conexión TCP, e implementar dicho protocolo. Los mensajes soportados por bobot-server son:
+\end_layout
+
+\begin_layout Standard
+
+
+\family typewriter
+LIST
+\family default
+ Devuelve la lista de módulos detectados, separados por comas.
+\end_layout
+
+\begin_layout Standard
+
+
+\family typewriter
+OPEN module [ep1 ep2]
+\family default
+ Abre el módulo. Si es necesario o no, depende del modulo. Devuelve "ok" o "fail".
+\end_layout
+
+\begin_layout Standard
+
+
+\family typewriter
+DESCRIBE module [ep1 ep2]
+\family default
+ Devuelve una descripción de la API del modulo.
+\end_layout
+
+\begin_layout Standard
+
+
+\family typewriter
+CALL module function [parameters ...]
+\family default
+ Invoca la función indicada en el módulo dado. Los parámetros dependen de la función. Devuelve la respuesta de la llamada, o "fail".
+\end_layout
+
+\begin_layout Standard
+
+
+\family typewriter
+CLOSEALL
+\family default
+ Cierra todos los módulos. En general no hace falta. Devuelve "ok"
+\end_layout
+
+\end_body
+\end_document

@@ -1,0 +1,363 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-17 10:53-0500\n"
+"PO-Revision-Date: 2009-02-20 14:16-0500\n"
+"Last-Translator: Eduardo H. Silva <HoboPrimate@gmail.com>\n"
+"Language-Team: LANGUAGE <walter@sugarlabs.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: 
+msgid "Turtle Art"
+msgstr "Artartaruga"
+
+#: tasetup.py:46 tasetup.py:49 tasetup.py:50 tasetup.py:51 tasetup.py:52
+#: tasetup.py:53 tasetup.py:54
+msgid "title"
+msgstr "título"
+
+#: tasetup.py:66
+msgid "text"
+msgstr "texto"
+
+#: TurtleArtActivity.py:48
+msgid "Project"
+msgstr "Projecto"
+
+#:
+msgid "Save as"
+msgstr "Guardar como"
+
+#: TurtleArtActivity.py:173 TurtleArtActivity.py:262
+#: TurtleArtActivity.py:293
+msgid "hide palette"
+msgstr "esconder a palete"
+
+#: TurtleArtActivity.py:181 TurtleArtActivity.py:286
+msgid "hide blocks"
+msgstr "esconder os blocos"
+
+#: TurtleArtActivity.py:194
+msgid "run"
+msgstr "executar"
+
+#: TurtleArtActivity.py:202
+msgid "step"
+msgstr "passo"
+
+#: TurtleArtActivity.py:210
+msgid "stop turtle"
+msgstr "parar tartaruga"
+
+#: TurtleArtActivity.py:236
+msgid "samples"
+msgstr "exemplos"
+
+#: TurtleArtActivity.py:249
+msgid "save as HTML"
+msgstr "guardar como HTML"
+
+#: TurtleArtActivity.py
+msgid "save Logo"
+msgstr "guardar como Logo"
+
+#: TurtleArtActivity.py
+msgid "load my block"
+msgstr "carregar o meu bloco"
+
+#: TurtleArtActivity.py:259 TurtleArtActivity.py:267
+#: TurtleArtActivity.py:290 TurtleArtActivity.py:299
+msgid "show palette"
+msgstr "mostrar palete"
+
+#: TurtleArtActivity.py:283 TurtleArtActivity.py:297
+msgid "show blocks"
+msgstr "mostrar blocos"
+
+#:
+msgid "Flow"
+msgstr "Fluxo"
+
+#:
+msgid "forever"
+msgstr "para sempre"
+
+#:
+msgid "if"
+msgstr "se"
+
+#:
+msgid "then"
+msgstr "então"
+
+#:
+msgid "else"
+msgstr "senão"
+
+#:
+msgid "repeat"
+msgstr "repetir"
+
+#:
+msgid "stop stack"
+msgstr "parar pilha"
+
+#:
+msgid "wait"
+msgstr "esperar"
+
+#:
+msgid "My Blocks"
+msgstr "Os meus blocos"
+
+#:
+msgid "start"
+msgstr "iniciar"
+
+#:
+msgid "box"
+msgstr "caixa"
+
+#:
+msgid "box 1"
+msgstr "caixa 1"
+
+#:
+msgid "box 2"
+msgstr "caixa 2"
+
+#:
+msgid "stack"
+msgstr "pilha"
+
+#:
+msgid "stack 1"
+msgstr "pilha 1"
+
+#:
+msgid "stack 2"
+msgstr "pilha 2"
+
+#:
+msgid "store in box 1"
+msgstr "pôr na caixa 1"
+
+#:
+msgid "store in box 2"
+msgstr "pôr na caixa 2"
+
+#:
+msgid "name"
+msgstr "nome"
+
+#:
+msgid "Numbers"
+msgstr "Números"
+
+#:
+msgid "number"
+msgstr "número"
+
+#:
+msgid "and"
+msgstr "e"
+
+#:
+msgid "or"
+msgstr "ou"
+
+#:
+msgid "not"
+msgstr "não"
+
+#:
+msgid "random"
+msgstr "aleatório"
+
+#:
+msgid "min"
+msgstr "mín"
+
+#:
+msgid "max"
+msgstr "máx"
+
+#:
+msgid "mod"
+msgstr "mod"
+
+#:
+msgid "print"
+msgstr "escrever"
+
+#:
+msgid "Pen"
+msgstr "Caneta"
+
+#:
+msgid "color"
+msgstr "cor"
+
+#:
+msgid "shade"
+msgstr "tom"
+
+#:
+msgid "fill screen"
+msgstr "encher o ecrã"
+
+#:
+msgid "pen up"
+msgstr "caneta levantada"
+
+#:
+msgid "pen down"
+msgstr "caneta para baixo"
+
+#:
+msgid "set pen size"
+msgstr "ajustar o tamanho da caneta"
+
+#:
+msgid "pen size"
+msgstr "tamanho da caneta"
+
+#:
+msgid "set shade"
+msgstr "ajustar o tom"
+
+#:
+msgid "set color"
+msgstr "ajustar a cor"
+
+#:
+msgid "set text color"
+msgstr "ajustar a cor do texto"
+
+#:
+msgid "Blocks"
+msgstr "Blocos"
+
+#:
+msgid "Turtle"
+msgstr "Tartaruga"
+
+#:
+msgid "forward"
+msgstr "avançar"
+
+#:
+msgid "back"
+msgstr "recuar"
+
+#:
+msgid "right"
+msgstr "direita"
+
+#:
+msgid "left"
+msgstr "esquerda"
+
+#:
+msgid "arc"
+msgstr "arco"
+
+#:
+msgid "angle"
+msgstr "ângulo"
+
+#:
+msgid "radius"
+msgstr "raio"
+
+#:
+msgid "heading"
+msgstr "cabeçalho"
+
+#:
+msgid "set heading"
+msgstr "ajustar o cabeçalho"
+
+#:
+msgid "clean"
+msgstr "limpar"
+
+#:
+msgid "set xy"
+msgstr "ajustar xy"
+
+#:
+msgid "x"
+msgstr "x"
+
+#:
+msgid "y"
+msgstr "y"
+
+#:
+msgid "xcor"
+msgstr "xcor"
+
+#:
+msgid "ycor"
+msgstr "ycor"
+
+#:
+msgid "Sensors"
+msgstr "Sensores"
+
+#:
+msgid "volume"
+msgstr "volume"
+
+#:
+msgid "pitch"
+msgstr "tom"
+
+#:
+msgid "voltage"
+msgstr "voltagem"
+
+#:
+msgid "resistance"
+msgstr "resistência"
+
+#:
+msgid "Templates"
+msgstr "Predefinições"
+
+#:
+msgid "Keyboard"
+msgstr "Teclado"
+
+#:
+msgid "read key"
+msgstr "ler a chave"
+
+#:
+msgid "sound"
+msgstr "som"
+
+#:
+msgid "hres"
+msgstr "hres"
+
+#:
+msgid "vres"
+msgstr "vres"
+
+msgid "set gray"
+msgstr "ajustar a cinzento"
+
+msgid "gray"
+msgstr "cinzento"
+
+msgid "start fill"
+msgstr "comece a preencher"
+
+msgid "end fill"
+msgstr "parar de encher"

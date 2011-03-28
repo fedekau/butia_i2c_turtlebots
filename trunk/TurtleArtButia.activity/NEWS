@@ -1,0 +1,40 @@
+VERSION 2
+
++ Icono de la paleta butiá y de la aplicación respetando el logo oficial
+/ Iconos de la paleta butiá en formato vectorial
+/ Iconos de la paleta butiá con fondo del color correcto
++ Aplicación sugarizada, ya no tiene la barra de file, edit .... que ocurre cuando se inicia de shell
+
+VERSION 1
+
++ Release TortleArtButia.xo
++ permisos sobre el serial /activity/permissions.info
++ restruturamiento del trunk para reflejar la actividad TurtleArtButia
+//FIXME derecha deveria ser isquierda y viceversa
++ Chequeo de la coneccion con la api de butia
+//TODO  bobot deberia estar como servicio, y levantarlo solo si NO esta ya levantado
++ bobot incluido en el .xo de TurtleArtButia
++ TurtleBlock ahora no nesecita el pycurl, removido
+
+
+VERSION 0
+
+//TODO que los sensores se vean grices cuando no estan disponibles
+//FIXME chequeo de coneccion en la APYbutia
+I TurtleBlocks nesecita pycurl [apt-get install python-pycurl]
++ Commit TurtleBlocks V94
+/ Tortugarte [TAButia-v1.1.activity] movido a /branches/ (deprecated)
+
+
+##########################################################################################
+
+Estructura del NEWS
+I info
++ Agregado
+- sacado
+/ cambiado
+//TODO: por hacer
+//FIXME: funciona pero...
+
+Sirvase cambiar a su gusto este NEWS, agregando nueva informacion al comienzo del archivo
+Deje cambios importantes o relevantes para definir los changelogs de una version a otra

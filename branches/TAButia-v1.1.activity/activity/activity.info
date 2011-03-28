@@ -1,0 +1,10 @@
+[Activity]
+name = Turtle Ardu
+activity_version = 86
+license = MIT
+bundle_id = org.laptop.TurtleArduActivity
+exec = sugar-activity TurtleArtActivity.TurtleArtActivity
+icon = activity-turtleart
+show_launcher = yes
+update_url = http://wiki.laptop.org/go/Activities/G1G1
+mime_types = application/x-turtle-art

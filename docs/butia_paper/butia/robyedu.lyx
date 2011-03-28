@@ -1,0 +1,67 @@
+#LyX file created by tex2lyx 1.6.4
+\lyxformat 264
+\begin_document
+\begin_header
+\textclass llncs
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+
+Chachara inicial, haciendo referencia a las ideas de stallman de las bondades de poder compartir, modificar libremente el código y las ideas de walter bender de llevar a un nivel de entendimiento y abstracción mayor para que el código pueda ser modificado y entendido por niños y adolecentes que se inician en la informática 
+\end_layout
+
+\begin_layout Subsection
+
+El software libre y la educación
+\end_layout
+
+\begin_layout Standard
+
+
+\begin_inset LatexCommand label
+name "soflyedu"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+
+Plataformas existentes
+\end_layout
+
+\end_body
+\end_document

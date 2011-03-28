@@ -1,0 +1,65 @@
+\beamer@endinputifotherversion {3.07pt}
+\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
+\headcommand {\beamer@framepages {1}{1}}
+\headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}
+\headcommand {\beamer@framepages {2}{2}}
+\headcommand {\sectionentry {1}{Introducci\'on}{3}{Introducci\'on}{0}}
+\headcommand {\beamer@sectionpages {1}{2}}
+\headcommand {\beamer@subsectionpages {1}{2}}
+\headcommand {\beamer@subsectionentry {0}{1}{1}{3}{Motivaci\'on}}\headcommand {\beamer@subsectionpages {3}{2}}
+\headcommand {\slideentry {1}{1}{1}{3/3}{Motivaci\'on}{0}}
+\headcommand {\beamer@framepages {3}{3}}
+\headcommand {\beamer@subsectionentry {0}{1}{2}{4}{Requerimientos de la plataforma}}\headcommand {\beamer@subsectionpages {3}{3}}
+\headcommand {\slideentry {1}{2}{1}{4/4}{Requerimientos de la plataforma}{0}}
+\headcommand {\beamer@framepages {4}{4}}
+\headcommand {\sectionentry {2}{Arquitectura Propuesta}{5}{Arquitectura Propuesta}{0}}
+\headcommand {\beamer@sectionpages {3}{4}}
+\headcommand {\beamer@subsectionpages {4}{4}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{5}{Arquitectura del Hardware}}\headcommand {\beamer@subsectionpages {5}{4}}
+\headcommand {\slideentry {2}{1}{1}{5/5}{Arquitectura del Hardware}{0}}
+\headcommand {\beamer@framepages {5}{5}}
+\headcommand {\slideentry {2}{1}{2}{6/6}{Arquitectura del Hardware}{0}}
+\headcommand {\beamer@framepages {6}{6}}
+\headcommand {\slideentry {2}{1}{3}{7/7}{Arquitectura del Hardware}{0}}
+\headcommand {\beamer@framepages {7}{7}}
+\headcommand {\slideentry {2}{1}{4}{8/8}{Arquitectura del Hardware}{0}}
+\headcommand {\beamer@framepages {8}{8}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{9}{Arquitectura del Software}}\headcommand {\beamer@subsectionpages {5}{8}}
+\headcommand {\slideentry {2}{2}{1}{9/9}{Arquitectura del Software}{0}}
+\headcommand {\beamer@framepages {9}{9}}
+\headcommand {\slideentry {2}{2}{2}{10/10}{Arquitectura del Software}{0}}
+\headcommand {\beamer@framepages {10}{10}}
+\headcommand {\slideentry {2}{2}{3}{11/11}{Arquitectura del Software}{0}}
+\headcommand {\beamer@framepages {11}{11}}
+\headcommand {\slideentry {2}{2}{4}{12/12}{Arquitectura del Software}{0}}
+\headcommand {\beamer@framepages {12}{12}}
+\headcommand {\slideentry {2}{2}{5}{13/13}{Arquitectura del Software}{0}}
+\headcommand {\beamer@framepages {13}{13}}
+\headcommand {\sectionentry {3}{Prototipo Construido}{14}{Prototipo Construido}{0}}
+\headcommand {\beamer@sectionpages {5}{13}}
+\headcommand {\beamer@subsectionpages {9}{13}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{14}{LuBot}}\headcommand {\beamer@subsectionpages {14}{13}}
+\headcommand {\slideentry {3}{1}{1}{14/14}{LuBot}{0}}
+\headcommand {\beamer@framepages {14}{14}}
+\headcommand {\slideentry {3}{1}{2}{15/15}{LuBot}{0}}
+\headcommand {\beamer@framepages {15}{15}}
+\headcommand {\slideentry {3}{1}{3}{16/16}{LuBot}{0}}
+\headcommand {\beamer@framepages {16}{16}}
+\headcommand {\slideentry {3}{1}{4}{17/17}{LuBot}{0}}
+\headcommand {\beamer@framepages {17}{17}}
+\headcommand {\sectionentry {4}{Resumen}{18}{Resumen}{0}}
+\headcommand {\beamer@sectionpages {14}{17}}
+\headcommand {\beamer@subsectionpages {14}{17}}
+\headcommand {\slideentry {4}{0}{5}{18/18}{}{0}}
+\headcommand {\beamer@framepages {18}{18}}
+\headcommand {\slideentry {4}{0}{6}{19/19}{}{0}}
+\headcommand {\beamer@framepages {19}{19}}
+\headcommand {\slideentry {4}{0}{7}{20/20}{}{0}}
+\headcommand {\beamer@framepages {20}{20}}
+\headcommand {\slideentry {4}{0}{8}{21/21}{}{0}}
+\headcommand {\beamer@framepages {21}{21}}
+\headcommand {\beamer@partpages {1}{21}}
+\headcommand {\beamer@subsectionpages {18}{21}}
+\headcommand {\beamer@sectionpages {18}{21}}
+\headcommand {\beamer@documentpages {21}}
+\headcommand {\def \inserttotalframenumber {26}}
