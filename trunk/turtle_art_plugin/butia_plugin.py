@@ -33,7 +33,7 @@ from gettext import gettext as _
 
 #constants definitions
 ERROR_SENSOR_READ = -1   # default return value in case of error when reading a sensor
-WAIT_FOR_BOBOT = 3000    # waiting trys for bobot-server (the butia robot lua server)
+WAIT_FOR_BOBOT = 40       # waiting trys for bobot-server (the butia robot lua server)
 MAX_SPEED = 1023         # velocidad maxima para los AX-12 10 bits
 MAX_SENSOR_PER_TYPE = 30
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
@@ -99,7 +99,7 @@ class Butia_plugin(gobject.GObject):
             BOX_COLORS['batteryChargeButia'] = COLOR_NOTPRESENT
         #if self.butia.isPresent('ctouch') == False:
         #    BOX_COLORS['capacitivetouchButia'] = COLOR_NOTPRESENT
-        if self.butia.isPresent('display') == False:
+        if self.butia.isPresent('lcd') == False:
             BOX_COLORS['LCDdisplayButia'] = COLOR_NOTPRESENT
 
 
@@ -109,16 +109,15 @@ class Butia_plugin(gobject.GObject):
         #check if the butia robot is connected to the USB 
         wait_counter = WAIT_FOR_BOBOT
         module_list = self.butia.listarModulos()
-        trys = WAIT_FOR_BOBOT - wait_counter
         while((wait_counter > 0) and (module_list == -1)):
             self.butia.cerrar()
             self.butia = butiaAPI.robot()
             module_list = self.butia.listarModulos()
             debug_output("waiting...")
             wait_counter = wait_counter - 1
-            trys = WAIT_FOR_BOBOT - wait_counter 
+            time.sleep(0.5)
         if(wait_counter > 0):
-            debug_output("bobot OK! ; after " + str(trys) + " trys") 
+            debug_output("bobot OK! ; after " + str(WAIT_FOR_BOBOT - wait_counter) + " trys") 
         else:
             debug_output("bobot NOT OK!") 
         
@@ -144,7 +143,7 @@ class Butia_plugin(gobject.GObject):
                      label=_('batteryCharge Butia'),  # the label for the block
                      prim_name='batteryChargeButia',  # code reference (see below)
                      help_string=_('Returns the battery charge as a number between 0 and 255'))
-        self.tw.lc.def_prim('batteryChargeButia', 0, lambda self, x: primitive_dictionary['batteryChargeButia']())
+        self.tw.lc.def_prim('batteryChargeButia', 0, lambda self: primitive_dictionary['batteryChargeButia']())
 
         primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',  # the name of your block
@@ -199,7 +198,7 @@ class Butia_plugin(gobject.GObject):
         palette.add_block('LCDdisplayButia',  # the name of your block
                      style='basic-style-1arg',  # the block style
                      label=_('LCDdisplay Butia'),  # the label for the block
-                     default=['Hellow world    butia           '],   
+                     default=['Hello world    butia           '],   
                      prim_name='LCDdisplayButia',  # code reference (see below)
                      help_string=_('Print a text in a 32 characters ASCII display'))
         self.tw.lc.def_prim('LCDdisplayButia', 1, lambda self, x: primitive_dictionary['LCDdisplayButia'](x))
@@ -248,9 +247,9 @@ class Butia_plugin(gobject.GObject):
                     BOX_COLORS[ j + 'Butia'] = COLOR_NOTPRESENT
                 for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
-                    hiden = True
+                    isHidden = True
                     if self.butia.isPresent(modules_name_from_label[j] + str(k)) == True:
-                        hiden = False
+                        isHidden = False
                     if blockstyle == 'basic-style-1arg':
                         palette.add_block(module + 'Butia',  # the name of your block    
                                      style=blockstyle,  # the block style
@@ -258,7 +257,7 @@ class Butia_plugin(gobject.GObject):
                                      prim_name= module + 'Butia',  # code reference (see below)
                                      help_string=_(modules_help[j]),
                                      default=[255],
-                                     hidden=hiden )
+                                     hidden=isHidden )
                         self.tw.lc.def_prim(module + 'Butia', 1, lambda self, x, y=k, z=j: primitive_dictionary[z + 'Butia'](x,y))
                     else:
                         palette.add_block(module + 'Butia',  # the name of your block    
@@ -266,7 +265,7 @@ class Butia_plugin(gobject.GObject):
                                      label=_( module + ' Butia'),  # the label for the block
                                      prim_name= module + 'Butia',  # code reference (see below)
                                      help_string=_(modules_help[j]),
-                                     hidden=hiden )
+                                     hidden=isHidden )
                         self.tw.lc.def_prim(module + 'Butia', 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
 
     def start(self):

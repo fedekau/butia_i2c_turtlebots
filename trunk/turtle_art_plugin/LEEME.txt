@@ -1,2 +1,3 @@
 butiaAPI.py  butia_plugin.py  butia_support must be copied to the plugins directory of turtleart
+butiaon.svg butiaoff.svg must be copied to the icons directory of turtleart
 
