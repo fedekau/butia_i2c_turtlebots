@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2011 Butiá Team butia@fing.edu.uy 
-# Butia is a free open plataform for robotics proyects
+# Butia is a free open plataform for robotics projects
 # www.fing.edu.uy/inco/proyectos/butia
 # Universidad de la República del Uruguay
 #
@@ -97,6 +97,8 @@ class Butia_plugin(gobject.GObject):
             BOX_COLORS['stopButia'] = COLOR_NOTPRESENT
             BOX_COLORS['speedButia'] = COLOR_NOTPRESENT
             BOX_COLORS['batteryChargeButia'] = COLOR_NOTPRESENT
+            BOX_COLORS['forwardDistance'] = COLOR_NOTPRESENT
+            BOX_COLORS['backwardDistance'] = COLOR_NOTPRESENT
         #if self.butia.isPresent('ctouch') == False:
         #    BOX_COLORS['capacitivetouchButia'] = COLOR_NOTPRESENT
         if self.butia.isPresent('lcd') == False:
@@ -161,6 +163,17 @@ class Butia_plugin(gobject.GObject):
                      prim_name='forwardButia',  # code reference (see below)
                      help_string=_('Move the butia robot forward'))
         self.tw.lc.def_prim('forwardButia', 0, lambda self: primitive_dictionary['forwardButia']())
+
+        #new block added        
+        primitive_dictionary['forwardDistance'] = self.forwardDistance
+        palette.add_block('forwardDistance',  # the name of your block
+                     style='basic-style-1arg',  # the block style
+                     label=_('Forward Distance'),  # the label for the block
+                     default=[5],  
+                     prim_name='forwardDistance',  # code reference (see below)
+                     help_string=_('Move the butia robot forward a predefined distance'))
+        self.tw.lc.def_prim('forwardDistance', 1, lambda self, x: primitive_dictionary['forwardDistance'](x))
+
         
         primitive_dictionary['backwardButia'] = self.backwardButia
         palette.add_block('backwardButia',  # the name of your block
@@ -169,6 +182,15 @@ class Butia_plugin(gobject.GObject):
                      prim_name='backwardButia',  # code reference (see below)
                      help_string=_('Move the butia robot backward'))
         self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
+
+        primitive_dictionary['backwardDistance'] = self.backwardDistance
+        palette.add_block('backwardDistance',  # the name of your block
+                     style='basic-style-1arg',  # the block style
+                     label=_('Backward Distance'),  # the label for the block
+                     default=[5],  
+                     prim_name='backwardDistance',  # code reference (see below)
+                     help_string=_('Move the butia robot backward a predefined distance'))
+        self.tw.lc.def_prim('backwardDistance', 1, lambda self, x: primitive_dictionary['backwardDistance'](x))
 
         primitive_dictionary['leftButia'] = self.leftButia
         palette.add_block('leftButia',  # the name of your block
@@ -319,18 +341,39 @@ class Butia_plugin(gobject.GObject):
     def forwardButia(self):
         self._check_init()
         self.set_vels(self.actualSpeed, self.actualSpeed)
+        #self.tw.canvas.setpen(True)
+        #self.tw.canvas.forward(100)
+
+    def forwardDistance(self, dist):
+        self._check_init()
+        tiempo = dist / 8.29
+        self.set_vels(self.actualSpeed, self.actualSpeed)
+        time.sleep(tiempo)
+        self.set_vels(0, 0)
+        #FIXME ir avanzando de a poquito en la espera de tiempo y no todo de golpe al final
+        self.tw.canvas.setpen(True)
+        self.tw.canvas.forward(dist)
 
     def backwardButia(self):
         self._check_init()
         self.set_vels(-self.actualSpeed, -self.actualSpeed)
 
+    def backwardDistance(self, dist):
+        self._check_init()
+        tiempo = dist / 8.29
+        self.set_vels(-self.actualSpeed, -self.actualSpeed)
+        time.sleep(tiempo)
+        self.tw.canvas.setpen(True)
+        self.tw.canvas.forward(-dist)
+        self.set_vels(0, 0)
+
     def leftButia(self):
         self._check_init()
-        self.set_vels(-self.actualSpeed, self.actualSpeed)
+        self.set_vels(self.actualSpeed, -self.actualSpeed)
 
     def rightButia(self):
         self._check_init()
-        self.set_vels(self.actualSpeed, -self.actualSpeed)
+        self.set_vels(-self.actualSpeed, self.actualSpeed)
 
     def stopButia(self):
         self._check_init()
