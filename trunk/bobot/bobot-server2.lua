@@ -81,10 +81,9 @@ socket_handlers[server_b]=function()
 		print ("bs:New bobot client", client, client:getpeername())
 		table.insert(recvt,client)
 		socket_handlers[client] = function ()
-			print ("HTTP", client)
 			local line,err = client:receive()
 			if err=='closed' then
-				print ("bs:Closing http client", client)
+				print ("bs:Closing bobot client", client)
 				for k, v in ipairs(recvt) do 
 					if client==v then 
 						table.remove(recvt,k) 
@@ -120,7 +119,7 @@ socket_handlers[server_h]=function()
 		socket_handlers[client]	= function ()
 			local ret,err=http_serve(client)
 			if err=='closed' then
-				print ("bs:Closing bobot client", client)
+				print ("bs:Closing http client", client)
 				for k, v in ipairs(recvt) do 
 					if client==v then 
 						table.remove(recvt,k) 
