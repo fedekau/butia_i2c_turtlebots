@@ -28,6 +28,7 @@
 #define VERBOUSE 0
 #define VERBOUSE_TIMEOUT 0
 #define PACKET_LEN 10
+#define MAX_RETRIES 5
 
 int timeout_counter = 0;
 struct termios oldoptions;
@@ -130,7 +131,7 @@ int serialport_init(const char* serialport, int baud){
     unsigned char echo[] = {0x28, 0x04, 0x00, 0xCC}; //mensaje USB4all conocido, que responde un echo
     unsigned char* respuesta;
     int leidos = 0;
-    int fd;
+    int fd, retries;
     fd = open(serialport, O_RDWR | O_NOCTTY | O_NONBLOCK);
 	//printf("fd after open is %i %i", fd, errno);
     if (fd == -1)  {
@@ -192,12 +193,17 @@ int serialport_init(const char* serialport, int baud){
     /* este codigo intenta hacer la espera necesaria luego de inicializar el puerto serial para que este quede funcional */    
     respuesta = (unsigned char*)malloc(6);
     unsigned char b;
+    retries = MAX_RETRIES;
     do {
       //  tcsetattr(fd,TCSANOW,&options);
         send_msg(fd, echo, 4);
         leidos=read_msg(fd, respuesta, CAGATA_AVOID);
         printf("serialcomm:TIMEOUT %i, trying to recover...\n", leidos);
-    } while(leidos == -2);
+        retries--;
+    } while((leidos == -2) && retries>0);
+    if(leidos== -2){
+      return -1; //abort because problems with the serial node
+    }
     /*consumo en buffer de entrada, hubiera sido interesante usar fsync o tcdrain (posix)*/
     do {
         b=0;

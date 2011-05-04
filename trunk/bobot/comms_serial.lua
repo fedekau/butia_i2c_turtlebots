@@ -43,12 +43,12 @@ function read(endpoint, len, timeout)
 	--parameters sanity check
 	assert(type(serial_handler)=="number")
 	--assert(type(endpoint)=="number")
-	--assert(type(len)=="number")
+      --assert(type(len)=="number")
 	--assert(type(timeout)=="number")
 
 	return serialcomm.read_msg(serial_handler, len, timeout)
 end
-
+    
 
 function init(baseboards)
 	--parameters sanity check
@@ -56,20 +56,29 @@ function init(baseboards)
 
 	--FIXME leer ttyusbs...
     local tty_s=run_shell("ls /dev/ttyUSB*")
-    local tty_t=split_words(tty_s)
-    local tty=tty_t[1]
-    print ("cs:", tty)
-    if not tty then
+    local tty_t=split_words(tty_s)  
+    local tty
+    local err
+    if (#tty_t == 0) then
         return 0,"no ttyUSB found"
     end
 
 --    tty="/dev/ttyUSB0"
-
-	serial_handler, err = serialcomm.init(tty, 115200)
+    for i=1, #tty_t do 
+      tty=tty_t[i]
+      print ("Trying to connect to", tty)
+      serial_handler, err = serialcomm.init(tty, 115200) 
+      if serial_handler then 
+        break
+      else
+        print("Error connecting:", err)
+      end
+    end
     if not serial_handler then
+        print("cs:", "no ttyUSB could be open")
         return 0, err
     end
-
+    print ("cs:", tty)
 	local bb = bobot_baseboard.BaseBoard:new({idBoard=tty, comms=comms_serial})
 	baseboards[tty]=bb
 
