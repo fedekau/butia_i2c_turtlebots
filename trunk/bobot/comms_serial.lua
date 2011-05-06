@@ -64,8 +64,9 @@ function init(baseboards)
     end
 
 --    tty="/dev/ttyUSB0"
-    for i=1, #tty_t do 
-      tty=tty_t[i]
+    --for i=1, #tty_t do 
+	for _, tty in ipairs(tty_t) do
+      --tty=tty_t[i]
       print ("Trying to connect to", tty)
       serial_handler, err = serialcomm.init(tty, 115200) 
       if serial_handler then 

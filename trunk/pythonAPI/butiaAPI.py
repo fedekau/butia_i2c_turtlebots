@@ -23,7 +23,6 @@ class robot:
 	def __init__(self, address = "localhost" , port = 2009):
 		self.reconnect(address, port)
 
-
 	# Connecta o Reconnecta al bobot en address:port
 	def reconnect(self, address, port):
 		self.cerrar()
@@ -31,6 +30,8 @@ class robot:
 			self.cliente = socket.socket()
 			self.cliente.connect((address, port))  
 			self.fcliente = self.cliente.makefile()
+			msg = "INIT\n"
+			#self.cliente.send(msg) #bobot server instance is running, but we have to check for new or remove hardware
 		except:
 			return -1
 		return 0

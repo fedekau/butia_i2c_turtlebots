@@ -60,6 +60,11 @@ local function check_open_device(d, ep1, ep2)
 end
 
 local process = {}
+process["INIT"] = function () --to chech the new state of hardware on the fly
+    bobot.init()    
+    baseboards = bobot.baseboards
+	read_devices_list()
+end
 process["LIST"] = function ()
 	local ret,comma = "", ""
 	for d_name, _ in pairs(devices) do

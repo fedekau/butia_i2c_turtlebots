@@ -12,7 +12,7 @@ baseboards={}
 --Returns number of baseboards detected.
 function init ()
 	local n_boards_usb, n_boards_serial, n_boards = 0,0,0
-
+    baseboards={} --flush the baseboard because this function could be call after hardware remove or adition
 	repeat 
 		print ("Initializing bobot...")
 		local n_boards_usb = comms_usb.init(baseboards)
