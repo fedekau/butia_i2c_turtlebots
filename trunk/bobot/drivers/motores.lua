@@ -9,7 +9,7 @@ api.setvelmtr.parameters = {[1]={rname="id", rtype="int"},[2]={rname="sentido", 
 api.setvelmtr.returns = {[1]={rname="dato", rtype="int"}} --codigo de operación
 api.setvelmtr.call = function (id, sentido, vel)
 	vel=tonumber(vel)
-	if vel>1000 then vel=1000 end
+	if vel>1023 then vel=1023 end
 	local msg = string.char(SET_VEL_MTR,id, sentido, math.floor(vel / 256),vel % 256)
 	device:send(msg)
 	local ret = device:read(1)
@@ -22,8 +22,8 @@ api.setvel2mtr.parameters = {[1]={rname="sentido", rtype="int"},[2]={rname="vel"
 api.setvel2mtr.returns = {[1]={rname="dato", rtype="int"}} --codigo de operación
 api.setvel2mtr.call = function (sentido1, vel1, sentido2, vel2)
 	vel1, vel2 = tonumber(vel1), tonumber(vel2)
-	if vel1>1000 then vel1=1000 end
-	if vel2>1000 then vel2=1000 end
+	if vel1>1023 then vel1=1023 end
+	if vel2>1023 then vel2=1023 end
 	local msg = string.char(SET_VEL_2MTR,sentido1, math.floor(vel1 / 256),vel1 % 256, sentido2, math.floor(vel2 / 256),vel2 % 256)
 	device:send(msg)
 	local ret = device:read(1)

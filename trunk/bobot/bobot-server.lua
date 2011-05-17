@@ -63,7 +63,7 @@ local process = {}
 process["INIT"] = function () --to chech the new state of hardware on the fly
     bobot.init()    
     baseboards = bobot.baseboards
-	read_devices_list()
+    read_devices_list()
 end
 process["LIST"] = function ()
 	local ret,comma = "", ""
@@ -211,7 +211,7 @@ while 1 do
 					else
 						print ('=====', line)
 						local ret = process[command](words) or ""
-						--print("returning", ret)
+						print("returning*************************", ret)
 						client:send(ret .."\n")
 					end
 				end

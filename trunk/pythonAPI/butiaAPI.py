@@ -31,7 +31,8 @@ class robot:
 			self.cliente.connect((address, port))  
 			self.fcliente = self.cliente.makefile()
 			msg = "INIT\n"
-			#self.cliente.send(msg) #bobot server instance is running, but we have to check for new or remove hardware
+			self.cliente.send(msg) #bobot server instance is running, but we have to check for new or remove hardware
+			self.fcliente.readline()
 		except:
 			return -1
 		return 0
