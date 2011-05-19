@@ -77,32 +77,31 @@ local socket_handlers = {}
 setmetatable(socket_handlers, { __mode = 'k' })
 socket_handlers[server_b]=function()
 	local client, err=server_b:accept()
-	if client then
-		print ("bs:New bobot client", client, client:getpeername())
-		table.insert(recvt,client)
-		socket_handlers[client] = function ()
-			local line,err = client:receive()
-			if err=='closed' then
-				print ("bs:Closing bobot client", client)
-				for k, v in ipairs(recvt) do 
-					if client==v then 
-						table.remove(recvt,k) 
-						return
-					end
+	if not client then return end
+	print ("bs:New bobot client", client, client:getpeername())
+	table.insert(recvt,client)
+	socket_handlers[client] = function ()
+		local line,err = client:receive()
+		if err=='closed' then
+			print ("bs:Closing bobot client", client)
+			for k, v in ipairs(recvt) do 
+				if client==v then 
+					table.remove(recvt,k) 
+					return
 				end
 			end
-			if line then
-				local words=split_words(line)
-				local command=words[1]
-				if not command then
-					print("bs:Error parsing line:", line, command)
+		end
+		if line then
+			local words=split_words(line)
+			local command=words[1]
+			if not command then
+				print("bs:Error parsing line:", line, command)
+			else
+				if not process[command] then
+					print("bs:Command not supported:", command)
 				else
-					if not process[command] then
-						print("bs:Command not supported:", command)
-					else
-						local ret = process[command](words) or ""
-						client:send(ret .. "\n")
-					end
+					local ret = process[command](words) or ""
+					client:send(ret .. "\n")
 				end
 			end
 		end
@@ -111,25 +110,24 @@ end
 
 socket_handlers[server_h]=function()
 	local client, err=server_h:accept()
-	if client then
-		print ("bs:New http client", client, client:getpeername())
-		client:setoption ("tcp-nodelay", true)
-		--client:settimeout(5)
-		table.insert(recvt,client)			
-		socket_handlers[client]	= function ()
-			local ret,err=http_serve(client)
-			if err=='closed' then
-				print ("bs:Closing http client", client)
-				for k, v in ipairs(recvt) do 
-					if client==v then 
-						table.remove(recvt,k) 
-						return
-					end
+	if not client then return end
+	print ("bs:New http client", client, client:getpeername())
+	client:setoption ("tcp-nodelay", true)
+	--client:settimeout(5)
+	table.insert(recvt,client)			
+	socket_handlers[client]	= function ()
+		local ret,err=http_serve(client)
+		if err=='closed' then
+			print ("bs:Closing http client", client)
+			for k, v in ipairs(recvt) do 
+				if client==v then 
+					table.remove(recvt,k) 
+					return
 				end
 			end
-			if ret then 
-				client:send(ret)
-			end
+		end
+		if ret then 
+			client:send(ret)
 		end
 	end
 end
