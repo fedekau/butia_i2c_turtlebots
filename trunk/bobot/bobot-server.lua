@@ -1,20 +1,27 @@
 #!/usr/bin/lua
 
+package.path=package.path..";./lib/?.lua"
+
 local socket = require("socket")
+local process = require("bobot-server2-process").process
+local http_serve = require("bobot-server2-http").serve
+
 local bobot = require("bobot")
+--local bobot = require("chotox")
 
 --tcp listening address
 local ADDRESS = "*"
-local PORT = 2009
+local PORT_B = 2009 --B is for bobot
+local PORT_H = 2010 --H is for http
 
+local server_b = assert(socket.bind(ADDRESS, PORT_B))
+local server_h = assert(socket.bind(ADDRESS, PORT_H))
 
-local server = assert(socket.bind(ADDRESS, PORT))
-
-local recvt={[1]=server}
+local recvt={[1]=server_b, [2]=server_h}
 
 local baseboards = bobot.baseboards
 
-local devices = {}
+devices = {}
 
 local function get_device_name(n)
 	if not devices[n] then
@@ -47,120 +54,15 @@ print("=====d_name", d_name, "regname", regname)
 	if not bfound then print ("ls:WARN: No Baseboard found.") end
 end
 
-local function check_open_device(d, ep1, ep2)
+function check_open_device(d, ep1, ep2)
 	if not d then return end
 	if d.handler then
 		--print ("ls:Already open", d.name, d.handler)
 		return true
 	else
-        -- if the device is not open, then open the device
 		print ("ls:Opening", d.name, d.handler)
 		return d:open(ep1 or 1, ep2 or 1) --TODO asignacion de ep?
 	end
-end
-
-local process = {}
-process["INIT"] = function () --to chech the new state of hardware on the fly
-    bobot.init()    
-    baseboards = bobot.baseboards
-    read_devices_list()
-end
-process["LIST"] = function ()
-	local ret,comma = "", ""
-	for d_name, _ in pairs(devices) do
-		ret = ret .. comma .. d_name
-		comma=","
-	end
-	return ret
-end
-process["OPEN"] = function (parameters)
-	local d  = parameters[2]
-	local ep1= tonumber(parameters[3])
-	local ep2= tonumber(parameters[4])
-
-	if not d then
-		print("ls:Missing 'device' parameter")
-		return
-	end
-	
-	local device = devices[d]
-	if check_open_device(device, ep1, ep2) then	
-		return "ok"
-	else
-		return "fail"
-	end
-end
-process["DESCRIBE"] = function (parameters)
-	local d  = parameters[2]
-	local ep1= tonumber(parameters[3])
-	local ep2= tonumber(parameters[4])
-
-	if not d then
-		print("ls:Missing \"device\" parameter")
-		return
-	end
-	
-	local device = devices[d]
-	if not check_open_device(device, ep1, ep2) then	
-		return "fail"
-	end
-
-	local ret = "{"
-	for fname, fdef in pairs(device.api) do
-		ret = ret .. fname .. "={"
-		ret = ret .. " parameters={"
-		for i,pars in ipairs(fdef.parameters) do
-			ret = ret .. "[" ..i.."]={"
-			for k, v in pairs(pars) do
-				ret = ret .."[".. k .."]='"..tostring(v).."',"
-			end
-			ret = ret .. "},"
-		end
-		ret = ret .. "}, returns={"
-		for i,rets in ipairs(fdef.returns) do
-			ret = ret .. "[" ..i.."]={"
-			for k, v in pairs(rets) do
-				ret = ret .."[".. k .."]='"..tostring(v).."',"
-			end
-			ret = ret .. "},"
-		end
-		ret = ret .. "}}," 
-	end
-	ret=ret.."}"
-
-	return ret
-end
-process["CALL"] = function (parameters)
-	local d  = parameters[2]
-	local call  = parameters[3]
-
-	if not (d and call) then
-		print("ls:Missing parameters", d, call)
-		return
-	end
-
-	local device = devices[d]
-	if not check_open_device(device, nil, nil) then	
-		return "fail"
-	end
-
-	local api_call=device.api[call];	 if not api_call then return end
-	
-	if api_call.call then
-		--local tini=socket.gettime()
-		local ret = api_call.call(unpack(parameters,4))
-		--print ('%%%%%%%%%%%%%%%% bobot-server',socket.gettime()-tini)
-		return ret
-	end
-end
-process["CLOSEALL"] = function ()
-	if baseboards then
-		for _, bb in pairs(baseboards) do
-			bb:close_all()
-			bb:force_close_all() --modif andrew
-		end
-	end
-	return "ok"
 end
 
 local function split_words(s)
@@ -173,6 +75,66 @@ local function split_words(s)
 	return words
 end
 
+local socket_handlers = {}
+setmetatable(socket_handlers, { __mode = 'k' })
+socket_handlers[server_b]=function()
+	local client, err=server_b:accept()
+	if not client then return end
+	print ("bs:New bobot client", client, client:getpeername())
+	table.insert(recvt,client)
+	socket_handlers[client] = function ()
+		local line,err = client:receive()
+		if err=='closed' then
+			print ("bs:Closing bobot client", client)
+			for k, v in ipairs(recvt) do 
+				if client==v then 
+					table.remove(recvt,k) 
+					return
+				end
+			end
+		end
+		if line then
+			local words=split_words(line)
+			local command=words[1]
+			if not command then
+				print("bs:Error parsing line:", line, command)
+			else
+				if not process[command] then
+					print("bs:Command not supported:", command)
+				else
+					local ret = process[command](words) or ""
+					client:send(ret .. "\n")
+				end
+			end
+		end
+	end
+end
+
+socket_handlers[server_h]=function()
+	local client, err=server_h:accept()
+	if not client then return end
+	print ("bs:New http client", client, client:getpeername())
+	client:setoption ("tcp-nodelay", true)
+	--client:settimeout(5)
+	table.insert(recvt,client)			
+	socket_handlers[client]	= function ()
+		local ret,err=http_serve(client)
+		if err=='closed' then
+			print ("bs:Closing http client", client)
+			for k, v in ipairs(recvt) do 
+				if client==v then 
+					table.remove(recvt,k) 
+					return
+				end
+			end
+		end
+		if ret then 
+			client:send(ret)
+		end
+	end
+end
+
+
 read_devices_list()
 print ("Listening...")
 -- loop forever waiting for clients
@@ -180,43 +142,8 @@ print ("Listening...")
 while 1 do
 	local recvt_ready, _, err=socket.select(recvt, nil, 1)
 	if err~='timeout' then
-		--ready to accept new tcp connection
-		local client=recvt_ready[1]
-		if client == server then
-			local client, err=server:accept()
-			if client then
-				print ("bs:New client", client, client:getpeername())
-				table.insert(recvt,client)			
-			end
-		elseif client then
-			local line,err = client:receive()
-			if err=='closed' then
-				print ("bs:Closing client", client)
-				for k, v in ipairs(recvt) do 
-					if client==v then 
-						table.remove(recvt,k) 
-						break
-					end
-				end
-			end
-			if line then
-				--local command, parameters = string.match(line, "^(%S+)%s*(.*)$")
-				local words=split_words(line)
-				local command=words[1]
-				if not command then
-					print("ls:Error parsing line:", line, command)
-				else
-					if not process[command] then
-						print("ls:Command not supported:", command)
-					else
-						print ('=====', line)
-						local ret = process[command](words) or ""
-						print("returning*************************", ret)
-						client:send(ret .."\n")
-					end
-				end
-			end
-		end
+		local skt=recvt_ready[1]
+		socket_handlers[skt]()
 	end
 end
 
