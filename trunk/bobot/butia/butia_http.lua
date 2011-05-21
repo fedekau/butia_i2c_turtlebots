@@ -1,7 +1,7 @@
 module(..., package.seeall);
 
 --local devices=devices
-local process = require("bobot-server2-process").process
+local process = require("bobot-server-process").process
 local util = require("http-util")
 
 local parse_params = util.parse_params

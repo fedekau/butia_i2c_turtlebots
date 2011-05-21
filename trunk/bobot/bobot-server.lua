@@ -3,8 +3,8 @@
 package.path=package.path..";./lib/?.lua"
 
 local socket = require("socket")
-local process = require("bobot-server2-process").process
-local http_serve = require("bobot-server2-http").serve
+local process = require("bobot-server-process").process
+local http_serve = require("bobot-server-http").serve
 
 local bobot = require("bobot")
 --local bobot = require("chotox")

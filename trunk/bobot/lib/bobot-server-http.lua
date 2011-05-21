@@ -1,7 +1,7 @@
 module(..., package.seeall);
 
 --local devices=devices
-local process = require("bobot-server2-process").process
+local process = require("bobot-server-process").process
 local butia = require("butia/butia_http")
 local util = require("http-util")
 
