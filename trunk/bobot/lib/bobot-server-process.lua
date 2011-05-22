@@ -6,6 +6,11 @@ module(..., package.seeall);
 
 process = {}
 
+process["INIT"] = function () --to check the new state of hardware on the fly
+    bobot.init()    
+    baseboards = bobot.baseboards
+    read_devices_list()
+end
 process["LIST"] = function ()
 	local ret,comma = "", ""
 	for d_name, _ in pairs(devices) do
