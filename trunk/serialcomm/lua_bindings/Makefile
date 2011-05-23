@@ -1,7 +1,7 @@
 LUA_SRC = ../../libs/lua-5.1.4/src/    #change with your lua sources folder
 CC = gcc
 LD = ld
-OPTS= -Wall -D_GNU_SOURCE
+OPTS= -Wall -fPIC -D_GNU_SOURCE
 LOPTS=-c -fPIC -fno-stack-protector
 OBJS=lua_serialcomm.o serialcomm.o 
 OBJS_SO = lua_serialcomm.so
