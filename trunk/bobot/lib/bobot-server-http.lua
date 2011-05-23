@@ -158,7 +158,7 @@ get_page["/dump.htm"] = function (p)
 	return "HTTP/1.1 200/OK\r\nContent-Type:text/html\r\nContent-Length: "..#page.."\r\n\r\n"..page
 end
 get_page["/favicon.ico"] = function ()
-	local served, err = io.open('favicon.ico', "rb")
+	local served, err = io.open('lib/favicon.ico', "rb")
 	if served ~= nil then
 		local content = served:read("*all")
 		return "HTTP/1.1 200/OK\r\nContent-Type:image/x-icon\r\nContent-Length: "
@@ -169,7 +169,7 @@ get_page["/favicon.ico"] = function ()
 	end
 end
 get_page["/bobot.png"] = function ()
-	local served, err = io.open('bobot.png', "rb")
+	local served, err = io.open('lib/bobot.png', "rb")
 	if served ~= nil then
 		local content = served:read("*all")
 		return "HTTP/1.1 200/OK\r\nContent-Type:image/png\r\nContent-Length: "
