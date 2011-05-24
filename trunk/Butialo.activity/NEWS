@@ -1,0 +1,190 @@
+40
+
+*Fix Pippy sound library on non-OLPC OS systems (SL#638)
+*Run graphics (pygame) examples in full screen mode (OLPC#10688)
+
+39
+* Factorial example fix
+* pep8 and pylint cleanup for examples
+
+38
+* Fix svg icons for Pippy
+* Add EditToolbar & modify toolbars for <=0.84 compatibility 
+  (Gonzalo and Anish)
+* Remove the 'dobject'/groupthink submodule
+* Switch activity.info from class to exec
+
+37
+* Remove broken slideshow until it is fixed #2054 (James Cameron)
+* Adapt pippy examples to screen dimensions (except xolyimpics), 
+  dev.laptop.org #9260 (James Cameron)
+
+36
+* Add COPYING based on activity.info license field, verify source file
+  licenses, include LICENSE from Elements upstream SVN, fixes
+  Sugarlabs.org #1571 and laptop.org #9181. (James Cameron)
+* Fixed pippy layout so that it doesn't break at any resolution other 
+  than 1200x900. (Anish Mangal)
+* Moved the start, stop and run buttons to the activity toolbar. 
+  (Anish Mangal)
+
+35
+* Add collaborative editing with Groupthink
+* Fix self-generated bundles by including port/ (and now groupthink/)
+
+34
+* Editor: enable autotabbing, space tabs,
+     and tab size = 2 (to ensure compatability with examples)
+
+33
+* Include XOlympics physics game example
+* Use default Sugar-specified font sizes
+
+32 
+* Trac #607 (SugarLabs), Font size needs to be 10 for Soas
+    (font size of 8 for XO-1 users)
+
+31
+
+* Trac #350 (SugarLabs), Python path set improperly
+ 
+30
+
+* Allow playing sounds identified by full filesystem path in
+  pippy.sound (cscott)
+* Resync Pippy's "Pippy metadata" with its activity.info, etc. (cscott)
+* New default activity icon (Madeleine Ball)
+* Trac #6323: Pippy's terminal and code editor font sizes are too big (brian)
+* Add pippy.physics package and graphics/physics example (brian)
+* Allow UTF-8 in Pippy source files. (cscott)
+
+29
+
+* Trac #8665, cont: further fixes for bundle-building.
+
+28
+
+* Trac #8665: Bundle-building was broken by a Sugar API change (trac #8136)
+
+27
+
+* Use a protected update_url.
+* Updated license information in files; added 'license' field.
+* Reverted bundlebuilder change: using .start("Pippy") makes modern
+  bundlebuilder complain:
+    WARNING:root:bundle_name deprecated, now comes from activity.info
+
+26
+
+* Bundlebuilder API change -- use .start("Pippy") instead of .start().
+
+25
+
+24
+
+23
+
+22
+
+* Add check to not fail on new gtksourceview2 API (erikos)
+
+21
+
+* Add "tree" and "snow" from Dafydd Harries.
+* Give a friendly error message if the audio library isn't found.
+
+20
+
+* Collaboration works; you get a copy of the host's source buffer.
+* We look for the audio library in /home/olpc as well as /usr/share.
+
+19
+
+* #6475: Fix crash on launch when no telepathy connection (morgs)
+
+18
+
+* Updated translations for release.
+
+17
+
+* Attempt to fix Spanish, from Sayamindu.
+
+16
+
+* New "slideshow" example, by cjb.
+
+15
+
+* "View source" now works on both Pippy and Pippy-generated activities!
+
+(From C. Scott Ananian.)
+
+14
+
+* Add pippy.console.size() to get rows/cols, make "thanks" use it.
+
+13
+
+* Pippy can now create activity bundles of user code, using the "Keep As
+  Bundle" icon on the toolbar!
+
+(From C. Scott Ananian.)
+
+12
+
+* Factor out a pippy library, which programs can use with 'import pippy'.
+    
+* The pygame portion of the library uses 'best practices' to avoid eating
+  up CPU, and pauses & suspends after 20 seconds of inactivity.
+
+(From C. Scott Ananian.)
+
+11
+
+* New pygame examples by Henry Holtzman!  "bounce", "camera", "lines", "pong".
+
+10
+
+* Add "guess" example (Pilar Saenz).
+
+9
+
+* Changed sound library location again.  Add "thanks".
+
+8
+
+* Changed location of sound library on filesystem, for build573+.
+
+7
+
+* Remove the "interpreter" banner; we don't provide the help files it mentions
+* Add "Stop!" button to terminate the currently running code.
+
+6
+
+* Add "interpreter" example, by Ivan Krstić.
+* 55px->45px icon, resized by Eben Eliason.
+
+5
+
+* Update to new Tubes API
+* Small example changes
+* Added getSoundList() which returns the list of available sounds for playWave() (Flipo)
+
+4
+
+* Journal integration
+* Sound support!  Thanks to Nat/TamTam team.
+* New examples:  
+   Sierpinski (Madeleine Ball)
+   Recursion (Mel Chua)
+   Fibonacci (Rafael Ortiz)
+
+3
+
+* Added scrollbars, replaced hippo with gtk.
+
+2
+
+* First public release.
