@@ -1,4 +1,5 @@
 VERSION 4
++ new icon according to http://en.flossmanuals.net/make-your-own-sugar-activities/ch010_package-the-activity/
 + fixed first sensor read type error
 + bobot search for the correct tty matching an arduino with butia firmware
 + bobot refresh the list of sensors connected to the shield
