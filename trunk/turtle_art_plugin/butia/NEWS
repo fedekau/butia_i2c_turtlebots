@@ -1,3 +1,19 @@
+VERSION 4
++ fixed first sensor read type error
++ bobot search for the correct tty matching an arduino with butia firmware
++ bobot refresh the list of sensors connected to the shield
++ fixed setSpeed help string message
+
+VERSION 3
++ soporte para multiples instancias del mismo sensor
++ soporte para estructura de plugins de turtleart 107
++ Internalización de código, disponible actualmente para español/ingles
++ integrado con:
+  medición de carga de bateria
+  manejo del lcd
+  avanzar X unidades el robot y desplegar el trazo en proporción en la pantalla con la tortuga
+  integrado con soporte para plugins de turtle art
+
 VERSION 2
 
 + Icono de la paleta butiá y de la aplicación respetando el logo oficial
