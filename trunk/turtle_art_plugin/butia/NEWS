@@ -1,4 +1,7 @@
 VERSION 4
++ if comunication with ax12 motors is not ok we paint in gray motor related blocks
++ bobot not print information to the standard output by defaul, only if debug is set
++ new bobot command DEBUG to enable debug information
 + new icon according to http://en.flossmanuals.net/make-your-own-sugar-activities/ch010_package-the-activity/
 + fixed first sensor read type error
 + bobot search for the correct tty matching an arduino with butia firmware
