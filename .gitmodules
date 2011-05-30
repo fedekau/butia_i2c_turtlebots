@@ -1,0 +1,3 @@
+[submodule "trunk/turtle_art_plugin/mainline"]
+	path = trunk/turtle_art_plugin/mainline
+	url = git://git.sugarlabs.org/turtleart/mainline.git
