@@ -98,7 +98,9 @@ class Butia(gobject.GObject):
     #is only used for modules that allows only one instance
     def dynamicLoadBlockColors(self):
         self._check_init()
-
+        motores_off = False
+        if(self.batteryChargeButia()=="255"):
+            motores_off = True
         if self.butia.isPresent('butia') == False:
             BOX_COLORS['forwardButia'] = COLOR_NOTPRESENT
             BOX_COLORS['backwardButia'] = COLOR_NOTPRESENT
@@ -111,6 +113,16 @@ class Butia(gobject.GObject):
             BOX_COLORS['backwardDistance'] = COLOR_NOTPRESENT
         #if self.butia.isPresent('ctouch') == False:
         #BOX_COLORS['capacitivetouchButia'] = COLOR_NOTPRESENT
+        if(motores_off == True):
+            BOX_COLORS['forwardButia'] = COLOR_NOTPRESENT
+            BOX_COLORS['backwardButia'] = COLOR_NOTPRESENT
+            BOX_COLORS['leftButia'] = COLOR_NOTPRESENT
+            BOX_COLORS['rightButia'] = COLOR_NOTPRESENT
+            BOX_COLORS['stopButia'] = COLOR_NOTPRESENT
+            BOX_COLORS['speedButia'] = COLOR_NOTPRESENT
+            BOX_COLORS['forwardDistance'] = COLOR_NOTPRESENT
+            BOX_COLORS['backwardDistance'] = COLOR_NOTPRESENT
+
         if self.butia.isPresent('lcd') == False:
             BOX_COLORS['LCDdisplayButia'] = COLOR_NOTPRESENT
 
@@ -139,7 +151,7 @@ class Butia(gobject.GObject):
         palette = make_palette('butia', colors=["#00FF00","#008000"], help_string=_('Butia Robot'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
-        
+
         primitive_dictionary['delayButia'] = self.delayButia
         palette.add_block('delayButia',  # the name of your block
                      style='basic-style-1arg',  # the block style
@@ -327,7 +339,7 @@ class Butia(gobject.GObject):
 
     def set_vels(self, left, right):
         self._check_init()
-        print "Setear velocidades: " + str(left) + "-" + str(right)
+        #print "Setear velocidades: " + str(left) + "-" + str(right)
         if left>0:
                     sentLeft = "0"
         else:
@@ -507,7 +519,7 @@ class Butia(gobject.GObject):
             self.butia.llamarModulo('led' + str(sensorid) , 'setLight' , str(math.trunc(level)))
     
     def speedButia(self, speed):
-        print "Setear velocidad actual: " + str(speed)
+        #print "Setear velocidad actual: " + str(speed)
         if speed < 0:
             speed = -speed
         if speed > MAX_SPEED:

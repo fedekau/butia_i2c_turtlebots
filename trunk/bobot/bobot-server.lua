@@ -16,6 +16,14 @@ local baseboards = bobot.baseboards
 
 local devices = {}
 
+local DEBUG = false
+
+function debug(a)
+    if (DEBUG) then
+        print("bobot: " .. a)
+    end
+end
+
 local function get_device_name(n)
 	if not devices[n] then
 		return n
@@ -36,11 +44,11 @@ print("=Listing Devices")
 	local bfound
 	devices={}
 	for b_name, bb in pairs(baseboards) do
-print("===board", b_name)
+    print("===board " .. b_name)
 		for d_name,d in pairs(bb.devices) do
 			local regname = get_device_name(d_name)
 			devices[regname]=d
-print("=====d_name", d_name, "regname", regname)
+    print("=====d_name " .. d_name .. " regname " .. regname)
 		end
 		bfound = true
 	end
@@ -50,16 +58,30 @@ end
 local function check_open_device(d, ep1, ep2)
 	if not d then return end
 	if d.handler then
-		--print ("ls:Already open", d.name, d.handler)
+		debug("ls:Already open " .. tostring(d.name) .. " " .. tostring(d.handler))
 		return true
 	else
         -- if the device is not open, then open the device
-		print ("ls:Opening", d.name, d.handler)
+		debug("ls:Opening " .. tostring(d.name) .. " " .. tostring(d.handler))
 		return d:open(ep1 or 1, ep2 or 1) --TODO asignacion de ep?
 	end
 end
 
 local process = {}
+process["DEBUG"] = function (parameters) --disable debug mode
+    local debug = parameters[2]
+    if not debug then
+        print("ls:Missing \"debug\" parameter")
+        return
+    end
+    if (string.match(debug,"ON")) then
+      DEBUG = true
+    else 
+        if(string.match(debug,"OFF")) then
+          DEBUG = false
+        end
+    end
+end
 process["INIT"] = function () --to chech the new state of hardware on the fly
     bobot.init()    
     baseboards = bobot.baseboards
@@ -149,7 +171,7 @@ process["CALL"] = function (parameters)
 	if api_call.call then
 		--local tini=socket.gettime()
 		local ret = api_call.call(unpack(parameters,4))
-		--print ('%%%%%%%%%%%%%%%% bobot-server',socket.gettime()-tini)
+		--debug('%%%%%%%%%%%%%%%% bobot-server',socket.gettime()-tini)
 		return ret
 	end
 end
@@ -209,9 +231,9 @@ while 1 do
 					if not process[command] then
 						print("ls:Command not supported:", command)
 					else
-						print ('=====', line)
+						debug ('===== ' .. line)
 						local ret = process[command](words) or ""
-						print("returning*************************", ret)
+						debug("returning************************* " .. tostring(ret))
 						client:send(ret .."\n")
 					end
 				end
