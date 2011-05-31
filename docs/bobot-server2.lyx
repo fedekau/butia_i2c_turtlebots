@@ -1,0 +1,899 @@
+#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\use_default_options true
+\language spanish
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+bobot-server v2: Documentación Técnica
+\end_layout
+
+\begin_layout Author
+Guillermo Apollonia (gapollo@fing.edu.uy)
+\begin_inset Newline newline
+\end_inset
+
+ Jorge Visca (jvisca@fing.edu.uy)
+\end_layout
+
+\begin_layout Date
+Marzo de 2011
+\end_layout
+
+\begin_layout Chapter
+Descripción
+\end_layout
+
+\begin_layout Standard
+
+\noun on
+bobot-server (version 2)
+\noun default
+ es un servicio que permite acceder a aplicaciones y usuarios interactuar
+ con dispositivos 
+\noun on
+usb4all
+\noun default
+.
+ Consiste en agente altamente portable y liviano, que exporta la funcionalidad
+ de los dispositivos 
+\noun on
+usb4all
+\noun default
+ presentes de una forma facil de usar.
+ Ofrece dos métodos de acceso, uno optimizado para aplicaciones, basado
+ en un socket y un protocolo facilmente parseable, y otro optimizado para
+ ser usado por humanos, mediante un sitio web hosteado en el propio agente.
+\end_layout
+
+\begin_layout Chapter
+Diseño
+\end_layout
+
+\begin_layout Standard
+
+\noun on
+bobot-server
+\noun default
+ accede a los dispositivos 
+\noun on
+usb4all
+\noun default
+ mediante la biblioteca 
+\noun on
+bobot
+\noun default
+, y es un reemplazo drop-in al servidor 
+\noun on
+bobot-server
+\noun default
+.
+ El servicio consiste en un servidor de sockets que acepta conexiones TCP
+ en dos puertos (cada uno en un protocolo distinto).
+ Es facilmente extensible a más protocolos.
+ Cada vez que acepta una conexión, crea una sesión TCP que es mantenida
+ hasta que el cliente la cierre.
+\end_layout
+
+\begin_layout Standard
+Los dos protocolos soportados son 
+\noun on
+bobot-process
+\noun default
+ y 
+\noun on
+bobot-http
+\noun default
+.
+\end_layout
+
+\begin_layout Section
+bobot-process
+\end_layout
+
+\begin_layout Standard
+Es un protocolo simple orientado a comunicaciones entre procesos.
+ Por defecto se realiza sobre el puerto 2009, y es el único que soportaba
+ la versión anterior del servicio, 
+\noun on
+bobot-server
+\noun default
+.
+ Consiste en un intercambio de comandos, generados por el cliente, y respuestas
+ a estos, generados por el servicio.
+ Ambos consisten en strings, donde cada comando o respuesta ocupa una linea
+ (están delimitados por el caracter 
+\begin_inset Quotes eld
+\end_inset
+
+
+\emph on
+
+\backslash
+n
+\emph default
+
+\begin_inset Quotes erd
+\end_inset
+
+).
+ Es sensible a mayúsculas.
+ Si bien el protocolo soporta la transmisión de caracteres no imprimibles,
+ para simplificar el debugging se recomienda que las clientes (y los módulos
+ 
+\noun on
+usb4all
+\noun default
+ asociados) usen algun esquema de codificación que transmita solo texto
+ plano.
+\end_layout
+
+\begin_layout Standard
+Por la especificación del protocolo, consulte el manual de usuario.
+ La implementación de los comandos del protocolo se encuentra en el módulo
+ 
+\emph on
+bobot-server-process.lua
+\emph default
+.
+\end_layout
+
+\begin_layout Section
+bobot-http
+\end_layout
+
+\begin_layout Standard
+Es un protocolo orientado a que los usuarios puedan facilmente acceder a
+ las funcionalidades de los dispositivos 
+\noun on
+usb4all
+\noun default
+.
+ Esto puede ser útil durante las etapas de prototipado, desarrollo, y debugging.
+ Consiste en una sitio web disponible por defecto sobre el puerto 2010.
+ Esta sitio permite navegar de forma interactiva los servicios 
+\noun on
+usb4all
+\noun default
+ disponibles y la operaciones asociadas, así como ejecutar acciones y recuperar
+ los resultados.
+\end_layout
+
+\begin_layout Standard
+El sitio web es facilmente modificable mediante 
+\emph on
+templates
+\emph default
+, y puede ser extendido con páginas de propósito específico.
+ Las páginas son generadas por el módulo 
+\emph on
+bobot-server-http.lua
+\emph default
+.
+\end_layout
+
+\begin_layout Chapter
+Implementación
+\end_layout
+
+\begin_layout Section
+Gestión de conexiones
+\end_layout
+
+\begin_layout Standard
+
+\noun on
+bobot-server
+\noun default
+ está escrito en Lua.
+ La única dependencia externa, además de la librería 
+\noun on
+bobot
+\noun default
+, es LuaSocket.
+ Por lo tanto, se puede ejecutar sin modificaciones en la mayoría de las
+ plataformas con soporte para Sockets POSIX, incluyendo Linux, BSD y Windows.
+\end_layout
+
+\begin_layout Standard
+El programa principal reside en el archivo 
+\emph on
+bobot-server.lua
+\emph default
+.
+ Contiene el bucle principal que escucha los sockets, y el despachador que
+ da soporte a los protocolos.
+\end_layout
+
+\begin_layout Standard
+La tabla 
+\emph on
+socket_handlers
+\emph default
+ contiene las funciones handler para cada conexión TCP abierta.
+ Al iniciar el sistema, contiene únicamente los handlers para los socket
+ que aceptan conexiones en los puertos asignados a los protocolos (vea Figura
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Socket-handlers-para"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "frame=lines"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+local server_b = socket.bind("*", 2009) --bobot-process
+\end_layout
+
+\begin_layout Plain Layout
+
+local server_h = socket.bind("*", 2010) --bobot-http
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+local socket_handlers = {} 
+\end_layout
+
+\begin_layout Plain Layout
+
+setmetatable(socket_handlers, { __mode = 'k' }) 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+socket_handlers[server_b] = function()
+\end_layout
+
+\begin_layout Plain Layout
+
+	--handler para aceptar conexiones bobot-process
+\end_layout
+
+\begin_layout Plain Layout
+
+end
+\end_layout
+
+\begin_layout Plain Layout
+
+socket_handlers[server_h] = function() 
+\end_layout
+
+\begin_layout Plain Layout
+
+	--handler para aceptar conexiones bobot-http
+\end_layout
+
+\begin_layout Plain Layout
+
+end
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Socket handlers para aceptar conexiones
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Socket-handlers-para"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Para agregar soporte para un nuevo protocolo, hay que agregar el socket
+ en el puerto correspondiente, y asignarle un handler en la tabla 
+\emph on
+socket_handlers
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+Cada socket_handler asignado a un socket-server debera abrir ua sesión TCP
+ y obtener el socket asociado, y con este realizar al menos dos tareas (como
+ ejemplo vea Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Socket-handler-de"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Enumerate
+Almacenar el socket en el array 
+\emph on
+recvt
+\end_layout
+
+\begin_layout Enumerate
+Asignarle un handler y registrarlo en 
+\emph on
+socket_handlers
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+El handler del protocolo deberá gestionar el cierre de la sesión TCP, eliminando
+ el socket correspondiente del array 
+\emph on
+recvt
+\emph default
+ (el borrado del propio handler se realiza automáticamente).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "frame=lines"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+	local client, err=server_x:accept()
+\end_layout
+
+\begin_layout Plain Layout
+
+	if client then
+\end_layout
+
+\begin_layout Plain Layout
+
+		table.insert(recvt,client)			
+\end_layout
+
+\begin_layout Plain Layout
+
+		socket_handlers[client] = function ()
+\end_layout
+
+\begin_layout Plain Layout
+
+			--handler para procesar 
+\end_layout
+
+\begin_layout Plain Layout
+
+			--mensajes del protocolo
+\end_layout
+
+\begin_layout Plain Layout
+
+		end
+\end_layout
+
+\begin_layout Plain Layout
+
+	end
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Socket handler de protocolo
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Socket-handler-de"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Handler de bobot-process
+\end_layout
+
+\begin_layout Standard
+El handler del protocolo bobot_process realiza los siguientes pasos cada
+ vez que recibe un cambio de estado en la sesión TCP asociada:
+\end_layout
+
+\begin_layout Enumerate
+Gestiona si es un cierre de conexión.
+\end_layout
+
+\begin_layout Enumerate
+Si recibe un mensaje, lo separa en palabras, donde la primer palabra es
+ la instrucción (consultar manual de usuario)
+\end_layout
+
+\begin_layout Enumerate
+Utiliza la tabla 
+\emph on
+process
+\emph default
+ para recuperar la función asociada al comando y la invoca, pasándole los
+ parámateros (la lista de palabras)
+\end_layout
+
+\begin_layout Enumerate
+El retorno de la invocación anterior es enviada de vuelta por el socket
+ hacia el cliente.
+\end_layout
+
+\begin_layout Standard
+La tabla process está declarada e inicializada en el módulo 
+\emph on
+bobot-server-process.lua 
+\emph default
+(ver Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Declaración-de-funciones"
+
+\end_inset
+
+)
+\emph on
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "frame=lines"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+process = {}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+process["COMMAND1"] = function ( parameters )
+\end_layout
+
+\begin_layout Plain Layout
+
+	--interactuo con modulo bobot
+\end_layout
+
+\begin_layout Plain Layout
+
+	return ret
+\end_layout
+
+\begin_layout Plain Layout
+
+end
+\end_layout
+
+\begin_layout Plain Layout
+
+process["COMMAND2"] = function ( parameters )
+\end_layout
+
+\begin_layout Plain Layout
+
+	--interactuo con modulo bobot
+\end_layout
+
+\begin_layout Plain Layout
+
+end
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Declaración de funciones del protocolo bobot-process
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Declaración-de-funciones"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Handler de bobot_http
+\end_layout
+
+\begin_layout Standard
+El handler del protocolo bobot_http realiza los siguientes pasos cada vez
+ que recibe un cambio de estado en la sesión TCP asociada:
+\end_layout
+
+\begin_layout Enumerate
+Delega al módulo 
+\emph on
+bobot-server-http
+\emph default
+ intentar realizar la lectura y procesado de una solicitud http.
+\end_layout
+
+\begin_layout Enumerate
+Si obtiene un retorno, lo envía por el socket de vuelta hacia el cliente
+\end_layout
+
+\begin_layout Enumerate
+Si obtiene un mensaje de error notificando del cierre de conexión remota,
+ gestióna el cierre de conexión local
+\end_layout
+
+\begin_layout Standard
+El procesado de las consultas http se realiza en el modulo
+\emph on
+ bobot-server-http
+\emph default
+, con un punto de entrada en la función 
+\emph on
+serve()
+\emph default
+.
+ Este realiza el parseo del cabezal http (POST o GET), y extrae la URL solicitad
+a y el string de parametros pasado (de existir).
+ A continuación recupera la función asociada a la URL de la tabla 
+\emph on
+get_page
+\emph default
+, y la invoca pasándole el string con parámetros.
+ La tabla 
+\emph on
+get_page
+\emph default
+ está configurada de modo que si se requiere una URL que no aparece en la
+ tabla, intenta localizar un archivo de igual nombre en el sistema de archivos
+ (ver Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Declaración-de-paginas"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "frame=lines"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+local get_page={}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+setmetatable(get_page, {
+\end_layout
+
+\begin_layout Plain Layout
+
+	__index = function(_,page) 
+\end_layout
+
+\begin_layout Plain Layout
+
+		return find_page(page) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	end
+\end_layout
+
+\begin_layout Plain Layout
+
+})
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+get_page["/page1.htm"] = function (p)
+\end_layout
+
+\begin_layout Plain Layout
+
+	local params = parse_params(p)
+\end_layout
+
+\begin_layout Plain Layout
+
+	local page = "" --generar pagina
+\end_layout
+
+\begin_layout Plain Layout
+
+	return "HTTP/1.1 200/OK
+\backslash
+r
+\backslash
+nContent-Type:"
+\end_layout
+
+\begin_layout Plain Layout
+
+		.."text/html
+\backslash
+r
+\backslash
+nContent-Length: "
+\end_layout
+
+\begin_layout Plain Layout
+
+		..#page.."
+\backslash
+r
+\backslash
+n
+\backslash
+r
+\backslash
+n"..page
+\end_layout
+
+\begin_layout Plain Layout
+
+end
+\end_layout
+
+\begin_layout Plain Layout
+
+get_page["/img.png"] = function (p)
+\end_layout
+
+\begin_layout Plain Layout
+
+	local params = parse_params(p)
+\end_layout
+
+\begin_layout Plain Layout
+
+	local page = "" --generar imagen
+\end_layout
+
+\begin_layout Plain Layout
+
+	return "HTTP/1.1 200/OK
+\backslash
+r
+\backslash
+nContent-Type:"
+\end_layout
+
+\begin_layout Plain Layout
+
+		.."image/png
+\backslash
+r
+\backslash
+nContent-Length: "
+\end_layout
+
+\begin_layout Plain Layout
+
+		..#page.."
+\backslash
+r
+\backslash
+n
+\backslash
+r
+\backslash
+n"..page
+\end_layout
+
+\begin_layout Plain Layout
+
+end
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Declaración de paginas a servir
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Declaración-de-paginas"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+El sistema es facilmente extensible.
+ Para agregar páginas estáticas, basta con copiarlas en el sistema e archivos.
+ Para agregar una página dinámica, hay que agregar la entrada correspondiente
+ en la tabla 
+\emph on
+get_page
+\emph default
+.
+ La mayoría de las páginas dinámicas provistas se basan en un sistema de
+ templates, y estos pueden ser modificados para alterar la apariencia del
+ sitio.
+\end_layout
+
+\end_body
+\end_document

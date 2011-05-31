@@ -3,9 +3,15 @@
 module(..., package.seeall);
 
 --local devices=devices
+local DEBUG = false
 
 process = {}
 
+process["INIT"] = function () --to check the new state of hardware on the fly
+    bobot.init()    
+    baseboards = bobot.baseboards
+    read_devices_list()
+end
 process["LIST"] = function ()
 	local ret,comma = "", ""
 	for d_name, _ in pairs(devices) do
@@ -103,11 +109,29 @@ end
 process["CLOSEALL"] = function ()
 	if baseboards then
 		for _, bb in pairs(baseboards) do
+			-- guille: I dont undestain this part? ;
+			-- in the master:HEAD is not commented the second line
+			-- but is comented in branch bobot2 ; sow... That i do?
+			-- TODO check if delete or not the next line
 			---bb:close_all()
 			bb:force_close_all() --modif andrew
 		end
 	end
 	return "ok"
+end
+process["DEBUG"] = function (parameters) --disable debug mode Andrew code!
+    local debug = parameters[2]
+    if not debug then
+        print("ls:Missing \"debug\" parameter")
+        return
+    end
+    if (string.match(debug,"ON")) then
+        DEBUG = true
+    else 
+        if(string.match(debug,"OFF")) then
+            DEBUG = false
+        end
+    end
 end
 
 

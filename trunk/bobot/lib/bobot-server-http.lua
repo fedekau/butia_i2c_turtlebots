@@ -1,7 +1,7 @@
 module(..., package.seeall);
 
 --local devices=devices
-local process = require("bobot-server2-process").process
+local process = require("bobot-server-process").process
 local butia = require("butia/butia_http")
 local util = require("http-util")
 
@@ -50,7 +50,7 @@ end
 
 local html_describe_device = function (params)
 	--borrar
-	dump_template_descr_row=load_template('dumptemplate_descr_row.txt')
+	dump_template_descr_row=load_template('lib/dumptemplate_descr_row.txt')
 
 	local dsel=params['dsel']
 	local command=params['command']
@@ -123,7 +123,7 @@ end
 local get_page={}
 setmetatable(get_page, {__index = function(_,page) print ("======", page);return find_page(page) end})
 get_page["/index.htm"] = function (p)
-	local index_template=load_template('indextemplate.txt')
+	local index_template=load_template('lib/indextemplate.txt')
 
 	local params=parse_params(p)
 	local rep = {
@@ -136,8 +136,8 @@ end
 get_page["/"]=get_page["/index.htm"]
 get_page["/dump.htm"] = function (p)
 	--remove this
-	dump_template=load_template('dumptemplate.txt')
-	dump_template_descr=load_template('dumptemplate_descr.txt')
+	dump_template=load_template('lib/dumptemplate.txt')
+	dump_template_descr=load_template('lib/dumptemplate_descr.txt')
 
 	local params=parse_params(p)
 	local dsel=params['dsel']
@@ -158,7 +158,7 @@ get_page["/dump.htm"] = function (p)
 	return "HTTP/1.1 200/OK\r\nContent-Type:text/html\r\nContent-Length: "..#page.."\r\n\r\n"..page
 end
 get_page["/favicon.ico"] = function ()
-	local served, err = io.open('favicon.ico', "rb")
+	local served, err = io.open('lib/favicon.ico', "rb")
 	if served ~= nil then
 		local content = served:read("*all")
 		return "HTTP/1.1 200/OK\r\nContent-Type:image/x-icon\r\nContent-Length: "
@@ -169,7 +169,7 @@ get_page["/favicon.ico"] = function ()
 	end
 end
 get_page["/bobot.png"] = function ()
-	local served, err = io.open('bobot.png', "rb")
+	local served, err = io.open('lib/bobot.png', "rb")
 	if served ~= nil then
 		local content = served:read("*all")
 		return "HTTP/1.1 200/OK\r\nContent-Type:image/png\r\nContent-Length: "
