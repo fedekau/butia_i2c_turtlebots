@@ -26,7 +26,7 @@ process["OPEN"] = function (parameters)
 	local ep2= tonumber(parameters[4])
 
 	if not d then
-		print("ls:Missing 'device' parameter")
+		debugprint("ls:Missing 'device' parameter")
 		return
 	end
 	
@@ -43,7 +43,7 @@ process["DESCRIBE"] = function (parameters)
 	local ep2= tonumber(parameters[4])
 
 	if not d then
-		print("ls:Missing \"device\" parameter")
+		debugprint("ls:Missing \"device\" parameter")
 		return
 	end
 	
@@ -85,7 +85,7 @@ process["CALL"] = function (parameters)
 	local call  = parameters[3]
 
 	if not (d and call) then
-		print("ls:Missing parameters", d, call)
+		debugprint("ls:Missing parameters", d, call)
 		return
 	end
 
@@ -101,7 +101,7 @@ process["CALL"] = function (parameters)
 	if api_call.call then
 		--local tini=socket.gettime()
 		local ok, ret = pcall (api_call.call, unpack(parameters,4))
-		if not ok then print ("Error calling", ret) end
+		if not ok then debugprint ("Error calling", ret) end
 		--print ('%%%%%%%%%%%%%%%% bobot-server',socket.gettime()-tini)
 		return ret
 	end
@@ -121,11 +121,13 @@ process["CLOSEALL"] = function ()
 end
 process["DEBUG"] = function (parameters) --disable debug mode Andrew code!
 	local debug = parameters[2]
+	if not debug then return "missing parameter" end
 	if debug=="ON" then
 		debugprint = function(...) print (...) end  --enable printing
 	elseif debug=="OFF" then
 		debugprint = function() end  --do not print anything
 	end
+	return "ok"
 end
 
 

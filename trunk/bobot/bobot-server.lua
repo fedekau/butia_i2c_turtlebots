@@ -25,7 +25,7 @@ local baseboards = bobot.baseboards
 
 devices = {}
 
---[[
+--[[ xop
 local DEBUG = false
 -- guillermo: mmm... change this for???:
 -- local DEBUG = require("bobot-server-process").DEBUG
