@@ -3,7 +3,7 @@
 module(..., package.seeall);
 
 --local devices=devices
-local DEBUG = false
+--local DEBUG = false
 
 process = {}
 
@@ -120,18 +120,12 @@ process["CLOSEALL"] = function ()
 	return "ok"
 end
 process["DEBUG"] = function (parameters) --disable debug mode Andrew code!
-    local debug = parameters[2]
-    if not debug then
-        print("ls:Missing \"debug\" parameter")
-        return
-    end
-    if (string.match(debug,"ON")) then
-        DEBUG = true
-    else 
-        if(string.match(debug,"OFF")) then
-            DEBUG = false
-        end
-    end
+	local debug = parameters[2]
+	if debug=="ON" then
+		debugprint = function(...) print (...) end  --enable printing
+	elseif debug=="OFF" then
+		debugprint = function() end  --do not print anything
+	end
 end
 
 
