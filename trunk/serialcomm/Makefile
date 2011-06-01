@@ -1,10 +1,13 @@
 CC = gcc
-LD = ld
+LD = gcc
 OPTS=-c -fPIC -fno-stack-protector
 OBJS=serialcomm.o
 OBJS_SO = serialcomm.so
 CFLAGS=$(OPTS)  
-LDFLAGS=-shared -soname serialcomm.so.1 -o
+LDFLAGS=-shared
+
+#gcc -shared -Wl,-soname,libmean.so.1 -o libmean.so.1.0.1  calc_mean.o
+#gcc *.o -shared -o file.so [-l<libraries>]
 
 ifdef MIPS
     CC = ../mips_tools/toolchain/mipsel-linux-uclibc-gcc
@@ -25,10 +28,10 @@ serialcomm: $(OBJS)
 
 so: $(OBJS)
 ifdef ARM
-		$(LD) -shared -soname serialcomm.so.1 -o $(OBJS_SO) -L/usr/lib/gcc/arm-linux-gnueabi/4.3.2/libgcc_s.so $(OBJS)
+		$(LD) $(LDFLAGS) $(OBJS_SO) -L/usr/lib/gcc/arm-linux-gnueabi/4.3.2/libgcc_s.so $(OBJS)
 else
-		$(LD) -shared -soname serialcomm.so.1 -o $(OBJS_SO) $(OBJS)
+		$(LD) $(OBJS) -o $(OBJS_SO) $(LDFLAGS) 
 endif
 
 clean:
-	-rm $(OBJS) $(OBJS_SO) *.*~
+	-rm $(OBJS) $(OBJS_SO)
