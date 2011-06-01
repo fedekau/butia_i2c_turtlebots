@@ -1,19 +1,21 @@
 module(..., package.seeall);
 
+local bobot = require("bobot")
+
 --local devices=devices
 function load_file (filename)
 	local served, err = io.open(filename, "r")
 	if served then
 		return served:read("*all")
 	else
-		print("Error opening", filename,":", err)
+		bobot.debugprint("Error opening", filename,":", err)
 	end
 end
 
 function parse_params(s)
 	local params={}
 	for k,v in string.gmatch(s, '([%w%%%_%-]+)=([%w%%%_%-]+)') do
-		print('param', k, v)
+		bobot.debugprint('param', k, v)
 		params[k]=v
 	end
 	return params

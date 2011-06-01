@@ -1,6 +1,5 @@
 #!/usr/bin/lua
 
-debugprint = function() end  --do not print anything by default
 
 package.path=package.path..";./lib/?.lua"
 
@@ -10,6 +9,14 @@ local http_serve = require("bobot-server-http").serve
 
 local bobot = require("bobot")
 --local bobot = require("chotox")
+
+for _, v in ipairs(arg) do
+	if v=="debug" then 
+		bobot.debugprint = function(...) print(...) end 
+		bobot.debugprint("Debugging messages enabled")
+		break
+	end
+end
 
 --tcp listening address
 local ADDRESS = "*"
@@ -24,21 +31,6 @@ local recvt={[1]=server_b, [2]=server_h}
 local baseboards = bobot.baseboards
 
 devices = {}
-
---[[ xop
-local DEBUG = false
--- guillermo: mmm... change this for???:
--- local DEBUG = require("bobot-server-process").DEBUG
--- TODO look if this not break anything :S ? 
--- PD: I dont knock lua to hard to knock this myself
-
-function debug(a)
-    if (DEBUG) then
-        print("bobot: " .. a)
-    end
-end
---]]
-
 
 local function get_device_name(n)
 	if not devices[n] then
@@ -56,25 +48,25 @@ local function get_device_name(n)
 end
 
 local function read_devices_list()
-	debugprint("=Listing Devices")
+	bobot.debugprint("=Listing Devices")
 	local bfound
 	devices={}
 	for b_name, bb in pairs(baseboards) do
-    		debugprint("===board ", b_name)
+    		bobot.debugprint("===board ", b_name)
 		for d_name,d in pairs(bb.devices) do
 			local regname = get_device_name(d_name)
 			devices[regname]=d
-    			debugprint("=====d_name ",d_name," regname ",regname)
+    			bobot.debugprint("=====d_name ",d_name," regname ",regname)
 		end
 		bfound = true
 	end
-	if not bfound then debugprint ("ls:WARN: No Baseboard found.") end
+	if not bfound then bobot.debugprint ("ls:WARN: No Baseboard found.") end
 end
 
 function check_open_device(d, ep1, ep2)
 	if not d then return end
 	if d.handler then
-		debugprint("ls:Already open ", d.name, d.handler)
+		bobot.debugprint("ls:Already open ", d.name, d.handler)
 		return true
 	else
 		debugprint ("ls:Opening", d.name, d.handler)
@@ -97,12 +89,12 @@ setmetatable(socket_handlers, { __mode = 'k' })
 socket_handlers[server_b]=function()
 	local client, err=server_b:accept()
 	if not client then return end
-	debugprint ("bs:New bobot client", client, client:getpeername())
+	bobot.debugprint ("bs:New bobot client", client, client:getpeername())
 	table.insert(recvt,client)
 	socket_handlers[client] = function ()
 		local line,err = client:receive()
 		if err=='closed' then
-			debugprint ("bs:Closing bobot client", client)
+			bobot.debugprint ("bs:Closing bobot client", client)
 			for k, v in ipairs(recvt) do 
 				if client==v then 
 					table.remove(recvt,k) 
@@ -114,10 +106,10 @@ socket_handlers[server_b]=function()
 			local words=split_words(line)
 			local command=words[1]
 			if not command then
-				debugprint("bs:Error parsing line:", line, command)
+				bobot.debugprint("bs:Error parsing line:", line, command)
 			else
 				if not process[command] then
-					debugprint("bs:Command not supported:", command)
+					bobot.debugprint("bs:Command not supported:", command)
 				else
 					local ret = process[command](words) or ""
 					client:send(ret .. "\n")
@@ -130,14 +122,14 @@ end
 socket_handlers[server_h]=function()
 	local client, err=server_h:accept()
 	if not client then return end
-	debugprint ("bs:New http client", client, client:getpeername())
+	bobot.debugprint ("bs:New http client", client, client:getpeername())
 	client:setoption ("tcp-nodelay", true)
 	--client:settimeout(5)
 	table.insert(recvt,client)			
 	socket_handlers[client]	= function ()
 		local ret,err=http_serve(client)
 		if err=='closed' then
-			debugprint ("bs:Closing http client", client)
+			bobot.debugprint ("bs:Closing http client", client)
 			for k, v in ipairs(recvt) do 
 				if client==v then 
 					table.remove(recvt,k) 
@@ -153,7 +145,7 @@ end
 
 
 read_devices_list()
-debugprint ("Listening...")
+print ("Listening...")
 -- loop forever waiting for clients
 
 while 1 do

@@ -5,6 +5,7 @@ local socket=require('socket')
 local comms_usb=require('comms_usb')
 local comms_serial=require('comms_serial')
 
+debugprint = function() end  --do not print anything by default
 
 --baseboards[iSerial] = BaseBoard
 baseboards={}

@@ -1,5 +1,7 @@
 module(..., package.seeall);
 
+local bobot = require("bobot")
+
 --local devices=devices
 local process = require("bobot-server-process").process
 local butia = require("butia/butia_http")
@@ -20,11 +22,11 @@ local dump_template_descr_row=load_template('dumptemplate_descr_row.txt')
 local function check_open_device(d, ep1, ep2)
 	if not d then return end
 	if d.handler then
-		--print ("ls:Already open", d.name, d.handler)
+		--bobot.debugprint ("ls:Already open", d.name, d.handler)
 		return true
 	else
         -- if the device is not open, then open the device
-		print ("ls:Opening", d.name, d.handler)
+		bobot.debugprint ("ls:Opening", d.name, d.handler)
 		return d:open(ep1 or 1, ep2 or 1) --TODO asignacion de ep?
 	end
 end
@@ -36,7 +38,7 @@ local html_list_devices = function (params)
 		local broken=""
 		if not check_open_device(d, ep1, ep2) then 
 			broken=" (failed to open)"
-			print ("bs: WARN! Failure opening", d_name)
+			bobot.debugprint ("bs: WARN! Failure opening", d_name)
 		end
 		if dsel==d_name then
 			ret = ret .. comma .. '<strong>' .. d_name .. broken .. '</strong>'
@@ -82,9 +84,9 @@ local html_describe_device = function (params)
 			
 			--ejecutar
 			ok, result= pcall( fdef.call, unpack(fparams) )
-			if not ok then print ("Error calling", ret) end
+			if not ok then bobot.debugprint ("Error calling", ret) end
 			--imprimir
-			print ("::::",result)
+			bobot.debugprint ("::::",result)
 		end
 
 		local returns=''
@@ -121,7 +123,7 @@ local html_describe_device = function (params)
 end
 
 local get_page={}
-setmetatable(get_page, {__index = function(_,page) print ("======", page);return find_page(page) end})
+setmetatable(get_page, {__index = function(_,page) bobot.debugprint ("======", page);return find_page(page) end})
 get_page["/index.htm"] = function (p)
 	local index_template=load_template('lib/indextemplate.txt')
 
@@ -164,7 +166,7 @@ get_page["/favicon.ico"] = function ()
 		return "HTTP/1.1 200/OK\r\nContent-Type:image/x-icon\r\nContent-Length: "
 			..#content.."\r\n\r\n" .. content
 	else
-		print("Error opening favicon:", err)
+		bobot.debugprint("Error opening favicon:", err)
 		return default_page()
 	end
 end
@@ -175,7 +177,7 @@ get_page["/bobot.png"] = function ()
 		return "HTTP/1.1 200/OK\r\nContent-Type:image/png\r\nContent-Length: "
 			..#content.."\r\n\r\n" .. content
 	else
-		print("Error opening logo:", err)
+		bobot.debugprint("Error opening logo:", err)
 		return default_page()
 	end
 end

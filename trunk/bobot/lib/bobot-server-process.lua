@@ -2,6 +2,8 @@
 
 module(..., package.seeall);
 
+local bobot = require("bobot")
+
 --local devices=devices
 --local DEBUG = false
 
@@ -26,7 +28,7 @@ process["OPEN"] = function (parameters)
 	local ep2= tonumber(parameters[4])
 
 	if not d then
-		debugprint("ls:Missing 'device' parameter")
+		bobot.debugprint("ls:Missing 'device' parameter")
 		return
 	end
 	
@@ -43,7 +45,7 @@ process["DESCRIBE"] = function (parameters)
 	local ep2= tonumber(parameters[4])
 
 	if not d then
-		debugprint("ls:Missing \"device\" parameter")
+		bobot.debugprint("ls:Missing \"device\" parameter")
 		return
 	end
 	
@@ -85,7 +87,7 @@ process["CALL"] = function (parameters)
 	local call  = parameters[3]
 
 	if not (d and call) then
-		debugprint("ls:Missing parameters", d, call)
+		bobot.debugprint("ls:Missing parameters", d, call)
 		return
 	end
 
@@ -101,7 +103,7 @@ process["CALL"] = function (parameters)
 	if api_call.call then
 		--local tini=socket.gettime()
 		local ok, ret = pcall (api_call.call, unpack(parameters,4))
-		if not ok then debugprint ("Error calling", ret) end
+		if not ok then bobot.debugprint ("Error calling", ret) end
 		--print ('%%%%%%%%%%%%%%%% bobot-server',socket.gettime()-tini)
 		return ret
 	end
@@ -123,9 +125,9 @@ process["DEBUG"] = function (parameters) --disable debug mode Andrew code!
 	local debug = parameters[2]
 	if not debug then return "missing parameter" end
 	if debug=="ON" then
-		debugprint = function(...) print (...) end  --enable printing
+		bobot.debugprint = function(...) print (...) end  --enable printing
 	elseif debug=="OFF" then
-		debugprint = function() end  --do not print anything
+		bobot.debugprint = function() end  --do not print anything
 	end
 	return "ok"
 end
