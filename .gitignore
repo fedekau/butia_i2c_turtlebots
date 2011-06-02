@@ -9,6 +9,7 @@
 *.swp
 *.o
 *.so
+*.pyc
 
 # Also is posible to ignore all subdirectory or files in that directory
 # tmp/**/* 
