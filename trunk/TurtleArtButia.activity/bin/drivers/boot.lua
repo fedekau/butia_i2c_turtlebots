@@ -1,1 +1,0 @@
-./../../../bobot/drivers/boot.lua

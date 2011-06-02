@@ -1,1 +1,0 @@
-./../../../bobot/drivers/temp_lubot.lua
