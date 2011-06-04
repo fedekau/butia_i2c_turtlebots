@@ -4,16 +4,16 @@ local string_char = string.char
 local string_len  = string.len
 local string_byte = string.byte
 
-local OPEN_COMMAND		            = string_char(0x00)
+local OPEN_COMMAND			= string_char(0x00)
 local CLOSE_COMMAND         		= string_char(0x01)
 local HEADER_PACKET_SIZE	        = 6
-local NULL_BYTE         			= string_char(0x00)
+local NULL_BYTE         		= string_char(0x00)
 local ADMIN_MODULE_IN_ENDPOINT  	= 0x01
-local ADMIN_MODULE_OUT_ENDPOINT	    = 0x81
-local ADMIN_HANDLER_SEND_COMMAND    = string_char(0x00)
-local OPEN_RESPONSE_PACKET_SIZE     = 5 
-local CLOSE_RESPONSE_PACKET_SIZE    = 2 
-local TIMEOUT			            = 200 --ms
+local ADMIN_MODULE_OUT_ENDPOINT		= 0x81
+local ADMIN_HANDLER_SEND_COMMAND	= string_char(0x00)
+local OPEN_RESPONSE_PACKET_SIZE		= 5 
+local CLOSE_RESPONSE_PACKET_SIZE	= 2 
+local TIMEOUT				= 200 --ms
 
 local READ_HEADER_SIZE		        = 3
 
@@ -30,7 +30,7 @@ Device = {
 
 local function load_driver(modulename)
 	local drivername=string.match(modulename, '^(.-)%d*$')
-	local f, err = loadfile(my_path.."/drivers/"..drivername..".lua")
+	local f, err = loadfile(my_path.."../drivers/"..drivername..".lua")
 	return f, err
 end
 
@@ -110,7 +110,7 @@ function Device:open(in_endpoint, out_endpoint)
 		return false 
 	end
 
-	local handler= string_byte(data, 5)
+	local handler = string_byte(data, 5)
 	--hander -1 meand error
 	if handler==255 then
 		print ("u4d:open:Already open!",self.name,self.handler)

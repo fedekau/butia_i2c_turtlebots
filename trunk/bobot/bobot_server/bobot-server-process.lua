@@ -125,7 +125,7 @@ process["DEBUG"] = function (parameters) --disable debug mode Andrew code!
 	local debug = parameters[2]
 	if not debug then return "missing parameter" end
 	if debug=="ON" then
-		bobot.debugprint = function(...) print (...) end  --enable printing
+		bobot.debugprint = print --function(...) print (...) end  --enable printing
 	elseif debug=="OFF" then
 		bobot.debugprint = function() end  --do not print anything
 	end

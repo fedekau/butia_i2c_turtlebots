@@ -7,8 +7,8 @@ local util = require("http-util")
 local parse_params = util.parse_params
 local load_template = util.load_file
 
-local butia_template=load_template('butia/butia.htm') or "Error loading template butia.htm"
-local header_template=load_template('butia/header.htm') or "Error loading template header.htm"
+local butia_template=load_template('bobot_server/butia/butia.htm') or "Error loading template butia.htm"
+local header_template=load_template('bobot_server/butia/header.htm') or "Error loading template header.htm"
 
 function init (get_page)
 	get_page["/butia.htm"] = function (p)

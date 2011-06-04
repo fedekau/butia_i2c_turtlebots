@@ -3,7 +3,7 @@ module(..., package.seeall);
 local bobot_baseboard = require("bobot_baseboard")
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
-assert(package.loadlib(my_path .. "/libluausb.so","luaopen_libusb"))()
+assert(package.loadlib(my_path .. "libluausb.so","luaopen_libusb"))()
 
 local usb_bulk_write = libusb.bulk_write
 local usb_bulk_read = libusb.bulk_read
