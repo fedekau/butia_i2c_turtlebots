@@ -131,5 +131,9 @@ process["DEBUG"] = function (parameters) --disable debug mode Andrew code!
 	end
 	return "ok"
 end
-
+process["QUIT"] = function () 
+	bobot.debugprint("Requested EXIT...")
+	os.exit()
+	return "ok"
+end
 
