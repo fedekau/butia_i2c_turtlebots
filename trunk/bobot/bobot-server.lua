@@ -1,18 +1,60 @@
 #!/usr/bin/lua
 
-package.path=package.path..";./lib/?.lua"
+--[[
+
+Syntax
+
+	# lua bobot-server.lua [DEBUG] [connection]*
+
+Parameters:
+	DEBUG		enables debug printing in bobot
+	connection	a list of connection services to attempt. Supported
+			values in bobot (for now) are usb, serial and chotox
+
+If no connection services are provided, defaults to usb and serial.
+
+Examples:
+	Start with debug disabled and the dummy chotox service, only:
+	# lua bobot-server.lua chotox
+
+	Start with debug enabled and the serial services only:
+	# lua bobot-server.lua DEBUG serial
+
+	Start with debug disabled and the usb and serial services (same as default):
+	# lua bobot-server.lua usb serial
+
+--]]
+
+
+
+package.path=package.path..";./bobot_server/?.lua"
+
+--tcp listening address
+local ADDRESS = "*"
+local PORT_B = 2009 --B is for bobot
+local PORT_H = 2010 --H is for http
 
 local socket = require("socket")
 local process = require("bobot-server-process").process
 local http_serve = require("bobot-server-http").serve
 
 local bobot = require("bobot")
---local bobot = require("chotox")
 
---tcp listening address
-local ADDRESS = "*"
-local PORT_B = 2009 --B is for bobot
-local PORT_H = 2010 --H is for http
+local set_debug
+for i, v in ipairs(arg) do
+	if v=="DEBUG" then
+		set_debug=true 
+		table.remove(arg, i)
+		break
+	end
+end
+if set_debug then 
+	bobot.debugprint = print
+	bobot.debugprint("Debugging messages enabled")
+end
+
+bobot.init(arg)
+
 
 local server_b = assert(socket.bind(ADDRESS, PORT_B))
 local server_h = assert(socket.bind(ADDRESS, PORT_H))
@@ -39,28 +81,28 @@ local function get_device_name(n)
 end
 
 local function read_devices_list()
-print("=Listing Devices")
+	bobot.debugprint("=Listing Devices")
 	local bfound
 	devices={}
 	for b_name, bb in pairs(baseboards) do
-print("===board", b_name)
+    		bobot.debugprint("===board ", b_name)
 		for d_name,d in pairs(bb.devices) do
 			local regname = get_device_name(d_name)
 			devices[regname]=d
-print("=====d_name", d_name, "regname", regname)
+    			bobot.debugprint("=====d_name ",d_name," regname ",regname)
 		end
 		bfound = true
 	end
-	if not bfound then print ("ls:WARN: No Baseboard found.") end
+	if not bfound then bobot.debugprint ("ls:WARN: No Baseboard found.") end
 end
 
 function check_open_device(d, ep1, ep2)
 	if not d then return end
 	if d.handler then
-		--print ("ls:Already open", d.name, d.handler)
+		--bobot.debugprint("ls:Already open ", d.name, d.handler)
 		return true
 	else
-		print ("ls:Opening", d.name, d.handler)
+		bobot.debugprint ("ls:Opening", d.name, d.handler)
 		return d:open(ep1 or 1, ep2 or 1) --TODO asignacion de ep?
 	end
 end
@@ -80,12 +122,12 @@ setmetatable(socket_handlers, { __mode = 'k' })
 socket_handlers[server_b]=function()
 	local client, err=server_b:accept()
 	if not client then return end
-	print ("bs:New bobot client", client, client:getpeername())
+	bobot.debugprint ("bs:New bobot client", client, client:getpeername())
 	table.insert(recvt,client)
 	socket_handlers[client] = function ()
 		local line,err = client:receive()
 		if err=='closed' then
-			print ("bs:Closing bobot client", client)
+			bobot.debugprint ("bs:Closing bobot client", client)
 			for k, v in ipairs(recvt) do 
 				if client==v then 
 					table.remove(recvt,k) 
@@ -97,10 +139,10 @@ socket_handlers[server_b]=function()
 			local words=split_words(line)
 			local command=words[1]
 			if not command then
-				print("bs:Error parsing line:", line, command)
+				bobot.debugprint("bs:Error parsing line:", line, command)
 			else
 				if not process[command] then
-					print("bs:Command not supported:", command)
+					bobot.debugprint("bs:Command not supported:", command)
 				else
 					local ret = process[command](words) or ""
 					client:send(ret .. "\n")
@@ -113,14 +155,14 @@ end
 socket_handlers[server_h]=function()
 	local client, err=server_h:accept()
 	if not client then return end
-	print ("bs:New http client", client, client:getpeername())
+	bobot.debugprint ("bs:New http client", client, client:getpeername())
 	client:setoption ("tcp-nodelay", true)
 	--client:settimeout(5)
 	table.insert(recvt,client)			
 	socket_handlers[client]	= function ()
 		local ret,err=http_serve(client)
 		if err=='closed' then
-			print ("bs:Closing http client", client)
+			bobot.debugprint ("bs:Closing http client", client)
 			for k, v in ipairs(recvt) do 
 				if client==v then 
 					table.remove(recvt,k) 

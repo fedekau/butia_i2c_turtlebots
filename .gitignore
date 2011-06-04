@@ -1,0 +1,15 @@
+# File to ignore when you commit
+
+# Individual file can be set
+# .DS_Store
+# /trunk/arduino/file.file
+
+# or you can use comodins
+*~
+*.swp
+*.o
+*.so
+*.pyc
+
+# Also is posible to ignore all subdirectory or files in that directory
+# tmp/**/* 

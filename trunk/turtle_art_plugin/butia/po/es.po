@@ -1,0 +1,162 @@
+
+
+#: plugins/butia/butia.py:44
+msgid "Adjust led intensity between 0 and 255"
+msgstr "Ajusta la intensidad del led entre 0 y 255"
+
+#: plugins/butia/butia.py:45
+msgid ""
+"returns the object gray level encountered him as a number between 0 and 1023"
+msgstr ""
+"Devuelve el nivel de gris del objeto en frente al sensor como un número entre"
+"0 y 255"
+
+#: plugins/butia/butia.py:46
+msgid "Returns 1 when the button is press and 0 otherwise"
+msgstr "Devuelve 1 cuando el botón está presionado y 0 en otro caso"
+
+#: plugins/butia/butia.py:47
+msgid ""
+"Returns the level of ligth in the ambient as a number between 0 and 1023"
+msgstr ""
+"Devuelve el nivel de luz en el ambiente como un número entre 0 y 1023"
+
+#: plugins/butia/butia.py:48
+msgid "Returns the temperature in the ambient as a number between 0 and 255"
+msgstr "Devuelve la temperatura en el ambiente como un número entre 0 y 255"
+
+#: plugins/butia/butia.py:49
+msgid ""
+"Returns the distance from the object in front of the sensor as a number "
+"between 0 and 255"
+msgstr ""
+"Devuelve la distancia del objeto en frente al sensor como un número "
+"entre 0 y 255" 
+
+#: plugins/butia/butia.py:50
+msgid "Returns 0 or 1 depending on the sensor inclination"
+msgstr "Devuelve 0 o 1 dependiendo the la inclinación del sensor"
+
+#: plugins/butia/butia.py:51
+msgid "Returns 1 when the sensors detects a magnetic field, 0 otherwise"
+msgstr "Devuelve 1 cuando el sensor detecta un campo magnético, 0 en otro caso"
+
+#: plugins/butia/butia.py:52
+msgid "Switchs from 0 to 1, the frecuency depends on the vibration"
+msgstr "Oscila entre 0 y 1 dependiendo de la vibración"
+
+#: plugins/butia/butia.py:68
+msgid "led"
+msgstr "led"
+
+#: plugins/butia/butia.py:69
+msgid "pushbutton"
+msgstr "Botón"
+
+#: plugins/butia/butia.py:70
+msgid "grayscale"
+msgstr "escala de gris"
+
+#: plugins/butia/butia.py:71
+msgid "ambientlight"
+msgstr "luz ambiente"
+
+#: plugins/butia/butia.py:72
+msgid "temperature"
+msgstr "temperatura"
+
+#: plugins/butia/butia.py:73
+msgid "distance"
+msgstr "distancia"
+
+#: plugins/butia/butia.py:74
+msgid "tilt"
+msgstr "inclinación"
+
+#: plugins/butia/butia.py:75
+msgid "magneticinduction"
+msgstr "campo magnético"
+
+#: plugins/butia/butia.py:76
+msgid "vibration"
+msgstr "vibración"
+
+#: plugins/butia/butia.py:139
+msgid "Butia Robot"
+msgstr "Robot Butiá"
+
+#: plugins/butia/butia.py:146
+msgid "Delay Butia"
+msgstr "espera Butiá"
+
+#: plugins/butia/butia.py:149
+msgid "wait for argument seconds"
+msgstr "Espera los segundos pasados por argumento"
+
+#: plugins/butia/butia.py:155
+msgid "batteryCharge Butia"
+msgstr "carga de batería Butiá"
+
+#: plugins/butia/butia.py:157
+msgid "Returns the battery charge as a number between 0 and 255"
+msgstr "Devuelve la carga de la batería del robot como un número entre 0 y 255"
+
+#: plugins/butia/butia.py:163
+msgid "Speed Butia"
+msgstr "velocidad Butiá"
+
+#: plugins/butia/butia.py:166 plugins/butia/butia.py:193 plugins/butia/butia.py:210 plugins/butia/butia.py:218 plugins/butia/butia.py:226
+msgid "Move the butia robot backward"
+msgstr "Mueve el robot Butiá hacia atrás"
+
+#: plugins/butia/butia.py:172
+msgid "Forward Butia"
+msgstr "adelante Butiá"
+
+#: plugins/butia/butia.py:174
+msgid "Move the butia robot forward"
+msgstr "Mueve el robot Butiá hacia adelante"
+
+#: plugins/butia/butia.py:181
+msgid "Forward Distance"
+msgstr "adelante distancia"
+
+#: plugins/butia/butia.py:184
+msgid "Move the butia robot forward a predefined distance"
+msgstr "Mueve el robot Butiá hacia adelante una distancia predefinida"
+
+#: plugins/butia/butia.py:191
+msgid "backward Butia"
+msgstr "atrás Butiá"
+
+#: plugins/butia/butia.py:199
+msgid "Backward Distance"
+msgstr "atrás distancia"
+
+#: plugins/butia/butia.py:202
+msgid "Move the butia robot backward a predefined distance"
+msgstr "Mueve el robot Butiá hacia atrás"
+
+#: plugins/butia/butia.py:208
+msgid "left Butia"
+msgstr "izquierda Butiá"
+
+#: plugins/butia/butia.py:216
+msgid "right Butia"
+msgstr "derecha Butiá"
+
+#: plugins/butia/butia.py:224
+msgid "stop Butia"
+msgstr "detener Butiá"
+
+#: plugins/butia/butia.py:232
+msgid "LCDdisplay Butia"
+msgstr "pantalla LCD Butiá"
+
+#: plugins/butia/butia.py:235
+msgid "Print a text in a 32 characters ASCII display"
+msgstr "Despliega un texto en la pantalla LCD"
+
+#: plugins/butia/butia.py:266 plugins/butia/butia.py:274 plugins/butia/butia.py:288 plugins/butia/butia.py:297
+msgid " Butia"
+msgstr " Butiá"

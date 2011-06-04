@@ -1,0 +1,60 @@
+VERSION 4
++ if comunication with ax12 motors is not ok we paint in gray motor related blocks
++ bobot not print information to the standard output by defaul, only if debug is set
++ new bobot command DEBUG to enable debug information
++ new icon according to http://en.flossmanuals.net/make-your-own-sugar-activities/ch010_package-the-activity/
++ fixed first sensor read type error
++ bobot search for the correct tty matching an arduino with butia firmware
++ bobot refresh the list of sensors connected to the shield
++ fixed setSpeed help string message
+
+VERSION 3
++ soporte para multiples instancias del mismo sensor
++ soporte para estructura de plugins de turtleart 107
++ Internalización de código, disponible actualmente para español/ingles
++ integrado con:
+  medición de carga de bateria
+  manejo del lcd
+  avanzar X unidades el robot y desplegar el trazo en proporción en la pantalla con la tortuga
+  integrado con soporte para plugins de turtle art
+
+VERSION 2
+
++ Icono de la paleta butiá y de la aplicación respetando el logo oficial
+/ Iconos de la paleta butiá en formato vectorial
+/ Iconos de la paleta butiá con fondo del color correcto
++ Aplicación sugarizada, ya no tiene la barra de file, edit .... que ocurre cuando se inicia de shell
+
+VERSION 1
+
++ Release TortleArtButia.xo
++ permisos sobre el serial /activity/permissions.info
++ restruturamiento del trunk para reflejar la actividad TurtleArtButia
+//FIXME derecha deveria ser isquierda y viceversa
++ Chequeo de la coneccion con la api de butia
+//TODO  bobot deberia estar como servicio, y levantarlo solo si NO esta ya levantado
++ bobot incluido en el .xo de TurtleArtButia
++ TurtleBlock ahora no nesecita el pycurl, removido
+
+
+VERSION 0
+
+//TODO que los sensores se vean grices cuando no estan disponibles
+//FIXME chequeo de coneccion en la APYbutia
+I TurtleBlocks nesecita pycurl [apt-get install python-pycurl]
++ Commit TurtleBlocks V94
+/ Tortugarte [TAButia-v1.1.activity] movido a /branches/ (deprecated)
+
+
+##########################################################################################
+
+Estructura del NEWS
+I info
++ Agregado
+- sacado
+/ cambiado
+//TODO: por hacer
+//FIXME: funciona pero...
+
+Sirvase cambiar a su gusto este NEWS, agregando nueva informacion al comienzo del archivo
+Deje cambios importantes o relevantes para definir los changelogs de una version a otra
