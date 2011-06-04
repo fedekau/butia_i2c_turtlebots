@@ -24,7 +24,7 @@ B.debugprint = print --function() end  --do not print anything by default
 
 --Returns number of baseboards detected.
 B.init = function  ( comms )
-	if not comms or #comms=0 then comms or {"usb","serial"} end
+	if not comms or #comms==0 then comms = {"usb","serial"} end
 
 	B.baseboards={} --flush the baseboard because this function could be call after hardware remove or adition
 
