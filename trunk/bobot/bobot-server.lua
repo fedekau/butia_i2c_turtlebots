@@ -51,6 +51,8 @@ end
 if set_debug then 
 	bobot.debugprint = print
 	bobot.debugprint("Debugging messages enabled")
+else
+	bobot.debugprint = function() end
 end
 
 bobot.init(arg)
