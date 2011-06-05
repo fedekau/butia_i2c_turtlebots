@@ -1,6 +1,0 @@
-STORY for Butiá 1.0
-
-* Changes from version 1.0.0 to 1.0.1
-  -------------------------------
- - Serialcomm patch to avoid not response from arduino in some GNU/Linux flavors
- - arduino firmware fix solving wrong ax12 handler overwrite by lcd handler

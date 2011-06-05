@@ -18,10 +18,10 @@ if [ "$DIR" = "" ] ; then
 fi
 
 # ok, lets inits and update the submodules
-cd ../..
+cd ..
 git submodule init
 git submodule update
-cd trunk/turtle_art_plugin
+cd turtle_art_plugin
 
 cd mainline
 export GITCONFIGURL=$(git config remote.origin.url | grep git://git.sugarlabs.org/turtleart/mainline.git )
