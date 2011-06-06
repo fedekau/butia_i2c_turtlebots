@@ -1,6 +1,5 @@
-#include <wiring.h>
 #include "conector.h"
-
+#include "wiring.h"
 
 const int Conector::values[NUM_VALORES] = {VAL_0, VAL_1, VAL_2, VAL_3, VAL_4, VAL_5, VAL_6, VAL_7, VAL_8, VAL_9, VAL_A, VAL_B, VAL_C};
 
@@ -10,7 +9,7 @@ Conector::Conector (byte _pin_id0, byte _pin_id1, byte _pin_dig0, byte _pin_dig1
   pin_dig0 = _pin_dig0;
   pin_dig1 = _pin_dig1;
   pin_analog = _pin_analog;
-  pinMode (pin_id0, INPUT);
+  pinMode (pin_id0, INPUT); 
   pinMode (pin_id1, INPUT);
   digitalWrite (pin_id0, HIGH);          // activa los pull-ups
   digitalWrite (pin_id1, HIGH);          // activa los pull-ups
@@ -22,7 +21,7 @@ Conector::Conector () { }
 byte Conector::get_type () {
    return type;
 }
-
+    
 byte Conector::get_subtype ()  {
    return subtype;
 }
@@ -40,9 +39,8 @@ int Conector::input () {
        break;
      case 5:
        return -1;
-       break;
+       break;     
    }
-    return 0; //mmm... esto no deberia parar...
 }
 
 int Conector::input (boolean bit) {
@@ -57,9 +55,8 @@ int Conector::input (boolean bit) {
      case 4:
        if (bit) {return digitalRead(pin_dig1);}
        else {return -1;}
-       break;
+       break;    
    }
-    return 0; //mmm... esto no deberia parar...
 }
 
 boolean Conector::output (byte value) {
@@ -79,12 +76,11 @@ boolean Conector::output (byte value) {
          digitalWrite(pin_dig1, (value<<1)&1);
        }
        return true;
-       break;
-   }
-    return 0; //mmm... esto no deberia parar...
+       break;    
+   }        
 }
 
-boolean Conector::output (boolean bit, boolean value) {
+boolean Conector::output (boolean bit, boolean value) {  
    switch (type) {
      case 0: case 1: case 3:
        return false;
@@ -99,9 +95,8 @@ boolean Conector::output (boolean bit, boolean value) {
        if (bit) {digitalWrite(pin_dig1, value);}
        else {digitalWrite(pin_dig0, value);}
        return true;
-       break;
+       break;    
    }
-    return 0; //mmm... esto no deberia parar...
 }
 
 boolean Conector::dual_output (boolean value0, boolean value1) {
@@ -113,12 +108,11 @@ boolean Conector::dual_output (boolean value0, boolean value1) {
        digitalWrite(pin_dig1, value1);
        digitalWrite(pin_dig0, value0);
        return true;
-       break;
+       break;    
    }
-    return 0; //mmm... esto no deberia parar...
 }
 
-boolean Conector::pwm_output (byte value) {
+boolean Conector::pwm_output (byte value) {  
    switch (type) {
      case 0: case 1: case 3:
        return false;
@@ -127,8 +121,7 @@ boolean Conector::pwm_output (byte value) {
        analogWrite(pin_dig0, value);
        return true;
        break;
-   }
-    return 0; //mmm... esto no deberia parar...
+   }    
 }
 
 
@@ -169,7 +162,7 @@ void Conector::update_config () {
           pinMode (pin_dig1, INPUT);
           type = 3;                                             // sensor digital
           subtype = i;
-          break;
+          break;        
         case 5: case 6: case 7: case 8:
           pinMode (pin_dig0, OUTPUT); 
           pinMode (pin_dig1, INPUT);
@@ -177,19 +170,20 @@ void Conector::update_config () {
           subtype = i-5;
           break;
         case 9: case 10: case 11: case 12:
-          pinMode (pin_dig0, OUTPUT);
+          pinMode (pin_dig0, OUTPUT); 
           pinMode (pin_dig1, OUTPUT);
           type = 5;                                            // sensor digital c/pin de control
           subtype = i-9;
           break;
         case NUM_VALORES:              // si la red de resistencias no coincide con ningun valor, se deja en modo manual
-          pinMode (pin_dig0, INPUT);
+          pinMode (pin_dig0, INPUT); 
           pinMode (pin_dig1, INPUT);
           type = 0;
           subtype = 0;
-          break;
-      }
+          break;   
+      }  
     }
-  }
-}
-
+  }     
+}       
+   
+       

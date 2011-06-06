@@ -1,22 +1,4 @@
-/*
- * butiá arduino firmware
- * version:     0.2
- * date:        19-6-2010
- * language:    Arduino 0018
- * Authors:	Andrés Aguirre, Pablo Gindel, Jorge Visca, Gonzalo Tejera, Santiago Margni, Federico Andrade
- *
- * (c) MINA Group, Facultad de Ingeniería, Universidad de la República, Uruguay. 
-*/
-
-
 // esto es en escencia el funcionamiento del PnP en el firmware del butiá
-
-#include <string.h>
-#include "butia.h"
-#include "pnp.h"
-#include "modulos.h"
-
-
 
 void init_conectores () {                            // define los 8 conectores
                                                      // ver: tabla de pines que está en la documentación del PnP

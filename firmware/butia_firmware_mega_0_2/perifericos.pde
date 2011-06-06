@@ -4,21 +4,6 @@
    muestreando a 25Hz, entre una lectura y otra no puede recorrer más de 12 grados (=41 pasos) 
 */
 
-#include <wiring.h>
-// #include <../../../../libraries/LiquidCrystal.h>         // biblioteca para el display LCD 16x2 
-// Guille: OK; arduino si NO le pones que es un pde al archivo
-// entonces no te anda #include <LiquidCrystal.h> ; y no encontre
-// forma de que anduviera ; porque a los CPP los compila con 
-// -L{path_to_arduino_core} pe se olvide de las librerias!!!!
-// AHHHHHHHHHHHHHHHH!!! hate-you-ardu!
-#include "butia.h"
-
-//LiquidCrystal lcd (36, 255, 37, 38, 39, 40, 41);             // display harcodeado a los pines esos
-
-#ifndef sign
-#define sign(x) ((x>=0)?1:-1)
-#endif
-
 void sample () {                                        // rutina que se ejecuta periódicamente para actualizar la lectura de los sensores
   static byte estado = 0;                                                                             
   
@@ -72,8 +57,8 @@ void motor_init () {
 }
 
 void display_init () {      // este scroll lo podríamos generalizar a cualquier texto
-//  lcd.begin (16, 2);
-//  lcd.clear (); 
+  lcd.begin (16, 2);
+  lcd.clear (); 
   //TODO revisar como poner asyncronico, temporalmente sacado
   /*lcd.print (" PROYECTO BUTIA ");
   char * text = "www.fing.edu.uy/inco/proyectos/butia";
@@ -91,16 +76,10 @@ void movimiento (byte direccion, int velocidad) {
   motor[1].endlessTurn (-velocidad*bin2sign(direccion>>1));      
 } 
 
-/* 
-// esto funciona pero esta optimizado!!!! :-(
-// To palmer: fijate como esta puesto en el #define
-// pregunta: no entiendo porque debuelves 0 cuando
-// el numero es 0 ; el signo de 0 es +1 a mi entender
-// cambia el comportamiento del programa por eso?...
 char sign (int numero) {
   char signo = 0;
   if (numero > 0) {signo = 1;}
   if (numero < 0) {signo = -1;}
   return signo;
 }
-*/
+

@@ -187,8 +187,8 @@ void AX12::ax12SendPacket (byte _id, byte datalength, byte instruction, byte* da
     setRX();
 }
 
-/* read status packet
-   retorna el código interno de error; 0 = OK */
+/** read status packet
+/** retorna el código interno de error; 0 = OK */
 byte AX12::ax12ReadPacket (int* status_id, int* status_error, int* status_data) {
     unsigned long ulCounter;
     byte timeout, error, status_length, checksum, offset;

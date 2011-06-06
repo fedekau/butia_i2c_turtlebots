@@ -8,14 +8,6 @@
 /*                                                  módulos "fijos" (no PnP)                                                    */
 /********************************************************************************************************************************/
 
-#include <string.h>
-#include <WProgram.h>
-#include "wiring.h" 
-#include "butia.h"
-#include "comunicacion.h"
-#include "perifericos.h"
-
-
 byte sistema (byte* buffer, byte largo, byte handler_id) {                     // este es el administrador del protocolo
                                                                                // "open" "close" etc. (es el "Admin" de USB4ALL)
   byte instruccion = buffer [0];
@@ -87,7 +79,7 @@ byte butia (byte* buffer, byte largo, byte handler_id) {                       /
   byte instruccion = buffer [0];
   switch (instruccion) {      
     case 2:                                          // get_version
-      buffer [1] = FW_VERSION;
+      buffer [1] = VERSION;
       sendMsg (1, buffer, 2);
       break;
     case 3:                                          // get_voltage

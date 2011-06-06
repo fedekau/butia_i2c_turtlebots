@@ -1,45 +1,27 @@
-/*
- * butiá arduino firmware
- * version:     0.2
- * date:        19-6-2010
- * language:    Arduino 0018
- * Authors:	Andrés Aguirre, Pablo Gindel, Jorge Visca, Gonzalo Tejera, Santiago Margni, Federico Andrade
- *
- * (c) MINA Group, Facultad de Ingeniería, Universidad de la República, Uruguay.
-*/
-
-#include <wiring.h>
-#include <HardwareSerial.h>
-#include "comunicacion.h"
-#include "butia.h"
-
-void sendMsg (byte handlerID, byte *msg, byte largo);
-byte unescape (byte* buffer, byte largo);
-byte dispatch (byte *buffer, byte largo);
 
 #define SYNC            0xFF                          // byte de comienzo de los mensajes seriales
 #define ESCAPE          0xFE                          // byte de desambiguación en los mensajes seriales
 #define CODE_ERROR      0xFF                          // código de error
 
 // storage class para la "máquina de estados" de recepción
-enum ESTADO { BUSCAR, LEER_LARGO, LEER_MSG, CHECKSUM };
+enum ESTADO { BUSCAR, LEER_LARGO, LEER_MSG, CHECKSUM }; 
 
-void leer_serial () {                  // esta es la "máquina de estados" que recibe y decodifica los mensajes Seriales
-
+void leer_serial () {                  // esta es la "máquina de estados" que recibe y decodifica los mensajes Seriales 
+  
   // variables locales estáticas
   static byte largo, cont, checksum;
-  static byte anterior = 0;
-  static byte *buffer = NULL;
+  static byte anterior = 0;    
+  static byte *buffer = NULL;  
   static ESTADO estado = BUSCAR;
-
+    
   if (Serial.available() > 0) {                                                     // si hay al menos 1 byte en el Serial...
     byte b = Serial.read();                                                         // ...lo lee
     if (b==SYNC && ((anterior!=ESCAPE && estado==BUSCAR) || anterior<128)) {        // chequea la presencia de un "TRUE SYNC"
-      if (buffer != NULL) {
+      if (buffer != NULL) {                                                         
         free (buffer);                                                              // prepara para inicializar el buffer
         buffer = NULL;
       }
-      estado = LEER_LARGO;
+      estado = LEER_LARGO; 
     } else {
       switch (estado) {
         case LEER_LARGO:
@@ -47,7 +29,7 @@ void leer_serial () {                  // esta es la "máquina de estados" que r
           buffer = (byte*)malloc(largo);                                    // inicializa el buffer segun el largo del mensaje
           checksum = 0;                                                     // se prepara para leer el cuerpo del mensaje
           cont = 0;
-          estado=LEER_MSG;
+          estado=LEER_MSG; 
           break;
         case LEER_MSG:
           buffer[cont++] = b;                                               // va llenando el buffer
@@ -72,28 +54,28 @@ void leer_serial () {                  // esta es la "máquina de estados" que r
           if (error != 0) {
             buffer[0] = CODE_ERROR;                  // 255 es el codigo de operacion "error"
             buffer[1] = error;
-            sendMsg (0, buffer, 2);
+            sendMsg (0, buffer, 2);  
           }
           estado = BUSCAR;                                                  // estado inicial
-          break;
+          break;  
       }
     }
     anterior = b;                                                           // se prepara para procesar el siguiente byte
-  }
+  } 
 }
 
 
-void sendMsg (byte handlerID, byte *msg, byte largo) {      // formatea, encapsula y manda los mensajes al Serial (o sea: el input es el mensaje propiamente dicho y su largo)
-
+void sendMsg (byte handler, byte *msg, byte largo) {      // formatea, encapsula y manda los mensajes al Serial (o sea: el input es el mensaje propiamente dicho y su largo)
+  
   // primera parte: formatea el mensaje USB4ALL
   byte mensaje [largo+3];
   memcpy (mensaje+3, msg, largo);
   largo += 3;
-  mensaje [0] = handlerID<<3;
+  mensaje [0] = handler<<3;
   mensaje [1] = largo;
   mensaje [2] = 0;
-
-  // segunda parte: escapea
+  
+  // segunda parte: escapea  
   byte salida [largo*2];                                         // crea un array suficientemente largo para contener el string de salida
   byte pos = 0;                                                  // posición en el array de salida
   for (byte i=0; i<largo; i++) {                                 // recorre el array de entrada
@@ -103,8 +85,8 @@ void sendMsg (byte handlerID, byte *msg, byte largo) {      // formatea, encapsu
       salida[pos++] = ESCAPE;                                    // mete primero un ESCAPE e incrementa
       salida[pos++] = mensaje[i];                                // y luego mete el byte e incrementa
     }
-  }
-
+  }   
+  
   // tercera parte: encapsula y manda al Serial
   Serial.print (SYNC, BYTE);                             // escribe un SYNC
   Serial.print (pos);                                    // escribe el largo
@@ -127,11 +109,11 @@ byte unescape (byte* buffer, byte largo) {     // saca los ESCAPES y devuelve el
 }
 
 byte dispatch (byte *buffer, byte largo) {     // verifica la validez del mensaje USB4ALL y lo despacha al handler. Devuelve el código de error
-  int error = 0;
-  byte destino, len;                                   // variables para la decodificación
+  int error = 0;                               
+  byte destino, len;                                   // variables para la decodificación 
   if (largo < 4) {error = 2;} else {                   // 1a. comprobación de error: el mensaje debe tener al menos 1 byte de información
     destino = buffer[0]>>3;                            // el shifteado reglamentario de USB4ALL
-    len = buffer[1];
+    len = buffer[1];   
     if (len != largo) {error = 3;} else {                                  // 2a. comprobación de error: el largo USB4ALL y el largo del mensaje "unescapeado" deben coincidir
       error = (*(handler[destino].funcion)) (buffer+3, len-3, destino);    // le pasa al handler el mensaje sin la cabecera
                                                                            // qué pasa si no existe dicho handler?? eh??
@@ -139,4 +121,4 @@ byte dispatch (byte *buffer, byte largo) {     // verifica la validez del mensaj
   }
   return error;                                        // retorna el error interno o el regresado por el handler
 }
-
+      
