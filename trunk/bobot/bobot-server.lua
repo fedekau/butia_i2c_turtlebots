@@ -30,6 +30,7 @@ Examples:
 package.path=package.path..";./bobot_server/?.lua"
 
 --tcp listening address
+local N_PROTOCOLS = 2
 local ADDRESS = "*"
 local PORT_B = 2009 --B is for bobot
 local PORT_H = 2010 --H is for http
@@ -113,7 +114,7 @@ local function split_words(s)
 	words={}
 
 	for p in string.gmatch(s, "%S+") do
-		words[#words+1	]=p
+		words[#words+1]=p
 	end
 	
 	return words
@@ -146,6 +147,10 @@ socket_handlers[server_b]=function()
 				if not process[command] then
 					bobot.debugprint("bs:Command not supported:", command)
 				else
+					if command=="QUIT" and #recvt>N_PROTOCOLS+1 then
+						client:send("server in use\n")
+						return
+					end
 					local ret = process[command](words) or ""
 					client:send(ret .. "\n")
 				end
