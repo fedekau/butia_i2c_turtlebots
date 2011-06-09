@@ -3,6 +3,7 @@
 module(..., package.seeall);
 
 local bobot_device = require("bobot_device")
+local bobot = require("bobot")
 
 local NULL_BYTE				                    = string.char(0x00)
 local DEFAULT_PACKET_SIZE    	          	    = 0x04
@@ -37,25 +38,25 @@ function BaseBoard:new(bb)
 	local n_modules=bb:get_user_modules_size()
 	while(n_modules == nil and retry < MAX_RETRY)do
 		n_modules=bb:get_user_modules_size()
-		print("u4b:new:the module list size returned a nil value, trying to recover...")
+		bobot.debugprint("u4b:new:the module list size returned a nil value, trying to recover...")
 		retry = retry+1
 	end
 	retry=0
-	print ("Reading modules:", n_modules)
+	bobot.debugprint ("Reading modules:", n_modules)
 	for i=1, n_modules do
 		local name=bb:get_user_module_line(i)
 		while(name == nil and retry < MAX_RETRY) do
 			name=bb:get_user_module_line(i)
-			print("u4b:new:the module name returned a nil value, trying to recover...")
+			bobot.debugprint("u4b:new:the module name returned a nil value, trying to recover...")
             retry = retry+1
 		end
 		assert(name)
 		local d = bobot_device.Device:new({name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
 		bb.devices[name]=d
 	end	
---print ('----------------')
+--bobot.debugprint ('----------------')
 	bb:force_close_all()
---print ('================')
+--bobot.debugprint ('================')
 	return bb
 end
 
@@ -66,7 +67,7 @@ function BaseBoard:close()
 
 	for _,d in pairs(self.devices) do
 		if type(d.handler)=="number" then
-			print ("closing", d.name, d.handler)
+			bobot.debugprint ("closing", d.name, d.handler)
 			d:close()
 		end
 	end
@@ -91,7 +92,7 @@ function BaseBoard:get_user_modules_size()
     if write_res then
          	local data, err = comms.read(ADMIN_MODULE_OUT_ENDPOINT, GET_LINES_RESPONSE_PACKET_SIZE, TIMEOUT)
 		if not data then
-			print("u4b:get_user_modules_size:comunication with I/O board read error", err)
+			bobot.debugprint("u4b:get_user_modules_size:comunication with I/O board read error", err)
 			return 0
 		else
 			local user_modules_size = string.byte(data, 5)	
@@ -100,7 +101,7 @@ function BaseBoard:get_user_modules_size()
 	else	
         while(write_res == nil and retry < MAX_RETRY) do
 			write_res = comms.send(ADMIN_MODULE_IN_ENDPOINT, get_user_modules_size_packet, TIMEOUT)
-			print("u4b:get_user_modules_size:comunication with I/O board write error", write_res)
+			bobot.debugprint("u4b:get_user_modules_size:comunication with I/O board write error", write_res)
 			retry = retry+1
 		end
 		return 0
@@ -127,19 +128,19 @@ function BaseBoard:get_user_module_line(index)
     	if write_res then
 		local data, err = comms.read(ADMIN_MODULE_OUT_ENDPOINT, GET_LINE_RESPONSE_PACKET_SIZE, TIMEOUT)
 		if not data then
-			print("u4b:get_user_modules_line:comunication with I/O board read error", err)
+			bobot.debugprint("u4b:get_user_modules_line:comunication with I/O board read error", err)
 			return
 		end
 		--the name is between a header and a null
 		local end_mark = string.find(data, "\000", GET_USER_MODULE_LINE_PACKET_SIZE, true)
 		if not end_mark then
-			print ("u4b:get_user_module_line:Error parsing module name")
+			bobot.debugprint ("u4b:get_user_module_line:Error parsing module name")
 			return
 		end
 		local module_name = string.sub(data, GET_USER_MODULE_LINE_PACKET_SIZE, end_mark-1)
 		return module_name
 	else	
-		print("u4b:get_user_module_line:comunication with I/O board write error", write_res)
+		bobot.debugprint("u4b:get_user_module_line:comunication with I/O board write error", write_res)
 	end
 end
 
@@ -147,7 +148,7 @@ end
 -- this function is deprecated by force_close_all
 function BaseBoard:close_all()
 	for d_name,d in pairs(self.devices) do
-		--print ("===", d.name,d.handler)
+		--bobot.debugprint ("===", d.name,d.handler)
 		if d.handler then d:close() end
 	end
 end
@@ -168,11 +169,11 @@ function BaseBoard:reset()
 		--libusb.close(libusb_handler)
 		--self.libusb_handler=nil
 		--for d_name,d in pairs(self.devices) do
-			--print ("===", d.name,d.handler)
+			--bobot.debugprint ("===", d.name,d.handler)
 		--	d.handler=nil
 		--end
 	else	
-		print("u4b:reset:comunication with I/O board write error", write_res)
+		bobot.debugprint("u4b:reset:comunication with I/O board write error", write_res)
 	end
 end
 
@@ -186,22 +187,22 @@ function BaseBoard:force_close_all()
 	local admin_packet = CLOSEALL_BASE_BOARD_COMMAND
 	local reset_base_board_packet  = handler_packet .. admin_packet
 
---print ('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+--bobot.debugprint ('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
 	local write_res = comms.send(ADMIN_MODULE_IN_ENDPOINT, reset_base_board_packet, TIMEOUT)
---print ('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+--bobot.debugprint ('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
     	if write_res then
 		local data, err = comms.read(ADMIN_MODULE_OUT_ENDPOINT,	CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE, TIMEOUT)
 		if err then
-			print("u4b:force_close_all:comunication with I/O board read error",err)
+			bobot.debugprint("u4b:force_close_all:comunication with I/O board read error",err)
 		else
-			--print("u4b:force_close_all:libusb read",string.byte(data,1,string.len(data)))
+			--bobot.debugprint("u4b:force_close_all:libusb read",string.byte(data,1,string.len(data)))
 		end
 		for d_name,d in pairs(self.devices) do
-			--print ("===", d.name,d.handler)
+			--bobot.debugprint ("===", d.name,d.handler)
 			d.handler=nil
 		end
 	else	
-		print("u4b:force_close_all:comunication with I/O board write error", write_res)
+		bobot.debugprintprint("u4b:force_close_all:comunication with I/O board write error", write_res)
 	end
 end
 

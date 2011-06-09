@@ -185,7 +185,7 @@ end
 
 
 read_devices_list()
-print ("Listening...")
+bobot.debugprint ("Listening...")
 -- loop forever waiting for clients
 
 while 1 do
