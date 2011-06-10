@@ -52,7 +52,7 @@ end
 
 local html_describe_device = function (params)
 	--borrar
-	dump_template_descr_row=load_template('lib/dumptemplate_descr_row.txt')
+	dump_template_descr_row=load_template('bobot_server/dumptemplate_descr_row.txt')
 
 	local dsel=params['dsel']
 	local command=params['command']
@@ -125,7 +125,7 @@ end
 local get_page={}
 setmetatable(get_page, {__index = function(_,page) bobot.debugprint ("======", page);return find_page(page) end})
 get_page["/index.htm"] = function (p)
-	local index_template=load_template('lib/indextemplate.txt')
+	local index_template=load_template('bobot_server/indextemplate.txt')
 
 	local params=parse_params(p)
 	local rep = {
@@ -138,8 +138,8 @@ end
 get_page["/"]=get_page["/index.htm"]
 get_page["/dump.htm"] = function (p)
 	--remove this
-	dump_template=load_template('lib/dumptemplate.txt')
-	dump_template_descr=load_template('lib/dumptemplate_descr.txt')
+	dump_template=load_template('bobot_server/dumptemplate.txt')
+	dump_template_descr=load_template('bobot_server/dumptemplate_descr.txt')
 
 	local params=parse_params(p)
 	local dsel=params['dsel']
@@ -160,7 +160,7 @@ get_page["/dump.htm"] = function (p)
 	return "HTTP/1.1 200/OK\r\nContent-Type:text/html\r\nContent-Length: "..#page.."\r\n\r\n"..page
 end
 get_page["/favicon.ico"] = function ()
-	local served, err = io.open('lib/favicon.ico', "rb")
+	local served, err = io.open('bobot_server/favicon.ico', "rb")
 	if served ~= nil then
 		local content = served:read("*all")
 		return "HTTP/1.1 200/OK\r\nContent-Type:image/x-icon\r\nContent-Length: "
@@ -171,7 +171,7 @@ get_page["/favicon.ico"] = function ()
 	end
 end
 get_page["/bobot.png"] = function ()
-	local served, err = io.open('lib/bobot.png', "rb")
+	local served, err = io.open('bobot_server/bobot.png', "rb")
 	if served ~= nil then
 		local content = served:read("*all")
 		return "HTTP/1.1 200/OK\r\nContent-Type:image/png\r\nContent-Length: "

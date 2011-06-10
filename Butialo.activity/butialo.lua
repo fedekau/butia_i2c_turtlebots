@@ -1,74 +1,92 @@
+package.path=package.path..";../bobot/?.lua;../bobot/lib/?.lua"
+
 require "socket"
-
-local host, port = "localhost", 2009
-local bobot = assert(socket.connect(host, port))
-bobot:settimeout(nil) --blocking
-
-local debug = function() end
---local debug=function(...) print("BL", ...) end
-
-function query_bobot(s)
-	debug("sending", s)
-	bobot:send(s.."\n")
-	local ret = bobot:receive()
-	debug("ret:", ret)
-	return ret
+local bobot = require("bobot")
+local set_debug
+for i, v in ipairs(arg) do
+	if v=="DEBUG" then
+		set_debug=true 
+		table.remove(arg, i)
+		break
+	end
+end
+if set_debug then 
+	bobot.debugprint = print
+	print("Debugging messages enabled")
+else
+	bobot.debugprint = function() end
 end
 
+--close bobot-server, if running
+local host, port = "localhost", 2009
+local bobotserver = socket.connect(host, port)
+if bobotserver then
+	bobot.debugprint("Bobot server found, closing...")
+	bobotserver:settimeout(nil) --blocking
+	bobotserver:send("QUIT\n")
+	bobotserver:settimeout(5)
+	local ret, err = bobotserver:receive()
+	if ret then
+		bobot.debugprint("Could not close bobot-server:", ret)		
+	end
+end
+
+bobot.init()
+local baseboards = bobot.baseboards
+
+local function get_device_name(n)
+	if not devices[n] then
+		return n
+	end
+
+	local i=2
+	local nn=n.."#"..i
+	while devices[nn] do
+		i=i+1
+		nn=n.."#"..i
+	end
+
+	return nn
+end
+
+function read_devices_list()
+	bobot.debugprint("=Listing Devices")
+	local bfound
+	devices={}
+	for b_name, bb in pairs(baseboards) do
+    		bobot.debugprint("===board ", b_name)
+		for d_name,d in pairs(bb.devices) do
+			local regname = get_device_name(d_name)
+			devices[regname]=d
+    			bobot.debugprint("=====d_name ",d_name," regname ",regname)
+		end
+		bfound = true
+	end
+	if not bfound then bobot.debugprint ("ls:WARN: No Baseboard found.") end
+	return devices
+end
+
+
 local function build_devices()
-	local d = {}
-	local list = query_bobot("LIST")
-	for module in string.gmatch(list, "%w+") do
-		local device={}
-
-		local desc=query_bobot("DESCRIBE "..module)
-		debug(module, desc)
-
-		local api=loadstring("return "..desc)()
-		if not api then
-			debug("Failure processing:", desc)
-			break
-		end
-		for func, desc in pairs(api) do
-			--[[
-			--TODO generar la funcion en un string para loadstring c/#parametros correcto
-			local callstring="CALL "..module.." "..func
-			device[func] = function(...)
- 				for _, parameter in ipairs({...}) do
-					callstring=callstring.." "..parameter
-				end
-				return query_bobot(callstring)
-			end
-			--]]
-
-			debug ("---", func, desc)
-
-			local nparams=#desc.parameters
-			local generator = "return function("
-			local comma=""
-			for i=1,nparams do
-				generator=generator..comma.."p"..i --parameters
-				comma=","
-			end
-			generator=generator..") callstring='CALL "..module.." " ..func.." '"
-			for i=1,nparams do
-				generator=generator.."..(".."p"..i.." or '')" --parameters
-			end
-			generator=generator.." return query_bobot(callstring) end"
-		
-			debug("=========================")
-			debug(generator)
-			debug("=========================")
 	
-			device[func] = loadstring(generator)()
+	local devices = read_devices_list()
 
+	local d = {}
+	for modulename, module in pairs(devices) do
+		local device={}
+		bobot.debugprint ("+++", modulename)
+		module:open(1,1) --FIXME
+
+		for fname, f in pairs(module.api) do
+			bobot.debugprint ("---", fname, f.call)
+			device[fname] = f.call
 		end
 
-		local devicename = string.upper(string.sub(module, 1, 1))
-			.. string.lower(string.sub(module, 2)) --lleva a "Boton"
+		local modulename = string.upper(string.sub(modulename, 1, 1))
+			.. string.lower(string.sub(modulename, 2)) --lleva a "Boton"
 
-		d[devicename]=device
-		device.name=devicename
+		d[modulename]=device
+		device.name=modulename
 	end
 
 	--local meta = { __index}
@@ -78,14 +96,12 @@ local function build_devices()
 	return d
 end
 
-
-
 -------------------------------------------
 --export stuff
 wait = socket.sleep
 DEVICES = build_devices()
 for n, d in pairs(DEVICES) do
-	debug("adding global", n, d)
+	bobot.debugprint("adding global", n, d)
 	_G[n]=d
 end
 

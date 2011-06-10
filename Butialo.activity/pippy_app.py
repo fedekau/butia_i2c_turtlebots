@@ -93,13 +93,14 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
         menu_item.connect('activate', self.keepbutton_cb)
         palette.menu.append(menu_item)
         menu_item.show()
-        menu_item = MenuItem(_('As Activity Bundle'))
-        menu_item.set_image(Icon(file=('%s/activity/activity-default.svg' %
-                                       get_bundle_path()),
-                                 icon_size=gtk.ICON_SIZE_MENU))
-        menu_item.connect('activate', self.makebutton_cb)
-        palette.menu.append(menu_item)
-        menu_item.show()
+        #xop guardar como bundle
+        #menu_item = MenuItem(_('As Activity Bundle'))
+        #menu_item.set_image(Icon(file=('%s/activity/activity-default.svg' %
+        #                               get_bundle_path()),
+        #                         icon_size=gtk.ICON_SIZE_MENU))
+        #menu_item.connect('activate', self.makebutton_cb)
+        #palette.menu.append(menu_item)
+        #menu_item.show()
 
         self._edit_toolbar = activity.EditToolbar()
 
@@ -191,7 +192,7 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
         self.model = gtk.TreeStore(gobject.TYPE_PYOBJECT, gobject.TYPE_STRING)
         treeview = gtk.TreeView(self.model)
         cellrenderer = gtk.CellRendererText()
-        treecolumn = gtk.TreeViewColumn(_("Examples"), cellrenderer, text=1)
+        treecolumn = gtk.TreeViewColumn(_("Available"), cellrenderer, text=1)
         treeview.get_selection().connect("changed", self.selection_cb)
         treeview.append_column(treecolumn)
         treeview.set_size_request(int(SIZE_X * 0.3), SIZE_Y)
@@ -216,11 +217,38 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
             for _file in files.readlines():
                 _file=_file.strip()
                 entry = {"name": _file,
-                         "path": _(d.capitalize()) + "." + _file}
+                         "path": "ret = "+_(d.capitalize()) + "." + _file+"\n"}
                 _iter = self.model.insert_before(olditer, None)
                 self.model.set_value(_iter, 0, entry)
                 self.model.set_value(_iter, 1, entry["name"])
                 
+        direntry = {"name": "Control",
+                    "path": "Control" }
+
+        olditer = self.model.insert_before(None, None)
+        self.model.set_value(olditer, 0, direntry)
+        self.model.set_value(olditer, 1, direntry["name"])
+
+        entry = {"name": "if ... then ... else ... end",
+                 "path": "\nif i == 1 then\n  \nelse\n  \nend\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+        entry = {"name": "for ... do ... end",
+                 "path": "\nfor i = 1,10 do\n  \nend\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+        entry = {"name": "while ... do ... end",
+                 "path": "\nwhile a == 1 do\n  \nend\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+        entry = {"name": "repeat ... until ...",
+                 "path": "\nrepeat\n  \nuntil a ~= 1\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
         
 #        for d in sorted(os.listdir(root)):
 #            if not os.path.isdir(os.path.join(root, d)):
@@ -648,7 +676,7 @@ def pippy_activity_class():
 
 def pippy_activity_bundle_id():
     """Return the bundle_id for the generated activity."""
-    return 'org.laptop.Butialo'
+    return 'uy.fing.Butialo'
 
 
 def pippy_activity_mime_types():
@@ -700,7 +728,7 @@ def main():
         'news': 'No news.',
         'icon': PIPPY_DEFAULT_ICON,
         'class': 'activity.VteActivity',
-        'bundle_id': ('org.laptop.butialo.%s' % pytitle),
+        'bundle_id': ('uy.fing.butialo.%s' % pytitle),
         'mime_types': '',
         'extra_info': '',
         }

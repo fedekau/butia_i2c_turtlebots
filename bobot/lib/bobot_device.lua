@@ -1,19 +1,21 @@
 module(..., package.seeall);
 
+local bobot = require("bobot")
+
 local string_char = string.char
 local string_len  = string.len
 local string_byte = string.byte
 
-local OPEN_COMMAND		            = string_char(0x00)
+local OPEN_COMMAND			= string_char(0x00)
 local CLOSE_COMMAND         		= string_char(0x01)
 local HEADER_PACKET_SIZE	        = 6
-local NULL_BYTE         			= string_char(0x00)
+local NULL_BYTE         		= string_char(0x00)
 local ADMIN_MODULE_IN_ENDPOINT  	= 0x01
-local ADMIN_MODULE_OUT_ENDPOINT	    = 0x81
-local ADMIN_HANDLER_SEND_COMMAND    = string_char(0x00)
-local OPEN_RESPONSE_PACKET_SIZE     = 5 
-local CLOSE_RESPONSE_PACKET_SIZE    = 2 
-local TIMEOUT			            = 200 --ms
+local ADMIN_MODULE_OUT_ENDPOINT		= 0x81
+local ADMIN_HANDLER_SEND_COMMAND	= string_char(0x00)
+local OPEN_RESPONSE_PACKET_SIZE		= 5 
+local CLOSE_RESPONSE_PACKET_SIZE	= 2 
+local TIMEOUT				= 200 --ms
 
 local READ_HEADER_SIZE		        = 3
 
@@ -22,7 +24,7 @@ local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 Device = {
 	--some usefull stuff for the drivers to use
 	string=string,
-	print=print,
+	print=bobot.debugprint,
 	math=math,
 	tonumber=tonumber,
 	tostring=tostring
@@ -30,7 +32,7 @@ Device = {
 
 local function load_driver(modulename)
 	local drivername=string.match(modulename, '^(.-)%d*$')
-	local f, err = loadfile(my_path.."/drivers/"..drivername..".lua")
+	local f, err = loadfile(my_path.."../drivers/"..drivername..".lua")
 	return f, err
 end
 
@@ -61,12 +63,12 @@ function Device:new(d)
 		setfenv(f, d) --the driver's environment is the device
 		local status, err=pcall(f) 
 		if status then
-			print("u4d:new:Success loading driver:", d.name)
+			bobot.debugprint("u4d:new:Success loading driver:", d.name)
 		else
-			print("u4d:new:Error initializing driver:", tostring(err))
+			bobot.debugprint("u4d:new:Error initializing driver:", tostring(err))
 		end
 	else
-		print("u4d:new:Error loading driver:", err)
+		bobot.debugprint("u4d:new:Error loading driver:", err)
 	end
 	
 	return d
@@ -100,23 +102,23 @@ function Device:open(in_endpoint, out_endpoint)
 	local write_res = self.comms_send(ADMIN_MODULE_IN_ENDPOINT, open_packet, TIMEOUT)
 
 	if not write_res then
-		print("u4d:open:comunication with I/O board write error", write_res)
+		bobot.debugprint("u4d:open:comunication with I/O board write error", write_res)
 		return false
 	end
 
 	local data, err = self.comms_read(ADMIN_MODULE_OUT_ENDPOINT, OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)	
 	if not data then
-		print ("u4d:open:comunication with I/O boardread error", err)
+		bobot.debugprint ("u4d:open:comunication with I/O boardread error", err)
 		return false 
 	end
 
-	local handler= string_byte(data, 5)
+	local handler = string_byte(data, 5)
 	--hander -1 meand error
 	if handler==255 then
-		print ("u4d:open:Already open!",self.name,self.handler)
+		bobot.debugprint ("u4d:open:Already open!",self.name,self.handler)
 		return
 	else
-		print ("u4d:open:Success!",self.name,handler)
+		bobot.debugprint ("u4d:open:Success!",self.name,handler)
 		self.handler = handler --self.handler set means device is open
 		return true
 	end
@@ -139,7 +141,7 @@ function Device:close()
 
 	local write_res = self.comms_send(ADMIN_MODULE_IN_ENDPOINT, close_packet, TIMEOUT)
 	if not write_res then
-		print("u4d:close:comunication with I/O board write error", write_res)
+		bobot.debugprint("u4d:close:comunication with I/O board write error", write_res)
 		return
 	end
 	local data, err = self.comms_read(ADMIN_MODULE_OUT_ENDPOINT, CLOSE_RESPONSE_PACKET_SIZE, TIMEOUT)
@@ -166,10 +168,10 @@ function Device:send(data)
 
 	--local tini=socket.gettime()
 	local write_res, err = self.comms_send(self.in_endpoint, send_packet, TIMEOUT)
-	--print ('%%%%%%%%%%%%%%%% device send',socket.gettime()-tini)
+	--bobot.debugprint ('%%%%%%%%%%%%%%%% device send',socket.gettime()-tini)
 
 	if not write_res then
-		print("u4d:send:comunication with I/O board write error", err)	
+		bobot.debugprint("u4d:send:comunication with I/O board write error", err)	
 	end
 
 	return write_res, err
@@ -187,7 +189,7 @@ function Device:read(len)
 
 	local data, err = self.comms_read(self.out_endpoint, len+READ_HEADER_SIZE, TIMEOUT)
 	if not data then
-		print("u4d:read:comunication with I/O board read error", err)	
+		bobot.debugprint("u4d:read:comunication with I/O board read error", err)	
 		return nil, err
 	end
 

@@ -1,5 +1,5 @@
 CC = gcc
-LD = gcc
+LD = ld
 OPTS=-c -fPIC -fno-stack-protector
 OBJS=serialcomm.o
 OBJS_SO = serialcomm.so
@@ -30,7 +30,7 @@ so: $(OBJS)
 ifdef ARM
 		$(LD) $(LDFLAGS) $(OBJS_SO) -L/usr/lib/gcc/arm-linux-gnueabi/4.3.2/libgcc_s.so $(OBJS)
 else
-		$(LD) $(OBJS) -o $(OBJS_SO) $(LDFLAGS) 
+		$(CC) $(OBJS) -o $(OBJS_SO) $(LDFLAGS) 
 endif
 
 clean:

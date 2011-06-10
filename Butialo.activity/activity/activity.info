@@ -1,7 +1,7 @@
 [Activity]
 name = Butialo
-bundle_id = org.laptop.Butialo
-service_name = org.laptop.Butialo
+bundle_id = uy.fing.Butialo
+service_name = uy.fing.Butialo
 exec = sugar-activity pippy_app.ButialoActivity
 icon = activity-icon
 activity_version = 40
