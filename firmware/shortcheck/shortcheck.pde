@@ -7,17 +7,15 @@
 #define NUMBER_DIGITAL_PINS 54
 #define NUMBER_ANALOG_PINS 16
 #define NUMBER_PINS (NUMBER_DIGITAL_PINS + NUMBER_ANALOG_PINS)
+// 0 y 1 son rx tx
+#define INIT_PIN 2
+#define BIGNUMBER 20000
+#define FINISH -1
 
 #define NOTCHECK 255
 
-void setup() {                
-  // initialize the digital pin as an output.
-  // Pin 13 has an LED connected on most Arduino boards:
-  uint8_t i= 0;
-  for (i=0 ; i < NUMBER_PINS ; ++i) {
-    pinMode(i, INPUT);     
-    digitalWrite(i, HIGH);   // set pull up
-  }
+void setup() { 
+  Serial.begin(115200);
 }
 
 
@@ -29,25 +27,11 @@ void dontcheck(uint8_t pin) {
 }
 
 
-void init(uint8_t * nocheck)
+void init(uint8_t * nocheck){
+}
 
 
 int check(){
-  uint8_t i,j;
-  for (i=0; i < MAX_DIGITAL_PINS; ++i){
-    pinMode(i, INPUT);     
-    digitalWrite(i, LOW);
-
-
-    for (j=i+1; j < MAX_DIGITAL_PINS; ++j){
-      // check digital - digital
-    
-    
-    }
-    for (j=0; j < MAX_ANALOG_PINS ; ++j) {
-    
-    }
-  }
 
 
   digitalWrite(13, HIGH);   // set the LED on
@@ -64,12 +48,12 @@ class Shortcheck {
 
   public:
   Shortcheck(){
-    for (i=0; i < NUMBER_PINS ; ++i) pins[i] = i;
+    for (int i=0; i < NUMBER_PINS ; ++i) pins[i] = i;
   };
   
   void notcheckpin(uint8_t pin){
     if (pin > NUMBER_PINS) return;
-    if pins[pin]=
+//    if pins[pin]=
     pins[pin] = NOTCHECK;
   };
   
@@ -86,7 +70,7 @@ class Shortcheck {
     if (a > NUMBER_PINS) return;
     if (a > b) { aux=a ; a=b ; b=aux ; };
     
-    if pins[a] = 
+ //   if pins[a] = 
     pins[a] = b;
   
   }
@@ -95,7 +79,7 @@ class Shortcheck {
   
     return 0;
   };
-}
+};
 
 
 
@@ -105,7 +89,63 @@ class Shortcheck {
 
 void loop() {
 
+  
+  Serial.print("Waiting!!!, pres any key\n");
+  while ( ! Serial.available() )  ; //wait
+  while ( Serial.read() != -1) ; // flush
 
+  Serial.print("### Checkfloating!!!\n");
+  int i,j,aux;
+  //floating check
+  for (i=INIT_PIN; i < NUMBER_PINS; ++i){
+    pinMode(i, INPUT);     
+    digitalWrite(i, LOW); //not pullup
+
+    aux = digitalRead(i);
+    for (j=0 ; (j < BIGNUMBER) && (aux != FINISH) ; ++j) 
+      if (digitalRead(i) != aux) aux = FINISH;
+    if (aux != FINISH) {
+      Serial.print("WARN: pin ");
+      Serial.print(i, DEC);
+      Serial.print(" not flouting\n"); 
+    }
+  }
+
+  Serial.print("### CheckPullup!!!\n");
+  for (i=INIT_PIN; i < NUMBER_PINS; ++i) {
+    digitalWrite(i,1); //pullup
+    if (digitalRead(i) == 0) { 
+      Serial.print("ERR: pin ");
+      Serial.print(i, DEC);
+      Serial.print(" not work pullup\n");
+    };
+  };
+  
+  //shortcheck
+  Serial.print("### CheckShortcheck!!!\n");
+  for (i=INIT_PIN; i < NUMBER_PINS; ++i) {
+    pinMode(i, OUTPUT);
+    digitalWrite(i,0);
+    for (j=i+1 ; j < NUMBER_PINS ; ++j) {
+      if (digitalRead(j) == 0){
+        Serial.print("ERR: pin ");
+        Serial.print(i, DEC);
+        Serial.print(" is in shortcut whit ");
+        Serial.print(j, DEC);
+        Serial.print("\n");
+      }
+    }
+    pinMode(i, INPUT);
+    digitalWrite(i,1); //pullup
+  }
+
+  
+  //soulding check 
+  Serial.print("### CheckSoulding!!!\n");
+  //TODO
+
+  Serial.print("FINISH!!!!");
+  
 }
 
 
