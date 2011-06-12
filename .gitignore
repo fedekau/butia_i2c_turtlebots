@@ -10,6 +10,7 @@
 *.o
 *.so
 *.pyc
+*.xo
 
 # Also is posible to ignore all subdirectory or files in that directory
 # tmp/**/* 
