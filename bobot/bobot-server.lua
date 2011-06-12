@@ -84,19 +84,19 @@ local function get_device_name(n)
 end
 
 local function read_devices_list()
-	bobot.debugprint("=Listing Devices")
+	print("=Listing Devices")
 	local bfound
 	devices={}
 	for b_name, bb in pairs(baseboards) do
-    		bobot.debugprint("===board ", b_name)
+    		print("===board ", b_name)
 		for d_name,d in pairs(bb.devices) do
 			local regname = get_device_name(d_name)
 			devices[regname]=d
-    			bobot.debugprint("=====d_name ",d_name," regname ",regname)
+    			print("=====d_name ",d_name," regname ",regname)
 		end
 		bfound = true
 	end
-	if not bfound then bobot.debugprint ("ls:WARN: No Baseboard found.") end
+	if not bfound then print ("ls:WARN: No Baseboard found.") end
 end
 
 function check_open_device(d, ep1, ep2)
@@ -185,7 +185,7 @@ end
 
 
 read_devices_list()
-bobot.debugprint ("Listening...")
+print ("Listening...")
 -- loop forever waiting for clients
 
 while 1 do
