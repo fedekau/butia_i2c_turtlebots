@@ -1,1 +1,0 @@
-../../bobot/lubot-client-testPote.lua

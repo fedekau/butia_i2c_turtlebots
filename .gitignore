@@ -8,9 +8,26 @@
 *~
 *.swp
 *.o
-*.so
 *.pyc
 *.xo
+*.a
+
+#### *.so NOT ALL *.so should be ignored
+#### static SO that cant be genereted or links to so should be keep
+#### for example static SO lib/mime/core.so using by lua
+#### or simbolics link to .so in bobotxo
+
+## .SO ignored because can be genereted from source
+lualibusb/libluausb.so
+serialcomm/serialcomm.so
+serialcomm/lua_bindings/lua_serialcomm.so
+
+
+## generated lua y luac from Makefile
+libs/lua-5.1.4/src/lua
+libs/lua-5.1.4/src/luac
+
+
 
 # Also is posible to ignore all subdirectory or files in that directory
 # tmp/**/* 

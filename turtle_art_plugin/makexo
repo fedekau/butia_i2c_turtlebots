@@ -17,12 +17,18 @@ if [ "$DIR" = "" ] ; then
     exit
 fi
 
-# ok, lets inits and update the submodules
+# go to root of git
 cd ..
+
+# I want butiaXO folder be OK! (needed by plugin)
+make -C butiaXO
+
+# ok, lets inits and update the submodules (only works if you are in the root of git)
 git submodule init
 git submodule update
 cd turtle_art_plugin
 
+# goto mainline (Walter code) and check if all is OK!
 cd mainline
 export GITCONFIGURL=$(git config remote.origin.url | grep git://git.sugarlabs.org/turtleart/mainline.git )
 
@@ -31,7 +37,7 @@ if [ "$GITCONFIGURL" = "" ] ; then
     exit
 fi
 
-# I want a especific version!
+# I want a especific version of TurtleArts!
 git clean -xf
 git reset
 git checkout $TURTLEARTVERSION

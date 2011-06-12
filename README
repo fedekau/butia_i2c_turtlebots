@@ -1,4 +1,4 @@
-######## ABOUT TUTORIAL #########
+######## ABOUT BUTIA GIT #########
 
 Each folder contains a different project.
 In each folder should be a makefile or script to compile
@@ -11,10 +11,10 @@ bobot: Concontains Bobot server, this is responsible for
 
 turtle_art_plugin: Turtle Arts plugin, implements support of
     Butia in Turttle Arts. Using Turttle Arts plugin system.
-    in the folder is a shell script to make an .xo whit 
+    In this folder is a shell script to make an .xo whit 
     TurtleArtButia, a TurttleArt program whit logo changed
     and already instaled the butia plugin
-    requirements-proyects: bobot
+    requirements-proyects: bobotXO
 
 firmware: Contains the firmware butia for ardino Mega (for 
     the moment), also contains other firmwares and testings
@@ -29,5 +29,13 @@ serialcomm: library for using serial
 lualibusb: binding library for using libusb in lua
     requirements-proyects: libusb-dev
 
+######### Other remotes proyects/sources in git #######
 
-Last edited 2011/06/05 by Guillermo Reisch <greisch@fing.edu.uy>
+libs/lua: lua source
+	requeriments: libreadline-dev
+
+libs/libusb: libusb headers files
+
+
+
+### Last edited 2011/06/12 by Guillermo Reisch <greisch@fing.edu.uy> ###
