@@ -1,6 +1,0 @@
-
-
-Los sistemas roboticos cuentan cada día con mayores requerimientos de interacción con dispositivos diversos, como por ejemplo
-modems 3g, gps, bluethoot, camaras de video, interfaces de audio para lograr una interacción hombre/maquina amigable.
-En base a los requerimientos cada vez más demandantes hacia los sistemas robóticos, resulta interesante reutilizar dispositivos existentes en el mercado, utilizados principalmente en computadores personales en lugar de diseñar dichos dispostivos desde cero como era común hasta hace un tiempo atraz. Para lograrlo se necesita contar con hardware de bajo consumo y económico capaz de reutilizar dichos componentes mediante el soporte de los mismos a nivel del sistema operativo. Una funte accesible de dicho hardware en el mercado uruguayo son las placas utilizadas para implementar los dispositivos de routing doméstico. Para esto se necesito acceder a un router asus wl500gp y realizar las modificaciones necesarias en el software mediante una arquitectura genérica y autoconfigurable que permita interactuar con hardware y a su vez no dependa de una plataforma de hardware en particular, sino que por lo contrario sea fácilmente migrable a otras plataformas.
- 
