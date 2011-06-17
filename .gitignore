@@ -21,6 +21,9 @@
 lualibusb/libluausb.so
 serialcomm/serialcomm.so
 serialcomm/lua_bindings/lua_serialcomm.so
+bobot/lib/libluausb.so
+bobot/lib/lua_serialcomm.so
+lualibusb/libluausb.so
 
 
 ## generated lua y luac from Makefile
