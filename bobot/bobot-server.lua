@@ -25,9 +25,10 @@ Examples:
 
 --]]
 
-
-
-package.path=package.path..";./bobot_server/?.lua"
+--package.path=package.path..";./bobot_server/?.lua"
+local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]] or "./"
+package.path=package.path..";"..my_path.."bobot_server/?.lua;"
+			..my_path.."lib/?.lua;"..my_path.."?.lua"
 
 --tcp listening address
 local N_PROTOCOLS = 2

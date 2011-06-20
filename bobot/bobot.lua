@@ -11,7 +11,8 @@ If no parameter is provided, behaves like init({"usb","serial"}).
 
 --]]
 
-package.path=package.path..";./lib/?.lua"
+local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]] or "./"
+package.path=package.path..";"..my_path.."lib/?.lua"
 
 local socket=require('socket')
 

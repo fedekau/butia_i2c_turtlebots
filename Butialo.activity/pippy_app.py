@@ -204,16 +204,16 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
         self.hpane.add1(self.sidebar)
 
         #root = os.path.join(get_bundle_path(), 'data')
-        root = os.popen("lua parse_bobot_tree.lua /")
+        root = os.popen("./lua parse_bobot_tree.lua /")
         for d in root.readlines():
             d=d.strip()
             direntry = {"name": _(d.capitalize()),
-                        "path": d }
+                        "path": "" } # era d
             olditer = self.model.insert_before(None, None)
             self.model.set_value(olditer, 0, direntry)
             self.model.set_value(olditer, 1, direntry["name"])
             
-            files = os.popen("lua parse_bobot_tree.lua %s" % d)
+            files = os.popen("./lua parse_bobot_tree.lua %s" % d)
             for _file in files.readlines():
                 _file=_file.strip()
                 entry = {"name": _file,
@@ -445,7 +445,7 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
 
         self._pid = self._vte.fork_command(
             argv=["/bin/sh", "-c",
-                  "lua %s; sleep 1" % butialo_app_name],
+                  "./lua %s; sleep 1" % butialo_app_name],
             #envv=["PYTHONPATH=%s/library:%s" % (get_bundle_path(),
             #                                    os.getenv("PYTHONPATH", ""))],
             envv=[],

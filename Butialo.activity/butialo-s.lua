@@ -24,51 +24,52 @@ local function build_devices()
 		local desc=query_bobot("DESCRIBE "..module)
 		debug(module, desc)
 
-		local api=loadstring("return "..desc)()
-		if not api then
-			debug("Failure processing:", desc)
-			break
-		end
-		for func, desc in pairs(api) do
-			--[[
-			--TODO generar la funcion en un string para loadstring c/#parametros correcto
-			local callstring="CALL "..module.." "..func
-			device[func] = function(...)
- 				for _, parameter in ipairs({...}) do
-					callstring=callstring.." "..parameter
-				end
-				return query_bobot(callstring)
-			end
-			--]]
+		local fdesc=loadstring("return "..desc)
+		if fdesc then
+			local api=fdesc()
+			if api then
+				for func, desc in pairs(api) do
+					--[[
+					--TODO generar la funcion en un string para loadstring c/#parametros correcto
+					local callstring="CALL "..module.." "..func
+					device[func] = function(...)
+		 				for _, parameter in ipairs({...}) do
+							callstring=callstring.." "..parameter
+						end
+						return query_bobot(callstring)
+					end
+					--]]
 
-			debug ("---", func, desc)
-
-			local nparams=#desc.parameters
-			local generator = "return function("
-			local comma=""
-			for i=1,nparams do
-				generator=generator..comma.."p"..i --parameters
-				comma=","
-			end
-			generator=generator..") callstring='CALL "..module.." " ..func.." '"
-			for i=1,nparams do
-				generator=generator.."..(".."p"..i.." or '')" --parameters
-			end
-			generator=generator.." return query_bobot(callstring) end"
-		
-			debug("=========================")
-			debug(generator)
-			debug("=========================")
+					debug ("---", func, desc)
 	
-			device[func] = loadstring(generator)()
+					local nparams=#desc.parameters
+					local generator = "return function("
+					local comma=""
+					for i=1,nparams do
+						generator=generator..comma.."p"..i --parameters
+						comma=","
+					end
+					generator=generator..") callstring='CALL "..module.." " ..func.." '"
+					for i=1,nparams do
+						generator=generator.."..(".."p"..i.." or '') .. ' '" --parameters
+					end
+					generator=generator.." return query_bobot(callstring) end"
+				
+					debug("=========================")
+					debug(generator)
+					debug("=========================")
+			
+					device[func] = loadstring(generator)()
 
+				end
+
+				local devicename = string.upper(string.sub(module, 1, 1))
+				.. string.lower(string.sub(module, 2)) --lleva a "Boton"
+
+				d[devicename]=device
+				device.name=devicename
+			end
 		end
-
-		local devicename = string.upper(string.sub(module, 1, 1))
-			.. string.lower(string.sub(module, 2)) --lleva a "Boton"
-
-		d[devicename]=device
-		device.name=devicename
 	end
 
 	--local meta = { __index}

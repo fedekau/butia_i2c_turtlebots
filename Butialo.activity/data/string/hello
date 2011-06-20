@@ -1,2 +1,0 @@
-name = raw_input("Type your name here: ")
-print "Hello " + name + "!"

@@ -1,4 +1,4 @@
-package.path=package.path..";../bobot/?.lua;../bobot/lib/?.lua"
+package.path=package.path..";bobot/?.lua;lib/?.lua"
 
 require "socket"
 local bobot = require("bobot")
@@ -75,18 +75,20 @@ local function build_devices()
 	for modulename, module in pairs(devices) do
 		local device={}
 		bobot.debugprint ("+++", modulename)
-		module:open(1,1) --FIXME
+		if module.api then
+			module:open(1,1) --FIXME
 
-		for fname, f in pairs(module.api) do
-			bobot.debugprint ("---", fname, f.call)
-			device[fname] = f.call
-		end
+			for fname, f in pairs(module.api) do
+				bobot.debugprint ("---", fname, f.call)
+				device[fname] = f.call
+			end
 
-		local modulename = string.upper(string.sub(modulename, 1, 1))
+			local modulename = string.upper(string.sub(modulename, 1, 1))
 			.. string.lower(string.sub(modulename, 2)) --lleva a "Boton"
 
-		d[modulename]=device
-		device.name=modulename
+			d[modulename]=device
+			device.name=modulename
+		end
 	end
 
 	--local meta = { __index}

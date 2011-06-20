@@ -1,4 +1,0 @@
-import pippy
-
-pippy.sound.playWave(sound='didjeridu', loop=True, duration=5)
-pippy.sound.audioOut()

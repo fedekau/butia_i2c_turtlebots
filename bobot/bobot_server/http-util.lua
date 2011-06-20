@@ -2,13 +2,15 @@ module(..., package.seeall);
 
 local bobot = require("bobot")
 
+local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
+
 --local devices=devices
 function load_file (filename)
-	local served, err = io.open(filename, "r")
+	local served, err = io.open(my_path..filename, "r")
 	if served then
 		return served:read("*all")
 	else
-		bobot.debugprint("Error opening", filename,":", err)
+		bobot.debugprint("Error opening", my_path..filename,":", err)
 	end
 end
 
