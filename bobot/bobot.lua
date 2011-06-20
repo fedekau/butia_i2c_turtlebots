@@ -30,6 +30,7 @@ B.init = function  ( comms )
 	B.baseboards={} --flush the baseboard because this function could be call after hardware remove or adition
 
 	local n_boards, n_boards_total = {}, 0
+	local start_time = os.time()
 
 	repeat
 		for _, comm in ipairs(comms) do
@@ -42,8 +43,8 @@ B.init = function  ( comms )
 				n_boards_total = n_boards_total + n_boards[comm]
 			end
 		end
-		if n_boards_total == 0 then socket.sleep(2) end
-	until n_boards_total > 0    
+		if n_boards_total == 0 then socket.sleep(1) end
+	until n_boards_total > 0 or os.time()-start_time > 4
 	
 	return n_boards_total
 end
