@@ -119,7 +119,7 @@ class robot:
 		return False
 
 	#loopBack: modulo de ayuda presente en el butia (open)
-	def abrirLback(self):
+	def abrirLback(self): #deprecated
 		return self.abrirModulo("lback")
 
 	#loopBack: envia un mensaje a la placa y espera recibir exactamente lo que fue enviado
@@ -134,7 +134,7 @@ class robot:
 	### Operaciones solicidatas al driver motores.lua	
 	######################################################
 
-	def abrirMotores(self):
+	def abrirMotores(self): #deprecated
 		return self.abrirModulo("motores")
 
 	def setVelocidadMotores(self, sentidoIzq = "0", velIzq = "0", sentidoDer = "0", velDer = "0"):
@@ -145,22 +145,9 @@ class robot:
 		msg = idMotor + " " + sentido + " " + vel
 		return self.llamarModulo("motores", "setvelmtr", msg )
 
-	
-	#### Operaciones solicitadas al driver de los sensores
-
-	def abrirSensor(self):
-		return self.abrirModulo("sensor")
-
-	def getValSenAnalog(self, pinAnalog = "0"):
-		return self.llamarModulo("sensor", "senanl", pinAnalog )
-
-	def getValSenDigital(self, pinDig = "0"):
-		return self.llamarModulo("sensor", "sendig", pinDig )
-
-		
 	#### Operaciones solicitadas al modulo de la placa, driver butia.lua
 
-	def abrirButia(self):
+	def abrirButia(self): #deprecated
 		return self.abrirModulo("butia")
 		
 	def ping(self):
@@ -183,10 +170,7 @@ class robot:
 		msg = str(idMotor) + " " + str(angulo)
 		return self.llamarModulo("placa", "setPosicion" , msg )
 
-
-	#### Operaciones solicitadas al driver boton4
-
-	def abrirBoton(self):
+	def abrirBoton(self): #deprecated
 		return self.abrirModulo("boton")
 		
 	def getBoton(self):
