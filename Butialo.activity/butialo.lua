@@ -34,7 +34,7 @@ end
 bobot.init()
 local baseboards = bobot.baseboards
 
-local function get_device_name(n)
+local function get_device_name(devices, n)
 	if not devices[n] then
 		return n
 	end
@@ -52,11 +52,11 @@ end
 function read_devices_list()
 	bobot.debugprint("=Listing Devices")
 	local bfound
-	devices={}
+	local devices={}
 	for b_name, bb in pairs(baseboards) do
     		bobot.debugprint("===board ", b_name)
 		for d_name,d in pairs(bb.devices) do
-			local regname = get_device_name(d_name)
+			local regname = get_device_name(devices, d_name)
 			devices[regname]=d
     			bobot.debugprint("=====d_name ",d_name," regname ",regname)
 		end

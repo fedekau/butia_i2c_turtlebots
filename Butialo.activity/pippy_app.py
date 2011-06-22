@@ -47,7 +47,7 @@ text_buffer = None
 PYTHON_PREFIX = """#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-BUTIALO_REQUIRE = "require 'butialo'"
+BUTIALO_REQUIRE = "require 'butialo'; require 'strict'"
 
 
 OLD_TOOLBAR = False
