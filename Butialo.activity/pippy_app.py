@@ -217,13 +217,13 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
             for _file in files.readlines():
                 _file=_file.strip()
                 entry = {"name": _file,
-                         "path": "ret = "+_(d.capitalize()) + "." + _file+"\n"}
+                         "path": _(d.capitalize()) + "." + _file+"\n"}
                 _iter = self.model.insert_before(olditer, None)
                 self.model.set_value(_iter, 0, entry)
                 self.model.set_value(_iter, 1, entry["name"])
                 
-        direntry = {"name": "Control",
-                    "path": "Control" }
+        direntry = {"name": "Lua Language",
+                    "path": "" }
 
         olditer = self.model.insert_before(None, None)
         self.model.set_value(olditer, 0, direntry)
@@ -246,6 +246,11 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
         self.model.set_value(_iter, 1, entry["name"])
         entry = {"name": "repeat ... until ...",
                  "path": "\nrepeat\n  \nuntil a ~= 1\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+        entry = {"name": "function ... ",
+                 "path": "\nfunction f(a, b)\n  \n  return a,b\nend\n"}
         _iter = self.model.insert_before(olditer, None)
         self.model.set_value(_iter, 0, entry)
         self.model.set_value(_iter, 1, entry["name"])
