@@ -16,6 +16,11 @@
 
 void setup() { 
   Serial.begin(115200);
+  int i;
+  for (i=INIT_PIN; i < NUMBER_PINS; ++i){
+    pinMode(i, INPUT);     
+    digitalWrite(i, LOW); //not pullup
+  };
 }
 
 
@@ -94,8 +99,10 @@ void loop() {
   while ( ! Serial.available() )  ; //wait
   while ( Serial.read() != -1) ; // flush
 
-  Serial.print("### Checkfloating!!!\n");
   int i,j,aux;
+
+/* this check is not usefull
+  Serial.print("### Checkfloating!!!\n");
   //floating check
   for (i=INIT_PIN; i < NUMBER_PINS; ++i){
     pinMode(i, INPUT);     
@@ -110,9 +117,11 @@ void loop() {
       Serial.print(" not flouting\n"); 
     }
   }
+*/
 
   Serial.print("### CheckPullup!!!\n");
   for (i=INIT_PIN; i < NUMBER_PINS; ++i) {
+    pinMode(i, INPUT);     
     digitalWrite(i,1); //pullup
     if (digitalRead(i) == 0) { 
       Serial.print("ERR: pin ");
@@ -124,6 +133,7 @@ void loop() {
   //shortcheck
   Serial.print("### CheckShortcheck!!!\n");
   for (i=INIT_PIN; i < NUMBER_PINS; ++i) {
+    digitalWrite(i,0);  //not pullup
     pinMode(i, OUTPUT);
     digitalWrite(i,0);
     for (j=i+1 ; j < NUMBER_PINS ; ++j) {
@@ -140,9 +150,9 @@ void loop() {
   }
 
   
-  //soulding check 
-  Serial.print("### CheckSoulding!!!\n");
-  //TODO
+//  Serial.print("### CheckSoulding!!!\n");
+  // soulding check Already done in check pull-up
+  // using conector that is a pull-down
 
   Serial.print("FINISH!!!!");
   
