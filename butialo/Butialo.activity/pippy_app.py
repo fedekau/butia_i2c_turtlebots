@@ -47,7 +47,7 @@ text_buffer = None
 PYTHON_PREFIX = """#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-BUTIALO_REQUIRE = "require 'butialo'"
+BUTIALO_REQUIRE = "require 'butialo'; require 'strict'"
 
 
 OLD_TOOLBAR = False
@@ -204,7 +204,7 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
         self.hpane.add1(self.sidebar)
 
         #root = os.path.join(get_bundle_path(), 'data')
-        root = os.popen("./lua parse_bobot_tree.lua /")
+        root = os.popen(". lua parse_bobot_tree.lua /")
         for d in root.readlines():
             d=d.strip()
             direntry = {"name": _(d.capitalize()),
@@ -213,17 +213,17 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
             self.model.set_value(olditer, 0, direntry)
             self.model.set_value(olditer, 1, direntry["name"])
             
-            files = os.popen("./lua parse_bobot_tree.lua %s" % d)
+            files = os.popen(". lua parse_bobot_tree.lua %s" % d)
             for _file in files.readlines():
                 _file=_file.strip()
                 entry = {"name": _file,
-                         "path": "ret = "+_(d.capitalize()) + "." + _file+"\n"}
+                         "path": _(d.capitalize()) + "." + _file+"\n"}
                 _iter = self.model.insert_before(olditer, None)
                 self.model.set_value(_iter, 0, entry)
                 self.model.set_value(_iter, 1, entry["name"])
                 
-        direntry = {"name": "Control",
-                    "path": "Control" }
+        direntry = {"name": "Lua Language",
+                    "path": "" }
 
         olditer = self.model.insert_before(None, None)
         self.model.set_value(olditer, 0, direntry)
@@ -246,6 +246,11 @@ class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
         self.model.set_value(_iter, 1, entry["name"])
         entry = {"name": "repeat ... until ...",
                  "path": "\nrepeat\n  \nuntil a ~= 1\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+        entry = {"name": "function ... ",
+                 "path": "\nfunction f(a, b)\n  \n  return a,b\nend\n"}
         _iter = self.model.insert_before(olditer, None)
         self.model.set_value(_iter, 0, entry)
         self.model.set_value(_iter, 1, entry["name"])

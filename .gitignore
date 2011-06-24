@@ -34,3 +34,5 @@ libs/lua-5.1.4/src/luac
 
 # Also is posible to ignore all subdirectory or files in that directory
 # tmp/**/* 
+
+butialo/staging/**/*
