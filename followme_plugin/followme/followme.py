@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 #Copyright (c) 2011 Alan Aguiar, <alanjas@hotmail.com>
+#Copyright (c) 2011 Aylen Ricca, <ar18_90@hotmail.com>
+#Copyright (c) 2011 Rodrigo Dearmas, <piegrande46@hotmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -75,7 +77,7 @@ class Followme(Plugin):
             palette.add_block('follow',
                             style='basic-style-1arg',
                             label=('FollowMe '),
-                            default=[255, 255, 255],
+                            default=0,
                             help_string=_('Follow a turtle color'),
                             prim_name='follow')
             self.parent.lc.def_prim('follow', 1, lambda self, x: primitive_dictionary['follow'](x))
@@ -99,18 +101,46 @@ class Followme(Plugin):
             self.parent.lc.def_prim('yposition', 0, lambda self: primitive_dictionary['yposition']())
 
     def stop(self):
-        self.cam.stop()
-        self.cam_avaliable = False
-
-    # Block primitives used in talogo
+        if self.cam_avaliable == True:
+            self.cam.stop()
+            self.cam_avaliable = False
 
     def prim_followRGB(self, R, G, B):
-        self.cam.start()
+        if self.cam_avaliable == False:
+            self.cam.start()
+            self.cam_avaliable = True
         self.colorc = (R, G, B)
-        self.cam_avaliable = True
 
     def prim_follow(self, x):
-        self.colorc = x
+        if self.cam_avaliable == False:
+            self.cam.start()
+            self.cam_avaliable = True
+        if x == 0:
+            self.colorc = (253, 0, 0)
+        elif x == 10:
+            self.colorc = (253, 129, 0)
+        elif x == 20:
+            self.colorc = (253, 253, 0)
+        elif x == 30:
+            self.colorc = (0, 253, 0)
+        elif x == 40:
+            self.colorc = (0, 253, 129)
+        elif x == 50:
+            self.colorc = (0, 253, 253)
+        elif x == 60:
+            self.colorc = (0, 129, 253)
+        elif x == 70:
+            self.colorc = (0, 0, 253)
+        elif x == 80:
+            self.colorc = (129, 0, 253)
+        elif x == 90:
+            self.colorc = (253, 0, 253)
+        elif x == -9998:
+            self.colorc = (253, 253, 253)
+        elif x == -9999:
+            self.colorc = (0, 0, 0)
+        else:
+            self.colorc = (253, 253, 253)
 
     def prim_xposition(self):
         try:
