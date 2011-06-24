@@ -33,7 +33,8 @@ from signal import SIGTERM
 from gettext import gettext as _
 
 from sugar.activity import activity
-from activity import ViewSourceActivity, TARGET_TYPE_TEXT
+#xop from activity import ViewSourceActivity, TARGET_TYPE_TEXT
+from activity import TARGET_TYPE_TEXT
 from sugar.activity.activity import ActivityToolbox, \
      EditToolbar, get_bundle_path, get_bundle_name
 from sugar.graphics import style
@@ -47,7 +48,7 @@ text_buffer = None
 PYTHON_PREFIX = """#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-BUTIALO_REQUIRE = "require 'butialo'; require 'strict'"
+BUTIALO_REQUIRE = "require 'butialo'; setfenv(1,_G)"
 
 
 OLD_TOOLBAR = False
@@ -63,8 +64,8 @@ SIZE_Y = gtk.gdk.screen_height()
 
 groupthink_mimetype = 'pickle/groupthink-butialo'
 
-
-class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
+#xop class ButialoActivity(ViewSourceActivity, groupthink.sugar_tools.GroupActivity):
+class ButialoActivity(groupthink.sugar_tools.GroupActivity):
     """Pippy Activity as specified in activity.info"""
     def early_setup(self):
         global text_buffer

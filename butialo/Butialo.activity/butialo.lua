@@ -1,5 +1,6 @@
 package.path=package.path..";bobot/?.lua;lib/?.lua"
 
+local stricter=require "stricter"
 require "socket"
 local bobot = require("bobot")
 local set_debug
@@ -101,9 +102,19 @@ end
 -------------------------------------------
 --export stuff
 wait = socket.sleep
+time = socket.gettime
 DEVICES = build_devices()
 for n, d in pairs(DEVICES) do
 	bobot.debugprint("adding global", n, d)
 	_G[n]=d
 end
+
+--lock down the global environment
+--print ("!!!", _G)
+_G=stricter.make_fixed_proxy(_G)
+--local newgt = stricter.make_fixed_proxy(_G)
+--print("SET",setfenv(1, stricter.make_fixed_proxy(_G)))
+setfenv(1, _G)
+--aasdsdasd="rewrfwr"
+--print ("!!!", _G)
 
