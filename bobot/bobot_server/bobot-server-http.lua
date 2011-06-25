@@ -21,14 +21,10 @@ local dump_template_descr_row=load_template('dumptemplate_descr_row.txt')
 
 local function check_open_device(d, ep1, ep2)
 	if not d then return end
-	if d.handler then
-		--bobot.debugprint ("ls:Already open", d.name, d.handler)
-		return true
-	else
+	if d.handler then return true end
         -- if the device is not open, then open the device
-		bobot.debugprint ("ls:Opening", d.name, d.handler)
-		return d:open(ep1 or 1, ep2 or 1) --TODO asignacion de ep?
-	end
+	bobot.debugprint ("Opening", d.name, d.handler)
+	return d:open(ep1 or 1, ep2 or 1) --TODO asignacion de ep?
 end
 
 local html_list_devices = function (params)

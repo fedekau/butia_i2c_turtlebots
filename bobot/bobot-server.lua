@@ -100,17 +100,6 @@ local function read_devices_list()
 	if not bfound then print ("ls:WARN: No Baseboard found.") end
 end
 
-function check_open_device(d, ep1, ep2)
-	if not d then return end
-	if d.handler then
-		--bobot.debugprint("ls:Already open ", d.name, d.handler)
-		return true
-	else
-		bobot.debugprint ("ls:Opening", d.name, d.handler)
-		return d:open(ep1 or 1, ep2 or 1) --TODO asignacion de ep?
-	end
-end
-
 local function split_words(s)
 	words={}
 

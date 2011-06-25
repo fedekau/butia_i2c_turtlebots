@@ -7,6 +7,15 @@ local bobot = require("bobot")
 --local devices=devices
 --local DEBUG = false
 
+local function check_open_device(d, ep1, ep2)
+	if not d then return end
+	if d.handler then return true end
+
+        -- if the device is not open, then open the device
+	bobot.debugprint ("Opening", d.name, d.handler)
+	return d:open(ep1 or 1, ep2 or 1) --TODO asignacion de ep?
+end
+
 process = {}
 
 process["INIT"] = function () --to check the new state of hardware on the fly
