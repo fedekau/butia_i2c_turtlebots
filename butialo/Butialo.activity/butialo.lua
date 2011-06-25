@@ -1,8 +1,11 @@
 package.path=package.path..";bobot/?.lua;lib/?.lua"
 
 local stricter=require "stricter"
-require "socket"
+local socket=require "socket"
 local bobot = require("bobot")
+local array=require("array")
+
+
 local set_debug
 for i, v in ipairs(arg) do
 	if v=="DEBUG" then
@@ -99,10 +102,12 @@ local function build_devices()
 	return d
 end
 
+
 -------------------------------------------
 --export stuff
 wait = socket.sleep
 time = socket.gettime
+new_array = array.new_array
 DEVICES = build_devices()
 for n, d in pairs(DEVICES) do
 	bobot.debugprint("adding global", n, d)
