@@ -10,7 +10,7 @@ api.get_pote.call = function ()
 	local get_pote_payload = RD_POTE 
 	device:send(get_pote_payload)
 	local pote_response = device:read(3) or char000
-	local raw_val = (string.byte(pote_response, 2) or 0) + (string.byte(pote_response, 3) or 0)
+	local raw_val = (string.byte(pote_response, 2) or 0) + 255*(string.byte(pote_response, 3) or 0)
 	return raw_val
 end
 
