@@ -27,7 +27,7 @@ function M.new_array ()
 		return v
 	end
 
-	t.containing() = function() return data.containing end
+	t.containing = function() return data.containing end
 
 	t.len = function()
 		return #data
