@@ -4,40 +4,94 @@ local queue = {}
 local scheduled_to_queue = {}
 local stop = false
 
-local co_template = [[return 
-function ()
-	local evaluate, op, reference, callback = _G.evaluate, _G.op, _G.reference, _G.callback
---print('++++',evaluate, op, reference, callback)
-	coroutine.yield()
-	local value
+local function in_out_range(in_range, evval, op, value, hysteresis)
+	local evval_n, value_n=tonumber(evval), tonumber(value)
+	--print ("==",in_range,mib, evval..op..value, evval_n, value_n,tostring(evval==value), tostring(evval_n==value_n), hysteresis)
+			
+	if in_range then
+		if ((not evval_n or not value_n ) and 
+				op=="==" and evval~=value) 
+			or
+			(evval_n and value_n and ( 
+				(op=="==" and evval_n~=value_n) or
+				(op=="~=" and evval_n==value_n) or
+				(op==">" and evval_n<=value_n-hysteresis) or
+				(op=="<" and evval_n>=value_n+hysteresis) or
+				(op=="<=" and evval_n>value_n+hysteresis) or
+				(op==">=" and evval_n<value_n+hysteresis)
+			)) 
+		then
+			--exiting range, don't return anything
+			--print ("saliendo")
+			return false, nil
+		else
+			--stay in range, don't return anything
+			--print ("dentro")
+			return true, nil
+		end			
+	else
+		--print ("##"..evval..op..value.."##")
+		if (op=="==" and evval==value) or
+			(evval_n and value_n and ( 
+				(op=="==" and evval_n==value_n) or
+				(op=="~=" and evval_n~=value_n) or
+				(op==">" and evval_n>value_n) or
+				(op=="<" and evval_n<value_n) or
+				(op=="<=" and evval_n<=value_n) or
+				(op==">=" and evval_n>=value_n)
+			)) 
+		then
+			--entering range, return value
+			--print ("entrando")
+			return true, evval
+
+		else
+			--staying out of range, don't return anything
+			--print ("fuera")
+			return false, nil
+		end
+	end
+end
+
+local cache_ev = {}
+
+local function value_tracker (evaluate, op, reference, callback, hysteresis)
+
+	local hysteresis = tonumber(hysteresis) or 0
+
+--print("---value", evaluate, op, reference, callback)
+
+	local in_range,ret=false
+	local evval, cache_evval
 	while true do
-		value = evaluate()
---print('aaaaa', value,op, reference)
-		if value #OP# reference then callback(value) end
+		cache_evval = cache_ev[evaluate]
+		if cache_evval then
+			evval = cache_evval
+		else
+			evval = evaluate()
+			cache_ev[evaluate] = evval
+		end
+
+		in_range, ret = in_out_range(in_range, evval, op, reference, hysteresis)
+		if ret then
+			callback(ret)
+		end
 		coroutine.yield()
 	end
-end]]
+end
 
-function M.add_event (evaluate, op, reference, callback, eventid)
+function M.add ( evaluate, op, reference, callback, eventid, hysteresis )
 	eventid=eventid or "event"..math.random(2^30)
-	local co_s = string.gsub(co_template, "#OP#", op)
---print (co_s)
-	local saveglobal=getfenv(1)
-	_G = { evaluate=evaluate, op=op, reference=reference, callback=callback,
-		loadstring=loadstring, assert=assert, setfenv=setfenv,
-		saveglobal=saveglobal, coroutine=coroutine,_G=_G }
-	setfenv( 1, _G )
-	local co_f = assert( loadstring( co_s, "loadstring:"..eventid) )()
-	local co = coroutine.create( co_f )
-	status, err = coroutine.resume(co)
-	_G = saveglobal
-	setfenv( 1, saveglobal )
-	if err then error("Coroutine for '"..eventid.."' died with '"..err.."'") end
+	
+	local co = coroutine.create(function ()
+	        value_tracker( evaluate, op, reference, callback, hysteresis )
+	end)
 	scheduled_to_queue[eventid] = co
+	return eventid
 --print(co)
 end
 
-function M.remove_event(id)
+function M.remove(id)
 	queue[id]=nil
 end
 
@@ -50,10 +104,10 @@ function M.go ()
 	while true do
 		for id, co in pairs(queue) do
 --print('co', #queue,i, co)
-			status, err = coroutine.resume(co)
-			if err then 
-				error("Coroutine for '"..eventid
-				.."' died with '"..err.."'") 
+			local ok, val = coroutine.resume(co)
+			if not ok then 
+				error("Coroutine for '"..id
+				.."' died with '"..val.."'") 
 			end
 			if stop then return end
 		end
@@ -61,6 +115,7 @@ function M.go ()
 			queue[id]=newco
 			scheduled_to_queue[id] = nil
 		end
+		cache_ev = {}
 	end
 end
 

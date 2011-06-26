@@ -4,7 +4,7 @@ local stricter=require "stricter"
 local socket=require "socket"
 local bobot = require("bobot")
 local array=require("array")
-
+local eventlib=require("event")
 
 local set_debug
 for i, v in ipairs(arg) do
@@ -108,6 +108,7 @@ end
 wait = socket.sleep
 time = socket.gettime
 new_array = array.new_array
+event = eventlib
 DEVICES = build_devices()
 for n, d in pairs(DEVICES) do
 	bobot.debugprint("adding global", n, d)
