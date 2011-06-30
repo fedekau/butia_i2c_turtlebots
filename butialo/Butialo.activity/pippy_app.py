@@ -205,7 +205,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         self.hpane.add1(self.sidebar)
 
         #root = os.path.join(get_bundle_path(), 'data')
-        root = os.popen(". lua parse_bobot_tree.lua /")
+        root = os.popen("./lua parse_bobot_tree.lua /")
         for d in root.readlines():
             d=d.strip()
             direntry = {"name": _(d.capitalize()),
@@ -214,7 +214,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
             self.model.set_value(olditer, 0, direntry)
             self.model.set_value(olditer, 1, direntry["name"])
             
-            files = os.popen(". lua parse_bobot_tree.lua %s" % d)
+            files = os.popen("./lua parse_bobot_tree.lua %s" % d)
             for _file in files.readlines():
                 _file=_file.strip()
                 entry = {"name": _file,

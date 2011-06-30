@@ -12,7 +12,12 @@ debug("path", path)
 local devices = read_devices_list()
 
 if path=="/" then
-	for module,_ in pairs(devices) do
+	local adevices = {}
+	for module, _ in pairs(devices) do
+		adevices[#adevices+1]=module
+	end
+	table.sort(adevices)
+	for _, module in pairs(adevices) do
 		print(module)
 	end
 	return
