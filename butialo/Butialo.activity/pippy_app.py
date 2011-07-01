@@ -27,6 +27,7 @@ import re
 import os
 import gobject
 import time
+import string
 
 from port.style import font_zoom
 from signal import SIGTERM
@@ -205,20 +206,33 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         self.hpane.add1(self.sidebar)
 
         #root = os.path.join(get_bundle_path(), 'data')
-        root = os.popen("./lua parse_bobot_tree.lua /")
+        root = os.popen("./lua parse_bobot_tree.lua")
         for d in root.readlines():
             d=d.strip()
-            direntry = {"name": _(d.capitalize()),
-                        "path": "" } # era d
-            olditer = self.model.insert_before(None, None)
-            self.model.set_value(olditer, 0, direntry)
-            self.model.set_value(olditer, 1, direntry["name"])
-            
-            files = os.popen("./lua parse_bobot_tree.lua %s" % d)
-            for _file in files.readlines():
-                _file=_file.strip()
+
+            words = string.split(d) 
+    	    for w in words:
+            	print '%%%%%%%%%'+w
+
+            words = string.split(d, None, 1)
+            word1=words[0]
+            word2=words[1]
+
+            if word1 != '>':
+                    word1device = word1.capitalize()
+                    if word2 == 'Y':
+		    	direntry = {"name": word1device,
+		                "path": "" } # era d
+                    else:
+		    	direntry = {"name": '* ' + word1device,
+		                "path": "" } # era d
+		    olditer = self.model.insert_before(None, None)
+		    self.model.set_value(olditer, 0, direntry)
+		    self.model.set_value(olditer, 1, direntry["name"])
+            else:
+                _file=word2.strip()
                 entry = {"name": _file,
-                         "path": _(d.capitalize()) + "." + _file+"\n"}
+                         "path": word1device + "." + _file+"\n"}
                 _iter = self.model.insert_before(olditer, None)
                 self.model.set_value(_iter, 0, entry)
                 self.model.set_value(_iter, 1, entry["name"])
@@ -274,7 +288,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
 #                self.model.set_value(_iter, 0, entry)
 #                self.model.set_value(_iter, 1, entry["name"])
 
-        treeview.expand_all()
+        #treeview.expand_all()
 
         # Source buffer
         import gtksourceview2
