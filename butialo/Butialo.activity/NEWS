@@ -4,6 +4,7 @@
 
 2
 
+* New butialo.lua architecture
 * Module list contains also not yet conected devices
 * Module list in alphabetical order, faster loading
 * Bugfixes in array data structure
