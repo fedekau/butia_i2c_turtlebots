@@ -1,5 +1,3 @@
-require "butialo"
-
 --wait(1)
 
 for nombre, d in pairs(DEVICES) do

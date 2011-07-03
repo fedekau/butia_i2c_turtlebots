@@ -6,7 +6,7 @@ local butialo=require "butialo"
 local debug = function() end
 --local debug=function(...) print("PBT", ...) end
 
-local devices = read_devices_list()
+local devices = butialo.bobot_devices
 
 local devicestot, adevices = {}, {}
 local f = assert (io.popen ("ls bobot/drivers/*.lua"))
@@ -48,7 +48,8 @@ if err then debug ('>',err) end
 				print=print,
 				math=math,
 				tonumber=tonumber,
-				tostring=tostring
+				tostring=tostring,
+				api={}
 			}
 			setfenv(f, d) --the driver's environment is the device
 			local status, err=pcall(f) 

@@ -22,9 +22,11 @@ function M.new_array ()
 	end
 
 	t.remove_last = function()
-		local v = data[#data]
-		rawset(data, #data, nil)
-		return v
+		if #data>0 then 
+			local v = data[#data]
+			rawset(data, #data, nil)
+			return v
+		end
 	end
 
 	t.containing = function() return data.containing end
@@ -46,12 +48,13 @@ function M.new_array ()
 				if #data==0 then
 					error("Trying remove an an entry from an empty array", 2)
 				else
-					error("Trying remove an an entry at index "..n
-						..", not in 1-"..#data.." range", 2)
+					error("Trying remove an entry at index "..n
+						..", can be done at index "..#data, 2)
 				end
 			end
+			return
 		end
-		rawset(t,'containing', rawget(t,'containing') or addingtype)
+		rawset(data,'containing', rawget(data,'containing') or addingtype)
 		if type(n)=='number' then
 			local nexti = #data+1
 			if n < 1 then
@@ -59,11 +62,11 @@ function M.new_array ()
 			elseif n > nexti then
 				error("Trying to add an element beyond the position "..nexti
 					.." (the length of the array + 1)", 2)
-			elseif rawget(t,'containing') == addingtype then
+			elseif rawget(data,'containing') == addingtype then
 				rawset(data, n, v)
 			else
 				error("Trying to store a '"..addingtype
-					.."' in a array initialized with '"..t.containing.."'", 2)
+					.."' in a array initialized with '"..tostring(data.containing).."'", 2)
 			end
 		else
 			error("Trying to use a '"..type(n)

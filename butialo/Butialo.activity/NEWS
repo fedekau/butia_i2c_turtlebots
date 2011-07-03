@@ -2,3 +2,9 @@
 
 * First Public Release, derived from Pippy v40
 
+2
+
+* Module list contains also not yet conected devices
+* Module list in alphabetical order, faster loading
+* Bugfixes in array data structure
+

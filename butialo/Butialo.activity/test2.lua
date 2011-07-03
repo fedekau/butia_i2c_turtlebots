@@ -1,14 +1,16 @@
-require "butialo"; setfenv(1,_G)
+--require ("butialo"); setfenv(1,_G)
 
 --wait(1)
 
-for nombre, d in pairs(DEVICES) do
+for nombre, d in pairs(devices) do
 	print (nombre)
 end
 
-print (time())
+print ("global", AAAAA)
+
+print (get_time())
 wait(0.1)
-print (time)
+print (get_time())
 --print (type(asd) )
 print (Pote)
 --Pote=print
@@ -18,23 +20,22 @@ print (Pote)
 
 local a = new_array()
 --a[1]=nil
-print('==',a.containing,a.len())
-
-
-for i=1, a.len() do
-	print(a[i])
-end
+print('==',a.containing(),a.len())
 
 for i=1, 5 do
 	a[i]=i
 end
-print(a.containing)
+for i=1, a.len() do
+	print(a[i])
+end
+
+print(a.containing())
 a.add(60)
 print('-',a.remove_last())
 print('-',a.remove_last())
 for i=1, a.len() do
 	print(a[i])
 end
-a[2]=nil
+--a[2]=nil
 --a[6]='aaa'
 --a[10]=1

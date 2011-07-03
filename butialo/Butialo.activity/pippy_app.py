@@ -49,7 +49,7 @@ text_buffer = None
 PYTHON_PREFIX = """#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-BUTIALO_REQUIRE = "require 'butialo'; setfenv(1,_G)"
+#BUTIALO_REQUIRE = "require 'butialo'; setfenv(1,_G)"
 
 
 OLD_TOOLBAR = False
@@ -420,8 +420,8 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
             #if re.match(r'coding[:=]\s*([-\w.]+)',
             #            '\n'.join(text.splitlines()[:2])) is None:
             #    f.write(PYTHON_PREFIX)
-            f.write(BUTIALO_REQUIRE)
-            f.write("\n")
+            #f.write(BUTIALO_REQUIRE)
+            #f.write("\n")
             for line in text:
                 f.write(line)
 
@@ -465,7 +465,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
 
         self._pid = self._vte.fork_command(
             argv=["/bin/sh", "-c",
-                  "./lua %s; sleep 1" % butialo_app_name],
+                  "./lua butialo.lua %s; sleep 1" % butialo_app_name],
             #envv=["PYTHONPATH=%s/library:%s" % (get_bundle_path(),
             #                                    os.getenv("PYTHONPATH", ""))],
             envv=[],
@@ -506,7 +506,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
             text = open(file_path).read()
             # discard the '#!/usr/bin/python' and 'coding: utf-8' lines,
             # if present
-            text = re.sub(r'^' + re.escape(BUTIALO_REQUIRE), '', text)
+            #text = re.sub(r'^' + re.escape(BUTIALO_REQUIRE), '', text)
             global text_buffer
             text_buffer.set_text(text)
         elif self.metadata['mime_type'] == groupthink_mimetype:

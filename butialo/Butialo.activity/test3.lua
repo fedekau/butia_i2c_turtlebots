@@ -1,4 +1,4 @@
-require 'butialo'; setfenv(1,_G)
+require 'butialo'--; setfenv(1,_G)
 
 --local event=require "event"
 

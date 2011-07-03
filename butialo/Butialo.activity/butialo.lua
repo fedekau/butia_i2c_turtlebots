@@ -1,5 +1,7 @@
 package.path=package.path..";bobot/?.lua;lib/?.lua"
 
+local myscriptname = arg[1]
+
 local stricter=require "stricter"
 local socket=require "socket"
 local bobot = require("bobot")
@@ -53,7 +55,7 @@ local function get_device_name(devices, n)
 	return nn
 end
 
-function read_devices_list()
+local function read_devices_list()
 	bobot.debugprint("=Listing Devices")
 	local bfound
 	local devices={}
@@ -87,8 +89,8 @@ local function build_devices()
 				device[fname] = f.call
 			end
 
-			local modulename = string.upper(string.sub(modulename, 1, 1))
-			.. string.lower(string.sub(modulename, 2)) --lleva a "Boton"
+			--local modulename = string.upper(string.sub(modulename, 1, 1))
+			--.. string.lower(string.sub(modulename, 2)) --lleva a "Boton"
 
 			d[modulename]=device
 			device.name=modulename
@@ -99,28 +101,40 @@ local function build_devices()
 	--setmetatable(d, meta)
 	--setmetatable(n, meta)
 
-	return d
+	return d, devices
 end
 
 
 -------------------------------------------
 --export stuff
-wait = socket.sleep
-time = socket.gettime
-new_array = array.new_array
-event = eventlib
-DEVICES = build_devices()
-for n, d in pairs(DEVICES) do
+local env = {}
+local bobot_devices
+
+env.wait = socket.sleep
+env.get_time = socket.gettime
+env.new_array = array.new_array
+env.events = eventlib
+env.devices, bobot_devices = build_devices()
+for n, d in pairs(env.devices) do
 	bobot.debugprint("adding global", n, d)
-	_G[n]=d
+	local modulename = string.upper(string.sub(n, 1, 1))
+		.. string.lower(string.sub(n, 2)) --lleva a "Boton"
+	env[modulename]=d
 end
 
---lock down the global environment
---print ("!!!", _G)
-_G=stricter.make_fixed_proxy(_G)
---local newgt = stricter.make_fixed_proxy(_G)
---print("SET",setfenv(1, stricter.make_fixed_proxy(_G)))
-setfenv(1, _G)
---aasdsdasd="rewrfwr"
---print ("!!!", _G)
+for k,v in pairs(_G) do env[k]=v end
+--for k,v in pairs(env) do print ('ENV', k, v) end
+
+if myscriptname then
+	local myscript = assert(loadfile(myscriptname))
+
+	env=stricter.make_fixed_proxy(env)
+	setfenv(myscript, env)
+
+	myscript()
+else
+	env.bobot_devices=bobot_devices
+	return env
+end
+
 
