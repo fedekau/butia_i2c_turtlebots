@@ -33,10 +33,18 @@ static int proccess_return_code(lua_State *L, int ret) {
 /*
  * helper. pushes a number into the stack, and makes it a global with a name 
 */
-static void push_integer_global(lua_State *L, int i, const char * n) {
-	lua_pushnumber(L, i);
-	lua_setglobal(L, n);
+//static void push_integer_global(lua_State *L, int i, const char * n) {
+//	lua_pushnumber(L, i);
+//	lua_setglobal(L, n);
+//}
+
+void setfield (lua_State *L, int value, const char *index) {
+	lua_pushstring(L, index);
+	lua_pushnumber(L, value);
+	lua_settable(L, -3);
 }
+
+
 
 static int l_usb_find_busses(lua_State *L) {
 	int ret = usb_find_busses();
@@ -465,34 +473,34 @@ int luaopen_libusb(lua_State *L) {
 
 	 luaL_register(L, "libusb", libusb); // {usb}*/
 
-	push_integer_global(L, USB_CLASS_PER_INTERFACE, "USB_CLASS_PER_INTERFACE");
-	push_integer_global(L, USB_CLASS_AUDIO,"USB_CLASS_AUDIO");
-	push_integer_global(L, USB_CLASS_COMM,"USB_CLASS_COMM");
-	push_integer_global(L, USB_CLASS_HID,"USB_CLASS_HID");
-	push_integer_global(L, USB_CLASS_PRINTER,"USB_CLASS_PRINTER");
-	push_integer_global(L, USB_CLASS_PTP,"USB_CLASS_PTP");
-	push_integer_global(L, USB_CLASS_MASS_STORAGE,"USB_CLASS_MASS_STORAGE");
-	push_integer_global(L, USB_CLASS_HUB,"USB_CLASS_HUB");
-	push_integer_global(L, USB_CLASS_DATA,"USB_CLASS_DATA");
-	push_integer_global(L, USB_CLASS_VENDOR_SPEC,"USB_CLASS_VENDOR_SPEC");
+	setfield(L, USB_CLASS_PER_INTERFACE, "USB_CLASS_PER_INTERFACE");
+	setfield(L, USB_CLASS_AUDIO,"USB_CLASS_AUDIO");
+	setfield(L, USB_CLASS_COMM,"USB_CLASS_COMM");
+	setfield(L, USB_CLASS_HID,"USB_CLASS_HID");
+	setfield(L, USB_CLASS_PRINTER,"USB_CLASS_PRINTER");
+	setfield(L, USB_CLASS_PTP,"USB_CLASS_PTP");
+	setfield(L, USB_CLASS_MASS_STORAGE,"USB_CLASS_MASS_STORAGE");
+	setfield(L, USB_CLASS_HUB,"USB_CLASS_HUB");
+	setfield(L, USB_CLASS_DATA,"USB_CLASS_DATA");
+	setfield(L, USB_CLASS_VENDOR_SPEC,"USB_CLASS_VENDOR_SPEC");
 
-	push_integer_global(L, USB_DT_DEVICE,"USB_DT_DEVICE");
-	push_integer_global(L, USB_DT_CONFIG,"USB_DT_CONFIG");
-	push_integer_global(L, USB_DT_STRING,"USB_DT_STRING");
-	push_integer_global(L, USB_DT_INTERFACE,"USB_DT_INTERFACE");
-	push_integer_global(L, USB_DT_ENDPOINT,"USB_DT_ENDPOINT");
+	setfield(L, USB_DT_DEVICE,"USB_DT_DEVICE");
+	setfield(L, USB_DT_CONFIG,"USB_DT_CONFIG");
+	setfield(L, USB_DT_STRING,"USB_DT_STRING");
+	setfield(L, USB_DT_INTERFACE,"USB_DT_INTERFACE");
+	setfield(L, USB_DT_ENDPOINT,"USB_DT_ENDPOINT");
 
-	push_integer_global(L, USB_DT_HID,"USB_DT_HID");
-	push_integer_global(L, USB_DT_REPORT,"USB_DT_REPORT");
-	push_integer_global(L, USB_DT_PHYSICAL,"USB_DT_PHYSICAL");
-	push_integer_global(L, USB_DT_HUB,"USB_DT_HUB");
+	setfield(L, USB_DT_HID,"USB_DT_HID");
+	setfield(L, USB_DT_REPORT,"USB_DT_REPORT");
+	setfield(L, USB_DT_PHYSICAL,"USB_DT_PHYSICAL");
+	setfield(L, USB_DT_HUB,"USB_DT_HUB");
 
-	push_integer_global(L, USB_DT_DEVICE_SIZE,"USB_DT_DEVICE_SIZE");
-	push_integer_global(L, USB_DT_CONFIG_SIZE,"USB_DT_CONFIG_SIZE");
-	push_integer_global(L, USB_DT_INTERFACE_SIZE,"USB_DT_INTERFACE_SIZE");
-	push_integer_global(L, USB_DT_ENDPOINT_SIZE,"USB_DT_ENDPOINT_SIZE");
-	push_integer_global(L, USB_DT_ENDPOINT_AUDIO_SIZE,"USB_DT_ENDPOINT_AUDIO_SIZE");
-	push_integer_global(L, USB_DT_HUB_NONVAR_SIZE,"USB_DT_HUB_NONVAR_SIZE");
+	setfield(L, USB_DT_DEVICE_SIZE,"USB_DT_DEVICE_SIZE");
+	setfield(L, USB_DT_CONFIG_SIZE,"USB_DT_CONFIG_SIZE");
+	setfield(L, USB_DT_INTERFACE_SIZE,"USB_DT_INTERFACE_SIZE");
+	setfield(L, USB_DT_ENDPOINT_SIZE,"USB_DT_ENDPOINT_SIZE");
+	setfield(L, USB_DT_ENDPOINT_AUDIO_SIZE,"USB_DT_ENDPOINT_AUDIO_SIZE");
+	setfield(L, USB_DT_HUB_NONVAR_SIZE,"USB_DT_HUB_NONVAR_SIZE");
 
 	return 1;
 }
