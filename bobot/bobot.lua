@@ -16,7 +16,7 @@ package.path=package.path..";"..my_path.."lib/?.lua"
 
 local socket=require('socket')
 
-B = {}
+local B = {}
 
 B.debugprint = print --function() end  --do not print anything by default
 

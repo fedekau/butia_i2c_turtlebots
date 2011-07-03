@@ -1,6 +1,6 @@
 #!/usr/bin/lua
 
-module(..., package.seeall);
+--module(..., package.seeall);
 
 local bobot_device = require("bobot_device")
 local bobot = require("bobot")
@@ -20,7 +20,7 @@ local CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE	= 5
 local TIMEOUT	                                = 250 --ms
 local MAX_RETRY 				                = 20
 
-BaseBoard = {}
+local BaseBoard = {}
 
 --Instantiates BaseBoard object.
 --Loads list of modules installed on baseboard
@@ -33,6 +33,7 @@ function BaseBoard:new(bb)
    	setmetatable(bb, self)
 	self.__index = self
 
+	local retry = 0
 	bb.devices = {}
 	--read modules list
 	local n_modules=bb:get_user_modules_size()
@@ -48,10 +49,10 @@ function BaseBoard:new(bb)
 		while(name == nil and retry < MAX_RETRY) do
 			name=bb:get_user_module_line(i)
 			bobot.debugprint("u4b:new:the module name returned a nil value, trying to recover...")
-            retry = retry+1
+			retry = retry+1
 		end
 		assert(name)
-		local d = bobot_device.Device:new({name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
+		local d = bobot_device:new({name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
 		bb.devices[name]=d
 	end	
 --bobot.debugprint ('----------------')
@@ -89,7 +90,7 @@ function BaseBoard:get_user_modules_size()
 	local get_user_modules_size_packet  = handler_packet .. admin_packet    
 
 	local write_res = comms.send(ADMIN_MODULE_IN_ENDPOINT, get_user_modules_size_packet, TIMEOUT)
-    if write_res then
+	if write_res then
          	local data, err = comms.read(ADMIN_MODULE_OUT_ENDPOINT, GET_LINES_RESPONSE_PACKET_SIZE, TIMEOUT)
 		if not data then
 			bobot.debugprint("u4b:get_user_modules_size:comunication with I/O board read error", err)
@@ -99,6 +100,7 @@ function BaseBoard:get_user_modules_size()
 			return user_modules_size
 		end
 	else	
+	local retry = 0
         while(write_res == nil and retry < MAX_RETRY) do
 			write_res = comms.send(ADMIN_MODULE_IN_ENDPOINT, get_user_modules_size_packet, TIMEOUT)
 			bobot.debugprint("u4b:get_user_modules_size:comunication with I/O board write error", write_res)
@@ -206,3 +208,4 @@ function BaseBoard:force_close_all()
 	end
 end
 
+return BaseBoard

@@ -6,7 +6,7 @@ for nombre, d in pairs(devices) do
 	print (nombre)
 end
 
-print ("global", AAAAA)
+--print ("global", AAAAA)
 
 print (get_time())
 wait(0.1)

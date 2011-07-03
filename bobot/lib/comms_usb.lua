@@ -1,10 +1,11 @@
-module(..., package.seeall);
+--module(..., package.seeall);
 
 local bobot_baseboard = require("bobot_baseboard")
 local bobot = require("bobot")
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 assert(package.loadlib(my_path .. "libluausb.so","luaopen_libusb"))()
+local libusb=libusb; _G.libusb=nil
 
 local usb_bulk_write = libusb.bulk_write
 local usb_bulk_read = libusb.bulk_read
@@ -18,7 +19,10 @@ local READ_HEADER_SIZE      = 3
 
 local libusb_handler 
 
-function send(endpoint, data, timeout)
+
+local comms_usb = {}
+
+function comms_usb.send(endpoint, data, timeout)
 	--parameters sanity check
 	assert(type(libusb_handler)=="userdata")
 	assert(type(endpoint)=="number")
@@ -28,7 +32,7 @@ function send(endpoint, data, timeout)
 	return usb_bulk_write(libusb_handler, endpoint, data, timeout)
 end
 
-function read(endpoint, len, timeout)
+function comms_usb.read(endpoint, len, timeout)
 	--parameters sanity check
 	assert(type(libusb_handler)=="userdata")
 	assert(type(endpoint)=="number")
@@ -39,7 +43,7 @@ function read(endpoint, len, timeout)
 end
 
 
-function init(baseboards)
+function comms_usb.init(baseboards)
 	--parameters sanity check
 	assert(type(baseboards)=="table")
 
@@ -75,7 +79,7 @@ function init(baseboards)
 
 				--success initializing, instantiate BaseBoard object and register
 				local iSerial=descriptor.iSerialNumber
-				local bb = bobot_baseboard.BaseBoard:new({idBoard=iSerial, comms=comms_usb})
+				local bb = bobot_baseboard:new({idBoard=iSerial, comms=comms_usb})
 				--bb:force_close_all()
 				if baseboards[iSerial] then
 					bobot.debugprint("Warning: skipping already present board:", iSerial)
@@ -90,3 +94,4 @@ function init(baseboards)
 	return n_boards
 end
 
+return comms_usb

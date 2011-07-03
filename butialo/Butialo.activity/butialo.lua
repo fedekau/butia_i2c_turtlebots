@@ -123,7 +123,7 @@ for n, d in pairs(env.devices) do
 end
 
 for k,v in pairs(_G) do env[k]=v end
---for k,v in pairs(env) do print ('ENV', k, v) end
+for k,v in pairs(env) do print ('ENV', k, v) end
 
 if myscriptname then
 	local myscript = assert(loadfile(myscriptname))

@@ -1,4 +1,4 @@
-module(..., package.seeall);
+--module(..., package.seeall);
 
 local bobot = require("bobot")
 
@@ -21,7 +21,7 @@ local READ_HEADER_SIZE		        = 3
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 
-Device = {
+local Device = {
 	--some usefull stuff for the drivers to use
 	string=string,
 	print=bobot.debugprint,
@@ -197,3 +197,6 @@ function Device:read(len)
 
 	return data_h, err
 end
+
+return Device
+

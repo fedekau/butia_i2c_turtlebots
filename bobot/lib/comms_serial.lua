@@ -1,4 +1,4 @@
-module(..., package.seeall);
+--module(..., package.seeall);
 
 --local socket=require("socket")
 
@@ -7,6 +7,7 @@ local bobot = require("bobot")
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 assert(package.loadlib(my_path .. "lua_serialcomm.so","luaopen_serialcomm"))()
+local serialcomm=serialcomm; _G.serialcomm=nil
 
 local serial_handler 
 
@@ -19,15 +20,16 @@ local function run_shell (s)
 end
 
 local function split_words(s)
-	words={}
+	local words={}
 	for p in string.gmatch(s, "%S+") do
 		words[#words+1]=p
 	end
 	return words
 end
 
+local comms_serial = {}
 
-function send(endpoint, data, timeout)
+function comms_serial.send(endpoint, data, timeout)
 	--parameters sanity check
 	assert(type(serial_handler)=="number")
 	--assert(type(endpoint)=="number")
@@ -40,7 +42,7 @@ function send(endpoint, data, timeout)
 	return ret
 end
 
-function read(endpoint, len, timeout)
+function comms_serial.read(endpoint, len, timeout)
 	--parameters sanity check
 	assert(type(serial_handler)=="number")
 	--assert(type(endpoint)=="number")
@@ -51,7 +53,7 @@ function read(endpoint, len, timeout)
 end
     
 
-function init(baseboards)
+function comms_serial.init(baseboards)
 	--parameters sanity check
 	assert(type(baseboards)=="table")
 
@@ -82,9 +84,10 @@ function init(baseboards)
 		return 0, err
 	end
 	bobot.debugprint ("cs:", tty)
-	local bb = bobot_baseboard.BaseBoard:new({idBoard=tty, comms=comms_serial})
+	local bb = bobot_baseboard:new({idBoard=tty, comms=comms_serial})
 	baseboards[tty]=bb
 
 	return 1
 end
 
+return comms_serial

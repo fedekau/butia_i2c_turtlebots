@@ -101,7 +101,7 @@ local function read_devices_list()
 end
 
 local function split_words(s)
-	words={}
+	local words={}
 
 	for p in string.gmatch(s, "%S+") do
 		words[#words+1]=p
