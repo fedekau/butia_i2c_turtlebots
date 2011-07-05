@@ -25,22 +25,25 @@ end
 table.sort(adevices)
 for _, module in pairs(adevices) do
 	device = devices[module]
-	if device and device.api then
-		print(module, "Y")
-		for func, desc in pairs(device.api) do
-			local nparams=#desc.parameters
-			local generator = func.."( "
-			local comma=""
-			for i=1,nparams do
-				generator=generator..comma..(desc.parameters[i].rname or "p"..i) --parameters
-				comma=","
+	if device then
+		if device.api then 
+			print(module, "Y")
+			for func, desc in pairs(device.api) do
+				local nparams=#desc.parameters
+				local generator = func.."( "
+				local comma=""
+				for i=1,nparams do
+					generator=generator..comma..(desc.parameters[i].rname or "p"..i) --parameters
+					comma=","
+				end
+				generator=generator.." )"
+				print ('>',generator)
 			end
-			generator=generator.." )"
-			print ('>',generator)
 		end
 	else
+		local f, err = loadfile("bobot/drivers/"..module..".lua", "(driver)"..module)
+		if f then 
 			print(module, "N")
-			local f, err = loadfile("bobot/drivers/"..module..".lua", "(driver)"..module)
 if err then debug ('>',err) end
 			local d = {
 				--some usefull stuff for the drivers to use
@@ -54,7 +57,6 @@ if err then debug ('>',err) end
 			setfenv(f, d) --the driver's environment is the device
 			local status, err=pcall(f) 
 if err then debug ('>',err) end
-
 			for func, desc in pairs(d.api) do
 				local nparams=#desc.parameters
 				local generator = func.."( "
@@ -66,7 +68,7 @@ if err then debug ('>',err) end
 				generator=generator.." )"
 				print ('>',generator)
 			end
-			
+		end			
 	end
 end
 
