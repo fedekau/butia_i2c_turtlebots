@@ -9,17 +9,13 @@ local function in_out_range(in_range, evval, op, value, hysteresis)
 	--print ("==",in_range,mib, evval..op..value, evval_n, value_n,tostring(evval==value), tostring(evval_n==value_n), hysteresis)
 			
 	if in_range then
-		if ((not evval_n or not value_n ) and 
-				op=="==" and evval~=value) 
-			or
-			(evval_n and value_n and ( 
-				(op=="==" and evval_n~=value_n) or
-				(op=="~=" and evval_n==value_n) or
-				(op==">" and evval_n<=value_n-hysteresis) or
-				(op=="<" and evval_n>=value_n+hysteresis) or
-				(op=="<=" and evval_n>value_n+hysteresis) or
-				(op==">=" and evval_n<value_n+hysteresis)
-			)) 
+		if (op=="==" and evval~=value) or (op=="~=" and evval==value) 
+		or (evval_n and value_n and ( 
+			(op==">" and evval_n<=value_n-hysteresis) or
+			(op=="<" and evval_n>=value_n+hysteresis) or
+			(op=="<=" and evval_n>value_n+hysteresis) or
+			(op==">=" and evval_n<value_n-hysteresis)
+		)) 
 		then
 			--exiting range, don't return anything
 			--print ("saliendo")
@@ -31,20 +27,17 @@ local function in_out_range(in_range, evval, op, value, hysteresis)
 		end			
 	else
 		--print ("##"..evval..op..value.."##")
-		if (op=="==" and evval==value) or
-			(evval_n and value_n and ( 
-				(op=="==" and evval_n==value_n) or
-				(op=="~=" and evval_n~=value_n) or
-				(op==">" and evval_n>value_n) or
-				(op=="<" and evval_n<value_n) or
-				(op=="<=" and evval_n<=value_n) or
-				(op==">=" and evval_n>=value_n)
-			)) 
+		if (op=="==" and evval==value) or (op=="~=" and evval~=value) 
+		or (evval_n and value_n and ( 
+			(op==">" and evval_n>value_n) or
+			(op=="<" and evval_n<value_n) or
+			(op=="<=" and evval_n<=value_n) or
+			(op==">=" and evval_n>=value_n)
+		)) 
 		then
 			--entering range, return value
 			--print ("entrando")
 			return true, evval
-
 		else
 			--staying out of range, don't return anything
 			--print ("fuera")
