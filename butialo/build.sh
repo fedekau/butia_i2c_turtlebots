@@ -9,7 +9,7 @@ cd ../bobot/lib
 make
 
 cd $CURRDIR
-cp -Lr Butialo.activity staging/
+cp -Lr Butialo.activity -t staging
 
 cd staging/Butialo.activity/bobot/drivers/
 rm ax.lua boot.lua buzzer.lua debug.lua ledA.lua ledR.lua ledV.lua \
@@ -18,7 +18,7 @@ rm ax.lua boot.lua buzzer.lua debug.lua ledA.lua ledR.lua ledV.lua \
 
 cd $CURRDIR
 cd staging/Butialo.activity
-python setup.py fix_manifest
+#python setup.py fix_manifest
 python setup.py dist_xo
 
 cd $CURRDIR
