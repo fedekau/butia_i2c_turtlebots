@@ -1,21 +1,18 @@
 local M = {}
 
 local queue = {}
-local scheduled_to_queue = {}
+local scheduled_to_queue -- = {}
 local stop = false
 
-local function in_out_range(in_range, evval, op, value, hysteresis)
-	local evval_n, value_n=tonumber(evval), tonumber(value)
-	--print ("==",in_range,mib, evval..op..value, evval_n, value_n,tostring(evval==value), tostring(evval_n==value_n), hysteresis)
-			
+local function in_out_range(in_range, evval, op, reference, hysteresis_below, hysteresis_above)
+print(in_range, evval, op, reference, hysteresis_below, hysteresis_above)
 	if in_range then
-		if (op=="==" and evval~=value) or (op=="~=" and evval==value) 
-		or (evval_n and value_n and ( 
-			(op==">" and evval_n<=value_n-hysteresis) or
-			(op=="<" and evval_n>=value_n+hysteresis) or
-			(op=="<=" and evval_n>value_n+hysteresis) or
-			(op==">=" and evval_n<value_n-hysteresis)
-		)) 
+		if ( op == ">" and evval <= hysteresis_below )
+		or ( op == "<" and evval >= hysteresis_above )
+		or ( op == "<=" and evval > hysteresis_above )
+		or ( op == ">=" and evval < hysteresis_below )
+		or ( op == "==" and evval ~= reference ) 
+		or ( op == "~=" and evval == reference ) 
 		then
 			--exiting range, don't return anything
 			--print ("saliendo")
@@ -26,14 +23,12 @@ local function in_out_range(in_range, evval, op, value, hysteresis)
 			return true, nil
 		end			
 	else
-		--print ("##"..evval..op..value.."##")
-		if (op=="==" and evval==value) or (op=="~=" and evval~=value) 
-		or (evval_n and value_n and ( 
-			(op==">" and evval_n>value_n) or
-			(op=="<" and evval_n<value_n) or
-			(op=="<=" and evval_n<=value_n) or
-			(op==">=" and evval_n>=value_n)
-		)) 
+		if ( op == ">" and evval > reference) 
+		or ( op == "<" and evval < reference) 
+		or ( op == "<=" and evval <= reference)
+		or ( op == ">=" and evval >= reference)
+		or ( op == "==" and evval == reference) 
+		or ( op == "~=" and evval ~= reference) 
 		then
 			--entering range, return value
 			--print ("entrando")
@@ -50,11 +45,17 @@ local cache_ev = {}
 
 local function value_tracker (evaluate, op, reference, callback, hysteresis)
 
-	local hysteresis = tonumber(hysteresis) or 0
+	hysteresis = tonumber(hysteresis) or 0
+	local hysteresis_below, hysteresis_above = reference, reference
+print (type (reference))
+	if type (reference) == 'number' then
+		hysteresis_below, hysteresis_above = reference - hysteresis, reference + hysteresis
+print ("---",reference, hysteresis,hysteresis_below, hysteresis_above )
+	end
 
 --print("---value", evaluate, op, reference, callback)
 
-	local in_range,ret=false
+	local in_range,ret = false, nil
 	local evval, cache_evval
 	while true do
 		cache_evval = cache_ev[evaluate]
@@ -65,7 +66,7 @@ local function value_tracker (evaluate, op, reference, callback, hysteresis)
 			cache_ev[evaluate] = evval
 		end
 
-		in_range, ret = in_out_range(in_range, evval, op, reference, hysteresis)
+		in_range, ret = in_out_range(in_range, evval, op, reference, hysteresis_below, hysteresis_above)
 		if ret then
 			callback(ret)
 		end
@@ -73,12 +74,13 @@ local function value_tracker (evaluate, op, reference, callback, hysteresis)
 	end
 end
 
-function M.add ( evaluate, op, reference, callback, eventid, hysteresis )
+function M.add ( evaluate, op, reference, callback, hysteresis, eventid )
 	eventid=eventid or "event"..math.random(2^30)
 	
 	local co = coroutine.create(function ()
 	        value_tracker( evaluate, op, reference, callback, hysteresis )
 	end)
+	scheduled_to_queue = scheduled_to_queue or {}
 	scheduled_to_queue[eventid] = co
 	return eventid
 --print(co)
@@ -104,10 +106,13 @@ function M.go ()
 			end
 			if stop then return end
 		end
-		for id, newco in pairs(scheduled_to_queue) do
-			queue[id]=newco
-			scheduled_to_queue[id] = nil
-		end
+		if scheduled_to_queue then
+			for id, newco in pairs(scheduled_to_queue) do
+				queue[id]=newco
+				scheduled_to_queue[id] = nil
+			end
+			scheduled_to_queue = nil
+		end 
 		cache_ev = {}
 	end
 end

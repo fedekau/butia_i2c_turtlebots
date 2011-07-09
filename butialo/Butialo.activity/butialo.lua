@@ -6,7 +6,7 @@ local stricter=require "stricter"
 local socket=require "socket"
 local bobot = require("bobot")
 local array=require("array")
-local eventlib=require("event")
+local eventlib=require("events")
 
 local set_debug
 for i, v in ipairs(arg) do
@@ -75,10 +75,10 @@ end
 
 local function build_devices()
 	
-	local devices = read_devices_list()
+	local bobot_devices = read_devices_list()
 
 	local d = {}
-	for modulename, module in pairs(devices) do
+	for modulename, module in pairs(bobot_devices) do
 		local device={}
 		bobot.debugprint ("+++", modulename)
 		if module.api then
@@ -101,7 +101,7 @@ local function build_devices()
 	--setmetatable(d, meta)
 	--setmetatable(n, meta)
 
-	return d, devices
+	return d, bobot_devices
 end
 
 
