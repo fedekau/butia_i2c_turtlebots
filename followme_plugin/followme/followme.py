@@ -82,6 +82,14 @@ class Followme(Plugin):
                             prim_name='follow')
             self.parent.lc.def_prim('follow', 1, lambda self, x: primitive_dictionary['follow'](x))
 
+            primitive_dictionary['calibrate'] = self.prim_calibrate
+            palette.add_block('calibrate',
+                            style='basic-style',
+                            label=('Calibrate'),
+                            help_string=_('Calibrate a color to Follow'),
+                            prim_name='calibrate')
+            self.parent.lc.def_prim('calibrate', 0, lambda self: primitive_dictionary['calibrate']())
+
             primitive_dictionary['xposition'] = self.prim_xposition
             palette.add_block('xposition',
                               style='box-style',
@@ -141,6 +149,32 @@ class Followme(Plugin):
             self.colorc = (0, 0, 0)
         else:
             self.colorc = (253, 253, 253)
+
+    def prim_calibrate(self):
+        if self.cam_avaliable == False:
+            self.cam.start()
+            self.cam_avaliable = True
+        self.screen = pygame.display.set_mode((1200,900))
+        self.clock = pygame.time.Clock()
+        self.clock.tick(10)
+        run = True
+        while run:
+            while gtk.events_pending():
+                gtk.main_iteration()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                # click o tecla
+                elif event.type == 3:
+                    run = False
+            self.capture = self.cam.get_image(self.capture)
+            self.capture = pygame.transform.flip(self.capture, True, False)
+            self.screen.blit(self.capture, (0,0))
+            rect = pygame.draw.rect(self.screen, (255,0,0), (100,100,50,50), 4)
+            self.colorc = pygame.transform.average_color(self.capture, rect)
+            self.screen.fill(self.colorc, (320,240,100,100))
+            pygame.display.flip()
+        self.screen = pygame.display.quit()
 
     def prim_xposition(self):
         try:
