@@ -159,19 +159,19 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         actions_toolbar.insert(stopbutton, -1)
 
         # The "clear" button
-        clearicon_bw = gtk.Image()
-        clearicon_bw.set_from_file("%s/icons/eraser_bw.svg" % os.getcwd())
-        clearicon_color = gtk.Image()
-        clearicon_color.set_from_file("%s/icons/eraser_color.svg" %
-                                      os.getcwd())
-        clearbutton = ToolButton(label=_("_Clear"))
-        clearbutton.props.accelerator = _('<alt>c')
-        clearbutton.set_icon_widget(clearicon_bw)
-        clearbutton.connect('clicked', self.clearbutton_cb)
-        clearbutton.connect('clicked', self.flash_cb, dict({'bw': clearicon_bw,
-            'color': clearicon_color}))
-        clearbutton.set_tooltip("Clear")
-        actions_toolbar.insert(clearbutton, -1)
+        #clearicon_bw = gtk.Image()
+        #clearicon_bw.set_from_file("%s/icons/eraser_bw.svg" % os.getcwd())
+        #clearicon_color = gtk.Image()
+        #clearicon_color.set_from_file("%s/icons/eraser_color.svg" %
+        #                              os.getcwd())
+        #clearbutton = ToolButton(label=_("_Clear"))
+        #clearbutton.props.accelerator = _('<alt>c')
+        #clearbutton.set_icon_widget(clearicon_bw)
+        #clearbutton.connect('clicked', self.clearbutton_cb)
+        #clearbutton.connect('clicked', self.flash_cb, dict({'bw': clearicon_bw,
+        #    'color': clearicon_color}))
+        #clearbutton.set_tooltip("Clear")
+        #actions_toolbar.insert(clearbutton, -1)
 
         activity_toolbar.show()
 
@@ -269,6 +269,35 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         _iter = self.model.insert_before(olditer, None)
         self.model.set_value(_iter, 0, entry)
         self.model.set_value(_iter, 1, entry["name"])
+
+
+        direntry = {"name": "Events",
+                    "path": "" }
+        olditer = self.model.insert_before(None, None)
+        self.model.set_value(olditer, 0, direntry)
+        self.model.set_value(olditer, 1, direntry["name"])
+
+        entry = {"name": "add( func, op, ref, action, [hyst], [name] )",
+                 "path": "\nname = events.add( func, '>', 0, action )\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+        entry = {"name": "remove( name )",
+                 "path": "\nevents.remove( name )\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+        entry = {"name": "go()",
+                 "path": "\nevents.go()\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+        entry = {"name": "stop()",
+                 "path": "\nevents.stop()\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+
         
 #        for d in sorted(os.listdir(root)):
 #            if not os.path.isdir(os.path.join(root, d)):
@@ -380,7 +409,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         self.save()
         model, _iter = column.get_selected()
         value = model.get_value(_iter, 0)
-        self._logger.debug("clicked! %s" % value['path'])
+        #self._logger.debug("clicked! %s" % value['path'])
         global text_buffer
         text_buffer.insert_at_cursor(value['path']) 
 #        _file = open(value['path'], 'r')
@@ -401,14 +430,14 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         button.show_all()
         gobject.timeout_add(400, self.timer_cb, button, icons)
 
-    def clearbutton_cb(self, button):
-        self.save()
-        global text_buffer
-        text_buffer.set_text("")
-        self.metadata['title'] = _('%s Activity') % get_bundle_name()
-        self.stopbutton_cb(None)
-        self._reset_vte()
-        self.text_view.grab_focus()
+#    def clearbutton_cb(self, button):
+#        self.save()
+#        global text_buffer
+#        text_buffer.set_text("")
+#        self.metadata['title'] = _('%s Activity') % get_bundle_name()
+#        self.stopbutton_cb(None)
+#        self._reset_vte()
+#        self.text_view.grab_focus()
 
     def _write_text_buffer(self, filename):
         global text_buffer
