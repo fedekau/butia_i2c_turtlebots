@@ -232,7 +232,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
             else:
                 _file=word2.strip()
                 entry = {"name": _file,
-                         "path": word1device + "." + _file+"\n"}
+                         "path": word1device + "." + _file+" "}
                 _iter = self.model.insert_before(olditer, None)
                 self.model.set_value(_iter, 0, entry)
                 self.model.set_value(_iter, 1, entry["name"])
@@ -265,7 +265,12 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         self.model.set_value(_iter, 0, entry)
         self.model.set_value(_iter, 1, entry["name"])
         entry = {"name": "function ... ",
-                 "path": "\nfunction f(a, b)\n  \n  return a,b\nend\n"}
+                 "path": "\nlocal f = function f(a, b)\n  \n  return a,b\nend\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+        entry = {"name": "--comment ",
+                 "path": "--comentario\n"}
         _iter = self.model.insert_before(olditer, None)
         self.model.set_value(_iter, 0, entry)
         self.model.set_value(_iter, 1, entry["name"])
@@ -278,7 +283,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         self.model.set_value(olditer, 1, direntry["name"])
 
         entry = {"name": "add( func, op, ref, action, [hyst], [name] )",
-                 "path": "\nname = events.add( func, '>', 0, action )\n"}
+                 "path": "\nlocal name = events.add( func, '>', 0, action )\n"}
         _iter = self.model.insert_before(olditer, None)
         self.model.set_value(_iter, 0, entry)
         self.model.set_value(_iter, 1, entry["name"])
