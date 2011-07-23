@@ -173,6 +173,21 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         #clearbutton.set_tooltip("Clear")
         #actions_toolbar.insert(clearbutton, -1)
 
+        # The "beautify" button
+        beautifyicon_bw = gtk.Image()
+        beautifyicon_bw.set_from_file("%s/icons/beautifyicon_bw.svg" % os.getcwd())
+        beautifyicon_color = gtk.Image()
+        beautifyicon_color.set_from_file("%s/icons/beautifyicon_color.svg" %
+                                      os.getcwd())
+        beautifybutton = ToolButton(label=_("_Auto-format"))
+        beautifybutton.props.accelerator = _('<alt>c')
+        beautifybutton.set_icon_widget(beautifyicon_bw)
+        beautifybutton.connect('clicked', self.beautifybutton_cb)
+        beautifybutton.connect('clicked', self.flash_cb, dict({'bw': beautifyicon_bw,
+            'color': beautifyicon_color}))
+        beautifybutton.set_tooltip("Auto-format")
+        actions_toolbar.insert(beautifybutton, -1)
+
         activity_toolbar.show()
 
         if not OLD_TOOLBAR:
@@ -211,8 +226,8 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
             d=d.strip()
 
             words = string.split(d) 
-    	    for w in words:
-            	print '%%%%%%%%%'+w
+    	    #for w in words:
+            #	print '%%%%%%%%%'+w
 
             words = string.split(d, None, 1)
             word1=words[0]
@@ -443,6 +458,19 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
 #        self.stopbutton_cb(None)
 #        self._reset_vte()
 #        self.text_view.grab_focus()
+
+    def beautifybutton_cb(self, button):
+        self.save()
+        butialo_app_name = '%s/tmp/butialo_app.lua' % self.get_activity_root()
+        self._write_text_buffer(butialo_app_name)
+        formatted = os.popen("./lua beaut.lua %s" % butialo_app_name)
+	#formatted = "./lua codeformatter.lua --file %s" % butialo_app_name
+        global text_buffer
+        text_buffer.set_text(formatted.read())
+        self.metadata['title'] = _('%s Activity') % get_bundle_name()
+        self.stopbutton_cb(None)
+        self._reset_vte()
+        self.text_view.grab_focus()
 
     def _write_text_buffer(self, filename):
         global text_buffer
