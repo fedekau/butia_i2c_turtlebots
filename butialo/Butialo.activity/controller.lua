@@ -2,7 +2,7 @@ local socket = require "socket"
 local gettime = socket.gettime
 
 --disable for production
-require "strict"
+--require "strict"
 
 local MIN_DT = 0.001
 
@@ -34,6 +34,29 @@ local eval_pid = function ( self, actual, setpoint )
 		elseif out<self.out_min then out=self.out_min end
 
 		actual_ant = actual
+		self, actual, setpoint = coroutine.yield(out)
+		if setpoint then self.setpoint=setpoint end
+	end
+end
+
+local eval_pi = function ( self, actual, setpoint )
+	if setpoint then self.setpoint=setpoint end
+	local t = gettime()
+	local err, now, dt, out
+	local sum_err = 0
+	while true do
+		err = self.setpoint - actual
+		now = gettime()
+		dt = now - t
+		t = now
+
+		sum_err = sum_err + (err*dt/2)
+
+		out = self.Kp * ( err + sum_err/self.Ti )
+
+		if out>self.out_max then out=self.out_max
+		elseif out<self.out_min then out=self.out_min end
+
 		self, actual, setpoint = coroutine.yield(out)
 		if setpoint then self.setpoint=setpoint end
 	end
