@@ -221,6 +221,14 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         self.hpane.add1(self.sidebar)
 
         #root = os.path.join(get_bundle_path(), 'data')
+
+        direntry = {"name": "Devices",
+                    "path": "" }
+
+        olditerdev = self.model.insert_before(None, None)
+        self.model.set_value(olditerdev, 0, direntry)
+        self.model.set_value(olditerdev, 1, direntry["name"])
+
         root = os.popen("./lua parse_bobot_tree.lua")
         for d in root.readlines():
             d=d.strip()
@@ -241,7 +249,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
                     else:
 		    	direntry = {"name": '* ' + word1device,
 		                "path": "" } # era d
-		    olditer = self.model.insert_before(None, None)
+		    olditer = self.model.insert_before(olditerdev, None)
 		    self.model.set_value(olditer, 0, direntry)
 		    self.model.set_value(olditer, 1, direntry["name"])
             else:
