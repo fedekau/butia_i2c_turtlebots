@@ -224,7 +224,6 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
 
         direntry = {"name": "Devices",
                     "path": "" }
-
         olditerdev = self.model.insert_before(None, None)
         self.model.set_value(olditerdev, 0, direntry)
         self.model.set_value(olditerdev, 1, direntry["name"])
@@ -244,10 +243,10 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
             if word1 != '>':
                     word1device = word1.capitalize()
                     if word2 == 'Y':
-		    	direntry = {"name": word1device,
+		    	direntry = {"name": word1device + '  :-)',
 		                "path": "" } # era d
                     else:
-		    	direntry = {"name": '* ' + word1device,
+		    	direntry = {"name": word1device,
 		                "path": "" } # era d
 		    olditer = self.model.insert_before(olditerdev, None)
 		    self.model.set_value(olditer, 0, direntry)

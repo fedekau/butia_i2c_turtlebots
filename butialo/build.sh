@@ -14,7 +14,7 @@ cp -Lr Butialo.activity -t staging
 cd staging/Butialo.activity/bobot/drivers/
 rm boot.lua buzzer.lua debug.lua ledA.lua ledR.lua ledV.lua \
 	leds.lua motorin.lua motorTm.lua move.lua puerta.lua sec.lua motor.lua \
-	stmtr.lua temp_lubot.lua
+	stmtr.lua temp_lubot.lua display.lua
 
 cd $CURRDIR
 cd staging/Butialo.activity
