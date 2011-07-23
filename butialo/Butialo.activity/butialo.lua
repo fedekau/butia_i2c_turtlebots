@@ -110,9 +110,11 @@ end
 local env = {}
 local bobot_devices
 
-env.wait = socket.sleep
-env.get_time = socket.gettime
-env.new_array = array.new_array
+env.util = {}
+env.util.wait = socket.sleep
+env.util.get_time = socket.gettime
+env.util.new_array = array.new_array
+
 env.events = eventlib
 env.devices, bobot_devices = build_devices()
 for n, d in pairs(env.devices) do

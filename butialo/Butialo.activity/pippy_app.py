@@ -325,6 +325,30 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         self.model.set_value(_iter, 0, entry)
         self.model.set_value(_iter, 1, entry["name"])
 
+
+        direntry = {"name": "Util",
+                    "path": "" }
+        olditer = self.model.insert_before(None, None)
+        self.model.set_value(olditer, 0, direntry)
+        self.model.set_value(olditer, 1, direntry["name"])
+
+        entry = {"name": "get_time()",
+                 "path": "\nlocal time = util.get_time()\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+
+        entry = {"name": "wait()",
+                 "path": "\nutil.wait( 1 )\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
+
+        entry = {"name": "new_array()",
+                 "path": "\nlocal array = util.new_array()\n"}
+        _iter = self.model.insert_before(olditer, None)
+        self.model.set_value(_iter, 0, entry)
+        self.model.set_value(_iter, 1, entry["name"])
         
 #        for d in sorted(os.listdir(root)):
 #            if not os.path.isdir(os.path.join(root, d)):
