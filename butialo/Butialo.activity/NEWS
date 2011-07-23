@@ -9,3 +9,14 @@
 * Module list in alphabetical order, faster loading
 * Bugfixes in array data structure
 
+3
+
+* More robust events range handling
+* Snippets pannel revised:
+  * Devices grouped
+  * Events group added
+  * Comments and other cleanup
+* "Clear" button removed
+* "Auto-format" button added
+* PID library available
+
