@@ -37,6 +37,7 @@ WAIT_FOR_BOBOT = 40   # waiting trys for bobot-server (the butia robot lua serve
 MAX_SPEED = 1023   # velocidad maxima para los AX-12 10 bits
 MAX_SENSOR_PER_TYPE = 30
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
+WHEELBASE = 28.00
 
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
@@ -111,6 +112,7 @@ class Butia(gobject.GObject):
             BOX_COLORS['batteryChargeButia'] = COLOR_NOTPRESENT
             BOX_COLORS['forwardDistance'] = COLOR_NOTPRESENT
             BOX_COLORS['backwardDistance'] = COLOR_NOTPRESENT
+            BOX_COLORS['turnXdegree'] = COLOR_NOTPRESENT
         #if self.butia.isPresent('ctouch') == False:
         #BOX_COLORS['capacitivetouchButia'] = COLOR_NOTPRESENT
         if(motores_off == True):
@@ -122,7 +124,7 @@ class Butia(gobject.GObject):
             BOX_COLORS['speedButia'] = COLOR_NOTPRESENT
             BOX_COLORS['forwardDistance'] = COLOR_NOTPRESENT
             BOX_COLORS['backwardDistance'] = COLOR_NOTPRESENT
-
+            BOX_COLORS['turnXdegree'] = COLOR_NOTPRESENT
         if self.butia.isPresent('lcd') == False:
             BOX_COLORS['LCDdisplayButia'] = COLOR_NOTPRESENT
 
@@ -229,6 +231,15 @@ class Butia(gobject.GObject):
                      prim_name='rightButia',  # code reference (see below)
                      help_string=_('Move the butia robot backward'))
         self.tw.lc.def_prim('rightButia', 0, lambda self: primitive_dictionary['rightButia']())
+
+        primitive_dictionary['turnXdegree'] = self.turnXdegree
+        palette.add_block('turnXdegree',  # the name of your block
+                     style='basic-style-1arg',  # the block style
+                     label=_('Turn X Degree'),  # the label for the block
+                     default=[45],  
+                     prim_name='turnXdegree',  # code reference (see below)
+                     help_string=_('Turn the butia robot X degree'))
+        self.tw.lc.def_prim('turnXdegree', 1, lambda self, x: primitive_dictionary['turnXdegree'](x))
 
         primitive_dictionary['stopButia'] = self.stopButia
         palette.add_block('stopButia',  # the name of your block
@@ -368,6 +379,7 @@ class Butia(gobject.GObject):
 
     def forwardDistance(self, dist):
         self._check_init()
+        #FIXME 8.29 para que velocidad? Vel = Dist / Tiempo => Tiempo = Dist / Vel
         tiempo = dist / 8.29
         self.set_vels(self.actualSpeed, self.actualSpeed)
         time.sleep(tiempo)
@@ -382,6 +394,7 @@ class Butia(gobject.GObject):
 
     def backwardDistance(self, dist):
         self._check_init()
+        #FIXME cambiar el 8.29 por valor que dependa de velocidad
         tiempo = dist / 8.29
         self.set_vels(-self.actualSpeed, -self.actualSpeed)
         time.sleep(tiempo)
@@ -396,6 +409,17 @@ class Butia(gobject.GObject):
     def rightButia(self):
         self._check_init()
         self.set_vels(-self.actualSpeed, self.actualSpeed)
+
+    def turnXdegree(self, degrees):
+	self._check_init()
+        #FIXME cambiar el 8.29 por valor que dependa de velocidad
+        tiempo = (degrees * WHEELBASE * 3.14) / (360 * 8.29)
+        if degrees > 0:
+            self.set_vels(-self.actualSpeed, self.actualSpeed)
+        else
+            self.set_vels(self.actualSpeed, -self.actualSpeed)
+        time.sleep(tiempo)
+        self.set_vels(0, 0)
 
     def stopButia(self):
         self._check_init()
