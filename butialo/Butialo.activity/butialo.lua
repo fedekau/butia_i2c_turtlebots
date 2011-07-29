@@ -30,7 +30,7 @@ if bobotserver then
 	bobot.debugprint("Bobot server found, closing...")
 	bobotserver:settimeout(nil) --blocking
 	bobotserver:send("QUIT\n")
-	bobotserver:settimeout(5)
+	bobotserver:settimeout(0.5)
 	local ret, err = bobotserver:receive()
 	if ret then
 		bobot.debugprint("Could not close bobot-server:", ret)		
@@ -128,7 +128,12 @@ for k,v in pairs(_G) do env[k]=v end
 --for k,v in pairs(env) do print ('ENV', k, v) end
 
 if myscriptname then
-	local myscript = assert(loadfile(myscriptname))
+	local myscript
+	if myscriptname =="-" then
+		myscript = assert(loadstring(io.read("*all")))
+	else
+		myscript = assert(loadfile(myscriptname))
+	end	
 
 	env=stricter.make_fixed_proxy(env)
 	setfenv(myscript, env)
