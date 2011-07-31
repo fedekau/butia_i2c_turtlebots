@@ -548,21 +548,36 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         # FIXME: We're losing an odd race here
         # gtk.main_iteration(block=False)
 
-        butialo_app_name = '%s/tmp/butialo_app.lua' % self.get_activity_root()
-        self._write_text_buffer(butialo_app_name)
         # write activity.py here too, to support pippy-based activities.
-        copy2('%s/activity.py' % get_bundle_path(),
-              '%s/tmp/activity.py' % self.get_activity_root())
+        #copy2('%s/activity.py' % get_bundle_path(),
+        #      '%s/tmp/activity.py' % self.get_activity_root())
         copy2('%s/butialo.lua' % get_bundle_path(),
               '%s/tmp/butialo.lua' % self.get_activity_root())
 
-        self._pid = self._vte.fork_command(
-            argv=["/bin/sh", "-c",
-                  "./lua butialo.lua %s; sleep 1" % butialo_app_name],
-            #envv=["PYTHONPATH=%s/library:%s" % (get_bundle_path(),
-            #                                    os.getenv("PYTHONPATH", ""))],
-            envv=[],
-            directory=get_bundle_path())
+	#if selected code, run selection
+        global text_buffer
+	butialo_app_name = ""
+	if text_buffer.get_has_selection():
+		start,end=text_buffer.get_selection_bounds()
+		text = text_buffer.get_text(start, end)
+		butialo_app_name='%s/tmp/butialo_snippet.lua' % self.get_activity_root()
+		f = open(butialo_app_name, 'w')		 
+		f.write("print([[--Running selected code:]])\n")
+		f.write("print([[--print (%s)]])\n" % text)
+		f.write("print([[-------------------------]])\n")
+		f.write("print (%s)\n" % text)
+		f.close()
+	else:
+		butialo_app_name = '%s/tmp/butialo_app.lua' % self.get_activity_root()
+		self._write_text_buffer(butialo_app_name)
+
+	self._pid = self._vte.fork_command(
+	    argv=["/bin/sh", "-c",
+	          "./lua butialo.lua %s; sleep 1" % butialo_app_name],
+	    #envv=["PYTHONPATH=%s/library:%s" % (get_bundle_path(),
+	    #                                    os.getenv("PYTHONPATH", ""))],
+	    envv=[],
+	    directory=get_bundle_path())
 
     def stopbutton_cb(self, button):
         try:
