@@ -73,155 +73,8 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         import gtksourceview2
         text_buffer = gtksourceview2.Buffer()
 
-    def initialize_display(self):
-        self._logger = logging.getLogger('butialo-activity')
-
-        # Top toolbar with share and close buttons:
-
-        if OLD_TOOLBAR:
-            activity_toolbar = self.toolbox.get_activity_toolbar()
-        else:
-            activity_toolbar = self.activity_button.page
-
-        # add 'make bundle' entry to 'keep' palette.
-        palette = activity_toolbar.keep.get_palette()
-        # XXX: should clear out old palette entries?
-        from sugar.graphics.menuitem import MenuItem
-        from sugar.graphics.icon import Icon
-        menu_item = MenuItem(_('As Butialo Document'))
-        menu_item.set_image(Icon(file=('%s/activity/activity-icon.svg' %
-                                       get_bundle_path()),
-                                 icon_size=gtk.ICON_SIZE_MENU))
-        menu_item.connect('activate', self.keepbutton_cb)
-        palette.menu.append(menu_item)
-        menu_item.show()
-        #xop guardar como bundle
-        #menu_item = MenuItem(_('As Activity Bundle'))
-        #menu_item.set_image(Icon(file=('%s/activity/activity-default.svg' %
-        #                               get_bundle_path()),
-        #                         icon_size=gtk.ICON_SIZE_MENU))
-        #menu_item.connect('activate', self.makebutton_cb)
-        #palette.menu.append(menu_item)
-        #menu_item.show()
-
-        self._edit_toolbar = activity.EditToolbar()
-
-        if OLD_TOOLBAR:
-            activity_toolbar = gtk.Toolbar()
-            self.toolbox.add_toolbar(_('Actions'), activity_toolbar)
-            self.toolbox.set_current_toolbar(1)
-            self.toolbox.add_toolbar(_('Edit'), self._edit_toolbar)
-        else:
-            edit_toolbar_button = ToolbarButton()
-            edit_toolbar_button.set_page(self._edit_toolbar)
-            edit_toolbar_button.props.icon_name = 'toolbar-edit'
-            edit_toolbar_button.props.label = _('Edit')
-            self.get_toolbar_box().toolbar.insert(edit_toolbar_button, -1)
-
-        self._edit_toolbar.show()
-
-        self._edit_toolbar.undo.connect('clicked', self.__undobutton_cb)
-        self._edit_toolbar.redo.connect('clicked', self.__redobutton_cb)
-        self._edit_toolbar.copy.connect('clicked', self.__copybutton_cb)
-        self._edit_toolbar.paste.connect('clicked', self.__pastebutton_cb)
-
-        if OLD_TOOLBAR:
-            actions_toolbar = activity_toolbar
-        else:
-            actions_toolbar = self.get_toolbar_box().toolbar
-
-        # The "go" button
-        goicon_bw = gtk.Image()
-        goicon_bw.set_from_file("%s/icons/run_bw.svg" % os.getcwd())
-        goicon_color = gtk.Image()
-        goicon_color.set_from_file("%s/icons/run_color.svg" % os.getcwd())
-        gobutton = ToolButton(label=_("_Run!"))
-        gobutton.props.accelerator = _('<alt>r')
-        gobutton.set_icon_widget(goicon_bw)
-        gobutton.set_tooltip("Run")
-        gobutton.connect('clicked', self.flash_cb, dict({'bw': goicon_bw,
-            'color': goicon_color}))
-        gobutton.connect('clicked', self.gobutton_cb)
-        actions_toolbar.insert(gobutton, -1)
-
-        # The "stop" button
-        stopicon_bw = gtk.Image()
-        stopicon_bw.set_from_file("%s/icons/stopit_bw.svg" % os.getcwd())
-        stopicon_color = gtk.Image()
-        stopicon_color.set_from_file("%s/icons/stopit_color.svg" % os.getcwd())
-        stopbutton = ToolButton(label=_("_Stop"))
-        stopbutton.props.accelerator = _('<alt>s')
-        stopbutton.set_icon_widget(stopicon_bw)
-        stopbutton.connect('clicked', self.flash_cb, dict({'bw': stopicon_bw,
-            'color': stopicon_color}))
-        stopbutton.connect('clicked', self.stopbutton_cb)
-        stopbutton.set_tooltip("Stop Running")
-        actions_toolbar.insert(stopbutton, -1)
-
-        # The "clear" button
-        #clearicon_bw = gtk.Image()
-        #clearicon_bw.set_from_file("%s/icons/eraser_bw.svg" % os.getcwd())
-        #clearicon_color = gtk.Image()
-        #clearicon_color.set_from_file("%s/icons/eraser_color.svg" %
-        #                              os.getcwd())
-        #clearbutton = ToolButton(label=_("_Clear"))
-        #clearbutton.props.accelerator = _('<alt>c')
-        #clearbutton.set_icon_widget(clearicon_bw)
-        #clearbutton.connect('clicked', self.clearbutton_cb)
-        #clearbutton.connect('clicked', self.flash_cb, dict({'bw': clearicon_bw,
-        #    'color': clearicon_color}))
-        #clearbutton.set_tooltip("Clear")
-        #actions_toolbar.insert(clearbutton, -1)
-
-        # The "beautify" button
-        beautifyicon_bw = gtk.Image()
-        beautifyicon_bw.set_from_file("%s/icons/beautifyicon_bw.svg" % os.getcwd())
-        beautifyicon_color = gtk.Image()
-        beautifyicon_color.set_from_file("%s/icons/beautifyicon_color.svg" %
-                                      os.getcwd())
-        beautifybutton = ToolButton(label=_("_Auto-format"))
-        beautifybutton.props.accelerator = _('<alt>c')
-        beautifybutton.set_icon_widget(beautifyicon_bw)
-        beautifybutton.connect('clicked', self.beautifybutton_cb)
-        beautifybutton.connect('clicked', self.flash_cb, dict({'bw': beautifyicon_bw,
-            'color': beautifyicon_color}))
-        beautifybutton.set_tooltip("Auto-format")
-        actions_toolbar.insert(beautifybutton, -1)
-
-        activity_toolbar.show()
-
-        if not OLD_TOOLBAR:
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = False
-            separator.set_expand(True)
-            self.get_toolbar_box().toolbar.insert(separator, -1)
-            separator.show()
-
-            stop = StopButton(self)
-            self.get_toolbar_box().toolbar.insert(stop, -1)
-
-        # Main layout.
-        self.hpane = gtk.HPaned()
-        self.vpane = gtk.VPaned()
-
-        # The sidebar.
-        self.sidebar = gtk.VBox()
-        self.model = gtk.TreeStore(gobject.TYPE_PYOBJECT, gobject.TYPE_STRING)
-        treeview = gtk.TreeView(self.model)
-        cellrenderer = gtk.CellRendererText()
-        treecolumn = gtk.TreeViewColumn(_("Available"), cellrenderer, text=1)
-        treeview.get_selection().connect("changed", self.selection_cb)
-        treeview.append_column(treecolumn)
-        treeview.set_size_request(int(SIZE_X * 0.3), SIZE_Y)
-
-        # Create scrollbars around the view.
-        scrolled = gtk.ScrolledWindow()
-        scrolled.add(treeview)
-        self.sidebar.pack_start(scrolled)
-        self.hpane.add1(self.sidebar)
-
-        #root = os.path.join(get_bundle_path(), 'data')
-
+    def initialize_snippets_cb(self, Button):
+	self.model.clear()
         direntry = {"name": "Devices",
                     "path": "" }
         olditerdev = self.model.insert_before(None, None)
@@ -369,6 +222,173 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
 #                self.model.set_value(_iter, 1, entry["name"])
 
         #treeview.expand_all()
+
+
+    def initialize_display(self):
+        self._logger = logging.getLogger('butialo-activity')
+
+        # Top toolbar with share and close buttons:
+
+        if OLD_TOOLBAR:
+            activity_toolbar = self.toolbox.get_activity_toolbar()
+        else:
+            activity_toolbar = self.activity_button.page
+
+        # add 'make bundle' entry to 'keep' palette.
+        palette = activity_toolbar.keep.get_palette()
+        # XXX: should clear out old palette entries?
+        from sugar.graphics.menuitem import MenuItem
+        from sugar.graphics.icon import Icon
+        menu_item = MenuItem(_('As Butialo Document'))
+        menu_item.set_image(Icon(file=('%s/activity/activity-icon.svg' %
+                                       get_bundle_path()),
+                                 icon_size=gtk.ICON_SIZE_MENU))
+        menu_item.connect('activate', self.keepbutton_cb)
+        palette.menu.append(menu_item)
+        menu_item.show()
+        #xop guardar como bundle
+        #menu_item = MenuItem(_('As Activity Bundle'))
+        #menu_item.set_image(Icon(file=('%s/activity/activity-default.svg' %
+        #                               get_bundle_path()),
+        #                         icon_size=gtk.ICON_SIZE_MENU))
+        #menu_item.connect('activate', self.makebutton_cb)
+        #palette.menu.append(menu_item)
+        #menu_item.show()
+
+        self._edit_toolbar = activity.EditToolbar()
+
+        if OLD_TOOLBAR:
+            activity_toolbar = gtk.Toolbar()
+            self.toolbox.add_toolbar(_('Actions'), activity_toolbar)
+            self.toolbox.set_current_toolbar(1)
+            self.toolbox.add_toolbar(_('Edit'), self._edit_toolbar)
+        else:
+            edit_toolbar_button = ToolbarButton()
+            edit_toolbar_button.set_page(self._edit_toolbar)
+            edit_toolbar_button.props.icon_name = 'toolbar-edit'
+            edit_toolbar_button.props.label = _('Edit')
+            self.get_toolbar_box().toolbar.insert(edit_toolbar_button, -1)
+
+        self._edit_toolbar.show()
+
+        self._edit_toolbar.undo.connect('clicked', self.__undobutton_cb)
+        self._edit_toolbar.redo.connect('clicked', self.__redobutton_cb)
+        self._edit_toolbar.copy.connect('clicked', self.__copybutton_cb)
+        self._edit_toolbar.paste.connect('clicked', self.__pastebutton_cb)
+
+        if OLD_TOOLBAR:
+            actions_toolbar = activity_toolbar
+        else:
+            actions_toolbar = self.get_toolbar_box().toolbar
+
+        # The "go" button
+        goicon_bw = gtk.Image()
+        goicon_bw.set_from_file("%s/icons/run_bw.svg" % os.getcwd())
+        goicon_color = gtk.Image()
+        goicon_color.set_from_file("%s/icons/run_color.svg" % os.getcwd())
+        gobutton = ToolButton(label=_("_Run!"))
+        gobutton.props.accelerator = _('<alt>r')
+        gobutton.set_icon_widget(goicon_bw)
+        gobutton.set_tooltip("Run")
+        gobutton.connect('clicked', self.flash_cb, dict({'bw': goicon_bw,
+            'color': goicon_color}))
+        gobutton.connect('clicked', self.gobutton_cb)
+        actions_toolbar.insert(gobutton, -1)
+
+        # The "stop" button
+        stopicon_bw = gtk.Image()
+        stopicon_bw.set_from_file("%s/icons/stopit_bw.svg" % os.getcwd())
+        stopicon_color = gtk.Image()
+        stopicon_color.set_from_file("%s/icons/stopit_color.svg" % os.getcwd())
+        stopbutton = ToolButton(label=_("_Stop"))
+        stopbutton.props.accelerator = _('<alt>s')
+        stopbutton.set_icon_widget(stopicon_bw)
+        stopbutton.connect('clicked', self.flash_cb, dict({'bw': stopicon_bw,
+            'color': stopicon_color}))
+        stopbutton.connect('clicked', self.stopbutton_cb)
+        stopbutton.set_tooltip("Stop Running")
+        actions_toolbar.insert(stopbutton, -1)
+
+        # The "refresh" button
+        refreshicon_bw = gtk.Image()
+        refreshicon_bw.set_from_file("%s/icons/butiaoff.svg" % os.getcwd())
+        refreshicon_color = gtk.Image()
+        refreshicon_color.set_from_file("%s/icons/butiaon.svg" % os.getcwd())
+        refreshbutton = ToolButton(label=_("_Reload"))
+        refreshbutton.props.accelerator = _('<alt>d')
+        refreshbutton.set_icon_widget(refreshicon_bw)
+        refreshbutton.connect('clicked', self.flash_cb, dict({'bw': refreshicon_bw,
+            'color': refreshicon_color}))
+        refreshbutton.connect('clicked', self.initialize_snippets_cb)
+        refreshbutton.set_tooltip("Reload devices")
+        actions_toolbar.insert(refreshbutton, -1)
+
+        # The "clear" button
+        #clearicon_bw = gtk.Image()
+        #clearicon_bw.set_from_file("%s/icons/eraser_bw.svg" % os.getcwd())
+        #clearicon_color = gtk.Image()
+        #clearicon_color.set_from_file("%s/icons/eraser_color.svg" %
+        #                              os.getcwd())
+        #clearbutton = ToolButton(label=_("_Clear"))
+        #clearbutton.props.accelerator = _('<alt>c')
+        #clearbutton.set_icon_widget(clearicon_bw)
+        #clearbutton.connect('clicked', self.clearbutton_cb)
+        #clearbutton.connect('clicked', self.flash_cb, dict({'bw': clearicon_bw,
+        #    'color': clearicon_color}))
+        #clearbutton.set_tooltip("Clear")
+        #actions_toolbar.insert(clearbutton, -1)
+
+        # The "beautify" button
+        beautifyicon_bw = gtk.Image()
+        beautifyicon_bw.set_from_file("%s/icons/beautifyicon_bw.svg" % os.getcwd())
+        beautifyicon_color = gtk.Image()
+        beautifyicon_color.set_from_file("%s/icons/beautifyicon_color.svg" %
+                                      os.getcwd())
+        beautifybutton = ToolButton(label=_("_Auto-format"))
+        beautifybutton.props.accelerator = _('<alt>c')
+        beautifybutton.set_icon_widget(beautifyicon_bw)
+        beautifybutton.connect('clicked', self.beautifybutton_cb)
+        beautifybutton.connect('clicked', self.flash_cb, dict({'bw': beautifyicon_bw,
+            'color': beautifyicon_color}))
+        beautifybutton.set_tooltip("Auto-format")
+        actions_toolbar.insert(beautifybutton, -1)
+
+        activity_toolbar.show()
+
+        if not OLD_TOOLBAR:
+            separator = gtk.SeparatorToolItem()
+            separator.props.draw = False
+            separator.set_expand(True)
+            self.get_toolbar_box().toolbar.insert(separator, -1)
+            separator.show()
+
+            stop = StopButton(self)
+            self.get_toolbar_box().toolbar.insert(stop, -1)
+
+        # Main layout.
+        self.hpane = gtk.HPaned()
+        self.vpane = gtk.VPaned()
+
+        # The sidebar.
+        self.sidebar = gtk.VBox()
+        self.model = gtk.TreeStore(gobject.TYPE_PYOBJECT, gobject.TYPE_STRING)
+        treeview = gtk.TreeView(self.model)
+        cellrenderer = gtk.CellRendererText()
+        treecolumn = gtk.TreeViewColumn(_("Available"), cellrenderer, text=1)
+        treeview.get_selection().connect("changed", self.selection_cb)
+        treeview.append_column(treecolumn)
+        treeview.set_size_request(int(SIZE_X * 0.3), SIZE_Y)
+
+        # Create scrollbars around the view.
+        scrolled = gtk.ScrolledWindow()
+        scrolled.add(treeview)
+        self.sidebar.pack_start(scrolled)
+        self.hpane.add1(self.sidebar)
+
+        #root = os.path.join(get_bundle_path(), 'data')
+
+	#initialize snippets 
+	self.initialize_snippets_cb(None)
 
         # Source buffer
         import gtksourceview2
