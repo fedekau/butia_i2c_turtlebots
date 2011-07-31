@@ -345,7 +345,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         beautifyicon_color.set_from_file("%s/icons/beautifyicon_color.svg" %
                                       os.getcwd())
         beautifybutton = ToolButton(label=_("_Auto-format"))
-        beautifybutton.props.accelerator = _('<alt>c')
+        beautifybutton.props.accelerator = _('<alt>f')
         beautifybutton.set_icon_widget(beautifyicon_bw)
         beautifybutton.connect('clicked', self.beautifybutton_cb)
         beautifybutton.connect('clicked', self.flash_cb, dict({'bw': beautifyicon_bw,
@@ -520,7 +520,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         text_buffer.set_text(formatted.read())
         self.metadata['title'] = _('%s Activity') % get_bundle_name()
         self.stopbutton_cb(None)
-        self._reset_vte()
+        #self._reset_vte()
         self.text_view.grab_focus()
 
     def _write_text_buffer(self, filename):
@@ -563,7 +563,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
     def gobutton_cb(self, button):
         from shutil import copy2
         self.stopbutton_cb(button)  # try stopping old code first.
-        self._reset_vte()
+        #self._reset_vte()
 
         # FIXME: We're losing an odd race here
         # gtk.main_iteration(block=False)
@@ -582,12 +582,14 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
 		text = text_buffer.get_text(start, end)
 		butialo_app_name='%s/tmp/butialo_snippet.lua' % self.get_activity_root()
 		f = open(butialo_app_name, 'w')		 
-		f.write("print([[--Running selected code:]])\n")
-		f.write("print([[--print (%s)]])\n" % text)
-		f.write("print([[-------------------------]])\n")
-		f.write("print (%s)\n" % text)
+		f.write("print (%s)" % text)
 		f.close()
+		self._vte.feed("\x1B[H\x1B[J\x1B[0;39m")
+		self._vte.feed("--Evaluating selected code:\r\n")
+		self._vte.feed("--print (%s)\r\n" % text)
+		self._vte.feed("-------------------------\r\n")
 	else:
+	        self._reset_vte()
 		butialo_app_name = '%s/tmp/butialo_app.lua' % self.get_activity_root()
 		self._write_text_buffer(butialo_app_name)
 
