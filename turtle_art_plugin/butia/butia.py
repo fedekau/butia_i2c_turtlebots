@@ -418,7 +418,9 @@ class Butia(gobject.GObject):
             self.set_vels(-self.actualSpeed, self.actualSpeed)
         else:
             self.set_vels(self.actualSpeed, -self.actualSpeed)
-        time.sleep(tiempo)
+        time.sleep(abs(tiempo))
+	self.tw.canvas.setpen(True)
+	self.tw.canvas.arc(degrees, 0)
         self.set_vels(0, 0)
 
     def stopButia(self):
