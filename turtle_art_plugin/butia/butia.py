@@ -416,7 +416,7 @@ class Butia(gobject.GObject):
         tiempo = (degrees * WHEELBASE * 3.14) / (360 * 8.29)
         if degrees > 0:
             self.set_vels(-self.actualSpeed, self.actualSpeed)
-        else
+        else:
             self.set_vels(self.actualSpeed, -self.actualSpeed)
         time.sleep(tiempo)
         self.set_vels(0, 0)
