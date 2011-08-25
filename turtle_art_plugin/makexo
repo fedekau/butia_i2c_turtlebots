@@ -50,7 +50,7 @@ cp -rL mainline tmp
 rm -rf tmp/.git
 cp -rLf butia tmp/plugins/
 cp -rLf sumtia tmp/plugins/
-cp -rLF ../followme_plugin/ tmp/plugins
+cp -rLf followme/ tmp/plugins/
 cp -rLf stagin/* tmp/
 
 #lets add localization
