@@ -1,3 +1,9 @@
+VERSION 5 
++ some clean up of dead code in pythonAPI
++ integration with turtleart version 114
++ followme plugin included
++ sumo.uy plugin included
+
 VERSION 4
 + if comunication with ax12 motors is not ok we paint in gray motor related blocks
 + bobot not print information to the standard output by defaul, only if debug is set
