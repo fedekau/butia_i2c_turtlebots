@@ -84,7 +84,7 @@ local function get_device_name(n)
 	return nn
 end
 
-local function read_devices_list()
+function read_devices_list()
 	print("=Listing Devices")
 	local bfound
 	devices={}
@@ -99,6 +99,8 @@ local function read_devices_list()
 	end
 	if not bfound then print ("ls:WARN: No Baseboard found.") end
 end
+
+--process.read_device_list = read_device_list
 
 local function split_words(s)
 	local words={}
