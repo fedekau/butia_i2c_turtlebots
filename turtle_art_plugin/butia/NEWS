@@ -3,6 +3,7 @@ VERSION 5
 + integration with turtleart version 114
 + followme plugin included
 + sumo.uy plugin included
++ turn by degrees block
 
 VERSION 4
 + if comunication with ax12 motors is not ok we paint in gray motor related blocks
