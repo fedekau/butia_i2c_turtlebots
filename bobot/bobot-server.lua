@@ -57,15 +57,11 @@ else
 	bobot.debugprint = function() end
 end
 
-bobot.init(arg)
-
 
 local server_b = assert(socket.bind(ADDRESS, PORT_B))
 local server_h = assert(socket.bind(ADDRESS, PORT_H))
 
 local recvt={[1]=server_b, [2]=server_h}
-
-local baseboards = bobot.baseboards
 
 devices = {}
 
@@ -84,11 +80,11 @@ local function get_device_name(n)
 	return nn
 end
 
-function read_devices_list()
+local function read_devices_list()
 	print("=Listing Devices")
 	local bfound
 	devices={}
-	for b_name, bb in pairs(baseboards) do
+	for b_name, bb in pairs(bobot.baseboards) do
     		print("===board ", b_name)
 		for d_name,d in pairs(bb.devices) do
 			local regname = get_device_name(d_name)
@@ -99,8 +95,6 @@ function read_devices_list()
 	end
 	if not bfound then print ("ls:WARN: No Baseboard found.") end
 end
-
---process.read_device_list = read_device_list
 
 local function split_words(s)
 	local words={}
@@ -175,8 +169,13 @@ socket_handlers[server_h]=function()
 	end
 end
 
+function server_init ()
+	bobot.init(arg)
+	read_devices_list()
+end
 
-read_devices_list()
+
+server_init()
 print ("Listening...")
 -- loop forever waiting for clients
 

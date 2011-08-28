@@ -19,9 +19,7 @@ end
 process = {}
 
 process["INIT"] = function () --to check the new state of hardware on the fly
-    bobot.init()    
-    baseboards = bobot.baseboards
-    read_devices_list()
+	server_init()
 end
 process["LIST"] = function ()
 	local ret,comma = "", ""
@@ -118,8 +116,8 @@ process["CALL"] = function (parameters)
 	end
 end
 process["CLOSEALL"] = function ()
-	if baseboards then
-		for _, bb in pairs(baseboards) do
+	if bobot.baseboards then
+		for _, bb in pairs(bobot.baseboards) do
 			-- guille: I dont undestain this part? ;
 			-- in the master:HEAD is not commented the second line
 			-- but is comented in branch bobot2 ; sow... That i do?

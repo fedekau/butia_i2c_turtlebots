@@ -64,13 +64,18 @@ function comms_usb.init(baseboards)
 				--try to intialize baseboard
 				bobot.debugprint("Initializing Baseboard:", descriptor.idVendor, descriptor.idProduct)
 				libusb_handler = libusb.open(device)
+
 				if not libusb_handler then
 					bobot.debugprint("Error opening device")
 					break
 				end				
 				if not libusb.set_configuration(libusb_handler, USB4ALL_CONFIGURATION) then
-					bobot.debugprint("Error configuring device")
-					break
+					bobot.debugprint("Error configuring device, retrying after a reset")
+					libusb.reset(libusb_handler)				
+					if not libusb.set_configuration(libusb_handler, USB4ALL_CONFIGURATION) then
+						bobot.debugprint("Error configuring device.")
+						break
+					end
 				end
 				if not libusb.claim_interface(libusb_handler, USB4ALL_INTERFACE) then
 					bobot.debugprint("Error seting device interface")
