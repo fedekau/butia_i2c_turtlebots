@@ -39,5 +39,5 @@ endif
 endif
 
 clean:
-	-rm $(OBJS) $(OBJS_SO) *.c~ *.h~
+	rm -f $(OBJS) $(OBJS_SO) *.c~ *.h~
 	$(MAKE) clean -C ../
