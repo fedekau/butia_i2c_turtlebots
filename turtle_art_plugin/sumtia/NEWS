@@ -1,0 +1,18 @@
+VERSION 1
++ initial commit
+/ icons improved
+
+####################################################################################
+
+NEWS Structure!
+I info
++ added
+- removed
+/ changed
+//TODO: thing todo
+//FIXME: thing to fix
+
+Please improve this NEWS, adding new information at the beginning of this file
+Add important or relevant changes to define the changelogs from one version to another
+- Team Butia -
+
