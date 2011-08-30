@@ -62,147 +62,147 @@ class Sumtia(gobject.GObject):
 		primitive_dictionary['sendVelocities'] = self.sendVelocities
 		palette.add_block('sendVelocities',  # the name of your block
 				     style='basic-style-2arg',  # the block style
-				     label=_('Enviar Velocidades'),  # the label for the block
+				     label=_('Send Velocities'),  # the label for the block
 				     prim_name='sendVelocities',  # code reference (see below)
 				     default=[10,10],
-				     help_string=_('Enviar velocidades al robot'))
+				     help_string=_('Send velocities to the robot'))
 		self.tw.lc.def_prim('sendVelocities', 2, lambda self, x, y: primitive_dictionary['sendVelocities'](x, y))
 
 		primitive_dictionary['setVel'] = self.setVel
 		palette.add_block('setVel',  # the name of your block
 				     style='basic-style-1arg',  # the block style
-				     label=_('Establecer Velocidad'),  # the label for the block
+				     label=_('Set Velocity'),  # the label for the block
 				     prim_name='setVel',  # code reference (see below)
 				     default=[10],
-				     help_string=_('Establece la velocidad por defecto para los comandos de movimiento'))
+				     help_string=_('Set default velocity to motion commands'))
 		self.tw.lc.def_prim('setVel', 1, lambda self, x: primitive_dictionary['setVel'](x))
 
 		primitive_dictionary['forwardSumtia'] = self.forwardSumtia
 		palette.add_block('forwardSumtia',  # the name of your block
 				     style='basic-style',  # the block style
-				     label=_('Avanzar'),  # the label for the block
+				     label=_('Forward'),  # the label for the block
 				     prim_name='forwardSumtia',  # code reference (see below)
-				     help_string=_('Avanzar'))
+				     help_string=_('Go forward'))
 		self.tw.lc.def_prim('forwardSumtia', 0, lambda self: primitive_dictionary['forwardSumtia']())
 
 		primitive_dictionary['backward'] = self.backward
 		palette.add_block('backward',  # the name of your block
 				     style='basic-style',  # the block style
-				     label=_('Retroceder'),  # the label for the block
+				     label=_('Backward'),  # the label for the block
 				     prim_name='backward',  # code reference (see below)
-				     help_string=_('Retroceder'))
+				     help_string=_('Go Backward'))
 		self.tw.lc.def_prim('backward', 0, lambda self: primitive_dictionary['backward']())
 		
 		primitive_dictionary['stopSumtia'] = self.stopSumtia
 		palette.add_block('stopSumtia',  # the name of your block
 				     style='basic-style',  # the block style
-				     label=_('Parar'),  # the label for the block
+				     label=_('Stop'),  # the label for the block
 				     prim_name='stopSumtia',  # code reference (see below)
-				     help_string=_('Parar'))
+				     help_string=_('Stop'))
 		self.tw.lc.def_prim('stopSumtia', 0, lambda self: primitive_dictionary['stopSumtia']())
 
 		primitive_dictionary['turnLeft'] = self.turnLeft
 		palette.add_block('turnLeft',  # the name of your block
 				     style='basic-style',  # the block style
-				     label=_('Girar Izq.'),  # the label for the block
+				     label=_('Turn Left'),  # the label for the block
 				     prim_name='turnLeft',  # code reference (see below)
-				     help_string=_('Girar Izq.'))
+				     help_string=_('Turn Left'))
 		self.tw.lc.def_prim('turnLeft', 0, lambda self: primitive_dictionary['turnLeft']())
 
 		primitive_dictionary['turnRight'] = self.turnRight
 		palette.add_block('turnRight',  # the name of your block
 				     style='basic-style',  # the block style
-				     label=_('Girar Der.'),  # the label for the block
+				     label=_('Turn Right'),  # the label for the block
 				     prim_name='turnRight',  # code reference (see below)
-				     help_string=_('Girar Der.'))
+				     help_string=_('Turn Right'))
 		self.tw.lc.def_prim('turnRight', 0, lambda self: primitive_dictionary['turnRight']())
 
 		primitive_dictionary['angleToCenter'] = self.angleToCenter
 		palette.add_block('angleToCenter',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Ángulo al Centro'),  # the label for the block
+				     label=_('Angle To Center'),  # the label for the block
 				     prim_name='angleToCenter',  # code reference (see below)
-				     help_string=_('Obtener el ángulo al centro del doyo'))
+				     help_string=_('Get the angle to the center of the Dojho'))
 		self.tw.lc.def_prim('angleToCenter', 0, lambda self: primitive_dictionary['angleToCenter']())
 
 		primitive_dictionary['angleToOpponent'] = self.angleToOpponent
 		palette.add_block('angleToOpponent',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Ángulo al Oponente'),  # the label for the block
+				     label=_('Angle To Opponent'),  # the label for the block
 				     prim_name='angleToOpponent',  # code reference (see below)
-				     help_string=_('Obtener el ángulo al centro del oponente'))
+				     help_string=_('Get the angle to the Opponent'))
 		self.tw.lc.def_prim('angleToOpponent', 0, lambda self: primitive_dictionary['angleToOpponent']())
 		
 		primitive_dictionary['getX'] = self.getX
 		palette.add_block('getX',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Coord. X'),  # the label for the block
+				     label=_('Get X'),  # the label for the block
 				     prim_name='getX',  # code reference (see below)
-				     help_string=_('Obtener la coordenada x del robot'))
+				     help_string=_('Get the X of the SumBot'))
 		self.tw.lc.def_prim('getX', 0, lambda self: primitive_dictionary['getX']())
 		
 		primitive_dictionary['getY'] = self.getY
 		palette.add_block('getY',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Coord. Y'),  # the label for the block
+				     label=_('Get Y'),  # the label for the block
 				     prim_name='getY',  # code reference (see below)
-				     help_string=_('Obtener la coordenada y del robot'))
+				     help_string=_('Get the Y of the SumBot'))
 		self.tw.lc.def_prim('getY', 0, lambda self: primitive_dictionary['getY']())
 		
 		primitive_dictionary['getOpX'] = self.getOpX
 		palette.add_block('getOpX',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Coord. X Oponente'),  # the label for the block
+				     label=_('Get Op. X'),  # the label for the block
 				     prim_name='getOpX',  # code reference (see below)
-				     help_string=_('Obtener la coordenada x del oponente'))
+				     help_string=_('Get the X of the Opponent SumBot'))
 		self.tw.lc.def_prim('getOpX', 0, lambda self: primitive_dictionary['getOpX']())
 		
 		primitive_dictionary['getOpY'] = self.getOpY
 		palette.add_block('getOpY',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Coord. Y Oponente'),  # the label for the block
+				     label=_('Get Op. Y'),  # the label for the block
 				     prim_name='getOpY',  # code reference (see below)
-				     help_string=_('Obtener la coordenada y del oponente'))
+				     help_string=_('Get the Y of the Opponent SumBot'))
 		self.tw.lc.def_prim('getOpY', 0, lambda self: primitive_dictionary['getOpY']())
 		
 		primitive_dictionary['getRot'] = self.getRot
 		palette.add_block('getRot',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Rotación'),  # the label for the block
+				     label=_('Get Rot'),  # the label for the block
 				     prim_name='getRot',  # code reference (see below)
-				     help_string=_('Obtener la rotación del SumBot'))
+				     help_string=_('Get the rotation Sumbot'))
 		self.tw.lc.def_prim('getRot', 0, lambda self: primitive_dictionary['getRot']())
 		
 		primitive_dictionary['getOpRot'] = self.getOpRot
 		palette.add_block('getOpRot',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Rotación Oponente'),  # the label for the block
+				     label=_('Get Op. Rot'),  # the label for the block
 				     prim_name='getOpRot',  # code reference (see below)
-				     help_string=_('Obtener la rotación del oponente'))
+				     help_string=_('Get the rotation of the Opponent SumBot'))
 		self.tw.lc.def_prim('getOpRot', 0, lambda self: primitive_dictionary['getOpRot']())
 		
 		primitive_dictionary['getDistCenter'] = self.getDistCenter
 		palette.add_block('getDistCenter',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Distancia al Centro'),  # the label for the block
+				     label=_('Get Dist. Center'),  # the label for the block
 				     prim_name='getDistCenter',  # code reference (see below)
-				     help_string=_('Obtener la distancia al centro del doyo'))
+				     help_string=_('Get the distance to the center of the Dojho'))
 		self.tw.lc.def_prim('getDistCenter', 0, lambda self: primitive_dictionary['getDistCenter']())
 		
 		primitive_dictionary['getDistOp'] = self.getDistOp
 		palette.add_block('getDistOp',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Distancia al Oponente'),  # the label for the block
+				     label=_('Get Dist. Op.'),  # the label for the block
 				     prim_name='getDistOp',  # code reference (see below)
-				     help_string=_('Obtener la distancia al oponente'))
+				     help_string=_('Get the distance to the center of the Opponent'))
 		self.tw.lc.def_prim('getDistOp', 0, lambda self: primitive_dictionary['getDistOp']())
         
 		primitive_dictionary['updateState'] = self.updateState
 		palette.add_block('updateState',  # the name of your block
 		             style='basic-style',  # the block style
-		             label=_('Actualizar Información'),  # the label for the block
+		             label=_('Update State'),  # the label for the block
 		             prim_name='updateState',  # code reference (see below)
-		             help_string=_('Actualiza la información desde el servidor'))
+		             help_string=_('Update the state'))
 		self.tw.lc.def_prim('updateState', 0, lambda self: primitive_dictionary['updateState']())
 
 	def start(self):
