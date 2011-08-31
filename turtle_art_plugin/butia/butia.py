@@ -325,7 +325,8 @@ class Butia(gobject.GObject):
 
     def start(self):
         """ start is called when run button is pressed. """
-        self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True)
+        #self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True)
+	pass
 
     def stop(self):
         """ stop is called when stop button is pressed. """

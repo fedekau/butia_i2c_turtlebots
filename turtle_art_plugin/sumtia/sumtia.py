@@ -207,7 +207,8 @@ class Sumtia(gobject.GObject):
 
 	def start(self):
 		""" start is called when run button is pressed. """
-		self.tw.show_toolbar_palette(palette_name_to_index('sumtia'),regenerate=True)
+		#self.tw.show_toolbar_palette(palette_name_to_index('sumtia'),regenerate=True)
+		pass
  
 
 	def stop(self):
