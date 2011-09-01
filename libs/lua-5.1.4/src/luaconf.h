@@ -94,9 +94,9 @@
 	".\\?.dll;"  LUA_CDIR"?.dll;" LUA_CDIR"loadall.dll"
 
 #else
-#define LUA_ROOT	"."
-#define LUA_LDIR	LUA_ROOT "share/lua/5.1/"
-#define LUA_CDIR	LUA_ROOT "lib/lua/5.1/"
+#define LUA_ROOT	"./"
+#define LUA_LDIR	LUA_ROOT "share/"
+#define LUA_CDIR	LUA_ROOT "lib/"
 #define LUA_PATH_DEFAULT  \
 		"./?.lua;"  LUA_LDIR"?.lua;"  LUA_LDIR"?/init.lua;" \
 		            LUA_CDIR"?.lua;"  LUA_CDIR"?/init.lua"
