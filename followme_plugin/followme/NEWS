@@ -1,4 +1,8 @@
-VERSION
+VERSION @ VERSION 6 (BUTIA)
++ fix traslation
++ i10n-es suport
+
+VERSION @ VERSION 5 (BUTIA)
 + Initial comit
 + Copyright added
 + calibrate from plugin

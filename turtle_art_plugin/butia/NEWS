@@ -1,3 +1,7 @@
+VERSION 6
+/ update i10n-es
++ fix redraw function at start
+
 VERSION 5 
 + some clean up of dead code in pythonAPI
 + integration with turtleart version 114
