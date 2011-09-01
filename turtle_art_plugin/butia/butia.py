@@ -177,7 +177,7 @@ class Butia(gobject.GObject):
                      label=_('Speed Butia'),  # the label for the block
                      prim_name='speedButia',  # code reference (see below)
                      default=[600],
-                     help_string=_('Set the moving speed of the butia motors as the value between 0 and 1023, passed by argument '))
+                     help_string=_('Set the moving speed of the butia motors as the value between 0 and 1023, passed by argument'))
         self.tw.lc.def_prim('speedButia', 1, lambda self, x: primitive_dictionary['speedButia'](x))
         
         primitive_dictionary['forwardButia'] = self.forwardButia
