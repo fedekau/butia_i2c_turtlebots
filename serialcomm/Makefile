@@ -34,4 +34,4 @@ else
 endif
 
 clean:
-	-rm $(OBJS) $(OBJS_SO)
+	rm -f $(OBJS) $(OBJS_SO)

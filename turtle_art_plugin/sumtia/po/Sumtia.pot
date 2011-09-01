@@ -8,139 +8,147 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-19 14:56-0300\n"
+"POT-Creation-Date: 2011-09-01 00:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: sumtia.py:58
 msgid "Sumo Butia"
-msgstr "Sumo Butia"
+msgstr ""
 
 #: sumtia.py:65
 msgid "Send Velocities"
-msgstr "Enviar Velocidades"
+msgstr ""
 
 #: sumtia.py:68
 msgid "Send velocities to the robot"
-msgstr "Enviar velocidades al robot"
+msgstr ""
 
 #: sumtia.py:74
 msgid "Set Velocity"
-msgstr "Establecer Velocidad"
+msgstr ""
 
 #: sumtia.py:77
 msgid "Set default velocity to motion commands"
-msgstr "Establece la velocidad por defecto para los comandos de movimiento"
+msgstr ""
 
 #: sumtia.py:83
 msgid "Forward"
-msgstr "Avanzar"
+msgstr ""
 
 #: sumtia.py:85
 msgid "Go forward"
-msgstr "Avanzar"
+msgstr ""
 
 #: sumtia.py:91
 msgid "Backward"
-msgstr "Retroceder"
+msgstr ""
 
 #: sumtia.py:93
 msgid "Go Backward"
-msgstr "Retroceder"
+msgstr ""
 
 #: sumtia.py:99 sumtia.py:101
 msgid "Stop"
-msgstr "Parar"
+msgstr ""
 
 #: sumtia.py:107 sumtia.py:109
 msgid "Turn Left"
-msgstr "Girar Izq."
+msgstr ""
 
 #: sumtia.py:115 sumtia.py:117
 msgid "Turn Right"
-msgstr "Girar Der."
+msgstr ""
 
 #: sumtia.py:123
 msgid "Angle To Center"
-msgstr "Ángulo al Centro"
+msgstr ""
 
-#: sumtia.py:125 sumtia.py:133
-msgid "Get the angle to the center of the doyo"
-msgstr "Obtener el ángulo al centro"
+#: sumtia.py:125
+msgid "Get the angle to the center of the Dojho"
+msgstr ""
 
 #: sumtia.py:131
 msgid "Angle To Opponent"
-msgstr "Ángulo al Oponente"
+msgstr ""
+
+#: sumtia.py:133
+msgid "Get the angle to the Opponent"
+msgstr ""
 
 #: sumtia.py:139
 msgid "Get X"
-msgstr "Coord. X"
+msgstr ""
 
 #: sumtia.py:141
 msgid "Get the X of the SumBot"
-msgstr "Obtener la coordenada x del robot"
+msgstr ""
 
 #: sumtia.py:147
 msgid "Get Y"
-msgstr "Coord. Y"
+msgstr ""
 
 #: sumtia.py:149
 msgid "Get the Y of the SumBot"
-msgstr "Obtener la coordenada y del robot"
+msgstr ""
 
 #: sumtia.py:155
 msgid "Get Op. X"
-msgstr "Coord. X Oponente"
+msgstr ""
 
 #: sumtia.py:157
 msgid "Get the X of the Opponent SumBot"
-msgstr "Obtener la coordenada x del oponente"
+msgstr ""
 
 #: sumtia.py:163
 msgid "Get Op. Y"
-msgstr "Coord. Y Oponente"
+msgstr ""
 
 #: sumtia.py:165
 msgid "Get the Y of the Opponent SumBot"
-msgstr "Obtener la coordenada y del oponente"
+msgstr ""
 
 #: sumtia.py:171
 msgid "Get Rot"
-msgstr "Rotación"
+msgstr ""
 
-#: sumtia.py:173 sumtia.py:181
-msgid "Get the rotation of the Opponent SumBot"
-msgstr "Obtener la rotación del oponente"
+#: sumtia.py:173
+msgid "Get the rotation Sumbot"
+msgstr ""
 
 #: sumtia.py:179
 msgid "Get Op. Rot"
-msgstr "Rotación Oponente"
+msgstr ""
+
+#: sumtia.py:181
+msgid "Get the rotation of the Opponent SumBot"
+msgstr ""
 
 #: sumtia.py:187
 msgid "Get Dist. Center"
-msgstr "Distancia al Centro"
+msgstr ""
 
 #: sumtia.py:189
-msgid "Get the distance to the center of the Doyo"
-msgstr "Obtener la distancia al centro del doyo"
+msgid "Get the distance to the center of the Dojho"
+msgstr ""
 
 #: sumtia.py:195
 msgid "Get Dist. Op."
-msgstr "Distancia al Oponente"
+msgstr ""
 
 #: sumtia.py:197
 msgid "Get the distance to the center of the Opponent"
-msgstr "Obtener la distancia al oponente"
+msgstr ""
 
 #: sumtia.py:203
 msgid "Update State"
-msgstr "Actualizar Información"
+msgstr ""
 
 #: sumtia.py:205
 msgid "Update the state"
-msgstr "Actualiza la información desde el servidor"
+msgstr ""

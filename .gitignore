@@ -23,8 +23,8 @@ serialcomm/serialcomm.so
 serialcomm/lua_bindings/lua_serialcomm.so
 bobot/lib/libluausb.so
 bobot/lib/lua_serialcomm.so
-lualibusb/libluausb.so
-
+libs/luasocket-2.0.2/src/mime.so.1.0.2
+libs/luasocket-2.0.2/src/socket.so.2.0.2
 
 ## generated lua y luac from Makefile
 libs/lua-5.1.4/src/lua

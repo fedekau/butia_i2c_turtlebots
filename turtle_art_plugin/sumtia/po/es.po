@@ -1,21 +1,3 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-19 14:56-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: 8bit\n"
 
 #: sumtia.py:58
 msgid "Sumo Butia"
@@ -54,8 +36,8 @@ msgid "Go Backward"
 msgstr "Retroceder"
 
 #: sumtia.py:99 sumtia.py:101
-msgid "Stop"
-msgstr "Parar"
+msgid "Stop_"
+msgstr "Parar_"
 
 #: sumtia.py:107 sumtia.py:109
 msgid "Turn Left"
@@ -69,13 +51,17 @@ msgstr "Girar Der."
 msgid "Angle To Center"
 msgstr "Ángulo al Centro"
 
-#: sumtia.py:125 sumtia.py:133
-msgid "Get the angle to the center of the doyo"
-msgstr "Obtener el ángulo al centro"
+#: sumtia.py:125
+msgid "Get the angle to the center of the Dojho"
+msgstr "Obtener el ángulo al centro del Dojho"
 
 #: sumtia.py:131
 msgid "Angle To Opponent"
 msgstr "Ángulo al Oponente"
+
+#: sumtia.py:133
+msgid "Get the angle to the Opponent"
+msgstr "Obtener el ángulo al Oponente"
 
 #: sumtia.py:139
 msgid "Get X"
@@ -113,21 +99,25 @@ msgstr "Obtener la coordenada y del oponente"
 msgid "Get Rot"
 msgstr "Rotación"
 
-#: sumtia.py:173 sumtia.py:181
-msgid "Get the rotation of the Opponent SumBot"
-msgstr "Obtener la rotación del oponente"
+#: sumtia.py:173
+msgid "Get the rotation Sumbot"
+msgstr "Obtener la rotación del Sumbot"
 
 #: sumtia.py:179
 msgid "Get Op. Rot"
 msgstr "Rotación Oponente"
+
+#: sumtia.py:181
+msgid "Get the rotation of the Opponent SumBot"
+msgstr "Obtener la rotación del oponente"
 
 #: sumtia.py:187
 msgid "Get Dist. Center"
 msgstr "Distancia al Centro"
 
 #: sumtia.py:189
-msgid "Get the distance to the center of the Doyo"
-msgstr "Obtener la distancia al centro del doyo"
+msgid "Get the distance to the center of the Dojho"
+msgstr "Obtener la distancia al centro del Dojho"
 
 #: sumtia.py:195
 msgid "Get Dist. Op."
