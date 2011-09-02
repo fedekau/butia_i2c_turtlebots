@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# FollowMe.
+# Copyright (C) 2011
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Alan Aguiar <alanjas@hotmail.com>, 2011.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-31 23:44-0300\n"
+"POT-Creation-Date: 2011-09-02 14:03-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "The camera was not found."
 msgstr ""
 
 #: followme.py:59
-msgid "Error on the init of the camera."
+msgid "Error on the initialization of the camera."
 msgstr ""
 
 #: followme.py:74
@@ -30,29 +30,33 @@ msgid "FollowMe"
 msgstr ""
 
 #: followme.py:81
-msgid "Follow a RGB color"
+msgid "follow a RGB color"
 msgstr ""
 
 #: followme.py:91
-msgid "Follow a turtle color"
+msgid "follow a turtle color"
+msgstr ""
+
+#: followme.py:99
+msgid "Calibrate"
 msgstr ""
 
 #: followme.py:100
-msgid "Calibrate a color to Follow"
+msgid "calibrate a color to follow"
 msgstr ""
 
 #: followme.py:108
-msgid "X position"
+msgid "x position"
 msgstr ""
 
 #: followme.py:109
-msgid "Return X position"
+msgid "return x position"
 msgstr ""
 
 #: followme.py:118
-msgid "Y position"
+msgid "y position"
 msgstr ""
 
 #: followme.py:119
-msgid "Return Y position"
+msgid "return y position"
 msgstr ""

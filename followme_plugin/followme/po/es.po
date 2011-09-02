@@ -1,40 +1,44 @@
 
 #: followme.py:57
 msgid "The camera was not found."
-msgstr "La cámara no fue encontrada"
+msgstr "La cámara no fue encontrada."
 
 #: followme.py:59
-msgid "Error on the init of the camera."
-msgstr "Error en la inicialización"
+msgid "Error on the initialization of the camera."
+msgstr "Error en la inicialización de la cámara."
 
 #: followme.py:74
 msgid "FollowMe"
 msgstr "FollowMe"
 
 #: followme.py:81
-msgid "Follow a RGB color"
-msgstr "Seguir color RGB"
+msgid "follow a RGB color"
+msgstr "seguir color RGB"
 
 #: followme.py:91
-msgid "Follow a turtle color"
-msgstr "Seguir color de tortuga"
+msgid "follow a turtle color"
+msgstr "seguir un color de tortuga"
+
+#: followme.py:99
+msgid "Calibrate"
+msgstr "Calibrar"
 
 #: followme.py:100
-msgid "Calibrate a color to Follow"
-msgstr "Calibra un color a Seguir"
+msgid "calibrate a color to follow"
+msgstr "calibra un color a seguir"
 
 #: followme.py:108
-msgid "X position"
-msgstr "posición X"
+msgid "x position"
+msgstr "posición x"
 
 #: followme.py:109
-msgid "Return X position"
-msgstr "Devuelve la posición x"
+msgid "return x position"
+msgstr "devuelve la posición x"
 
 #: followme.py:118
-msgid "Y position"
+msgid "y position"
 msgstr "posición y"
 
 #: followme.py:119
-msgid "Return Y position"
-msgstr "Devuelve la posición y"
+msgid "return y position"
+msgstr "devuelve la posición y"

@@ -56,7 +56,7 @@ class Followme(Plugin):
             else:
                 print _('The camera was not found.')
         except:
-            print _('Error on the init of the camera.')
+            print _('Error on the initialization of the camera.')
 
     def dynamicLoadBlockColors(self):
         if not(self.cam_present):
@@ -78,7 +78,7 @@ class Followme(Plugin):
                         style='basic-style-3arg',
                         label=[('FollowMe  G'), ('R'), ('B')],
                         default=[255, 255, 255],
-                        help_string=_('Follow a RGB color'),
+                        help_string=_('follow a RGB color'),
                         prim_name='followRGB')
         self.parent.lc.def_prim('followRGB', 3, lambda self, x, y, z:
                         primitive_dictionary['followRGB'](x, y, z))
@@ -88,7 +88,7 @@ class Followme(Plugin):
                         style='basic-style-1arg',
                         label=('FollowMe '),
                         default=0,
-                        help_string=_('Follow a turtle color'),
+                        help_string=_('follow a turtle color'),
                         prim_name='follow')
         self.parent.lc.def_prim('follow', 1, lambda self, x:
                         primitive_dictionary['follow'](x))
@@ -96,8 +96,8 @@ class Followme(Plugin):
         primitive_dictionary['calibrate'] = self.prim_calibrate
         palette.add_block('calibrate',
                         style='basic-style',
-                        label=('Calibrate'),
-                        help_string=_('Calibrate a color to Follow'),
+                        label=_('Calibrate'),
+                        help_string=_('calibrate a color to follow'),
                         prim_name='calibrate')
         self.parent.lc.def_prim('calibrate', 0, lambda self:
                         primitive_dictionary['calibrate']())
@@ -105,8 +105,8 @@ class Followme(Plugin):
         primitive_dictionary['xposition'] = self.prim_xposition
         palette.add_block('xposition',
                         style='box-style',
-                        label=_('X position'),
-                        help_string=_('Return X position'),
+                        label=_('x position'),
+                        help_string=_('return x position'),
                         value_block=True,
                         prim_name='xposition')
         self.parent.lc.def_prim('xposition', 0, lambda self:
@@ -115,8 +115,8 @@ class Followme(Plugin):
         primitive_dictionary['yposition'] = self.prim_yposition
         palette.add_block('yposition',
                         style='box-style',
-                        label=_('Y position'),
-                        help_string=_('Return Y position'),
+                        label=_('y position'),
+                        help_string=_('return y position'),
                         value_block=True,
                         prim_name='yposition')
         self.parent.lc.def_prim('yposition', 0, lambda self:
