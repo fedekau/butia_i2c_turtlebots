@@ -40,7 +40,9 @@ mkfolders: walterGIT butiaXO
 	cp -rLf followme/ tmp/plugins/
 	cp -rLf stagin/* tmp/
 	#lets add localization
-	cat mainline/po/es.po butia/po/es.po > tmp/po/es.po
+	cat butia/po/es.po >> tmp/po/es.po
+	cat sumtia/po/es.po >> tmp/po/es.po
+	cat followme/po/es.po >> tmp/po/es.po
 
 makexo: mkfolders
 	# ok, lest make this .xo
