@@ -11,10 +11,9 @@ TURTLEARTVERSION=v114
 
 CWD=$(cwd)
 
-
-
-cd ..
-
+all: makexo
+	# we finish
+	echo FINISH
 
 butiaXO:
 	# I want butiaXO folder be OK! (needed by plugin)
@@ -29,7 +28,7 @@ walterGIT:
 	# I want a especific version of TurtleArts!
 	(cd mainline && git clean -xf) # please eraese any untraged file
 	(cd mainline && git reset --hard) # please erase any modific file
-	(cd mainline && git checkout $TURTLEARTVERSION)
+	(cd mainline && git checkout $(TURTLEARTVERSION))
 
 mkfolders: walterGIT butiaXO
 	#making folders and making all
@@ -48,10 +47,6 @@ makexo: mkfolders
 	(cd tmp && python setup.py fix_manifest)
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
-
-all: makexo
-	# we finish
-	echo FINISH
 
 clean:
 	#cleaning all
