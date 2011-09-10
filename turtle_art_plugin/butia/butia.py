@@ -18,15 +18,14 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import gobject
-import commands
 import butiaAPI
 import time
 import math
 import os
 
-from TurtleArt.tapalette import make_palette, palette_name_to_index
+from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary
-from TurtleArt.taconstants import BLACK, WHITE, CONSTANTS, BOX_COLORS
+from TurtleArt.taconstants import BOX_COLORS
 from TurtleArt.tautils import debug_output
 
 from gettext import gettext as _
@@ -344,7 +343,7 @@ class Butia(gobject.GObject):
 
     def quit(self):
         """ cleanup is called when the activity is exiting. """
-        cmd = './bobot_kill.sh'
+        cmd = "kill `ps ax | grep bobot-server | grep -v grep | awk '{print $1}'`"
         os.system(cmd)
 
     #Butia helper functions for butiaAPI.py interaction
@@ -559,10 +558,6 @@ class Butia(gobject.GObject):
         resolve library dependences located in the bin directory of tortugarte.
         """
         debug_output("initialising butia ...")
-        #cmd = 'kill `ps ax | grep bobot-server | grep -v grep | awk '{print $1}'`'
-        #os.system(cmd)
-        #cmd = './$SUGAR_BUNDLE_PATH/bin/lua bobot-server.lua &'
-        #cmd = 'lua ../bobot/bobot-server.lua &'
         cmd = 'ps ax'
         pids = os.popen(cmd)
         x = pids.readlines()
@@ -575,10 +570,14 @@ class Butia(gobject.GObject):
                 break
             else:                
                 bobotAlive = False
-                #debug_output("aca no entro! ")
         if(bobotAlive==False):
             debug_output("creating bobot")
-            cmd = './plugins/butia/butia_support/bobot_init.sh'
+            cmd = "cd plugins/butia/butia_support"
             os.system(cmd)
-
+            try:
+                cmd = "lua bobot-server.lua &"
+                os.system(cmd)
+            except:
+                cmd = "./lua bobot-server.lua &"
+                os.system(cmd)
 
