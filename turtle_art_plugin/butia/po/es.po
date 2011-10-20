@@ -47,57 +47,17 @@ msgstr "Oscila entre 0 y 1 dependiendo de la vibración"
 msgid "led"
 msgstr "led"
 
-#: butia.py:70
-msgid "pushbutton"
-msgstr "Botón"
-
-#: butia.py:71
-msgid "grayscale"
-msgstr "escala de gris"
-
-#: butia.py:72
-msgid "ambientlight"
-msgstr "luz ambiente"
-
-#: butia.py:73
-msgid "temperature"
-msgstr "temperatura"
-
-#: butia.py:74
-msgid "distance"
-msgstr "distancia"
-
-#: butia.py:75
-msgid "tilt"
-msgstr "inclinación"
-
 #: butia.py:76
 msgid "magneticinduction"
 msgstr "campo magnético"
-
-#: butia.py:77
-msgid "vibration"
-msgstr "vibración"
-
-#: butia.py:153
-msgid "Butia Robot"
-msgstr "Robot Butiá"
 
 #: butia.py:160
 msgid "Delay Butia"
 msgstr "espera Butiá"
 
-#: butia.py:163
-msgid "wait for argument seconds"
-msgstr "Espera los segundos pasados por argumento"
-
 #: butia.py:169
 msgid "batteryCharge Butia"
 msgstr "carga de batería Butiá"
-
-#: butia.py:171
-msgid "Returns the battery charge as a number between 0 and 255"
-msgstr "Devuelve la carga de la batería del robot como un número entre 0 y 255"
 
 #: butia.py:177
 msgid "Speed Butia"
@@ -127,29 +87,13 @@ msgstr "adelante distancia"
 msgid "Move the butia robot forward a predefined distance"
 msgstr "Mueve el robot Butiá hacia adelante una distancia predefinida"
 
-#: butia.py:205
-msgid "backward Butia"
-msgstr "atrás Butiá"
-
 #: butia.py:207 butia.py:224 butia.py:232 butia.py:249
 msgid "Move the butia robot backward"
 msgstr "Mueve el robot Butiá hacia atrás"
 
-#: butia.py:213
-msgid "Backward Distance"
-msgstr "atrás distancia"
-
 #: butia.py:216
 msgid "Move the butia robot backward a predefined distance"
 msgstr "Mueve el robot Butiá hacia atrás"
-
-#: butia.py:222
-msgid "left Butia"
-msgstr "izquierda Butiá"
-
-#: butia.py:230
-msgid "right Butia"
-msgstr "derecha Butiá"
 
 #: butia.py:238
 msgid "Turn X Degree"
@@ -158,10 +102,6 @@ msgstr "Girar X Grados"
 #: butia.py:241
 msgid "Turn the butia robot X degree"
 msgstr "Girar el robot Butiá X grados"
-
-#: butia.py:247
-msgid "stop Butia"
-msgstr "detener Butiá"
 
 #: butia.py:255
 msgid "LCDdisplay Butia"

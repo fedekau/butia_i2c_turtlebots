@@ -1,8 +1,4 @@
 
-#: sumtia.py:58
-msgid "Sumo Butia"
-msgstr "Sumo Butia"
-
 #: sumtia.py:65
 msgid "Send Velocities"
 msgstr "Enviar Velocidades"
