@@ -7,6 +7,7 @@ api.setLight = {}
 api.setLight.parameters = {[1]={rname="message", rtype="string"}} 
 api.setLight.returns = {} 
 api.setLight.call = function (intensidad)
+	intensidad=tonumber(intensidad)
 	if (not intensidad) or intensidad<0 then intensidad=0
 	elseif intensidad>255 then intensidad=255 end
 

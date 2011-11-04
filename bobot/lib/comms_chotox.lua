@@ -1,5 +1,7 @@
 module(..., package.seeall);
 
+local bobot_device = require("bobot_device")
+
 function send(endpoint, data, timeout)
 end
 
@@ -16,12 +18,15 @@ function init(baseboards)
 	local bb = {idBoard=1, comms=comms_chotox}
 	local devices={}
 	for i, name in ipairs({"led","led1","grises","grises1","dist","temp","butia","display","butia"}) do
-		local dd={name=name, baseboard=bb,api={},handler=i}
+		local dd={name=name, baseboard=bb, handler=i}
 		dd.open = function() return true end
 		dd.close = function() end
 		dd.read = function() return "" end
 		dd.send = function() return true end
-		devices[name]=dd
+
+		local d = bobot_device:new(dd) -- in_endpoint=0x01, out_endpoint=0x01})
+
+		devices[name]=d
 	end
 	bb.devices=devices
 	baseboards[1]=bb
