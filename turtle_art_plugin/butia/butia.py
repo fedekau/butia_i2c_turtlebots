@@ -102,6 +102,7 @@ class Butia(gobject.GObject):
         if(self.batteryChargeButia()=="255"):
             motores_off = True
         if self.butia.isPresent('butia') == False:
+            BOX_COLORS['delayButia'] = COLOR_NOTPRESENT    
             BOX_COLORS['forwardButia'] = COLOR_NOTPRESENT
             BOX_COLORS['backwardButia'] = COLOR_NOTPRESENT
             BOX_COLORS['leftButia'] = COLOR_NOTPRESENT
