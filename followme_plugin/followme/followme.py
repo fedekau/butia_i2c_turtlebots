@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-#Copyright (c) 2011 Alan Aguiar, <alanjas@hotmail.com>
-#Copyright (c) 2011 Aylen Ricca, <ar18_90@hotmail.com>
-#Copyright (c) 2011 Rodrigo Dearmas, <piegrande46@hotmail.com>
+# Copyright (c) 2011 Alan Aguiar, <alanjas@hotmail.com>
+# Copyright (c) 2011 Aylen Ricca, <ar18_90@hotmail.com>
+# Copyright (c) 2011 Rodrigo Dearmas, <piegrande46@hotmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,8 +28,11 @@ from TurtleArt.taconstants import BOX_COLORS
 
 sys.path.insert(0, os.path.abspath('./plugins/followme/lib'))
 
-import pygame
-import pygame.camera as pycam
+try:
+    import pygame
+    import pygame.camera as pycam
+except:
+    pass
 
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
 _logger = logging.getLogger('turtleart-activity followme plugin')
