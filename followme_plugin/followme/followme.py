@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-#Copyright (c) 2011 Alan Aguiar, <alanjas@hotmail.com>
-#Copyright (c) 2011 Aylen Ricca, <ar18_90@hotmail.com>
-#Copyright (c) 2011 Rodrigo Dearmas, <piegrande46@hotmail.com>
+# Copyright (c) 2011 Alan Aguiar, <alanjas@hotmail.com>
+# Copyright (c) 2011 Aylen Ricca, <ar18_90@hotmail.com>
+# Copyright (c) 2011 Rodrigo Dearmas, <piegrande46@hotmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,21 +17,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gst
 import gtk
-from fcntl import ioctl
 import sys, os
 import logging
 from gettext import gettext as _
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
-from TurtleArt.talogo import media_blocks_dictionary, primitive_dictionary
-from TurtleArt.taconstants import BLACK, WHITE, CONSTANTS, BOX_COLORS
+from TurtleArt.talogo import primitive_dictionary
+from TurtleArt.taconstants import BOX_COLORS
 
 sys.path.insert(0, os.path.abspath('./plugins/followme/lib'))
 
-import pygame
-import pygame.camera as pycam
+try:
+    import pygame
+    import pygame.camera as pycam
+except:
+    pass
 
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
 _logger = logging.getLogger('turtleart-activity followme plugin')
@@ -51,7 +52,8 @@ class Followme(Plugin):
             self.lcameras = pycam.list_cameras()
             if self.lcameras:
                 self.cam = pycam.Camera(self.lcameras[0], (320,240), 'RGB')
-                self.capture = pygame.surface.Surface((320,240))
+                self.tamanioS = self.cam.get_size()
+                self.capture = pygame.surface.Surface(self.tamanioS)
                 self.cam_present = True
             else:
                 print _('The camera was not found.')
@@ -192,7 +194,7 @@ class Followme(Plugin):
                 self.screen.blit(self.capture, (0,0))
                 rect = pygame.draw.rect(self.screen, (255,0,0), (100,100,50,50), 4)
                 self.colorc = pygame.transform.average_color(self.capture, rect)
-                self.screen.fill(self.colorc, (320,240,100,100))
+                self.screen.fill(self.colorc, (self.tamanioS[0],self.tamanioS[1],100,100))
                 pygame.display.flip()
             self.screen = pygame.display.quit()
 
@@ -207,7 +209,7 @@ class Followme(Plugin):
             connected = mask.connected_component()
             if (connected.count() > 10):
                 centroid = mask.centroid()
-                return (320 - centroid[0])
+                return (self.tamanioS[0] - centroid[0])
             else:
                 return (-1)
         else:
@@ -224,7 +226,7 @@ class Followme(Plugin):
             connected = mask.connected_component()
             if (connected.count() > 10):
                 centroid = mask.centroid()
-                return (240 - centroid[1])
+                return (self.tamanioS[1] - centroid[1])
             else:
                 return (-1)
         else:
