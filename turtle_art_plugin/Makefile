@@ -26,8 +26,8 @@ walterGIT:
 	# goto mainline (Walter code) and check if all is OK!
 	(cd mainline && git fetch) #make sure we have the last changes of the git
 	# I want a especific version of TurtleArts!
-	(cd mainline && git clean -xf) # please eraese any untraged file
 	(cd mainline && git reset --hard) # please erase any modific file
+	(cd mainline && git clean -xdf) # please eraese any untraged file
 	(cd mainline && git checkout $(TURTLEARTVERSION))
 
 mkfolders: walterGIT butiaXO
@@ -49,11 +49,16 @@ makexo: mkfolders
 	(cd tmp && python setup.py fix_manifest)
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
+	make -C . clean  # erase tmp struct
 
 clean:
 	#cleaning all
 	rm -rf tmp
 
+cleanall: clean
+	make -C ../butiaXO clean
+
+
 
 # targets that not represent generated files
-.PHONY: all clean butiaXO walterGIT makexo mkfolders
+.PHONY: all clean cleanall butiaXO walterGIT makexo mkfolders
