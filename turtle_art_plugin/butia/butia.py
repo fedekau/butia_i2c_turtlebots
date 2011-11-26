@@ -74,7 +74,7 @@ label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['tilt'] = _('tilt')
 label_name_from_device_id['magneticinduction'] = _('magneticinduction')
 label_name_from_device_id['vibration'] = _('vibration')
-   
+
 class Butia(gobject.GObject):
     actualSpeed = 600 # velocidad con la que realiza los movimientos forward, backward, left y right
     def __init__(self, parent):
@@ -162,6 +162,14 @@ class Butia(gobject.GObject):
                      prim_name='delayButia',  # code reference (see below)
                      help_string=_('wait for argument seconds'))
         self.tw.lc.def_prim('delayButia', 1, lambda self, x: primitive_dictionary['delayButia'](x))
+
+        primitive_dictionary['refreshButia'] = self.refreshButia
+        palette.add_block('refreshButia',  # the name of your block
+                     style='box-style',  # the block style
+                     label=_('Refresh Butia'),  # the label for the block
+                     prim_name='refreshButia',  # code reference (see below)
+                     help_string=_('Search for a connected Butiá robot'))
+        self.tw.lc.def_prim('refreshButia', 0, lambda self, x: primitive_dictionary['refreshButia']())
 
         primitive_dictionary['batteryChargeButia'] = self.batteryChargeButia
         palette.add_block('batteryChargeButia',  # the name of your block
@@ -324,9 +332,18 @@ class Butia(gobject.GObject):
                         self.tw.lc.def_prim(module + 'Butia', 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
 
     def start(self):
-        """ start is called when run button is pressed. """
         #self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True)
 	pass
+
+    #refresh the blocks according the connected sensors and actuators
+    def refreshButia(self):
+        self.butia.reconnect()
+        new_module_list = self.butia.listarModulos()
+        butia_palette_blocks = palette_blocks[palette_name_to_index('butia')]        
+        #FIXME check if is not already present before appending
+        for i in new_module_list :
+            butia_palette_blocks.append(i + 'Butia') #this will unhide the butia block 
+        self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True) #FIXME i'm not sure this is necessary
 
     def stop(self):
         """ stop is called when stop button is pressed. """
