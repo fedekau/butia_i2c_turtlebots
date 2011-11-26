@@ -65,6 +65,7 @@ class Followme(Plugin):
             BOX_COLORS['followRGB'] = COLOR_NOTPRESENT
             BOX_COLORS['follow'] = COLOR_NOTPRESENT
             BOX_COLORS['threshold'] = COLOR_NOTPRESENT
+            BOX_COLORS['pixels'] = COLOR_NOTPRESENT
             BOX_COLORS['calibrate'] = COLOR_NOTPRESENT
             BOX_COLORS['xposition'] = COLOR_NOTPRESENT
             BOX_COLORS['yposition'] = COLOR_NOTPRESENT
