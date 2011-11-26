@@ -23,6 +23,8 @@ import time
 import math
 import os
 
+from TurtleArt.tapalette import palette_name_to_index
+from TurtleArt.tapalette import palette_blocks
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary
 from TurtleArt.taconstants import BOX_COLORS
@@ -32,7 +34,7 @@ from gettext import gettext as _
 
 #constants definitions
 ERROR_SENSOR_READ = -1   # default return value in case of error when reading a sensor
-WAIT_FOR_BOBOT = 40   # waiting trys for bobot-server (the butia robot lua server)
+WAIT_FOR_BOBOT = 8   # waiting trys for bobot-server (the butia robot lua server)
 MAX_SPEED = 1023   # velocidad maxima para los AX-12 10 bits
 MAX_SENSOR_PER_TYPE = 30
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
@@ -74,6 +76,9 @@ label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['tilt'] = _('tilt')
 label_name_from_device_id['magneticinduction'] = _('magneticinduction')
 label_name_from_device_id['vibration'] = _('vibration')
+
+#list of devices that will be checked in the refresh event
+refreshable_modules_list = ['ambientlight','grayscale','temperature','dist','pushbutton', 'grayscale', 'ambientlight', 'temperature', 'distance', 'tilt', 'magneticinduction', 'vibration' ,'capacitivetouch']
 
 class Butia(gobject.GObject):
     actualSpeed = 600 # velocidad con la que realiza los movimientos forward, backward, left y right
@@ -165,11 +170,11 @@ class Butia(gobject.GObject):
 
         primitive_dictionary['refreshButia'] = self.refreshButia
         palette.add_block('refreshButia',  # the name of your block
-                     style='box-style',  # the block style
+                     style='basic-style',  # the block style
                      label=_('Refresh Butia'),  # the label for the block
                      prim_name='refreshButia',  # code reference (see below)
                      help_string=_('Search for a connected Butiá robot'))
-        self.tw.lc.def_prim('refreshButia', 0, lambda self, x: primitive_dictionary['refreshButia']())
+        self.tw.lc.def_prim('refreshButia', 0, lambda self : primitive_dictionary['refreshButia']())
 
         primitive_dictionary['batteryChargeButia'] = self.batteryChargeButia
         palette.add_block('batteryChargeButia',  # the name of your block
@@ -337,13 +342,23 @@ class Butia(gobject.GObject):
 
     #refresh the blocks according the connected sensors and actuators
     def refreshButia(self):
-        self.butia.reconnect()
-        new_module_list = self.butia.listarModulos()
+        self.butia.reconnect("localhost", 2009) #FIXME unhardcode this
+        new_module_list = self.butia.listarModulos() #FIXME listarModulos must be in english
         butia_palette_blocks = palette_blocks[palette_name_to_index('butia')]        
-        #FIXME check if is not already present before appending
-        for i in new_module_list :
-            butia_palette_blocks.append(i + 'Butia') #this will unhide the butia block 
-        self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True) #FIXME i'm not sure this is necessary
+        for j in refreshable_modules_list:        
+            module = modules_name_from_device_id[j]            
+            if self.butia.isPresent(module) == True:
+                butia_palette_blocks.append(module + 'Butia') #this will unhide the butia block 
+                #FIXME change the block color
+            for k in range(1,MAX_SENSOR_PER_TYPE):
+                module = j + str(k)
+                if self.butia.isPresent(modules_name_from_device_id[j] + str(k)) == True:
+                    #FIXME check if is not already present before appending
+                    butia_palette_blocks.append(module + 'Butia') #this will unhide the butia block 
+                    #FIXME change the block color
+        butia_palette_blocks.append('distance' + 'Butia') #testing
+        #TODO change color of the actuators blocks (forward, right, ... ) if the voltage of the battery is high
+        self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True) #this repaint the butia palette
 
     def stop(self):
         """ stop is called when stop button is pressed. """
