@@ -342,6 +342,7 @@ class Butia(gobject.GObject):
 
     #refresh the blocks according the connected sensors and actuators
     def refreshButia(self):
+        #TODO remember the previous list of devices to remove the ones that are not more available
         self.butia.reconnect("localhost", 2009) #FIXME unhardcode this
         new_module_list = self.butia.listarModulos() #FIXME listarModulos must be in english
         butia_palette_blocks = palette_blocks[palette_name_to_index('butia')]        
