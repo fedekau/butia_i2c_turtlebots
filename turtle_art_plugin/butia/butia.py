@@ -23,6 +23,7 @@ import time
 import math
 import os
 
+from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import palette_blocks
 from TurtleArt.tapalette import make_palette
@@ -38,6 +39,7 @@ WAIT_FOR_BOBOT = 8   # waiting trys for bobot-server (the butia robot lua server
 MAX_SPEED = 1023   # velocidad maxima para los AX-12 10 bits
 MAX_SENSOR_PER_TYPE = 30
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
+COLOR_PRESENT = ["#00FF00","#008000"]
 WHEELBASE = 28.00
 
 
@@ -101,6 +103,7 @@ class Butia(gobject.GObject):
         
     #helpler funcion that dynamically change the block depending of the presence of the module
     #is only used for modules that allows only one instance
+    #FIXME this needs to be erased and use the color property in the add_block method
     def dynamicLoadBlockColors(self):
         self._check_init()
         motores_off = False
@@ -349,16 +352,21 @@ class Butia(gobject.GObject):
         for j in refreshable_modules_list:        
             module = modules_name_from_device_id[j]            
             if self.butia.isPresent(module) == True:
-                butia_palette_blocks.append(module + 'Butia') #this will unhide the butia block 
+                block_name = module + 'Butia'
+                butia_palette_blocks.append(block_name) #this will unhide the butia block 
+                special_block_colors[block_name] = COLOR_PRESENT
                 #FIXME change the block color
             for k in range(1,MAX_SENSOR_PER_TYPE):
                 module = j + str(k)
                 if self.butia.isPresent(modules_name_from_device_id[j] + str(k)) == True:
+                    block_name = module + 'Butia'
                     #FIXME check if is not already present before appending
-                    butia_palette_blocks.append(module + 'Butia') #this will unhide the butia block 
+                    butia_palette_blocks.append(block_name) #this will unhide the butia block 
+                    special_block_colors[block_name] = COLOR_PRESENT
                     #FIXME change the block color
         butia_palette_blocks.append('distance' + 'Butia') #testing
         #TODO change color of the actuators blocks (forward, right, ... ) if the voltage of the battery is high
+        #FIXME repaint palette only if there is changes
         self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True) #this repaint the butia palette
 
     def stop(self):
