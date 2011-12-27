@@ -39,7 +39,7 @@ mkfolders: walterGIT butiaXO
 	cp -rLf sumtia tmp/plugins/
 	cp -rLf followme/ tmp/plugins/
 	cp -rLf stagin/* tmp/
-	#lets add localization
+	# lets add localization (if is not already in taextras.py)
 	cat butia/po/es.po >> tmp/po/es.po
 	cat sumtia/po/es.po >> tmp/po/es.po
 	cat followme/po/es.po >> tmp/po/es.po
@@ -58,6 +58,25 @@ clean:
 cleanall: clean
 	make -C ../butiaXO clean
 
+fakeinstall: walterGIT butiaXO
+	# create a copy to work!
+	rm -rf ~/Activities/TurtleArtButia.activity
+	mkdir -p ~/Activities
+	cp -rL mainline ~/Activities/TurtleArtButia.activity
+	rm -rf ~/Activities/TurtleArtButia.activity/.git
+	# lets make symlinks, it lets you, edit and try, lot more ease!
+	ln -s $(pwd)/butia ~/Activities/TurtleArtButia.activity/plugins/butia
+	ln -s $(pwd)/sumtia ~/Activities/TurtleArtButia.activity/plugins/sumtia
+	ln -s $(pwd)/followme ~/Activities/TurtleArtButia.activity/plugins/followme
+	# lets patch the activity.info and add some icons (TurtleArt => TurtleArtButia)
+	cp -rLf stagin/* ~/Activities/TurtleArtButia.activity/
+	# lets add localization (if is not already in taextras.py)
+	cat butia/po/es.po >> ~/Activities/TurtleArtButia.activity/po/es.po
+	cat sumtia/po/es.po >>  ~/Activities/TurtleArtButia.activity/po/es.po
+	cat followme/po/es.po >>  ~/Activities/TurtleArtButia.activity/po/es.po
+	# fix localization and index
+	(cd ~/Activities/TurtleArtButia.activity && python setup.py fix_manifest)
+	(cd ~/Activities/TurtleArtButia.activity && python setup.py dist_xo)
 
 
 # targets that not represent generated files
