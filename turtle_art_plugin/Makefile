@@ -65,9 +65,9 @@ fakeinstall: walterGIT butiaXO
 	cp -rL mainline ~/Activities/TurtleArtButia.activity
 	rm -rf ~/Activities/TurtleArtButia.activity/.git
 	# lets make symlinks, it lets you, edit and try, lot more ease!
-	ln -s $(pwd)/butia ~/Activities/TurtleArtButia.activity/plugins/butia
-	ln -s $(pwd)/sumtia ~/Activities/TurtleArtButia.activity/plugins/sumtia
-	ln -s $(pwd)/followme ~/Activities/TurtleArtButia.activity/plugins/followme
+	ln -s `pwd`/butia ~/Activities/TurtleArtButia.activity/plugins/butia
+	ln -s `pwd`/sumtia ~/Activities/TurtleArtButia.activity/plugins/sumtia
+	ln -s `pwd`/followme ~/Activities/TurtleArtButia.activity/plugins/followme
 	# lets patch the activity.info and add some icons (TurtleArt => TurtleArtButia)
 	cp -rLf stagin/* ~/Activities/TurtleArtButia.activity/
 	# lets add localization (if is not already in taextras.py)
@@ -77,6 +77,7 @@ fakeinstall: walterGIT butiaXO
 	# fix localization and index
 	(cd ~/Activities/TurtleArtButia.activity && python setup.py fix_manifest)
 	(cd ~/Activities/TurtleArtButia.activity && python setup.py dist_xo)
+
 
 
 # targets that not represent generated files
