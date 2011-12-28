@@ -557,8 +557,9 @@ class Butia(gobject.GObject):
         """
         launch bobot-server.lua with a lua virtual machine modified to locally
         resolve library dependences located in the bin directory of tortugarte.
+	And without libreadline and libhistory dependency
         """
-        debug_output("initialising butia ...")
+        debug_output('initialising butia...')
         cmd = 'ps ax'
         pids = os.popen(cmd)
         x = pids.readlines()
@@ -567,18 +568,12 @@ class Butia(gobject.GObject):
             p = y.find('bobot-server')
             if p >= 0: # process running
                 bobotAlive = True
-                debug_output("bobot is alive! ")
+                debug_output('bobot is alive!')
                 break
             else:                
                 bobotAlive = False
         if(bobotAlive==False):
-            debug_output("creating bobot")
-            cmd = "cd plugins/butia/butia_support"
+            debug_output('creating bobot')
+            cmd = 'cd plugins/butia/butia_support ; ./lua bobot-server.lua &'
             os.system(cmd)
-            try:
-                cmd = "lua bobot-server.lua &"
-                os.system(cmd)
-            except:
-                cmd = "./lua bobot-server.lua &"
-                os.system(cmd)
 
