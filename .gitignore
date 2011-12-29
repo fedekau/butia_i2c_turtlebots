@@ -30,6 +30,8 @@ libs/luasocket-2.0.2/src/socket.so.2.0.2
 libs/lua-5.1.4/src/lua
 libs/lua-5.1.4/src/luac
 
+## temporary folder for TortugArteButia
+turtle_art_plugin/tmp
 
 
 # Also is posible to ignore all subdirectory or files in that directory
