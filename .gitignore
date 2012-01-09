@@ -11,6 +11,7 @@
 *.pyc
 *.xo
 *.a
+*.pot
 
 #### *.so NOT ALL *.so should be ignored
 #### static SO that cant be genereted or links to so should be keep

@@ -11,6 +11,7 @@ TURTLEARTVERSION=fixing
 
 CWD=$(cwd)
 
+
 all: makexo
 	# we finish
 	echo FINISH
@@ -75,19 +76,25 @@ fakeinstall: apply_sym_plugins
 
 
 
+########### POT GENERATION AND TRASLATION THINKS ###########
 
-#genpot_butia:
-
-
-#genpot_sumtia:
-
-
-#genpot_followme: 
+POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
+POT_PROP="--language=Python"
 
 
-#genpot: genpot_followme genpot_sumtia genpot_butia
+genpot: $(POT_FILES)
+
+butia/po/Butia.pot: butia/butia.py
+	xgettext $(POT_PROP) $< -o $@
+
+sumtia/po/Sumtia.pot: sumtia/sumtia.py
+	xgettext $(POT_PROP) $< -o $@
+
+followme/po/FollowMe.pot: followme/followme.py
+	xgettext $(POT_PROP) $< -o $@
 
 
+####### CLEAN STUFF ######
 
 
 clean:
@@ -97,9 +104,11 @@ clean:
 cleanall: clean
 	make -C ../butiaXO clean
 
+clean_genpot:
+	rm -f $(POT_FILES)
 
 
 
 
 # targets that not represent generated files
-.PHONY: all clean cleanall butiaXO walterGIT mktmpfolder apply_hard_plugins apply_sym_plugins makexo
+.PHONY: all clean cleanall butiaXO walterGIT mktmpfolder apply_hard_plugins apply_sym_plugins makexo genpot
