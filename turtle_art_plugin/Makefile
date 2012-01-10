@@ -120,6 +120,19 @@ followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
 
 
 
+updatepo: $(PO_FILES)
+
+butia/po/es.po: butia/po/Butia.notraslated.pot
+	msgmerge --update --no-fuzzy-matching  $@ $<
+
+sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
+	msgmerge --update --no-fuzzy-matching  $@ $<
+
+followme/po/es.po: followme/po/FollowMe.notraslated.pot
+	msgmerge --update --no-fuzzy-matching  $@ $<
+
+
+
 ####### CLEAN STUFF ######
 
 
@@ -131,11 +144,10 @@ cleanall: clean
 	$(MAKE) -C ../butiaXO clean
 
 clean_pot:
-	rm -f $(POT_FILES)
-	rm -f $(POT_NT_FILES)
+	rm -f $(POT_FILES) $(POT_NT_FILES)
 
 
 
 
 # targets that not represent generated files
-.PHONY: all clean cleanall clean_pot butiaXO walterGIT mktmpfolder apply_hard_plugins apply_sym_plugins makexo genpot genpot_notraslated
+.PHONY: all clean cleanall clean_pot butiaXO walterGIT mktmpfolder apply_hard_plugins apply_sym_plugins makexo genpot genpot_notraslated updatepo
