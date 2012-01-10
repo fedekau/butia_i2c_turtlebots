@@ -79,19 +79,45 @@ fakeinstall: apply_sym_plugins
 ########### POT GENERATION AND TRASLATION THINKS ###########
 
 POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
-POT_PROP="--language=Python"
+POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
 
+POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
+              followme/po/FollowMe.notraslated.pot
+
+PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po
 
 genpot: $(POT_FILES)
 
 butia/po/Butia.pot: butia/butia.py
+	echo msgid \"\" > $@
+	echo msgstr \"\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
 	xgettext $(POT_PROP) $< -o $@
 
 sumtia/po/Sumtia.pot: sumtia/sumtia.py
+	echo msgid \"\" > $@
+	echo msgstr \"\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
 	xgettext $(POT_PROP) $< -o $@
 
 followme/po/FollowMe.pot: followme/followme.py
+	echo msgid \"\" > $@
+	echo msgstr \"\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
 	xgettext $(POT_PROP) $< -o $@
+
+
+genpot_notraslated: $(POT_NT_FILES)
+
+butia/po/Butia.notraslated.pot: butia/po/Butia.pot
+	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+
+sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
+	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+
+followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
+	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+
 
 
 ####### CLEAN STUFF ######
@@ -102,13 +128,14 @@ clean:
 	rm -rf tmp
 
 cleanall: clean
-	make -C ../butiaXO clean
+	$(MAKE) -C ../butiaXO clean
 
-clean_genpot:
+clean_pot:
 	rm -f $(POT_FILES)
+	rm -f $(POT_NT_FILES)
 
 
 
 
 # targets that not represent generated files
-.PHONY: all clean cleanall butiaXO walterGIT mktmpfolder apply_hard_plugins apply_sym_plugins makexo genpot
+.PHONY: all clean cleanall clean_pot butiaXO walterGIT mktmpfolder apply_hard_plugins apply_sym_plugins makexo genpot genpot_notraslated
