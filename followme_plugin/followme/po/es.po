@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-10 18:35-0200\n"
+"POT-Creation-Date: 2012-01-10 19:46-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: followme/followme.py:95
+#: followme/followme.py:99
 msgid "set a threshold for a RGB color"
-msgstr ""
+msgstr "setea el umbral para un color RGB"
 
-#: followme/followme.py:115
-msgid "set a number of pixels"
-msgstr ""
+#: followme/followme.py:119
+msgid "set the minimal number of pixels to follow"
+msgstr "setea el minimo número de pixeles a seguir"
 
-#: followme/followme.py:123
+#: followme/followme.py:127
 msgid "Calibrate"
 msgstr "Calibrar"
 
+#: followme/followme.py:156
+msgid "pixels"
+msgstr "pixeles"
+
+#: followme/followme.py:157
+msgid "return the number of pixels of the biggest blob"
+msgstr "devuelve el numero de pixeles de la mancha mas grande"
