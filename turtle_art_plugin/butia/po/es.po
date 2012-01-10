@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-10 18:10-0200\n"
+"POT-Creation-Date: 2012-01-10 18:35-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,31 +17,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: butia.py:45
+#: butia/butia.py:44
 msgid "Adjust led intensity between 0 and 255"
 msgstr "Ajusta la intensidad del led entre 0 y 255"
 
-#: butia.py:46
+#: butia/butia.py:45
 msgid ""
 "returns the object gray level encountered him as a number between 0 and 1023"
 msgstr ""
 "Devuelve el nivel de gris del objeto en frente al sensor como un número "
 "entre0 y 255"
 
-#: butia.py:47
+#: butia/butia.py:46
 msgid "Returns 1 when the button is press and 0 otherwise"
 msgstr "Devuelve 1 cuando el botón está presionado y 0 en otro caso"
 
-#: butia.py:48
+#: butia/butia.py:47
 msgid ""
 "Returns the level of ligth in the ambient as a number between 0 and 1023"
 msgstr "Devuelve el nivel de luz en el ambiente como un número entre 0 y 1023"
 
-#: butia.py:49
+#: butia/butia.py:48
 msgid "Returns the temperature in the ambient as a number between 0 and 255"
 msgstr "Devuelve la temperatura en el ambiente como un número entre 0 y 255"
 
-#: butia.py:50
+#: butia/butia.py:49
 msgid ""
 "Returns the distance from the object in front of the sensor as a number "
 "between 0 and 255"
@@ -49,146 +49,99 @@ msgstr ""
 "Devuelve la distancia del objeto en frente al sensor como un número entre 0 "
 "y 255"
 
-#: butia.py:51
+#: butia/butia.py:50
 msgid "Returns 0 or 1 depending on the sensor inclination"
 msgstr "Devuelve 0 o 1 dependiendo the la inclinación del sensor"
 
-#: butia.py:52
+#: butia/butia.py:51
 msgid "Returns 1 when the sensors detects a magnetic field, 0 otherwise"
 msgstr "Devuelve 1 cuando el sensor detecta un campo magnético, 0 en otro caso"
 
-#: butia.py:53
+#: butia/butia.py:52
 msgid "Switchs from 0 to 1, the frecuency depends on the vibration"
 msgstr "Oscila entre 0 y 1 dependiendo de la vibración"
 
-#: butia.py:69
+#: butia/butia.py:68
 msgid "led"
 msgstr "led"
 
-#: butia.py:70
-msgid "pushbutton"
-msgstr "Botón"
-
-#: butia.py:71
-msgid "grayscale"
-msgstr "escala de gris"
-
-#: butia.py:72
+#: butia/butia.py:71
 msgid "ambientlight"
 msgstr "luz ambiente"
 
-#: butia.py:73
-msgid "temperature"
-msgstr "temperatura"
-
-#: butia.py:74
-msgid "distance"
-msgstr "distancia"
-
-#: butia.py:75
-msgid "tilt"
-msgstr "inclinación"
-
-#: butia.py:76
+#: butia/butia.py:75
 msgid "magneticinduction"
 msgstr "campo magnético"
 
-#: butia.py:77
-msgid "vibration"
-msgstr "vibración"
-
-#: butia.py:153
-msgid "Butia Robot"
-msgstr "Robot Butiá"
-
-#: butia.py:160
+#: butia/butia.py:160
 msgid "Delay Butia"
 msgstr "espera Butiá"
 
-#: butia.py:163
-msgid "wait for argument seconds"
-msgstr "Espera los segundos pasados por argumento"
-
-#: butia.py:169
+#: butia/butia.py:169
 msgid "batteryCharge Butia"
 msgstr "carga de batería Butiá"
 
-#: butia.py:171
+#: butia/butia.py:171
 msgid "Returns the battery charge as a number between 0 and 255"
 msgstr "Devuelve la carga de la batería del robot como un número entre 0 y 255"
 
-#: butia.py:177
+#: butia/butia.py:177
 msgid "Speed Butia"
 msgstr "velocidad Butiá"
 
-#: butia.py:180
+#: butia/butia.py:180
 msgid ""
 "Set the moving speed of the butia motors as the value between 0 and 1023, "
 "passed by argument"
 msgstr ""
-"Establece la velocidad de los motores del butia como un valor entre 0 y 1023, "
-"pasado como argumento"
+"Establece la velocidad de los motores del butia como un valor entre 0 y "
+"1023, pasado como argumento"
 
-#: butia.py:186
+#: butia/butia.py:186
 msgid "Forward Butia"
 msgstr "adelante Butiá"
 
-#: butia.py:188
+#: butia/butia.py:188
 msgid "Move the butia robot forward"
 msgstr "Mueve el robot Butiá hacia adelante"
 
-#: butia.py:195
+#: butia/butia.py:195
 msgid "Forward Distance"
 msgstr "adelante distancia"
 
-#: butia.py:198
+#: butia/butia.py:198
 msgid "Move the butia robot forward a predefined distance"
 msgstr "Mueve el robot Butiá hacia adelante una distancia predefinida"
 
-#: butia.py:205
-msgid "backward Butia"
-msgstr "atrás Butiá"
-
-#: butia.py:207 butia.py:224 butia.py:232 butia.py:249
+#: butia/butia.py:207 butia/butia.py:224 butia/butia.py:232 butia/butia.py:249
 msgid "Move the butia robot backward"
 msgstr "Mueve el robot Butiá hacia atrás"
 
-#: butia.py:213
+#: butia/butia.py:213
 msgid "Backward Distance"
 msgstr "atrás distancia"
 
-#: butia.py:216
+#: butia/butia.py:216
 msgid "Move the butia robot backward a predefined distance"
 msgstr "Mueve el robot Butiá hacia atrás"
 
-#: butia.py:222
-msgid "left Butia"
-msgstr "izquierda Butiá"
-
-#: butia.py:230
-msgid "right Butia"
-msgstr "derecha Butiá"
-
-#: butia.py:238
+#: butia/butia.py:238
 msgid "Turn X Degree"
 msgstr "Girar X Grados"
 
-#: butia.py:241
+#: butia/butia.py:241
 msgid "Turn the butia robot X degree"
 msgstr "Girar el robot Butiá X grados"
 
-#: butia.py:247
-msgid "stop Butia"
-msgstr "detener Butiá"
-
-#: butia.py:255
+#: butia/butia.py:255
 msgid "LCDdisplay Butia"
 msgstr "pantalla LCD Butiá"
 
-#: butia.py:258
+#: butia/butia.py:258
 msgid "Print a text in a 32 characters ASCII display"
 msgstr "Despliega un texto en la pantalla LCD"
 
-#: butia.py:289 butia.py:297 butia.py:311 butia.py:320
+#: butia/butia.py:289 butia/butia.py:297 butia/butia.py:311 butia/butia.py:320
 msgid " Butia"
 msgstr " Butiá"
+

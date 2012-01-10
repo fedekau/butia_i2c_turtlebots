@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-10 18:10-0200\n"
+"POT-Creation-Date: 2012-01-10 18:35-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,46 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: followme.py:57
-msgid "The camera was not found."
-msgstr "La cámara no fue encontrada."
+#: followme/followme.py:95
+msgid "set a threshold for a RGB color"
+msgstr ""
 
-#: followme.py:59
-msgid "Error on the initialization of the camera."
-msgstr "Error en la inicialización de la cámara."
+#: followme/followme.py:115
+msgid "set a number of pixels"
+msgstr ""
 
-#: followme.py:74
-msgid "FollowMe"
-msgstr "FollowMe"
-
-#: followme.py:81
-msgid "follow a RGB color"
-msgstr "seguir color RGB"
-
-#: followme.py:91
-msgid "follow a turtle color"
-msgstr "seguir un color de tortuga"
-
-#: followme.py:99
+#: followme/followme.py:123
 msgid "Calibrate"
 msgstr "Calibrar"
 
-#: followme.py:100
-msgid "calibrate a color to follow"
-msgstr "calibra un color a seguir"
-
-#: followme.py:108
-msgid "x position"
-msgstr "posición x"
-
-#: followme.py:109
-msgid "return x position"
-msgstr "devuelve la posición x"
-
-#: followme.py:118
-msgid "y position"
-msgstr "posición y"
-
-#: followme.py:119
-msgid "return y position"
-msgstr "devuelve la posición y"
