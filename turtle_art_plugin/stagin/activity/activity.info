@@ -1,6 +1,6 @@
 [Activity]
 name = Turtle Art Butia
-activity_version = 6
+activity_version = 7
 license = MIT
 bundle_id = org.laptop.TurtleArtButia
 exec = sugar-activity TurtleArtActivity.TurtleArtActivity
