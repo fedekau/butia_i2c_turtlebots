@@ -41,17 +41,17 @@ class Sumtia(gobject.GObject):
 		#        self.butia = None
 
 	def setup(self):		
-		# Iniciar la conexion con el robot
+		# Start the connection with the robot
 		try:
 			self.api = apiSumoUY.apiSumoUY()
 			self.api.setPuertos()
 			err = self.api.conectarse()    
 		except:
 			error = True
-			print "Error trying to connect..."  
+			print "Exeption: Error trying to connect..."
 			
 		if err == -1:
-			print "Error al conectarse"
+			print "SumoAPI: Error trying to connect..."
 			 
 		""" Setup is called once, when the Turtle Window is created. """     
 
@@ -62,19 +62,19 @@ class Sumtia(gobject.GObject):
 		primitive_dictionary['sendVelocities'] = self.sendVelocities
 		palette.add_block('sendVelocities',  # the name of your block
 				     style='basic-style-2arg',  # the block style
-				     label=_('Send Velocities'),  # the label for the block
+				     label=_('submit speed'),  # the label for the block
 				     prim_name='sendVelocities',  # code reference (see below)
 				     default=[10,10],
-				     help_string=_('Send velocities to the robot'))
+				     help_string=_('Send speed to the robot.'))
 		self.tw.lc.def_prim('sendVelocities', 2, lambda self, x, y: primitive_dictionary['sendVelocities'](x, y))
 
 		primitive_dictionary['setVel'] = self.setVel
 		palette.add_block('setVel',  # the name of your block
 				     style='basic-style-1arg',  # the block style
-				     label=_('Set Velocity'),  # the label for the block
+				     label=_('set speed'),  # the label for the block
 				     prim_name='setVel',  # code reference (see below)
 				     default=[10],
-				     help_string=_('Set default velocity to motion commands'))
+				     help_string=_('Set the default speed for the movement commands.'))
 		self.tw.lc.def_prim('setVel', 1, lambda self, x: primitive_dictionary['setVel'](x))
 
 		primitive_dictionary['forwardSumtia'] = self.forwardSumtia
@@ -96,7 +96,7 @@ class Sumtia(gobject.GObject):
 		primitive_dictionary['stopSumtia'] = self.stopSumtia
 		palette.add_block('stopSumtia',  # the name of your block
 				     style='basic-style',  # the block style
-				     label=_('Stop'),  # the label for the block
+				     label=_('stop'),  # the label for the block
 				     prim_name='stopSumtia',  # code reference (see below)
 				     help_string=_('Stop'))
 		self.tw.lc.def_prim('stopSumtia', 0, lambda self: primitive_dictionary['stopSumtia']())
@@ -104,7 +104,7 @@ class Sumtia(gobject.GObject):
 		primitive_dictionary['turnLeft'] = self.turnLeft
 		palette.add_block('turnLeft',  # the name of your block
 				     style='basic-style',  # the block style
-				     label=_('Turn Left'),  # the label for the block
+				     label=_('turn left'),  # the label for the block
 				     prim_name='turnLeft',  # code reference (see below)
 				     help_string=_('Turn Left'))
 		self.tw.lc.def_prim('turnLeft', 0, lambda self: primitive_dictionary['turnLeft']())
@@ -112,7 +112,7 @@ class Sumtia(gobject.GObject):
 		primitive_dictionary['turnRight'] = self.turnRight
 		palette.add_block('turnRight',  # the name of your block
 				     style='basic-style',  # the block style
-				     label=_('Turn Right'),  # the label for the block
+				     label=_('turn right'),  # the label for the block
 				     prim_name='turnRight',  # code reference (see below)
 				     help_string=_('Turn Right'))
 		self.tw.lc.def_prim('turnRight', 0, lambda self: primitive_dictionary['turnRight']())
@@ -120,23 +120,23 @@ class Sumtia(gobject.GObject):
 		primitive_dictionary['angleToCenter'] = self.angleToCenter
 		palette.add_block('angleToCenter',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Angle To Center'),  # the label for the block
+				     label=_('angle to center'),  # the label for the block
 				     prim_name='angleToCenter',  # code reference (see below)
-				     help_string=_('Get the angle to the center of the Dojho'))
+				     help_string=_('Get the angle to the center of the dohyo.'))
 		self.tw.lc.def_prim('angleToCenter', 0, lambda self: primitive_dictionary['angleToCenter']())
 
 		primitive_dictionary['angleToOpponent'] = self.angleToOpponent
 		palette.add_block('angleToOpponent',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Angle To Opponent'),  # the label for the block
+				     label=_('angle to the opponent'),  # the label for the block
 				     prim_name='angleToOpponent',  # code reference (see below)
-				     help_string=_('Get the angle to the Opponent'))
+				     help_string=_('Get the angle to the center of the opponent.'))
 		self.tw.lc.def_prim('angleToOpponent', 0, lambda self: primitive_dictionary['angleToOpponent']())
 		
 		primitive_dictionary['getX'] = self.getX
 		palette.add_block('getX',  # the name of your block
 				     style='box-style',  # the block style
-				     label=_('Get X'),  # the label for the block
+				     label=_('x coor.'),  # the label for the block
 				     prim_name='getX',  # code reference (see below)
 				     help_string=_('Get the X of the SumBot'))
 		self.tw.lc.def_prim('getX', 0, lambda self: primitive_dictionary['getX']())
@@ -256,7 +256,6 @@ class Sumtia(gobject.GObject):
 		
 	def getX(self):
 		return self.api.getCoorX()
-#		return 7
 	
 	def getY(self):
 		return self.api.getCoorY()
@@ -275,7 +274,6 @@ class Sumtia(gobject.GObject):
 
 	def angleToCenter(self):
 		rot = math.degrees(math.atan2(self.api.getCoorY(), self.api.getCoorX())) + (180 - self.getRot())
-		
 		return (rot - 360) if abs(rot) > 180 else rot 
 
 	def angleToOpponent(self):
@@ -294,7 +292,7 @@ class Sumtia(gobject.GObject):
 	def updateState(self):
 		err = self.api.getInformacion()
 		if err == -1:
-			print "Error obteniendo inforamción"
+			print "Error getting information"
 
 
 
