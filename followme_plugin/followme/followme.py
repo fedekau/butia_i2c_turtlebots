@@ -124,7 +124,7 @@ class Followme(Plugin):
         primitive_dictionary['calibrate'] = self.prim_calibrate
         palette.add_block('calibrate',
                         style='basic-style',
-                        label=_('Calibrate'),
+                        label=_('calibrate'),
                         help_string=_('calibrate a color to follow'),
                         prim_name='calibrate')
         self.parent.lc.def_prim('calibrate', 0, lambda self:
