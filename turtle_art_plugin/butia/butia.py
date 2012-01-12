@@ -41,7 +41,7 @@ WHEELBASE = 28.00
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
-modules_help['led'] = _("adjust led intensity between 0 and 255")
+modules_help['led'] = _("adjust LED intensity between 0 and 255")
 modules_help['grayscale'] = _("returns the object gray level encountered him as a number between 0 and 1023")
 modules_help['pushbutton'] = _("returns 1 when the button is press and 0 otherwise")
 modules_help['ambientlight'] = _("returns the ambient light level as a number between 0 and 1023")
@@ -294,7 +294,7 @@ class Butia(gobject.GObject):
                 else:
                     palette.add_block(j + 'Butia',  # the name of your block
                     style=blockstyle,  # the block style
-                    label=(label_name_from_device_id[j] + _(' Butia')),  # the label for the block
+                    label=(label_name_from_device_id[j] + ' ' + _('Butia')),  # the label for the block
                     prim_name= j + 'Butia',  # code reference (see below)
                     help_string=_(modules_help[j]))
                     self.tw.lc.def_prim(j + 'Butia', 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
@@ -308,7 +308,7 @@ class Butia(gobject.GObject):
                     if blockstyle == 'basic-style-1arg':
                         palette.add_block(module + 'Butia',  # the name of your block 
                                      style=blockstyle,  # the block style
-                                     label=( label_name_from_device_id[j] + str(k)+ _(' Butia')),  # the label for the block
+                                     label=( label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),  # the label for the block
                                      prim_name= module + 'Butia',  # code reference (see below)
                                      help_string=_(modules_help[j]),
                                      default=[255],
@@ -317,7 +317,7 @@ class Butia(gobject.GObject):
                     else:
                         palette.add_block(module + 'Butia',  # the name of your block   
                                      style=blockstyle,  # the block style
-                                     label=(label_name_from_device_id[j] + str(k)+ _(' Butia')),  # the label for the block
+                                     label=(label_name_from_device_id[j] + str(k) + ' ' + _('Butia')),  # the label for the block
                                      prim_name= module + 'Butia',  # code reference (see below)
                                      help_string=_(modules_help[j]),
                                      hidden=isHidden )
