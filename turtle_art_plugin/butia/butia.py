@@ -142,11 +142,11 @@ class Butia(gobject.GObject):
         self._check_init()
         #check if the butia robot is connected to the USB 
         wait_counter = WAIT_FOR_BOBOT
-        module_list = self.butia.listarModulos()
-        while((wait_counter > 0) and (module_list == -1)):
+        self.module_list = self.butia.listarModulos()
+        while((wait_counter > 0) and (self.module_list == -1)):
             self.butia.cerrar()
             self.butia = butiaAPI.robot()
-            module_list = self.butia.listarModulos()
+            self.module_list = self.butia.listarModulos()
             debug_output("waiting...")
             wait_counter = wait_counter - 1
             time.sleep(0.5)
@@ -347,7 +347,20 @@ class Butia(gobject.GObject):
     def refreshButia(self):
         #TODO remember the previous list of devices to remove the ones that are not more available
         self.butia.reconnect("localhost", 2009) #FIXME unhardcode this
-        new_module_list = self.butia.listarModulos() #FIXME listarModulos must be in english
+
+        set_habia = set(self.module_list)
+        set_hay = set(self.butia.listarModulos())
+
+        #lista_poner_en_gris es lo que estaba y ahora no esta: poner en gris
+        set_poner_en_gris = set_habia.difference(set_hay)
+        lista_poner_en_gris = list(set_poner_en_gris)
+
+        #lista_poner_en_verde es lo que no estaba y ahora esta: poner en verde
+        set_poner_en_verde = set_hay.difference(set_habia)
+        lista_poner_en_verde = list(set_poner_en_verde)
+
+        
+        #new_module_list = self.butia.listarModulos() #FIXME listarModulos must be in english
         butia_palette_blocks = palette_blocks[palette_name_to_index('butia')]        
         for j in refreshable_modules_list:        
             module = modules_name_from_device_id[j]            
