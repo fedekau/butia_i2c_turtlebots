@@ -118,6 +118,13 @@ class robot:
 				return True
 		return False
 
+	#retorna si esta presente el modulo
+	def get_modules_list(self):
+		ret = self.listarModulos()
+		#if ret == -1 :
+		#	return []
+		return string.split(ret,',')
+
 	#loopBack: modulo de ayuda presente en el butia (open)
 	def abrirLback(self): #deprecated
 		return self.abrirModulo("lback")
