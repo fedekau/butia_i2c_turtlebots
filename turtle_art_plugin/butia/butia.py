@@ -38,7 +38,7 @@ ERROR_SENSOR_READ = -1   # default return value in case of error when reading a 
 WAIT_FOR_BOBOT = 8   # waiting trys for bobot-server (the butia robot lua server)
 MAX_SPEED = 1023   # velocidad maxima para los AX-12 10 bits
 MAX_SENSOR_PER_TYPE = 30
-COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
+COLOR_NOTPRESENT = ["#A0A0A0","#808080"] #FIXME cambiar el color de la paleta a otro
 COLOR_PRESENT = ["#00FF00","#008000"]
 WHEELBASE = 28.00
 
@@ -348,36 +348,38 @@ class Butia(gobject.GObject):
         #TODO remember the previous list of devices to remove the ones that are not more available
         self.butia.reconnect("localhost", 2009) #FIXME unhardcode this
 
-        set_habia = set(self.module_list)
-        set_hay = set(self.butia.listarModulos())
+        set_old_devices = set(self.module_list)
+        set_new_devices = set(self.butia.listarModulos())
 
         #lista_poner_en_gris es lo que estaba y ahora no esta: poner en gris
-        set_poner_en_gris = set_habia.difference(set_hay)
-        lista_poner_en_gris = list(set_poner_en_gris)
+        set_disconnected = set_old_devices.difference(set_new_devices)
+        list_disconnected = list(set_disconnected)
 
         #lista_poner_en_verde es lo que no estaba y ahora esta: poner en verde
-        set_poner_en_verde = set_hay.difference(set_habia)
-        lista_poner_en_verde = list(set_poner_en_verde)
+        set_connected = set_new_devices.difference(set_old_devices)
+        list_connected = list(set_connected)
 
-        
-        #new_module_list = self.butia.listarModulos() #FIXME listarModulos must be in english
         butia_palette_blocks = palette_blocks[palette_name_to_index('butia')]        
         for j in refreshable_modules_list:        
             module = modules_name_from_device_id[j]            
-            if self.butia.isPresent(module) == True:
-                block_name = module + 'Butia'
-                butia_palette_blocks.append(block_name) #this will unhide the butia block 
+            #if self.butia.isPresent(module) == True:
+            block_name = module + 'Butia'
+            if module in list_connected:
                 special_block_colors[block_name] = COLOR_PRESENT
-                #FIXME change the block color
+            elif module in list_disconnected:
+                special_block_colors[block_name] = COLOR_NOTPRESENT
             for k in range(1,MAX_SENSOR_PER_TYPE):
                 module = j + str(k)
-                if self.butia.isPresent(modules_name_from_device_id[j] + str(k)) == True:
-                    block_name = module + 'Butia'
-                    #FIXME check if is not already present before appending
+                #if self.butia.isPresent(modules_name_from_device_id[j] + str(k)) == True:
+                block_name = module + 'Butia'
+                if module in list_connected:
                     butia_palette_blocks.append(block_name) #this will unhide the butia block 
                     special_block_colors[block_name] = COLOR_PRESENT
-                    #FIXME change the block color
-        butia_palette_blocks.append('distance' + 'Butia') #testing
+                elif module in list_disconnected:
+                    butia_palette_blocks.remove(block_name) #this will hide the butia block 
+                    special_block_colors[block_name] = COLOR_NOTPRESENT
+                    
+        #butia_palette_blocks.append('distance' + 'Butia') #testing
         #TODO change color of the actuators blocks (forward, right, ... ) if the voltage of the battery is high
         #FIXME repaint palette only if there is changes
         self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True) #this repaint the butia palette
