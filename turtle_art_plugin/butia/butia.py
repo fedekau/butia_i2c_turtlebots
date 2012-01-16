@@ -346,10 +346,15 @@ class Butia(gobject.GObject):
     #refresh the blocks according the connected sensors and actuators
     def refreshButia(self):
         #TODO remember the previous list of devices to remove the ones that are not more available
-        self.butia.reconnect("localhost", 2009) #FIXME unhardcode this
+        #self.butia.reconnect("localhost", 2009) #FIXME unhardcode this
+        
 
         set_old_devices = set(self.module_list)
-        set_new_devices = set(self.butia.listarModulos())
+        list_modules = self.butia.get_modules_list()
+        set_new_devices = set(list_modules)
+
+        # actualizo la lista global con los nuevos dispositivos
+        self.module_list = list_modules
 
         #lista_poner_en_gris es lo que estaba y ahora no esta: poner en gris
         set_disconnected = set_old_devices.difference(set_new_devices)
