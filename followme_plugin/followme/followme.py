@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.abspath('./plugins/followme/lib'))
 try:
     import pygame
     import pygame.camera as pycam
-except:
+except ImportError:
     pass
 
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
@@ -46,7 +46,8 @@ class Followme(Plugin):
         self.cam_on = False
         self.colorc = (255, 255, 255)
         self.threshold = (25, 25, 25)
-        self.pixels = 10
+        self.pixels_min = 10
+        self.pixels = 0
         try:
             pygame.init()
             pycam.init()
@@ -54,6 +55,8 @@ class Followme(Plugin):
             if self.lcameras:
                 self.cam = pycam.Camera(self.lcameras[0], (320,240), 'RGB')
                 self.capture = pygame.surface.Surface((320,240))
+                self.mask = None
+                self.connected = None
                 self.cam_present = True
             else:
                 print _('The camera was not found.')
@@ -65,10 +68,11 @@ class Followme(Plugin):
             BOX_COLORS['followRGB'] = COLOR_NOTPRESENT
             BOX_COLORS['follow'] = COLOR_NOTPRESENT
             BOX_COLORS['threshold'] = COLOR_NOTPRESENT
-            BOX_COLORS['pixels'] = COLOR_NOTPRESENT
+            BOX_COLORS['pixels_min'] = COLOR_NOTPRESENT
             BOX_COLORS['calibrate'] = COLOR_NOTPRESENT
             BOX_COLORS['xposition'] = COLOR_NOTPRESENT
             BOX_COLORS['yposition'] = COLOR_NOTPRESENT
+            BOX_COLORS['pixels'] = COLOR_NOTPRESENT
 
     def setup(self):
 
@@ -107,20 +111,20 @@ class Followme(Plugin):
         self.parent.lc.def_prim('follow', 1, lambda self, x:
                         primitive_dictionary['follow'](x))
                         
-        primitive_dictionary['pixels'] = self.prim_pixels
-        palette.add_block('pixels',
+        primitive_dictionary['pixels_min'] = self.prim_pixels_min
+        palette.add_block('pixels_min',
                         style='basic-style-1arg',
-                        label=('Pixels '),
+                        label=('Pixels Min'),
                         default=10,
-                        help_string=_('set a number of pixels'),
-                        prim_name='pixels')
-        self.parent.lc.def_prim('pixels', 1, lambda self, x:
-                        primitive_dictionary['pixels'](x))
+                        help_string=_('set the minimal number of pixels to follow'),
+                        prim_name='pixels_min')
+        self.parent.lc.def_prim('pixels_min', 1, lambda self, x:
+                        primitive_dictionary['pixels_min'](x))
 
         primitive_dictionary['calibrate'] = self.prim_calibrate
         palette.add_block('calibrate',
                         style='basic-style',
-                        label=_('Calibrate'),
+                        label=_('calibrate'),
                         help_string=_('calibrate a color to follow'),
                         prim_name='calibrate')
         self.parent.lc.def_prim('calibrate', 0, lambda self:
@@ -145,6 +149,16 @@ class Followme(Plugin):
                         prim_name='yposition')
         self.parent.lc.def_prim('yposition', 0, lambda self:
                         primitive_dictionary['yposition']())
+
+        primitive_dictionary['pixels'] = self.prim_pixels
+        palette.add_block('pixels',
+                        style='box-style',
+                        label=_('pixels'),
+                        help_string=_('return the number of pixels of the biggest blob'),
+                        value_block=True,
+                        prim_name='pixels')
+        self.parent.lc.def_prim('pixels', 0, lambda self:
+                        primitive_dictionary['pixels']())
 
     def stop(self):
         if (self.cam_present and self.cam_on):
@@ -214,13 +228,13 @@ class Followme(Plugin):
             B = 25
         self.threshold = (R, G, B)
     
-    def prim_pixels(self, x):
+    def prim_pixels_min(self, x):
         if (self.cam_present and not(self.cam_on)):
             self.cam.start()
             self.cam_on = True
         if x < 0:
             x = 1
-        self.pixels = x
+        self.pixels_min = x
 
     def prim_calibrate(self):
         if self.cam_present:
@@ -255,11 +269,11 @@ class Followme(Plugin):
                 self.cam.start()
                 self.cam_on = True
             self.capture = self.cam.get_image(self.capture)
-            mask = pygame.mask.from_threshold(self.capture, self.colorc,
+            self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
                                                 self.threshold)
-            connected = mask.connected_component()
-            if (connected.count() > self.pixels):
-                centroid = mask.centroid()
+            self.connected = self.mask.connected_component()
+            if (self.connected.count() > self.pixels):
+                centroid = self.mask.centroid()
                 return (320 - centroid[0])
             else:
                 return (-1)
@@ -272,13 +286,27 @@ class Followme(Plugin):
                 self.cam.start()
                 self.cam_on = True
             self.capture = self.cam.get_image(self.capture)
-            mask = pygame.mask.from_threshold(self.capture, self.colorc,
+            self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
                                                 self.threshold)
-            connected = mask.connected_component()
-            if (connected.count() > self.pixels):
-                centroid = mask.centroid()
+            self.connected = self.mask.connected_component()
+            if (self.connected.count() > self.pixels):
+                centroid = self.mask.centroid()
                 return (240 - centroid[1])
             else:
                 return (-1)
         else:
             return (-1)
+
+    def prim_pixels(self):
+        if self.cam_present:
+            if not(self.cam_on):
+                self.cam.start()
+                self.cam_on = True
+            self.capture = self.cam.get_image(self.capture)
+            self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
+                                                self.threshold)
+            self.connected = self.mask.connected_component()
+            return self.connected.count()
+        else:
+            return (-1)
+

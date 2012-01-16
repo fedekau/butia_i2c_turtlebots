@@ -1,136 +1,151 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-01-11 21:19-0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: sumtia.py:58
-msgid "Sumo Butia"
-msgstr "Sumo Butia"
+#: sumtia/sumtia.py:58
+msgid "SumBot"
+msgstr "SumBot"
 
-#: sumtia.py:65
-msgid "Send Velocities"
-msgstr "Enviar Velocidades"
+#: sumtia/sumtia.py:65 sumtia/sumtia.py:74
+msgid "speed SumBot"
+msgstr "velocidad SumBot"
 
-#: sumtia.py:68
-msgid "Send velocities to the robot"
-msgstr "Enviar velocidades al robot"
+#: sumtia/sumtia.py:68
+msgid "submit the speed to the SumBot"
+msgstr "setea la velocidad del SumBot"
 
-#: sumtia.py:74
-msgid "Set Velocity"
-msgstr "Establecer Velocidad"
+#: sumtia/sumtia.py:77
+msgid "set the default speed for the movement commands"
+msgstr "setea la velocidad por defecto para los comandos de movimiento"
 
-#: sumtia.py:77
-msgid "Set default velocity to motion commands"
-msgstr "Establece la velocidad por defecto para los comandos de movimiento"
+#: sumtia/sumtia.py:83
+msgid "forward SumBot"
+msgstr "adelante SumBot"
 
-#: sumtia.py:83
-msgid "Forward"
-msgstr "Avanzar"
+#: sumtia/sumtia.py:85
+msgid "move SumBot forward"
+msgstr "mueve adelante el SumBot"
 
-#: sumtia.py:85
-msgid "Go forward"
-msgstr "Avanzar"
+#: sumtia/sumtia.py:91
+msgid "backward SumBot"
+msgstr "atrás SumBot"
 
-#: sumtia.py:91
-msgid "Backward"
-msgstr "Retroceder"
+#: sumtia/sumtia.py:93
+msgid "move SumBot backward"
+msgstr "mueve atras el SumBot"
 
-#: sumtia.py:93
-msgid "Go Backward"
-msgstr "Retroceder"
+#: sumtia/sumtia.py:99
+msgid "stop SumBot"
+msgstr "parar SumBot"
 
-#: sumtia.py:99 sumtia.py:101
-msgid "Stop_"
-msgstr "Parar_"
+#: sumtia/sumtia.py:101
+msgid "stop the SumBot"
+msgstr "para el SumBot"
 
-#: sumtia.py:107 sumtia.py:109
-msgid "Turn Left"
-msgstr "Girar Izq."
+#: sumtia/sumtia.py:107
+msgid "left SumBot"
+msgstr "izquierda SumBot"
 
-#: sumtia.py:115 sumtia.py:117
-msgid "Turn Right"
-msgstr "Girar Der."
+#: sumtia/sumtia.py:109
+msgid "turn left the SumBot"
+msgstr "gira a la izquierda el SumBot"
 
-#: sumtia.py:123
-msgid "Angle To Center"
-msgstr "Ángulo al Centro"
+#: sumtia/sumtia.py:115
+msgid "right SumBot"
+msgstr "derecha SumBot"
 
-#: sumtia.py:125
-msgid "Get the angle to the center of the Dojho"
-msgstr "Obtener el ángulo al centro del Dojho"
+#: sumtia/sumtia.py:117
+msgid "turn right the SumBot"
+msgstr "gira a la derecha el SumBot"
 
-#: sumtia.py:131
-msgid "Angle To Opponent"
-msgstr "Ángulo al Oponente"
+#: sumtia/sumtia.py:125
+msgid "get the angle to the center of the dohyo"
+msgstr "obtiene el ángulo al centro del dohyo"
 
-#: sumtia.py:133
-msgid "Get the angle to the Opponent"
-msgstr "Obtener el ángulo al Oponente"
+#: sumtia/sumtia.py:131
+msgid "angle to Enemy"
+msgstr "angulo al Enemigo"
 
-#: sumtia.py:139
-msgid "Get X"
-msgstr "Coord. X"
+#: sumtia/sumtia.py:133
+msgid "get the angle to the Enemy"
+msgstr "obtiene el ángulo al Enemigo"
 
-#: sumtia.py:141
-msgid "Get the X of the SumBot"
-msgstr "Obtener la coordenada x del robot"
+#: sumtia/sumtia.py:139
+msgid "x coor. SumBot"
+msgstr "coor. x SumBot"
 
-#: sumtia.py:147
-msgid "Get Y"
-msgstr "Coord. Y"
+#: sumtia/sumtia.py:141
+msgid "get the x coordinate of the SumBot"
+msgstr "obtiene la coordenada x del SumBot"
 
-#: sumtia.py:149
-msgid "Get the Y of the SumBot"
-msgstr "Obtener la coordenada y del robot"
+#: sumtia/sumtia.py:147
+msgid "y coor. SumBot"
+msgstr "coor. y SumBot"
 
-#: sumtia.py:155
-msgid "Get Op. X"
-msgstr "Coord. X Oponente"
+#: sumtia/sumtia.py:149
+msgid "get the y coordinate of the SumBot"
+msgstr "obtiene la coordenada y del SumBot"
 
-#: sumtia.py:157
-msgid "Get the X of the Opponent SumBot"
-msgstr "Obtener la coordenada x del oponente"
+#: sumtia/sumtia.py:155
+msgid "x coor. Enemy"
+msgstr "coor. x Enemigo"
 
-#: sumtia.py:163
-msgid "Get Op. Y"
-msgstr "Coord. Y Oponente"
+#: sumtia/sumtia.py:157
+msgid "get the x coordinate of the Enemy"
+msgstr "obtiene la coordenada x del Enemigo"
 
-#: sumtia.py:165
-msgid "Get the Y of the Opponent SumBot"
-msgstr "Obtener la coordenada y del oponente"
+#: sumtia/sumtia.py:163
+msgid "y coor. Enemy"
+msgstr "coor. y Enemigo"
 
-#: sumtia.py:171
-msgid "Get Rot"
-msgstr "Rotación"
+#: sumtia/sumtia.py:165
+msgid "get the y coordinate of the Enemy"
+msgstr "obtiene la coordenada y del Enemigo"
 
-#: sumtia.py:173
-msgid "Get the rotation Sumbot"
-msgstr "Obtener la rotación del Sumbot"
+#: sumtia/sumtia.py:171
+msgid "rotation SumBot"
+msgstr "rotación SumBot"
 
-#: sumtia.py:179
-msgid "Get Op. Rot"
-msgstr "Rotación Oponente"
+#: sumtia/sumtia.py:173
+msgid "get the rotation of the Sumbot"
+msgstr "obtiene la rotación del SumBot"
 
-#: sumtia.py:181
-msgid "Get the rotation of the Opponent SumBot"
-msgstr "Obtener la rotación del oponente"
+#: sumtia/sumtia.py:179
+msgid "rotation Enemy"
+msgstr "rotación Enemigo"
 
-#: sumtia.py:187
-msgid "Get Dist. Center"
-msgstr "Distancia al Centro"
+#: sumtia/sumtia.py:181
+msgid "get the rotation of the Enemy"
+msgstr "obtiene la rotación del Enemigo"
 
-#: sumtia.py:189
-msgid "Get the distance to the center of the Dojho"
-msgstr "Obtener la distancia al centro del Dojho"
+#: sumtia/sumtia.py:189
+msgid "get the distance to the center of the dohyo"
+msgstr "obtiene la distancia a el centro del dohyo"
 
-#: sumtia.py:195
-msgid "Get Dist. Op."
-msgstr "Distancia al Oponente"
+#: sumtia/sumtia.py:195
+msgid "distance to Enemy"
+msgstr "distancia al Enemigo"
 
-#: sumtia.py:197
-msgid "Get the distance to the center of the Opponent"
-msgstr "Obtener la distancia al oponente"
+#: sumtia/sumtia.py:197
+msgid "get the distance to the Enemy"
+msgstr "obtiene la distancia al Enemigo"
 
-#: sumtia.py:203
-msgid "Update State"
-msgstr "Actualizar Información"
+#: sumtia/sumtia.py:205
+msgid "update information from the server"
+msgstr "actualizar la información desde el servidor"
 
-#: sumtia.py:205
-msgid "Update the state"
-msgstr "Actualiza la información desde el servidor"

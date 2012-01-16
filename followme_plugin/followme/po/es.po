@@ -1,44 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-01-11 18:34-0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: followme.py:57
-msgid "The camera was not found."
-msgstr "La cámara no fue encontrada."
+#: followme/followme.py:99
+msgid "set a threshold for a RGB color"
+msgstr "setea el umbral para un color RGB"
 
-#: followme.py:59
-msgid "Error on the initialization of the camera."
-msgstr "Error en la inicialización de la cámara."
+#: followme/followme.py:119
+msgid "set the minimal number of pixels to follow"
+msgstr "setea el minimo número de pixeles a seguir"
 
-#: followme.py:74
-msgid "FollowMe"
-msgstr "FollowMe"
+#: followme/followme.py:127
+msgid "calibrate"
+msgstr "calibrar"
 
-#: followme.py:81
-msgid "follow a RGB color"
-msgstr "seguir color RGB"
+#: followme/followme.py:156
+msgid "pixels"
+msgstr "pixeles"
 
-#: followme.py:91
-msgid "follow a turtle color"
-msgstr "seguir un color de tortuga"
-
-#: followme.py:99
-msgid "Calibrate"
-msgstr "Calibrar"
-
-#: followme.py:100
-msgid "calibrate a color to follow"
-msgstr "calibra un color a seguir"
-
-#: followme.py:108
-msgid "x position"
-msgstr "posición x"
-
-#: followme.py:109
-msgid "return x position"
-msgstr "devuelve la posición x"
-
-#: followme.py:118
-msgid "y position"
-msgstr "posición y"
-
-#: followme.py:119
-msgid "return y position"
-msgstr "devuelve la posición y"
+#: followme/followme.py:157
+msgid "return the number of pixels of the biggest blob"
+msgstr "devuelve el numero de pixeles de la mancha mas grande"

@@ -11,6 +11,7 @@
 *.pyc
 *.xo
 *.a
+*.pot
 
 #### *.so NOT ALL *.so should be ignored
 #### static SO that cant be genereted or links to so should be keep
@@ -30,6 +31,8 @@ libs/luasocket-2.0.2/src/socket.so.2.0.2
 libs/lua-5.1.4/src/lua
 libs/lua-5.1.4/src/luac
 
+## temporary folder for TortugArteButia
+turtle_art_plugin/tmp
 
 
 # Also is posible to ignore all subdirectory or files in that directory
