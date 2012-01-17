@@ -189,6 +189,8 @@ class Butia(gobject.GObject):
                      help_string=_('returns the battery charge as a number between 0 and 255'))
         self.tw.lc.def_prim('batteryChargeButia', 0, lambda self: primitive_dictionary['batteryChargeButia']())
 
+        special_block_colors['batteryChargeButia'] = self.batteryColor()
+
         primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',  # the name of your block
                      style='basic-style-1arg',  # the block style
@@ -398,6 +400,9 @@ class Butia(gobject.GObject):
         #TODO change color of the actuators blocks (forward, right, ... ) if the voltage of the battery is high
         #FIXME repaint palette only if there is changes
         #BOX_COLORS['distanceButia'] = COLOR_NOTPRESENT
+
+        BOX_COLORS['batteryChargeButia'] = self.batteryColor()
+
         self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True) #this repaint the butia palette
 
     def stop(self):
@@ -519,6 +524,19 @@ class Butia(gobject.GObject):
         if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
                     sensor = ERROR_SENSOR_READ
         return sensor
+
+    def batteryColor(self):
+        battery = int(self.batteryChargeButia())
+        if (battery == 255):
+            return COLOR_NOTPRESENT
+        elif ((battery < 254) and (battery >= 195)):
+            return COLOR_PRESENT
+        elif ((battery < 194) and (battery >= 134)):
+            return ["#FFFF00","#808080"]
+        elif ((battery < 134) and (battery >= 74)):
+            return ["#FFA500","#808080"]
+        else:
+            return ["#FF0000","#808080"]
 
     def ambientlightButia(self, sensorid=0):
         self._check_init()
