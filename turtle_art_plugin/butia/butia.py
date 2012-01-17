@@ -80,7 +80,7 @@ label_name_from_device_id['magneticinduction'] = _('magnetic induction')
 label_name_from_device_id['vibration'] = _('vibration')
 
 #list of devices that will be checked in the refresh event
-refreshable_modules_list = ['ambientlight','grayscale','temperature','dist','pushbutton', 'grayscale', 'ambientlight', 'temperature', 'distance', 'tilt', 'magneticinduction', 'vibration' ,'capacitivetouch']
+refreshable_modules_list = ['ambientlight','grayscale','temperature','distance','pushbutton', 'grayscale', 'ambientlight', 'temperature', 'tilt', 'magneticinduction', 'vibration' ]
 
 class Butia(gobject.GObject):
     actualSpeed = 600 # velocidad con la que realiza los movimientos forward, backward, left y right
@@ -88,11 +88,12 @@ class Butia(gobject.GObject):
         gobject.GObject.__init__(self)
         self.tw = parent
         self.butia = None
-
+        
         #start butia services
         self.bobot_launch()
         butiabot = butiaAPI.robot()
         self.butia = butiabot
+ 
     
     def _check_init(self):
         if self.butia is None:
@@ -154,10 +155,10 @@ class Butia(gobject.GObject):
             debug_output("bobot OK! ; after " + str(WAIT_FOR_BOBOT - wait_counter) + " trys") 
         else:
             debug_output("bobot NOT OK!") 
+
+        self.list_modules_global = self.butia.get_modules_list()
         
-        #change block colors
-        self.dynamicLoadBlockColors()
-        
+         
         palette = make_palette('butia', colors=["#00FF00","#008000"], help_string=_('Butia Robot'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
@@ -314,8 +315,10 @@ class Butia(gobject.GObject):
                     prim_name= j + 'Butia',  # code reference (see below)
                     help_string=_(modules_help[j]))
                     self.tw.lc.def_prim(j + 'Butia', 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
-                if self.butia.isPresent(modules_name_from_device_id[j]) == False: 
-                    BOX_COLORS[ j + 'Butia'] = COLOR_NOTPRESENT
+
+                if self.butia.isPresent(modules_name_from_device_id[j]) == False:
+                    special_block_colors[j+ 'Butia'] = COLOR_NOTPRESENT
+
                 for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
                     isHidden = True
@@ -339,6 +342,7 @@ class Butia(gobject.GObject):
                                      hidden=isHidden )
                         self.tw.lc.def_prim(module + 'Butia', 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
 
+
     def start(self):
         #self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True)
 	pass
@@ -346,37 +350,46 @@ class Butia(gobject.GObject):
     #refresh the blocks according the connected sensors and actuators
     def refreshButia(self):
         #TODO remember the previous list of devices to remove the ones that are not more available
-        #self.butia.reconnect("localhost", 2009) #FIXME unhardcode this
+        self.butia.reconnect("localhost", 2009) #FIXME unhardcode this
         
 
-        set_old_devices = set(self.module_list)
+        set_old_devices = set(self.list_modules_global)
         list_modules = self.butia.get_modules_list()
+
         set_new_devices = set(list_modules)
 
         # actualizo la lista global con los nuevos dispositivos
-        self.module_list = list_modules
+        self.list_modules_global = list_modules
 
         #lista_poner_en_gris es lo que estaba y ahora no esta: poner en gris
         set_disconnected = set_old_devices.difference(set_new_devices)
         list_disconnected = list(set_disconnected)
+        print 'desconectados'
+        print list_disconnected
 
         #lista_poner_en_verde es lo que no estaba y ahora esta: poner en verde
         set_connected = set_new_devices.difference(set_old_devices)
         list_connected = list(set_connected)
 
-        butia_palette_blocks = palette_blocks[palette_name_to_index('butia')]        
+        print 'conectados'
+        print list_connected
+
+        butia_palette_blocks = palette_blocks[palette_name_to_index('butia')] 
+       
+        
         for j in refreshable_modules_list:        
-            module = modules_name_from_device_id[j]            
-            #if self.butia.isPresent(module) == True:
+                        
+            module = modules_name_from_device_id[j]
             block_name = module + 'Butia'
             if module in list_connected:
                 special_block_colors[block_name] = COLOR_PRESENT
+                BOX_COLORS[j + 'Butia'] = COLOR_PRESENT
             elif module in list_disconnected:
                 special_block_colors[block_name] = COLOR_NOTPRESENT
+                BOX_COLORS[j + 'Butia'] = COLOR_NOTPRESENT
             for k in range(1,MAX_SENSOR_PER_TYPE):
-                module = j + str(k)
-                #if self.butia.isPresent(modules_name_from_device_id[j] + str(k)) == True:
-                block_name = module + 'Butia'
+                module = modules_name_from_device_id[j] + str(k)
+                block_name = j + str(k) + 'Butia'
                 if module in list_connected:
                     butia_palette_blocks.append(block_name) #this will unhide the butia block 
                     special_block_colors[block_name] = COLOR_PRESENT
@@ -387,7 +400,8 @@ class Butia(gobject.GObject):
         #butia_palette_blocks.append('distance' + 'Butia') #testing
         #TODO change color of the actuators blocks (forward, right, ... ) if the voltage of the battery is high
         #FIXME repaint palette only if there is changes
-        self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True) #this repaint the butia palette
+        #BOX_COLORS['distanceButia'] = COLOR_NOTPRESENT
+        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True) #this repaint the butia palette
 
     def stop(self):
         """ stop is called when stop button is pressed. """
