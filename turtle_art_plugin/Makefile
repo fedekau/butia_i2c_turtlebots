@@ -12,13 +12,34 @@ TURTLEARTVERSION=v131
 CWD=$(cwd)
 
 
-all: makexo
-	# we finish
-	echo FINISH
+all: help
 
-butiaXO:
-	# I want butiaXO folder be OK! (needed by plugin)
-	make -C ../butiaXO
+
+help:
+	@echo 
+	@echo This is a Makefile for complile/construct TurtleArtButia.
+	@echo The follow objetives are defined:     
+	@echo     makexo : Generate the XO distribuible package
+	@echo     fakeinstall: compile all nesesary for TurtleArtButia
+	@echo                  and make a fake install using a symlink
+	@echo                  this allow to work and easy change the code
+	@echo     install: install activity
+	@echo     uninstall: unistall activity
+	@echo     clean: clean all compiled/generated files
+	@echo     genpot: generate pot of plugings
+	@echo     genpot_notraslated: generate pot the plugings that are
+	@echo                         not already traslated in taextras.py
+	@echo     updatepo: using notraslated.pot update the es.po of plugin's
+	@echo               the other traslations all already set in mainline
+	@echo               of Walter, so use that traslations.
+	@echo
+	@echo     For more info contact "butia@fing.edu.uy"
+	@echo     wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki
+	@echo
+
+
+############# Obtein the mainline of TurtleArt (Walter) at a especific version
+
 
 walterGIT:
 	# ok, lets inits and update the submodules (only works if you are in the root of git)
@@ -31,6 +52,78 @@ walterGIT:
 	(cd mainline && git clean -xdf) # please eraese any untraged file
 	(cd mainline && git checkout $(TURTLEARTVERSION))
 
+
+
+########### POT GENERATION AND TRASLATION THINKS ###########
+
+POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
+POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
+
+POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
+              followme/po/FollowMe.notraslated.pot
+
+PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po
+
+
+## Generate pot of plugins
+genpot: $(POT_FILES)
+
+butia/po/Butia.pot: butia/butia.py
+	echo msgid \"\" > $@
+	echo msgstr \"\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
+	xgettext $(POT_PROP) $< -o $@
+
+sumtia/po/Sumtia.pot: sumtia/sumtia.py
+	echo msgid \"\" > $@
+	echo msgstr \"\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
+	xgettext $(POT_PROP) $< -o $@
+
+followme/po/FollowMe.pot: followme/followme.py
+	echo msgid \"\" > $@
+	echo msgstr \"\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
+	xgettext $(POT_PROP) $< -o $@
+
+
+## Generate a pot of MSGID that ARE NOT ALREADY traslated in mainline (Walter GIT)
+genpot_notraslated: $(POT_NT_FILES)
+
+butia/po/Butia.notraslated.pot: walterGIT butia/po/Butia.pot 
+	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+
+sumtia/po/Sumtia.notraslated.pot: walterGIT sumtia/po/Sumtia.pot
+	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+
+followme/po/FollowMe.notraslated.pot: walterGIT followme/po/FollowMe.pot
+	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+
+
+## update de es.po files of plugins using the pot of not already traslated
+updatepo: $(PO_FILES)
+
+butia/po/es.po: butia/po/Butia.notraslated.pot
+	msgmerge --update --no-fuzzy-matching  $@ $<
+
+sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
+	msgmerge --update --no-fuzzy-matching  $@ $<
+
+followme/po/es.po: followme/po/FollowMe.notraslated.pot
+	msgmerge --update --no-fuzzy-matching  $@ $<
+
+
+################ Support for lua (bobot-server) #############
+
+butiaXO:
+	# I want butiaXO folder be OK! (needed by plugin)
+	make -C ../butiaXO
+
+
+
+
+################ Construction...
+
 mktmpfolder: walterGIT
 	#making folders and coping mainline
 	rm -rf tmp
@@ -39,7 +132,7 @@ mktmpfolder: walterGIT
 	# lets patch the activity.info and add some icons (TurtleArt => TurtleArtButia)
 	cp -rLf stagin/* tmp/
 
-apply_localization: mktmpfolder
+apply_localization: mktmpfolder $(PO_FILES)
 	# lets add localization (if is not already in taextras.py)
 	msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
@@ -62,74 +155,19 @@ makexo: apply_hard_plugins
 	(cd tmp && python setup.py fix_manifest)
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
-	$(MAKE) clean
+	$(MAKE) clean_tmp
+
+install: makexo
+	sugar-install-bundle *.xo
+	rm -f *.xo
 
 
 fakeinstall: apply_sym_plugins
 	rm -rf ~/Activities/TurtleArtButia.activity
 	mkdir -p ~/Activities
-	# ln -s `pwd`/tmp ~/Activities/TurtleArtButia.activity ### setup dev
 	# fix localization and index
 	(cd tmp && python setup.py fix_manifest)
-	(cd tmp && python setup.py dist_xo)
 	(cd tmp && python setup.py dev)
-
-
-
-########### POT GENERATION AND TRASLATION THINKS ###########
-
-POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
-POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
-
-POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
-              followme/po/FollowMe.notraslated.pot
-
-PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po
-
-genpot: $(POT_FILES)
-
-butia/po/Butia.pot: butia/butia.py
-	echo msgid \"\" > $@
-	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
-	xgettext $(POT_PROP) $< -o $@
-
-sumtia/po/Sumtia.pot: sumtia/sumtia.py
-	echo msgid \"\" > $@
-	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
-	xgettext $(POT_PROP) $< -o $@
-
-followme/po/FollowMe.pot: followme/followme.py
-	echo msgid \"\" > $@
-	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
-	xgettext $(POT_PROP) $< -o $@
-
-
-genpot_notraslated: $(POT_NT_FILES)
-
-butia/po/Butia.notraslated.pot: butia/po/Butia.pot
-	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-
-sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
-	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-
-followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
-	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-
-
-
-updatepo: $(PO_FILES)
-
-butia/po/es.po: butia/po/Butia.notraslated.pot
-	msgmerge --update --no-fuzzy-matching  $@ $<
-
-sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
-	msgmerge --update --no-fuzzy-matching  $@ $<
-
-followme/po/es.po: followme/po/FollowMe.notraslated.pot
-	msgmerge --update --no-fuzzy-matching  $@ $<
 
 
 
@@ -137,18 +175,23 @@ followme/po/es.po: followme/po/FollowMe.notraslated.pot
 
 
 clean:
-	#cleaning all
-	rm -rf tmp
-
-cleanall: clean
 	$(MAKE) -C ../butiaXO clean
 	$(MAKE) clean_pot
+	$(MAKE) clean_tmp
+	# this remove only if is a symlink ; dont remove if installed
+	rm -f ~/Activities/TurtleArtButia.activity
+
+clean_tmp:
+	rm -rf tmp
 
 clean_pot:
 	rm -f $(POT_FILES) $(POT_NT_FILES)
 
+uninstall:
+	rm -rf ~/Activities/TurtleArtButia.activity
+	
 
 
 
 # targets that not represent generated files
-.PHONY: all clean cleanall clean_pot butiaXO walterGIT mktmpfolder apply_hard_plugins apply_sym_plugins makexo genpot genpot_notraslated updatepo
+.PHONY: all clean clear_tmp clean_pot butiaXO walterGIT mktmpfolder apply_hard_plugins apply_sym_plugins makexo genpot genpot_notraslated updatepo install uninstall help
