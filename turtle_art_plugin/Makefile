@@ -17,25 +17,26 @@ all: help
 
 help:
 	@echo 
-	@echo This is a Makefile for complile/construct TurtleArtButia.
-	@echo The follow objetives are defined:     
-	@echo     makexo : Generate the XO distribuible package
-	@echo     fakeinstall: compile all nesesary for TurtleArtButia
-	@echo                  and make a fake install using a symlink
-	@echo                  this allow to work and easy change the code
-	@echo     install: install activity
-	@echo     uninstall: unistall activity
-	@echo     clean: clean all compiled/generated files
-	@echo     genpot: generate pot of plugings
-	@echo     genpot_notraslated: generate pot the plugings that are
-	@echo                         not already traslated in taextras.py
-	@echo     updatepo: using notraslated.pot update the es.po of plugin's
-	@echo               the other traslations all already set in mainline
-	@echo               of Walter, so use that traslations.
-	@echo
-	@echo     For more info contact "butia@fing.edu.uy"
-	@echo     wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki
-	@echo
+	@echo "This is a Makefile for complile/construct TurtleArtButia.        "
+	@echo "The follow objetives are defined:                                "
+	@echo "    xo : Generate the XO distribuible package                    "
+	@echo "    fakeinstall: compile all nesesary for TurtleArtButia         "
+	@echo "                 and make a fake install using a symlink         "
+	@echo "                 this allow to work and easy change the code     "
+	@echo "    install: install activity                                    "
+	@echo "    uninstall: unistall activity                                 "
+	@echo "    clean: clean all compiled/generated files                    "
+	@echo "    genpot: generate pot of plugings                             "
+	@echo "    genpot_notraslated: generate pot the plugings that are       "
+	@echo "                        not already traslated in taextras.py     "
+	@echo "    updatepo: using notraslated.pot update the es.po of plugin's "
+	@echo "              the other traslations all already set in mainline  "
+	@echo "              of Walter, so use that traslations.                "
+	@echo "                                                                 "
+	@echo "    For more info contact \"butia@fing.edu.uy\"                  "
+	@echo "    wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki  "
+	@echo "                                                                 "    
+
 
 
 ############# Obtein the mainline of TurtleArt (Walter) at a especific version
@@ -90,13 +91,16 @@ followme/po/FollowMe.pot: followme/followme.py
 ## Generate a pot of MSGID that ARE NOT ALREADY traslated in mainline (Walter GIT)
 genpot_notraslated: $(POT_NT_FILES)
 
-butia/po/Butia.notraslated.pot: walterGIT butia/po/Butia.pot 
+butia/po/Butia.notraslated.pot: butia/po/Butia.pot 
+	$(MAKE) walterGIT
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
-sumtia/po/Sumtia.notraslated.pot: walterGIT sumtia/po/Sumtia.pot
+sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
+	$(MAKE) walterGIT
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
-followme/po/FollowMe.notraslated.pot: walterGIT followme/po/FollowMe.pot
+followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
+	$(MAKE) walterGIT
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
 
@@ -150,16 +154,16 @@ apply_sym_plugins: apply_localization butiaXO
 	ln -s `pwd`/followme tmp/plugins/followme
 
 
-makexo: apply_hard_plugins
+xo: apply_hard_plugins
 	# ok, lest make this .xo
 	(cd tmp && python setup.py fix_manifest)
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
 	$(MAKE) clean_tmp
 
-install: makexo
+install: xo
 	sugar-install-bundle *.xo
-	rm -f *.xo
+	$(MAKE) clean_xo
 
 
 fakeinstall: apply_sym_plugins
@@ -178,6 +182,7 @@ clean:
 	$(MAKE) -C ../butiaXO clean
 	$(MAKE) clean_pot
 	$(MAKE) clean_tmp
+	$(MAKE) clean_xo
 	# this remove only if is a symlink ; dont remove if installed
 	rm -f ~/Activities/TurtleArtButia.activity
 
@@ -187,6 +192,9 @@ clean_tmp:
 clean_pot:
 	rm -f $(POT_FILES) $(POT_NT_FILES)
 
+clean_xo:
+	rm -f *.xo
+
 uninstall:
 	rm -rf ~/Activities/TurtleArtButia.activity
 	
@@ -194,4 +202,4 @@ uninstall:
 
 
 # targets that not represent generated files
-.PHONY: all clean clear_tmp clean_pot butiaXO walterGIT mktmpfolder apply_hard_plugins apply_sym_plugins makexo genpot genpot_notraslated updatepo install uninstall help
+.PHONY: all clean clean_tmp clean_pot clean_xo walterGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help
