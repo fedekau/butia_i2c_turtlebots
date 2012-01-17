@@ -91,19 +91,19 @@ genpot: $(POT_FILES)
 butia/po/Butia.pot: butia/butia.py
 	echo msgid \"\" > $@
 	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
 	xgettext $(POT_PROP) $< -o $@
 
 sumtia/po/Sumtia.pot: sumtia/sumtia.py
 	echo msgid \"\" > $@
 	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
 	xgettext $(POT_PROP) $< -o $@
 
 followme/po/FollowMe.pot: followme/followme.py
 	echo msgid \"\" > $@
 	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\\n\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
 	xgettext $(POT_PROP) $< -o $@
 
 
