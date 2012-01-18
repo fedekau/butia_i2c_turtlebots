@@ -92,16 +92,16 @@ class Butia(gobject.GObject):
         
         #start butia services
         self.bobot_launch()
-        butiabot = butiaAPI.robot()
-        self.butia = butiabot
+        self.butia = butiaAPI.robot()
+
  
     
     def _check_init(self):
         if self.butia is None:
             debug_output("reinitializing butia ...")
             self.butia = butiaAPI.robot()
-            self.butia.abrirSensor()
-            self.butia.abrirMotores()
+            #self.butia.abrirSensor()
+            #self.butia.abrirMotores()
         
     #helpler funcion that dynamically change the block depending of the presence of the module
     #is only used for modules that allows only one instance
@@ -143,6 +143,7 @@ class Butia(gobject.GObject):
         """ Setup is called once, when the Turtle Window is created. """
         self._check_init()
         #check if the butia robot is connected to the USB 
+        #####
         wait_counter = WAIT_FOR_BOBOT
         self.module_list = self.butia.listarModulos()
         while((wait_counter > 0) and (self.module_list == -1)):
@@ -407,7 +408,8 @@ class Butia(gobject.GObject):
 
     def stop(self):
         """ stop is called when stop button is pressed. """
-        pass
+        
+   
 
     def goto_background(self):
         """ goto_background is called when the activity is sent to the
@@ -421,6 +423,7 @@ class Butia(gobject.GObject):
 
     def quit(self):
         """ cleanup is called when the activity is exiting. """
+        self.butia.close()
         cmd = "kill `ps ax | grep bobot-server | grep -v grep | awk '{print $1}'`"
         os.system(cmd)
 
