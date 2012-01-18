@@ -15,4 +15,4 @@ lualibusb: $(OBJS)
 so: $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS_SO) -lusb $(OBJS)
 clean:
-	-rm $(OBJS) $(OBJS_SO)
+	-rm -f $(OBJS) $(OBJS_SO)
