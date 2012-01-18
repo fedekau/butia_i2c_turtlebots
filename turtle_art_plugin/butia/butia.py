@@ -23,6 +23,9 @@ import time
 import math
 import os
 
+from TurtleArt.tapalette import special_block_colors
+from TurtleArt.tapalette import palette_name_to_index
+from TurtleArt.tapalette import palette_blocks
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary
 from TurtleArt.taconstants import BOX_COLORS
@@ -32,12 +35,14 @@ from gettext import gettext as _
 
 #constants definitions
 ERROR_SENSOR_READ = -1   # default return value in case of error when reading a sensor
-WAIT_FOR_BOBOT = 40   # waiting trys for bobot-server (the butia robot lua server)
+WAIT_FOR_BOBOT = 8   # waiting trys for bobot-server (the butia robot lua server)
 MAX_SPEED = 1023   # velocidad maxima para los AX-12 10 bits
 MAX_SENSOR_PER_TYPE = 30
-COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
+COLOR_NOTPRESENT = ["#A0A0A0","#808080"] #FIXME cambiar el color de la paleta a otro
+COLOR_PRESENT = ["#00FF00","#008000"]
 WHEELBASE = 28.00
-
+BOBOT_PORT = 2009
+BOBOT_ADDRESS = "localhost" 
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
@@ -74,28 +79,33 @@ label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['tilt'] = _('tilt')
 label_name_from_device_id['magneticinduction'] = _('magnetic induction')
 label_name_from_device_id['vibration'] = _('vibration')
-   
+
+#list of devices that will be checked in the refresh event
+refreshable_modules_list = ['ambientlight','grayscale','temperature','distance','pushbutton', 'grayscale', 'ambientlight', 'temperature', 'tilt', 'magneticinduction', 'vibration' ]
+
 class Butia(gobject.GObject):
     actualSpeed = 600 # velocidad con la que realiza los movimientos forward, backward, left y right
     def __init__(self, parent):
         gobject.GObject.__init__(self)
         self.tw = parent
         self.butia = None
-
+        
         #start butia services
         self.bobot_launch()
-        butiabot = butiaAPI.robot()
-        self.butia = butiabot
+        self.butia = butiaAPI.robot()
+
+ 
     
     def _check_init(self):
         if self.butia is None:
             debug_output("reinitializing butia ...")
             self.butia = butiaAPI.robot()
-            self.butia.abrirSensor()
-            self.butia.abrirMotores()
+            #self.butia.abrirSensor()
+            #self.butia.abrirMotores()
         
     #helpler funcion that dynamically change the block depending of the presence of the module
     #is only used for modules that allows only one instance
+    #FIXME this needs to be erased and use the color property in the add_block method
     def dynamicLoadBlockColors(self):
         self._check_init()
         motores_off = False
@@ -133,12 +143,13 @@ class Butia(gobject.GObject):
         """ Setup is called once, when the Turtle Window is created. """
         self._check_init()
         #check if the butia robot is connected to the USB 
+        #####
         wait_counter = WAIT_FOR_BOBOT
-        module_list = self.butia.listarModulos()
-        while((wait_counter > 0) and (module_list == -1)):
+        self.module_list = self.butia.listarModulos()
+        while((wait_counter > 0) and (self.module_list == -1)):
             self.butia.cerrar()
             self.butia = butiaAPI.robot()
-            module_list = self.butia.listarModulos()
+            self.module_list = self.butia.listarModulos()
             debug_output("waiting...")
             wait_counter = wait_counter - 1
             time.sleep(0.5)
@@ -146,10 +157,10 @@ class Butia(gobject.GObject):
             debug_output("bobot OK! ; after " + str(WAIT_FOR_BOBOT - wait_counter) + " trys") 
         else:
             debug_output("bobot NOT OK!") 
+
+        self.list_modules_global = self.butia.get_modules_list()
         
-        #change block colors
-        self.dynamicLoadBlockColors()
-        
+         
         palette = make_palette('butia', colors=["#00FF00","#008000"], help_string=_('Butia Robot'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
@@ -163,6 +174,14 @@ class Butia(gobject.GObject):
                      help_string=_('wait for argument seconds'))
         self.tw.lc.def_prim('delayButia', 1, lambda self, x: primitive_dictionary['delayButia'](x))
 
+        primitive_dictionary['refreshButia'] = self.refreshButia
+        palette.add_block('refreshButia',  # the name of your block
+                     style='basic-style',  # the block style
+                     label=_('Refresh Butia'),  # the label for the block
+                     prim_name='refreshButia',  # code reference (see below)
+                     help_string=_('Search for a connected Butiá robot'))
+        self.tw.lc.def_prim('refreshButia', 0, lambda self : primitive_dictionary['refreshButia']())
+
         primitive_dictionary['batteryChargeButia'] = self.batteryChargeButia
         palette.add_block('batteryChargeButia',  # the name of your block
                      style='box-style',  # the block style
@@ -170,6 +189,8 @@ class Butia(gobject.GObject):
                      prim_name='batteryChargeButia',  # code reference (see below)
                      help_string=_('returns the battery charge as a number between 0 and 255'))
         self.tw.lc.def_prim('batteryChargeButia', 0, lambda self: primitive_dictionary['batteryChargeButia']())
+
+        special_block_colors['batteryChargeButia'] = self.batteryColor()
 
         primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',  # the name of your block
@@ -298,8 +319,10 @@ class Butia(gobject.GObject):
                     prim_name= j + 'Butia',  # code reference (see below)
                     help_string=_(modules_help[j]))
                     self.tw.lc.def_prim(j + 'Butia', 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
-                if self.butia.isPresent(modules_name_from_device_id[j]) == False: 
-                    BOX_COLORS[ j + 'Butia'] = COLOR_NOTPRESENT
+
+                if self.butia.isPresent(modules_name_from_device_id[j]) == False:
+                    special_block_colors[j+ 'Butia'] = COLOR_NOTPRESENT
+
                 for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
                     isHidden = True
@@ -323,14 +346,70 @@ class Butia(gobject.GObject):
                                      hidden=isHidden )
                         self.tw.lc.def_prim(module + 'Butia', 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
 
+
     def start(self):
-        """ start is called when run button is pressed. """
         #self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True)
 	pass
 
+    #refresh the blocks according the connected sensors and actuators
+    def refreshButia(self):
+        self.butia.reconnect(BOBOT_ADDRESS, BOBOT_PORT) #FIXME CALL a API function
+        set_old_devices = set(self.list_modules_global)
+        list_modules = self.butia.get_modules_list()
+        set_new_devices = set(list_modules)
+
+        # update the global list of devices with the actually connected 
+        self.list_modules_global = list_modules
+
+        # list of the disconnected devices, wich must be painted in COLOR_NOTPRESENT
+        set_disconnected = set_old_devices.difference(set_new_devices)
+        list_disconnected = list(set_disconnected)
+        print 'desconectados'
+        print list_disconnected
+
+        # list of new devices connected, wich must be painted in COLOR_PRESENT
+        set_connected = set_new_devices.difference(set_old_devices)
+        list_connected = list(set_connected)
+
+        print 'conectados'
+        print list_connected
+
+        butia_palette_blocks = palette_blocks[palette_name_to_index('butia')] 
+       
+        
+        for j in refreshable_modules_list:        
+                        
+            module = modules_name_from_device_id[j]
+            block_name = module + 'Butia'
+            if module in list_connected:
+                special_block_colors[block_name] = COLOR_PRESENT
+                BOX_COLORS[j + 'Butia'] = COLOR_PRESENT
+            elif module in list_disconnected:
+                special_block_colors[block_name] = COLOR_NOTPRESENT
+                BOX_COLORS[j + 'Butia'] = COLOR_NOTPRESENT
+            for k in range(1,MAX_SENSOR_PER_TYPE):
+                module = modules_name_from_device_id[j] + str(k)
+                block_name = j + str(k) + 'Butia'
+                if module in list_connected:
+                    butia_palette_blocks.append(block_name) #this will unhide the butia block 
+                    special_block_colors[block_name] = COLOR_PRESENT
+                elif module in list_disconnected:
+                    butia_palette_blocks.remove(block_name) #this will hide the butia block 
+                    special_block_colors[block_name] = COLOR_NOTPRESENT
+                    
+        #butia_palette_blocks.append('distance' + 'Butia') #testing
+        #TODO change color of the actuators blocks (forward, right, ... ) if the voltage of the battery is high
+        #FIXME repaint palette only if there is changes
+        #BOX_COLORS['distanceButia'] = COLOR_NOTPRESENT
+
+        BOX_COLORS['batteryChargeButia'] = self.batteryColor()
+
+        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True) #this repaint the butia palette
+
     def stop(self):
         """ stop is called when stop button is pressed. """
-        pass
+        
+   
 
     def goto_background(self):
         """ goto_background is called when the activity is sent to the
@@ -344,6 +423,7 @@ class Butia(gobject.GObject):
 
     def quit(self):
         """ cleanup is called when the activity is exiting. """
+        self.butia.close()
         cmd = "kill `ps ax | grep bobot-server | grep -v grep | awk '{print $1}'`"
         os.system(cmd)
 
@@ -447,6 +527,19 @@ class Butia(gobject.GObject):
         if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
                     sensor = ERROR_SENSOR_READ
         return sensor
+
+    def batteryColor(self):
+        battery = int(self.batteryChargeButia())
+        if (battery == 255):
+            return COLOR_NOTPRESENT
+        elif ((battery < 254) and (battery >= 195)):
+            return COLOR_PRESENT
+        elif ((battery < 194) and (battery >= 134)):
+            return ["#FFFF00","#808080"]
+        elif ((battery < 134) and (battery >= 74)):
+            return ["#FFA500","#808080"]
+        else:
+            return ["#FF0000","#808080"]
 
     def ambientlightButia(self, sensorid=0):
         self._check_init()
