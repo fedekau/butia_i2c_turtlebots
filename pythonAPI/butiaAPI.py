@@ -1,4 +1,6 @@
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
+# 
 # ButiaAPI
 # Copyright (c) 2009, 2010, 2011, 2012 Butiá Team butia@fing.edu.uy 
 # Butia is a free open plataform for robotics projects
@@ -26,23 +28,25 @@ import socket
 import string
 import math 
 
-BOBOT_ADDRESS = 'localhost'
+BOBOT_HOST = 'localhost'
 BOBOT_PORT = '2009'
 	
 class robot:
-	client = None
-	fclient = None
 
 	# init the robot class
-	def __init__(self):
-		self.reconnect(BOBOT_ADDRESS, BOBOT_PORT)
+	def __init__(self, host=BOBOT_HOST, port=BOBOT_PORT):
+                self.host = host
+                self.port = port
+	        self.client = None
+	        self.fclient = None
+		self.reconnect()
 
 	# connect o reconnect the bobot
 	def reconnect(self):
 		self.close()
 		try:
 			self.client = socket.socket()
-			self.client.connect((BOBOT_ADDRESS, BOBOT_PORT))  
+			self.client.connect((self.host, self.port))  
 			self.fclient = self.client.makefile()
 			msg = 'INIT\n'
 			self.client.send(msg) #bobot server instance is running, but we have to check for new or remove hardware
@@ -67,18 +71,6 @@ class robot:
 	#######################################################################
 	### Operations to the principal module
 	#######################################################################
-
-	# return a string list om modules istar modulos: devuelve la lista de los modulos disponibles en el firmware de la placa
-	def moduleList(self):
-		ret = -1
-		msg = 'LIST\n'
-		try:
-			self.client.send(msg)
-			ret = self.fclient.readline()
-		except:	
-			return -1
-		ret = ret[:len(ret) -1]
-		return ret
 
 	# open the module 'moduloname'
 	def moduleOpen(self, moduloname):
@@ -118,7 +110,13 @@ class robot:
 
 	# returns a list of modules
 	def get_modules_list(self):
-		ret = self.listarModulos()
+		msg = 'LIST\n'
+		try:
+			self.client.send(msg)
+			ret = self.fclient.readline()
+                        ret = ret[:len(ret) -1]
+		except:	
+			return []
 		if ret == '':
 			return []
 		return string.split(ret,',')
