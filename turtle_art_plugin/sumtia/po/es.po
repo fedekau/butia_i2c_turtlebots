@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-11 21:19-0200\n"
+"POT-Creation-Date: 2012-01-17 21:03-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,4 +148,3 @@ msgstr "obtiene la distancia al Enemigo"
 #: sumtia/sumtia.py:205
 msgid "update information from the server"
 msgstr "actualizar la información desde el servidor"
-
