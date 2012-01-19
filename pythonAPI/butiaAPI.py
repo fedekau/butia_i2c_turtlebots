@@ -48,9 +48,10 @@ class robot:
 			if self.cliente != None:
 				self.cliente.close()
 				self.cliente = None
+                        return 0
 		except:
 			return -1
-		return 0
+		
 
 	#######################################################################
 	### Operaciones solicitadas al sistema modulo principal
@@ -94,8 +95,17 @@ class robot:
 			ret = self.fcliente.readline()
 		except:
 			return -1
-		ret = ret[:len(ret) -1]		# le borro el \n
+		ret = ret[:len(ret) -1]
+                if ret == 'fail':
+                    return -1
 		return ret
+
+        def cerrarServicio(self):
+		msg = "QUIT\n"
+		try:
+			self.cliente.send(msg)  # FIXME -- controlar que no de error el socket
+		except:
+			return -1
 
 
 
@@ -121,8 +131,8 @@ class robot:
 	#retorna si esta presente el modulo
 	def get_modules_list(self):
 		ret = self.listarModulos()
-		#if ret == -1 :
-		#	return []
+		if (ret == '' or ret == -1):
+			return []
 		return string.split(ret,',')
 
 	#loopBack: modulo de ayuda presente en el butia (open)
