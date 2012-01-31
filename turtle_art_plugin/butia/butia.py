@@ -41,8 +41,6 @@ MAX_SENSOR_PER_TYPE = 30
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] #FIXME cambiar el color de la paleta a otro
 COLOR_PRESENT = ["#00FF00","#008000"]
 WHEELBASE = 28.00
-BOBOT_PORT = 2009
-BOBOT_ADDRESS = "localhost" 
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
@@ -353,7 +351,7 @@ class Butia(gobject.GObject):
 
     #refresh the blocks according the connected sensors and actuators
     def refreshButia(self):
-        self.butia.reconnect(BOBOT_ADDRESS, BOBOT_PORT) #FIXME CALL a API function
+        self.butia.reconnect() #FIXME CALL a API function
         set_old_devices = set(self.list_modules_global)
         list_modules = self.butia.get_modules_list()
         set_new_devices = set(list_modules)
