@@ -159,7 +159,7 @@ xo: apply_hard_plugins
 	(cd tmp && python setup.py fix_manifest)
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
-	$(MAKE) clean_tmp
+	#$(MAKE) clean_tmp
 
 install: xo
 	sugar-install-bundle *.xo
