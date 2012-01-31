@@ -22,7 +22,7 @@ import butiaAPI
 import time
 import math
 import os
-
+import threading
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import palette_blocks
@@ -87,7 +87,7 @@ class Butia(gobject.GObject):
         gobject.GObject.__init__(self)
         self.tw = parent
         self.butia = None
-        
+        self.pollthread= None
         #start butia services
         self.bobot_launch()
         self.butia = butiaAPI.robot()
@@ -173,7 +173,9 @@ class Butia(gobject.GObject):
 
         self.list_modules_global = self.butia.get_modules_list()
 
-        #change block colors
+        #timer to poll butia changes
+        self.pollthread=threading.Timer(1,self.bobot_poll)
+        self.pollthread.start()
         self.dynamicLoadBlockColors()
          
         palette = make_palette('butia', colors=["#00FF00","#008000"], help_string=_('Butia Robot'))
@@ -436,6 +438,8 @@ class Butia(gobject.GObject):
         """ cleanup is called when the activity is exiting. """
         self.butia.cerrarServicio()
         self.butia.cerrar()
+        self.pollthread.cancel()
+        
 
 
     #Butia helper functions for butiaAPI.py interaction
@@ -678,4 +682,10 @@ class Butia(gobject.GObject):
             debug_output('creating bobot')
             cmd = 'cd plugins/butia/butia_support ; ./lua bobot-server.lua &'
             os.system(cmd)
+
+    def bobot_poll(self):
+        self.refreshButia()
+        self.pollthread=threading.Timer(3,self.bobot_poll)
+        self.pollthread.start()
+
 
