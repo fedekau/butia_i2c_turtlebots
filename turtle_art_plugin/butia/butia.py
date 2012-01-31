@@ -35,7 +35,7 @@ from gettext import gettext as _
 
 #constants definitions
 ERROR_SENSOR_READ = -1   # default return value in case of error when reading a sensor
-WAIT_FOR_BOBOT = 8   # waiting trys for bobot-server (the butia robot lua server)
+WAIT_FOR_BOBOT = 4   # waiting trys for bobot-server (the butia robot lua server)
 MAX_SPEED = 1023   # velocidad maxima para los AX-12 10 bits
 MAX_SENSOR_PER_TYPE = 30
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] #FIXME cambiar el color de la paleta a otro
@@ -106,36 +106,51 @@ class Butia(gobject.GObject):
     #FIXME this needs to be erased and use the color property in the add_block method
     def dynamicLoadBlockColors(self):
         self._check_init()
-        motores_off = False
-        if(self.batteryChargeButia()=="255"):
-            motores_off = True
         if self.butia.isPresent('butia') == False:
-            BOX_COLORS['delayButia'] = COLOR_NOTPRESENT    
+            print 'NOT present'
             BOX_COLORS['forwardButia'] = COLOR_NOTPRESENT
+            special_block_colors['forwardButia'] = COLOR_NOTPRESENT
             BOX_COLORS['backwardButia'] = COLOR_NOTPRESENT
+            special_block_colors['backwardButia'] = COLOR_NOTPRESENT
             BOX_COLORS['leftButia'] = COLOR_NOTPRESENT
+            special_block_colors['leftButia'] = COLOR_NOTPRESENT
             BOX_COLORS['rightButia'] = COLOR_NOTPRESENT
+            special_block_colors['rightButia'] = COLOR_NOTPRESENT
             BOX_COLORS['stopButia'] = COLOR_NOTPRESENT
+            special_block_colors['stopButia'] = COLOR_NOTPRESENT
             BOX_COLORS['speedButia'] = COLOR_NOTPRESENT
-            BOX_COLORS['batteryChargeButia'] = COLOR_NOTPRESENT
+            special_block_colors['speedButia'] = COLOR_NOTPRESENT
             BOX_COLORS['forwardDistance'] = COLOR_NOTPRESENT
+            special_block_colors['forwardDistance'] = COLOR_NOTPRESENT
             BOX_COLORS['backwardDistance'] = COLOR_NOTPRESENT
+            special_block_colors['backwardDistance'] = COLOR_NOTPRESENT
             BOX_COLORS['turnXdegree'] = COLOR_NOTPRESENT
-        #if self.butia.isPresent('ctouch') == False:
-        #BOX_COLORS['capacitivetouchButia'] = COLOR_NOTPRESENT
-        if(motores_off == True):
-            BOX_COLORS['forwardButia'] = COLOR_NOTPRESENT
-            BOX_COLORS['backwardButia'] = COLOR_NOTPRESENT
-            BOX_COLORS['leftButia'] = COLOR_NOTPRESENT
-            BOX_COLORS['rightButia'] = COLOR_NOTPRESENT
-            BOX_COLORS['stopButia'] = COLOR_NOTPRESENT
-            BOX_COLORS['speedButia'] = COLOR_NOTPRESENT
-            BOX_COLORS['forwardDistance'] = COLOR_NOTPRESENT
-            BOX_COLORS['backwardDistance'] = COLOR_NOTPRESENT
-            BOX_COLORS['turnXdegree'] = COLOR_NOTPRESENT
+            special_block_colors['turnXdegree'] = COLOR_NOTPRESENT
+        else:
+            BOX_COLORS['forwardButia'] = COLOR_PRESENT
+            special_block_colors['forwardButia'] = COLOR_PRESENT
+            BOX_COLORS['backwardButia'] = COLOR_PRESENT
+            special_block_colors['backwardButia'] = COLOR_PRESENT
+            BOX_COLORS['leftButia'] = COLOR_PRESENT
+            special_block_colors['leftButia'] = COLOR_PRESENT
+            BOX_COLORS['rightButia'] = COLOR_PRESENT
+            special_block_colors['rightButia'] = COLOR_PRESENT
+            BOX_COLORS['stopButia'] = COLOR_PRESENT
+            special_block_colors['stopButia'] = COLOR_PRESENT
+            BOX_COLORS['speedButia'] = COLOR_PRESENT
+            special_block_colors['speedButia'] = COLOR_PRESENT
+            BOX_COLORS['forwardDistance'] = COLOR_PRESENT
+            special_block_colors['forwardDistance'] = COLOR_PRESENT
+            BOX_COLORS['backwardDistance'] = COLOR_PRESENT
+            special_block_colors['backwardDistance'] = COLOR_PRESENT
+            BOX_COLORS['turnXdegree'] = COLOR_PRESENT
+            special_block_colors['turnXdegree'] = COLOR_PRESENT
         if self.butia.isPresent('lcd') == False:
             BOX_COLORS['LCDdisplayButia'] = COLOR_NOTPRESENT
-
+            special_block_colors['LCDdisplayButia'] = COLOR_NOTPRESENT
+        else:
+            BOX_COLORS['LCDdisplayButia'] = COLOR_PRESENT
+            special_block_colors['LCDdisplayButia'] = COLOR_PRESENT
 
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
@@ -144,7 +159,7 @@ class Butia(gobject.GObject):
         #####
         wait_counter = WAIT_FOR_BOBOT
         self.module_list = self.butia.listarModulos()
-        while((wait_counter > 0) and (self.module_list == -1)):
+        while( (wait_counter > 0) and ( (self.module_list == -1) or (self.module_list=='') ) ):
             self.butia.cerrar()
             self.butia = butiaAPI.robot()
             self.module_list = self.butia.listarModulos()
@@ -157,20 +172,14 @@ class Butia(gobject.GObject):
             debug_output("bobot NOT OK!") 
 
         self.list_modules_global = self.butia.get_modules_list()
-        
+
+        #change block colors
+        self.dynamicLoadBlockColors()
          
         palette = make_palette('butia', colors=["#00FF00","#008000"], help_string=_('Butia Robot'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
-        primitive_dictionary['delayButia'] = self.delayButia
-        palette.add_block('delayButia',  # the name of your block
-                     style='basic-style-1arg',  # the block style
-                     label=_('delay Butia'),  # the label for the block
-                     default=[1],
-                     prim_name='delayButia',  # code reference (see below)
-                     help_string=_('wait for argument seconds'))
-        self.tw.lc.def_prim('delayButia', 1, lambda self, x: primitive_dictionary['delayButia'](x))
 
         primitive_dictionary['refreshButia'] = self.refreshButia
         palette.add_block('refreshButia',  # the name of your block
@@ -391,9 +400,11 @@ class Butia(gobject.GObject):
                 if module in list_connected:
                     butia_palette_blocks.append(block_name) #this will unhide the butia block 
                     special_block_colors[block_name] = COLOR_PRESENT
+                    BOX_COLORS[block_name] = COLOR_PRESENT
                 elif module in list_disconnected:
                     butia_palette_blocks.remove(block_name) #this will hide the butia block 
                     special_block_colors[block_name] = COLOR_NOTPRESENT
+                    BOX_COLORS[block_name] = COLOR_NOTPRESENT
                     
         #butia_palette_blocks.append('distance' + 'Butia') #testing
         #TODO change color of the actuators blocks (forward, right, ... ) if the voltage of the battery is high
@@ -401,6 +412,8 @@ class Butia(gobject.GObject):
         #BOX_COLORS['distanceButia'] = COLOR_NOTPRESENT
 
         BOX_COLORS['batteryChargeButia'] = self.batteryColor()
+
+        self.dynamicLoadBlockColors()
 
         self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True) #this repaint the butia palette
 
@@ -421,9 +434,9 @@ class Butia(gobject.GObject):
 
     def quit(self):
         """ cleanup is called when the activity is exiting. """
-        self.butia.close()
-        cmd = "kill `ps ax | grep bobot-server | grep -v grep | awk '{print $1}'`"
-        os.system(cmd)
+        self.butia.cerrarServicio()
+        self.butia.cerrar()
+
 
     #Butia helper functions for butiaAPI.py interaction
 
@@ -447,8 +460,6 @@ class Butia(gobject.GObject):
                     sensor = ERROR_SENSOR_READ
         return sensor
 
-    def delayButia(self, waitTime):
-        time.sleep(waitTime)
 
     def forwardButia(self):
         self._check_init()
@@ -521,14 +532,14 @@ class Butia(gobject.GObject):
     def batteryChargeButia(self):
         self._check_init()
         sensor = "nil value\n"
-        sensor = self.butia.llamarModulo("butia", "get_volt" )
+        sensor = self.butia.llamarModulo("butia", "get_volt")
         if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
                     sensor = ERROR_SENSOR_READ
         return sensor
 
     def batteryColor(self):
-        battery = int(self.batteryChargeButia())
-        if (battery == 255):
+        battery = int(self.butia.getCargaBateria())
+        if (battery == -1) or (battery == 255):
             return COLOR_NOTPRESENT
         elif ((battery < 254) and (battery >= 195)):
             return COLOR_PRESENT

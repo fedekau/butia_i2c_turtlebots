@@ -38,7 +38,6 @@ class robot:
         def __init__(self, host=BOBOT_HOST, port=BOBOT_PORT):
                 """
                 init the robot class
-
                 """
                 self.host = host
                 self.port = port
@@ -107,6 +106,11 @@ class robot:
                         msg += ' ' + params
                 return self.doCommand(msg)
 
+	# Close bobot service
+	def closeService(self):
+		msg = 'QUIT'
+                return self.doCommand(msg)
+
         #######################################################################
         ### Useful functions 
         #######################################################################
@@ -119,20 +123,22 @@ class robot:
         # returns a list of modules
         def get_modules_list(self):
                 msg = 'LIST'
-                try:
-                        ret = self.doCommand(msg)
-                except:        
+                ret = self.doCommand(msg)
+                if not (ret == '' or ret == -1):
+                	return ret.split(',')
+		else:
                         return []
-                if ret == '':
-                        return []
-                return ret.split(',')
+                
 
         # loopBack: send a message to butia and wait to recibe the same
         def loopBack(self, data):
-                ret = self.callModule('lback', 'send', data)
-                if ret == -1 :
+                msg = 'lback send ' + data
+                ret = self.doCommand(msg)
+		if ret != -1 :
+			return self.callModule('lback', 'read')
+		else:
                         return -1
-                return self.callModule('lback', 'read')
+                
 
         #######################################################################
         ### Operations for motores.lua driver
@@ -201,4 +207,3 @@ class robot:
         # set the led intensity
         def setLed(self, number= '', nivel = 255):
                 return self.callModule('led' + number, 'setLight', str(math.trunc(nivel)))
-
