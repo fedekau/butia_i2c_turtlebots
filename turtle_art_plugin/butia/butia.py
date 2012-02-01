@@ -158,11 +158,11 @@ class Butia(gobject.GObject):
         #check if the butia robot is connected to the USB 
         #####
         wait_counter = WAIT_FOR_BOBOT
-        self.module_list = self.butia.listarModulos()
-        while( (wait_counter > 0) and ( (self.module_list == -1) or (self.module_list=='') ) ):
+        self.module_list = self.butia.get_modules_list()
+        while( (wait_counter > 0) and not(self.module_list == [] ) ):
             self.butia.cerrar()
             self.butia = butiaAPI.robot()
-            self.module_list = self.butia.listarModulos()
+            self.module_list = self.butia.get_modules_list()
             debug_output("waiting...")
             wait_counter = wait_counter - 1
             time.sleep(0.5)
@@ -505,7 +505,7 @@ class Butia(gobject.GObject):
         self.set_vels(-self.actualSpeed, self.actualSpeed)
 
     def turnXdegree(self, degrees):
-	self._check_init()
+        self._check_init()
         #FIXME cambiar el 8.29 por valor que dependa de velocidad
         tiempo = (degrees * WHEELBASE * 3.14) / (360 * 8.29)
         if degrees > 0:
@@ -513,8 +513,8 @@ class Butia(gobject.GObject):
         else:
             self.set_vels(self.actualSpeed, -self.actualSpeed)
         time.sleep(abs(tiempo))
-	self.tw.canvas.setpen(True)
-	self.tw.canvas.arc(degrees, 0)
+        self.tw.canvas.setpen(True)
+        self.tw.canvas.arc(degrees, 0)
         self.set_vels(0, 0)
 
     def stopButia(self):
@@ -542,7 +542,7 @@ class Butia(gobject.GObject):
         return sensor
 
     def batteryColor(self):
-        battery = int(self.butia.getCargaBateria())
+        battery = int(self.butia.getBatteryCharge())
         if (battery == -1) or (battery == 255):
             return COLOR_NOTPRESENT
         elif ((battery < 254) and (battery >= 195)):
@@ -663,7 +663,7 @@ class Butia(gobject.GObject):
         """
         launch bobot-server.lua with a lua virtual machine modified to locally
         resolve library dependences located in the bin directory of tortugarte.
-	And without libreadline and libhistory dependency
+        And without libreadline and libhistory dependency
         """
         debug_output('initialising butia...')
         cmd = 'ps ax'

@@ -33,12 +33,13 @@ BOBOT_HOST = 'localhost'
 BOBOT_PORT = '2009'
 
 class robot:
-    lock = threading.Lock()
+    
 
     def __init__(self, host=BOBOT_HOST, port=BOBOT_PORT):
         """
         init the robot class
         """
+        self.lock = threading.Lock()
         self.host = host
         self.port = port
         self.client = None
@@ -52,14 +53,14 @@ class robot:
         """
         msg=str(msg).strip()+'\n'
         ret = -1
-        lock.acquire(blocking=True)
+        self.lock.acquire()
         try:     
             self.client.send(msg) 
             ret = self.fclient.readline()
             ret = ret[:-1]
         except:
             ret = -1 # Doesn't return here to release the lock
-        lock.release()                
+        self.lock.release()                
         return ret
           
     # connect o reconnect the bobot
@@ -102,12 +103,12 @@ class robot:
     def callModule(self, modulename, function , params = ''):
         msg = 'CALL ' + modulename + ' ' + function
         if params != '' :
-        msg += ' ' + params
+            msg += ' ' + params
         return self.doCommand(msg)
 
     # Close bobot service
     def closeService(self):
-	    msg = 'QUIT'
+        msg = 'QUIT'
         return self.doCommand(msg)
 
     #######################################################################
@@ -133,10 +134,10 @@ class robot:
     def loopBack(self, data):
         msg = 'lback send ' + data
         ret = self.doCommand(msg)
-    if ret != -1 :
-        return self.callModule('lback', 'read')
-    else:
-        return -1
+        if ret != -1 :
+            return self.callModule('lback', 'read')
+        else:
+            return -1
             
 
     #######################################################################
