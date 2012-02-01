@@ -30,12 +30,12 @@ import math
 import threading 
 
 BOBOT_HOST = 'localhost'
-BOBOT_PORT = '2009'
+BOBOT_PORT = 2009
 
 class robot:
     
 
-    def __init__(self, host=BOBOT_HOST, port=BOBOT_PORT):
+    def __init__(self, host = BOBOT_HOST, port = BOBOT_PORT):
         """
         init the robot class
         """
@@ -45,13 +45,14 @@ class robot:
         self.client = None
         self.fclient = None
         self.reconnect()
-        
+
+       
     def doCommand(self, msg):
         """
         Executes a command in butia.
         @param msg message to be executed
         """
-        msg=str(msg).strip()+'\n'
+        msg = msg +'\n'
         ret = -1
         self.lock.acquire()
         try:     
@@ -117,8 +118,8 @@ class robot:
 
     # returns if the module_name is present
     def isPresent(self, module_name):
-            module_list = self.get_modules_list()
-            return (module_name in module_list)
+        module_list = self.get_modules_list()
+        return (module_name in module_list)
 
     # returns a list of modules
     def get_modules_list(self):
@@ -127,8 +128,7 @@ class robot:
         if not (ret == '' or ret == -1):
             return ret.split(',')
         else:
-            return []
-            
+           return []
 
     # loopBack: send a message to butia and wait to recibe the same
     def loopBack(self, data):
