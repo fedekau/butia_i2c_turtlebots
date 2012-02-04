@@ -46,7 +46,7 @@ WHEELBASE = 28.00
 modules_help = {} 
 modules_help['led'] = _("adjust LED intensity between 0 and 255")
 modules_help['grayscale'] = _("returns the object gray level encountered him as a number between 0 and 1023")
-modules_help['pushbutton'] = _("returns 1 when the button is press and 0 otherwise")
+modules_help['button'] = _("returns 1 when the button is press and 0 otherwise")
 modules_help['ambientlight'] = _("returns the ambient light level as a number between 0 and 1023")
 modules_help['temperature'] = _("returns the ambient temperature as a number between 0 and 255")
 modules_help['distance'] = _("returns the distance from the object in front of the sensor as a number between 0 and 255")
@@ -58,7 +58,7 @@ modules_help['vibration'] = _("switches from 0 to 1, the frequency depends on th
 #Dictionary for translating block name to module name used for automatic generation of block instances
 modules_name_from_device_id = {} 
 modules_name_from_device_id['led'] = 'led'
-modules_name_from_device_id['pushbutton'] = 'boton'
+modules_name_from_device_id['button'] = 'boton'
 modules_name_from_device_id['grayscale'] = 'grises'
 modules_name_from_device_id['ambientlight'] = 'luz'
 modules_name_from_device_id['temperature'] = 'temp'
@@ -69,7 +69,7 @@ modules_name_from_device_id['vibration'] = 'vibra'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
-label_name_from_device_id['pushbutton'] = _('pushbutton')
+label_name_from_device_id['button'] = _('button')
 label_name_from_device_id['grayscale'] = _('grayscale')
 label_name_from_device_id['ambientlight'] = _('ambient light')
 label_name_from_device_id['temperature'] = _('temperature')
@@ -79,8 +79,8 @@ label_name_from_device_id['magneticinduction'] = _('magnetic induction')
 label_name_from_device_id['vibration'] = _('vibration')
 
 #list of devices that will be checked in the refresh event
-refreshable_modules_list = ['ambientlight','grayscale','temperature','distance','pushbutton', 'grayscale', 'ambientlight',
-                            'temperature', 'tilt', 'magneticinduction', 'vibration' ]
+refreshable_modules_list = ['ambientlight','grayscale','temperature','distance','button', 'grayscale', 'ambientlight',
+                            'temperature', 'tilt', 'magneticinduction', 'vibration', 'led' ]
 
 block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
               'backwardDistance', 'turnXdegree', 'LCDdisplayButia'] 
@@ -108,16 +108,10 @@ class Butia(gobject.GObject):
 
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
-        #self._check_init()
 
-        #self.list_modules_global = self.butia.get_modules_list()
-
-
-         
         palette = make_palette('butia', colors=["#00FF00","#008000"], help_string=_('Butia Robot'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
-
 
         primitive_dictionary['refreshButia'] = self.refreshButia
         palette.add_block('refreshButia',  # the name of your block
@@ -127,15 +121,13 @@ class Butia(gobject.GObject):
                      help_string=_('Search for a connected Butiá robot'))
         self.tw.lc.def_prim('refreshButia', 0, lambda self : primitive_dictionary['refreshButia']())
 
-        primitive_dictionary['batteryChargeButia'] = self.batteryChargeButia
-        palette.add_block('batteryChargeButia',  # the name of your block
+        primitive_dictionary['batterychargeButia'] = self.batterychargeButia
+        palette.add_block('batterychargeButia',  # the name of your block
                      style='box-style',  # the block style
                      label=_('battery charge Butia'),  # the label for the block
-                     prim_name='batteryChargeButia',  # code reference (see below)
+                     prim_name='batterychargeButia',  # code reference (see below)
                      help_string=_('returns the battery charge as a number between 0 and 255'))
-        self.tw.lc.def_prim('batteryChargeButia', 0, lambda self: primitive_dictionary['batteryChargeButia']())
-
-        special_block_colors['batteryChargeButia'] = self.batteryColor()
+        self.tw.lc.def_prim('batterychargeButia', 0, lambda self: primitive_dictionary['batterychargeButia']())
 
         primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',  # the name of your block
@@ -154,7 +146,6 @@ class Butia(gobject.GObject):
                      help_string=_('move the Butia robot forward'))
         self.tw.lc.def_prim('forwardButia', 0, lambda self: primitive_dictionary['forwardButia']())
 
-        #new block added  
         primitive_dictionary['forwardDistance'] = self.forwardDistance
         palette.add_block('forwardDistance',  # the name of your block
                      style='basic-style-1arg',  # the block style
@@ -163,7 +154,6 @@ class Butia(gobject.GObject):
                      prim_name='forwardDistance',  # code reference (see below)
                      help_string=_('move the Butia robot forward a predefined distance'))
         self.tw.lc.def_prim('forwardDistance', 1, lambda self, x: primitive_dictionary['forwardDistance'](x))
-
         
         primitive_dictionary['backwardButia'] = self.backwardButia
         palette.add_block('backwardButia',  # the name of your block
@@ -224,13 +214,12 @@ class Butia(gobject.GObject):
                      help_string=_('print text in Butia robot 32-character ASCII display'))
         self.tw.lc.def_prim('LCDdisplayButia', 1, lambda self, x: primitive_dictionary['LCDdisplayButia'](x))
 
-        #start add sensor blocks
 
         #add every function in the code 
         primitive_dictionary['ledButia'] = self.ledButia
         primitive_dictionary['ambientlightButia'] = self.ambientlightButia
         primitive_dictionary['grayscaleButia'] = self.grayscaleButia
-        primitive_dictionary['pushbuttonButia'] = self.pushbuttonButia
+        primitive_dictionary['buttonButia'] = self.buttonButia
         primitive_dictionary['temperatureButia'] = self.temperatureButia
         primitive_dictionary['distanceButia'] = self.distanceButia
         primitive_dictionary['tiltButia'] = self.tiltButia
@@ -242,11 +231,9 @@ class Butia(gobject.GObject):
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-#                     ['box-style', ['ambientlight','grayscale','temperature','dist']],
-                     ['box-style', ['pushbutton', 'grayscale', 'ambientlight', 'temperature', 'distance', 'tilt', 'magneticinduction', 'vibration']]
-#                     [DSENSOR, ["vibration","tilt","capacitivetouch","magneticinduction","pushbutton"]]
+                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'tilt', 'magneticinduction', 'vibration']]
                  ]:
-#            
+
             (blockstyle , listofmodules) = i
             for j in listofmodules:
                 if blockstyle == 'basic-style-1arg':
@@ -290,6 +277,8 @@ class Butia(gobject.GObject):
                                      help_string=_(modules_help[j]),
                                      hidden=isHidden )
                         self.tw.lc.def_prim(module + 'Butia', 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
+        
+        
 
         #timer to poll butia changes
         self.pollthread=threading.Timer(5,self.bobot_poll)
@@ -303,44 +292,6 @@ class Butia(gobject.GObject):
     def refreshButia(self):
         pass
 
-    #refresh the blocks according the connected sensors and actuators
-    def refreshButia2(self):
-
-        list_connected = self.butia.get_modules_list()
-
-        butia_palette_blocks = palette_blocks[palette_name_to_index('butia')] 
-       
-        
-        for j in refreshable_modules_list:        
-                        
-            module = modules_name_from_device_id[j]
-            block_name = module + 'Butia'
-            if module in list_connected:
-                special_block_colors[block_name] = COLOR_PRESENT
-                BOX_COLORS[j + 'Butia'] = COLOR_PRESENT
-            else:
-                special_block_colors[block_name] = COLOR_NOTPRESENT
-                BOX_COLORS[j + 'Butia'] = COLOR_NOTPRESENT
-            for k in range(1,MAX_SENSOR_PER_TYPE):
-                module = modules_name_from_device_id[j] + str(k)
-                block_name = j + str(k) + 'Butia'
-                if module in list_connected:
-                    print block_name
-                    butia_palette_blocks.append(block_name) #this will unhide the butia block 
-                    special_block_colors[block_name] = COLOR_PRESENT
-                    BOX_COLORS[block_name] = COLOR_PRESENT
-                else:
-                    butia_palette_blocks.remove(block_name) #this will hide the butia block 
-                    special_block_colors[block_name] = COLOR_NOTPRESENT
-                    BOX_COLORS[block_name] = COLOR_NOTPRESENT
-                    
-
-
-        #BOX_COLORS['batteryChargeButia'] = self.batteryColor()
-
-        #self.dynamicLoadBlockColors()
-
-        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True) #this repaint the butia palette
 
     def stop(self):
         """ stop is called when stop button is pressed. """
@@ -360,28 +311,54 @@ class Butia(gobject.GObject):
         self.butia.cerrarServicio()
         self.butia.cerrar()
         self.pollthread.cancel()
-        
+
 
     def change_color_blocks(self):
-        list_modules = self.butia.get_modules_list()
-        print 'lista modulos: ', list_modules
+
+        list_connected = self.butia.get_modules_list()
+        
+        print 'lista modulos: ', list_connected
      
         for b in block_list:
-            if ('butia' in list_modules):
+            if ('butia' in list_connected):
                 BOX_COLORS[b] = COLOR_PRESENT[:]
             else:
                 BOX_COLORS[b] = COLOR_NOTPRESENT[:]
         for blk in self.tw.block_list.list:
             if blk.type in ['proto', 'block']:
                 if blk.name in block_list:
-                    if ('butia' in list_modules):
+                    if ('butia' in list_connected):
                         blk.set_colors(COLOR_PRESENT)
                     else:
                         blk.set_colors(COLOR_NOTPRESENT)
 
+        
+        butia_palette_blocks = self.tw.palettes[palette_name_to_index('butia')]
+        for j in refreshable_modules_list:        
+                        
+            module = modules_name_from_device_id[j]
+            block_name = module + 'Butia'
+            if module in list_connected:
+                for b in butia_palette_blocks:
+                    if (b.name == block_name):
+                        b.set_visibility(True)
+            else:
+                for b in butia_palette_blocks:
+                    if (b.name == block_name):
+                        b.set_visibility(False)
+            for k in range(1,MAX_SENSOR_PER_TYPE):
+                module = modules_name_from_device_id[j] + str(k)
+                block_name = j + str(k) + 'Butia'
+                if module in list_connected:
+                    for b in butia_palette_blocks:
+                        if (b.name == block_name):
+                            b.set_visibility(True)
+                else:
+                    for b in butia_palette_blocks:
+                        if (b.name == block_name):
+                            b.set_visibility(False)
 
-
-    #Butia helper functions for butiaAPI.py interaction
+        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True)
 
     def set_vels(self, left, right):
         self._check_init()
@@ -464,7 +441,7 @@ class Butia(gobject.GObject):
         self._check_init()
         return self.butia.getButton(sensorid)
 
-    def batteryChargeButia(self):
+    def batterychargeButia(self):
         self._check_init()
         return int(self.butia.getBatteryCharge())
 
@@ -481,15 +458,15 @@ class Butia(gobject.GObject):
         else:
             return ["#FF0000","#808080"]
 
-    def ambientLightButia(self, sensorid=''):
+    def ambientlightButia(self, sensorid=''):
         self._check_init()
-        return self.butia.getAmbientLight(sensorid):
+        return self.butia.getAmbientLight(sensorid)
 
     def distanceButia(self, sensorid=''):
         self._check_init()
         return self.butia.getDistance(sensorid)
 
-    def grayScaleButia(self, sensorid=''):
+    def grayscaleButia(self, sensorid=''):
         self._check_init()
         return self.butia.getGrayScale(sensorid)
         
@@ -509,7 +486,7 @@ class Butia(gobject.GObject):
         self._check_init()
         return self.butia.getCapacitive(sensorid)
 
-    def magneticInductionButia(self, sensorid=''):
+    def magneticinductionButia(self, sensorid=''):
         self._check_init()
         return self.butia.getMagneticInduction(sensorid)
 
@@ -556,7 +533,6 @@ class Butia(gobject.GObject):
             os.system(cmd)
 
     def bobot_poll(self):
-        print 'poll'
         self.butia.reconnect()
         self.change_color_blocks()
         self.pollthread=threading.Timer(3,self.bobot_poll)
