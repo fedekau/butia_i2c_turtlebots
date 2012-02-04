@@ -331,6 +331,9 @@ class Butia(gobject.GObject):
                         blk.set_colors(COLOR_PRESENT)
                     else:
                         blk.set_colors(COLOR_NOTPRESENT)
+                elif blk.name == 'batterychargeButia':
+                    print 'bateria'
+                    blk.set_colors(self.batteryColor())
 
         
         butia_palette_blocks = self.tw.palettes[palette_name_to_index('butia')]
