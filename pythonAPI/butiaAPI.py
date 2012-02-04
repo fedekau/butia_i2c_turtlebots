@@ -29,6 +29,8 @@ import string
 import math
 import threading 
 
+ERROR_SENSOR_READ = -1 
+
 BOBOT_HOST = 'localhost'
 BOBOT_PORT = 2009
 
@@ -60,8 +62,11 @@ class robot:
             ret = self.fclient.readline()
             ret = ret[:-1]
         except:
-            ret = -1 # Doesn't return here to release the lock
-        self.lock.release()                
+            ret = ERROR_SENSOR_READ # Doesn't return here to release the lock
+        self.lock.release()
+
+        if ((ret = 'nil value') or (ret = '') or (ret = None)):
+            ret = ERROR_SENSOR_READ
         return ret
           
     # connect o reconnect the bobot
@@ -162,7 +167,7 @@ class robot:
     # returns the approximate charge of the battery        
     def getBatteryCharge(self):
         return self.callModule('butia', 'get_volt')
-     
+
     # returns the firmware version 
     def getVersion(self):
         return self.callModule('butia', 'read_ver')
@@ -199,6 +204,11 @@ class robot:
     # return the value of the tilt sensor
     def getTilt(self, number=''):
         return self.callModule('tilt' + number, 'getTilt')
+
+    # FIXME: the name of the module and the function...
+    # return the value of the capacitive touch sensor
+    def getCapacitive(self, number=''):
+        return self.callModule('capacitive' + number, 'getCapa')
 
     # return the value of the magnetic induction sensor
     def getMagneticInduction(self, number=''):

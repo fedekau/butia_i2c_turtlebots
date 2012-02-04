@@ -460,25 +460,13 @@ class Butia(gobject.GObject):
         self._check_init()
         self.set_vels(0, 0)
 
-    def pushbuttonButia(self, sensorid=0):
+    def buttonButia(self, sensorid=''):
         self._check_init()
-        sensor = "nil value\n"
-        if sensorid == 0:
-            sensor = self.butia.getBoton()
-        else:
-            sensor = self.butia.llamarModulo("boton" + str(sensorid), "getBoton" )
-
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
+        return self.butia.getButton(sensorid)
 
     def batteryChargeButia(self):
         self._check_init()
-        sensor = "nil value\n"
-        sensor = self.butia.llamarModulo("butia", "get_volt")
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
+        return int(self.butia.getBatteryCharge())
 
     def batteryColor(self):
         battery = int(self.butia.getBatteryCharge())
@@ -493,88 +481,37 @@ class Butia(gobject.GObject):
         else:
             return ["#FF0000","#808080"]
 
-    def ambientlightButia(self, sensorid=0):
+    def ambientLightButia(self, sensorid=''):
         self._check_init()
-        sensor = "nil value\n"
-        if sensorid == 0:
-            sensor = self.butia.getLuzAmbiente()
-        else:
-            sensor = self.butia.llamarModulo("luz" + str(sensorid), "getLuz" )
+        return self.butia.getAmbientLight(sensorid):
 
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
-
-    def distanceButia(self, sensorid=0):
+    def distanceButia(self, sensorid=''):
         self._check_init()
-        if sensorid == 0:
-            sensor = self.butia.getDistancia()
-        else:
-            sensor = self.butia.llamarModulo("dist" + str(sensorid), "getDistancia" )
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
+        return self.butia.getDistance(sensorid)
 
-    def grayscaleButia(self, sensorid=0):
+    def grayScaleButia(self, sensorid=''):
         self._check_init()
-        if sensorid == 0:
-            sensor = self.butia.getEscalaGris()
-        else:
-            sensor = self.butia.llamarModulo("grises" + str(sensorid), "getLevel" )
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
+        return self.butia.getGrayScale(sensorid)
         
-    def temperatureButia(self, sensorid=0):
+    def temperatureButia(self, sensorid=''):
         self._check_init()
-        if sensorid == 0:
-            sensor = self.butia.getTemperature()
-        else:
-            sensor = self.butia.llamarModulo("temp" + str(sensorid), "getTemp" )
+        return self.butia.getTemperature(sensorid)
 
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
-
-    def vibrationButia(self, sensorid=0):
+    def vibrationButia(self, sensorid=''):
         self._check_init()
-        if sensorid == 0:
-            sensor = self.butia.getVibration()
-        else:
-            sensor = self.butia.llamarModulo("vibra" + str(sensorid), "getVibra" )
+        return self.butia.getVibration(sensorid)
 
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
-
-    def tiltButia(self, sensorid=0):
+    def tiltButia(self, sensorid=''):
         self._check_init()
-        if sensorid == 0:
-            sensor = self.butia.getTilt()
-        else:
-            sensor = self.butia.llamarModulo("tilt" + str(sensorid), "getTilt" )
+        return self.butia.getTilt(sensorid)
 
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
-
-    def capacitivetouchButia(self):
+    def capacitivetouchButia(self, sensorid=''):
         self._check_init()
-        sensor = self.butia.getContactoCapacitivo()
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
+        return self.butia.getCapacitive(sensorid)
 
-    def magneticinductionButia(self, sensorid=0):
+    def magneticInductionButia(self, sensorid=''):
         self._check_init()
-        if sensorid == 0:
-            sensor = self.butia.getInduccionMagnetica()
-        else:
-            sensor = self.butia.llamarModulo("magnet" + str(sensorid) , "getCampo" )
-
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
+        return self.butia.getMagneticInduction(sensorid)
 
     def LCDdisplayButia(self, text='________________________________'):
         self._check_init()
@@ -582,13 +519,9 @@ class Butia(gobject.GObject):
         text = text.replace(' ', '_')
         self.butia.llamarModulo('display', 'escribir' , text)
 
-    def ledButia(self, level, sensorid=0):
+    def ledButia(self, level, sensorid=''):
         self._check_init()
-        if sensorid == 0:
-            self._check_init()
-            self.butia.setLed(level)
-        else:
-            self.butia.llamarModulo('led' + str(sensorid) , 'setLight' , str(math.trunc(level)))
+        self.butia.setLed(level)
     
     def speedButia(self, speed):
         #print "Setear velocidad actual: " + str(speed)
