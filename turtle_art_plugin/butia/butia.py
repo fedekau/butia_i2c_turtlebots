@@ -89,7 +89,7 @@ class Butia(gobject.GObject):
         gobject.GObject.__init__(self)
         self.tw = parent
         self.butia = None
-        
+            
         #start butia services
         self.bobot_launch()
         butiabot = butiaAPI.robot()
@@ -361,7 +361,7 @@ class Butia(gobject.GObject):
 
     #refresh the blocks according the connected sensors and actuators
     def refreshButia(self):
-        self.butia.reconnect(BOBOT_ADDRESS, BOBOT_PORT) #FIXME CALL a API function
+        self.butia.reconnect(BOBOT_ADDRESS, BOBOT_PORT) #FIXME CALL a API function without the address and port, the plugin is not responsible of knowing that is behind a tcp connection
         set_old_devices = set(self.list_modules_global)
         list_modules = self.butia.get_modules_list()
         set_new_devices = set(list_modules)
