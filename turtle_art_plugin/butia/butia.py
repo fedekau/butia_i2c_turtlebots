@@ -36,9 +36,9 @@ from gettext import gettext as _
 #constants definitions
 ERROR_SENSOR_READ = -1   # default return value in case of error when reading a sensor
 WAIT_FOR_BOBOT = 4   # waiting trys for bobot-server (the butia robot lua server)
-MAX_SPEED = 1023   # velocidad maxima para los AX-12 10 bits
+MAX_SPEED = 1023   # max velocity for AX-12 - 10 bits -
 MAX_SENSOR_PER_TYPE = 30
-COLOR_NOTPRESENT = ["#A0A0A0","#808080"] #FIXME cambiar el color de la paleta a otro
+COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"]
 WHEELBASE = 28.00
 
@@ -109,7 +109,7 @@ class Butia(gobject.GObject):
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
 
-        palette = make_palette('butia', colors=["#00FF00","#008000"], help_string=_('Butia Robot'))
+        palette = make_palette('butia', colors=COLOR_PRESENT, help_string=_('Butia Robot'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
@@ -308,9 +308,10 @@ class Butia(gobject.GObject):
 
     def quit(self):
         """ cleanup is called when the activity is exiting. """
-        self.butia.cerrarServicio()
-        self.butia.cerrar()
         self.pollthread.cancel()
+        self.butia.close()
+        self.butia.closeService()
+
 
 
     def change_color_blocks(self):
@@ -318,12 +319,13 @@ class Butia(gobject.GObject):
         list_connected = self.butia.get_modules_list()
         
         print 'lista modulos: ', list_connected
-     
+        #hack to enable that when you drag the block from the palette to the program mantain the color correspondig with the state, because TB by defect paint in green
         for b in block_list:
             if ('butia' in list_connected):
-                BOX_COLORS[b] = COLOR_PRESENT[:]
+                BOX_COLORS[b] = COLOR_PRESENT[:] 
             else:
                 BOX_COLORS[b] = COLOR_NOTPRESENT[:]
+        #endhack
         for blk in self.tw.block_list.list:
             if blk.type in ['proto', 'block']:
                 if blk.name in block_list:
@@ -361,7 +363,7 @@ class Butia(gobject.GObject):
                         if (b.name == block_name):
                             b.set_visibility(False)
 
-        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True)
+        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)
 
     def set_vels(self, left, right):
         self._check_init()
@@ -538,7 +540,7 @@ class Butia(gobject.GObject):
     def bobot_poll(self):
         self.butia.reconnect()
         self.change_color_blocks()
-        self.pollthread=threading.Timer(3,self.bobot_poll)
+        self.pollthread=threading.Timer(10,self.bobot_poll)
         self.pollthread.start()
         
 
