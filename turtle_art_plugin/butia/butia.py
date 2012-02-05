@@ -56,6 +56,7 @@ modules_help['vibration'] = _("switches from 0 to 1, the frequency depends on th
 
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
+
 modules_name_from_device_id = {} 
 modules_name_from_device_id['led'] = 'led'
 modules_name_from_device_id['button'] = 'boton'
@@ -66,6 +67,17 @@ modules_name_from_device_id['distance'] = 'dist'
 modules_name_from_device_id['tilt'] = 'tilt'
 modules_name_from_device_id['magneticinduction'] = 'magnet'
 modules_name_from_device_id['vibration'] = 'vibra'
+
+device_id_from_module_name = {} 
+device_id_from_module_name['led'] = 'led'
+device_id_from_module_name['boton'] = 'button'
+device_id_from_module_name['grises'] = 'grayscale'
+device_id_from_module_name['luz'] = 'ambientlight'
+device_id_from_module_name['temp'] = 'temperature'
+device_id_from_module_name['dist'] = 'distance'
+device_id_from_module_name['tilt'] = 'tilt'
+device_id_from_module_name['magnet'] = 'magneticinduction'
+device_id_from_module_name['vibra'] = 'vibration'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -79,7 +91,9 @@ label_name_from_device_id['magneticinduction'] = _('magnetic induction')
 label_name_from_device_id['vibration'] = _('vibration')
 
 #list of devices that will be checked in the refresh event
-refreshable_modules_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led' ]
+refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led' ]
+
+refreshable_module_list = ['luz', 'grises', 'temp', 'dist', 'boton', 'tilt', 'magnet', 'vibra', 'led' ]
 
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
               'backwardDistance', 'turnXdegree', 'LCDdisplayButia'] 
@@ -94,7 +108,7 @@ class Butia(gobject.GObject):
         #start butia services
         self.bobot_launch()
         self.butia = butiaAPI.robot()
-        self.list_connected_devices = []
+        self.list_connected_device_module = []
  
     
     def _check_init(self):
@@ -314,15 +328,22 @@ class Butia(gobject.GObject):
 
 
     def change_color_blocks(self):
-        old_list_connected_devices =  self.list_connected_devices 
-        self.list_connected_devices = self.butia.get_modules_list()
-        set_old_connected_devices = set(old_list_connected_devices)
-        set_connected_devices = set(self.list_connected_devices)
-        new_devices = set_connected_devices.difference(set_old_connected_devices)
-        old_devices = set_old_connected_devices.difference(set_connected_devices)
-        change_devices = new_devices.union(old_devices) # maybe exists one set operation for this
-        print 'new devices es:', new_devices
-        if change_devices == set([]):
+        old_list_connected_device_module =  self.list_connected_device_module 
+        self.list_connected_device_module = self.butia.get_modules_list()
+        set_old_connected_device_module = set(old_list_connected_device_module)
+        set_connected_device_module = set(self.list_connected_device_module)
+        set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
+        set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
+        set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
+
+        set_changed_device_block = []
+        for module in set_changed_device_module: 
+            if module in refreshable_module_list:      
+                set_changed_device_block.append(device_id_from_module_name[module])
+
+        print 'set de changed device block:', set_changed_device_block
+        print 'new devices es:', set_new_device_module
+        if set_changed_device_module == set([]):
             refresh = False
             print 'no refresco'
         else:
@@ -330,18 +351,18 @@ class Butia(gobject.GObject):
             print 'refresco'
 
         if refresh:  # the same with the battery level
-            print 'lista modulos cambiados: ', change_devices
+            print 'lista modulos cambiados: ', set_changed_device_module
             #hack to enable that when you drag the block from the palette to the program mantain the color correspondig with the state, because TB by defect paint in green
             for b in static_block_list:
-                if ('butia' in self.list_connected_devices):
+                if ('butia' in self.list_connected_device_module):
                     BOX_COLORS[b] = COLOR_PRESENT[:] 
                 else:
                     BOX_COLORS[b] = COLOR_NOTPRESENT[:]
             #endhack
-            for blk in self.tw.block_list.list:
+            for blk in self.tw.block_list.list:   #FIXME NO ENTIENDO ESTO
                 if blk.type in ['proto', 'block']:
                     if blk.name in static_block_list:
-                        if ('butia' in self.list_connected_devices):
+                        if ('butia' in self.list_connected_device_module):
                             blk.set_colors(COLOR_PRESENT)
                         else:
                             blk.set_colors(COLOR_NOTPRESENT)
@@ -351,10 +372,10 @@ class Butia(gobject.GObject):
 
             
             butia_palette_blocks = self.tw.palettes[palette_name_to_index('butia')]
-            for j in refreshable_modules_list:        
+            for j in set(refreshable_block_list).intersection(set_changed_device_block):
                 module = modules_name_from_device_id[j]
                 block_name = j + 'Butia'
-                if module in self.list_connected_devices:
+                if module in self.list_connected_device_module:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
                             b.set_visibility(True)
@@ -366,7 +387,7 @@ class Butia(gobject.GObject):
                 for k in range(1, MAX_SENSOR_PER_TYPE):
                     module = modules_name_from_device_id[j] + str(k)
                     block_name = j + str(k) + 'Butia'
-                    if module in self.list_connected_devices:
+                    if module in self.list_connected_device_module:
                         for b in butia_palette_blocks:
                             if (b.name == block_name):
                                 b.set_visibility(True)
