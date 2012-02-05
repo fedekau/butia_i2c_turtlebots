@@ -37,7 +37,7 @@ from gettext import gettext as _
 ERROR_SENSOR_READ = -1   # default return value in case of error when reading a sensor
 WAIT_FOR_BOBOT = 4   # waiting trys for bobot-server (the butia robot lua server)
 MAX_SPEED = 1023   # max velocity for AX-12 - 10 bits -
-MAX_SENSOR_PER_TYPE = 30
+MAX_SENSOR_PER_TYPE = 8
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 WHEELBASE = 28.00
@@ -79,10 +79,9 @@ label_name_from_device_id['magneticinduction'] = _('magnetic induction')
 label_name_from_device_id['vibration'] = _('vibration')
 
 #list of devices that will be checked in the refresh event
-refreshable_modules_list = ['ambientlight','grayscale','temperature','distance','button', 'ambientlight',
-                            'temperature', 'tilt', 'magneticinduction', 'vibration', 'led' ]
+refreshable_modules_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led' ]
 
-block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
+static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
               'backwardDistance', 'turnXdegree', 'LCDdisplayButia'] 
 
 class Butia(gobject.GObject):
@@ -331,9 +330,9 @@ class Butia(gobject.GObject):
             print 'refresco'
 
         if refresh:  # the same with the battery level
-            print 'lista modulos: ', self.list_connected_devices
+            print 'lista modulos cambiados: ', change_devices
             #hack to enable that when you drag the block from the palette to the program mantain the color correspondig with the state, because TB by defect paint in green
-            for b in block_list:
+            for b in static_block_list:
                 if ('butia' in self.list_connected_devices):
                     BOX_COLORS[b] = COLOR_PRESENT[:] 
                 else:
@@ -341,7 +340,7 @@ class Butia(gobject.GObject):
             #endhack
             for blk in self.tw.block_list.list:
                 if blk.type in ['proto', 'block']:
-                    if blk.name in block_list:
+                    if blk.name in static_block_list:
                         if ('butia' in self.list_connected_devices):
                             blk.set_colors(COLOR_PRESENT)
                         else:
@@ -355,28 +354,35 @@ class Butia(gobject.GObject):
             for j in refreshable_modules_list:        
                             
                 module = modules_name_from_device_id[j]
-                block_name = module + 'Butia'
+                block_name = j + 'Butia'
+                print('pruebo el bloque:', block_name)                
                 if module in self.list_connected_devices:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
                             b.set_visibility(True)
                             b.set_colors(COLOR_PRESENT)
+                            print('    prendo el bloque:', b.name)
                 else:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
                             b.set_colors(COLOR_NOTPRESENT)
-                for k in range(1,MAX_SENSOR_PER_TYPE):
+                            print('    apago el bloque:', b.name)
+                for k in range(1, MAX_SENSOR_PER_TYPE):
                     module = modules_name_from_device_id[j] + str(k)
                     block_name = j + str(k) + 'Butia'
+                    print('pruebo el bloque:', block_name)
                     if module in self.list_connected_devices:
                         for b in butia_palette_blocks:
                             if (b.name == block_name):
                                 b.set_visibility(True)
                                 b.set_colors(COLOR_PRESENT)
+                                print('        prendo el bloque:', b.name)
                     else:
                         for b in butia_palette_blocks:
                             if (b.name == block_name):
+                                b.set_colors(COLOR_NOTPRESENT)
                                 b.set_visibility(False)
+                                print('        apago el bloque:', b.name)
 
             self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)
 
