@@ -411,15 +411,7 @@ class Butia(gobject.GObject):
                     sentRight = "0"
         else:
                     sentRight = "1"
-        self.butia.setVelocidadMotores(sentLeft, str(abs(left)), sentRight, str(abs(right)))
-
-    def get_sensor(self, sensor):
-        self._check_init()
-        sensor = self.butia.getValSenAnalog(str(sensor))
-        if sensor == "nil value\n" or sensor == '' or sensor == " " or sensor == None:
-                    sensor = ERROR_SENSOR_READ
-        return sensor
-
+        self.butia.setMotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
     def forwardButia(self):
         self._check_init()
@@ -534,7 +526,7 @@ class Butia(gobject.GObject):
         self._check_init()
         text = str(text)
         text = text.replace(' ', '_')
-        self.butia.llamarModulo('display', 'escribir' , text)
+        self.butia.callModule('display', 'escribir' , text) #FIXME export operation in API
 
     def ledButia(self, level, sensorid=''):
         self._check_init()
