@@ -372,7 +372,7 @@ class Butia(gobject.GObject):
 
             
             butia_palette_blocks = self.tw.palettes[palette_name_to_index('butia')]
-            for j in set(refreshable_block_list).intersection(set_changed_device_block):
+            for j in set(refreshable_block_list).intersection(set_changed_device_block): #only take in count blocks that have been changed
                 module = modules_name_from_device_id[j]
                 block_name = j + 'Butia'
                 if module in self.list_connected_device_module:
