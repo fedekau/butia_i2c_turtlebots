@@ -7,9 +7,7 @@
 # www.fing.edu.uy/inco/proyectos/butia
 # Facultad de Ingenieria - Universidad de la República - Uruguay
 #
-# Implementa una capa de abstraccion para la comunicacion con el bobot-server
-# version 3_0 //reorganiza el codigo pa mas legible y menos codigo repetido
-# version 2_0 //agrega funcionalidades para manejar nuevos drivers 
+# Implements abstractions for the comunications with the bobot-server
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -83,7 +81,7 @@ class robot:
             return -1
         return 0
 
-    # close the comunication with the lubot
+    # close the comunication with the bobot
     def close(self):
         try:
             if self.fclient != None:
