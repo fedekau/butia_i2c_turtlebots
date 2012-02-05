@@ -79,7 +79,7 @@ label_name_from_device_id['magneticinduction'] = _('magnetic induction')
 label_name_from_device_id['vibration'] = _('vibration')
 
 #list of devices that will be checked in the refresh event
-refreshable_modules_list = ['ambientlight','grayscale','temperature','distance','button', 'grayscale', 'ambientlight',
+refreshable_modules_list = ['ambientlight','grayscale','temperature','distance','button', 'ambientlight',
                             'temperature', 'tilt', 'magneticinduction', 'vibration', 'led' ]
 
 block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
@@ -317,54 +317,68 @@ class Butia(gobject.GObject):
     def change_color_blocks(self):
         old_list_connected_devices =  self.list_connected_devices 
         self.list_connected_devices = self.butia.get_modules_list()
+        set_old_connected_devices = set(old_list_connected_devices)
+        set_connected_devices = set(self.list_connected_devices)
+        new_devices = set_connected_devices.difference(set_old_connected_devices)
+        old_devices = set_old_connected_devices.difference(set_connected_devices)
+        change_devices = new_devices.union(old_devices) # maybe exists one set operation for this
+        print 'new devices es:', new_devices
+        if change_devices == set([]):
+            refresh = False
+            print 'no refresco'
+        else:
+            refresh = True
+            print 'refresco'
 
-        
-        print 'lista modulos: ', self.list_connected_devices
-        #hack to enable that when you drag the block from the palette to the program mantain the color correspondig with the state, because TB by defect paint in green
-        for b in block_list:
-            if ('butia' in self.list_connected_devices):
-                BOX_COLORS[b] = COLOR_PRESENT[:] 
-            else:
-                BOX_COLORS[b] = COLOR_NOTPRESENT[:]
-        #endhack
-        for blk in self.tw.block_list.list:
-            if blk.type in ['proto', 'block']:
-                if blk.name in block_list:
-                    if ('butia' in self.list_connected_devices):
-                        blk.set_colors(COLOR_PRESENT)
-                    else:
-                        blk.set_colors(COLOR_NOTPRESENT)
-                elif blk.name == 'batterychargeButia':
-                    print 'bateria'
-                    blk.set_colors(self.batteryColor())
+        if refresh:  # the same with the battery level
+            print 'lista modulos: ', self.list_connected_devices
+            #hack to enable that when you drag the block from the palette to the program mantain the color correspondig with the state, because TB by defect paint in green
+            for b in block_list:
+                if ('butia' in self.list_connected_devices):
+                    BOX_COLORS[b] = COLOR_PRESENT[:] 
+                else:
+                    BOX_COLORS[b] = COLOR_NOTPRESENT[:]
+            #endhack
+            for blk in self.tw.block_list.list:
+                if blk.type in ['proto', 'block']:
+                    if blk.name in block_list:
+                        if ('butia' in self.list_connected_devices):
+                            blk.set_colors(COLOR_PRESENT)
+                        else:
+                            blk.set_colors(COLOR_NOTPRESENT)
+                    elif blk.name == 'batterychargeButia':
+                        print 'bateria'
+                        blk.set_colors(self.batteryColor())
 
-        
-        butia_palette_blocks = self.tw.palettes[palette_name_to_index('butia')]
-        for j in refreshable_modules_list:        
-                        
-            module = modules_name_from_device_id[j]
-            block_name = module + 'Butia'
-            if module in self.list_connected_devices:
-                for b in butia_palette_blocks:
-                    if (b.name == block_name):
-                        b.set_visibility(True)
-            else:
-                for b in butia_palette_blocks:
-                    if (b.name == block_name):
-                        b.set_visibility(False)
-            for k in range(1,MAX_SENSOR_PER_TYPE):
-                module = modules_name_from_device_id[j] + str(k)
-                block_name = j + str(k) + 'Butia'
+            
+            butia_palette_blocks = self.tw.palettes[palette_name_to_index('butia')]
+            for j in refreshable_modules_list:        
+                            
+                module = modules_name_from_device_id[j]
+                block_name = module + 'Butia'
                 if module in self.list_connected_devices:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
                             b.set_visibility(True)
+                            b.set_colors(COLOR_PRESENT)
                 else:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
-                            b.set_visibility(False)
+                            b.set_colors(COLOR_NOTPRESENT)
+                for k in range(1,MAX_SENSOR_PER_TYPE):
+                    module = modules_name_from_device_id[j] + str(k)
+                    block_name = j + str(k) + 'Butia'
+                    if module in self.list_connected_devices:
+                        for b in butia_palette_blocks:
+                            if (b.name == block_name):
+                                b.set_visibility(True)
+                                b.set_colors(COLOR_PRESENT)
+                    else:
+                        for b in butia_palette_blocks:
+                            if (b.name == block_name):
+                                b.set_visibility(False)
 
-        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)
+            self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)
 
     def set_vels(self, left, right):
         self._check_init()
@@ -541,7 +555,7 @@ class Butia(gobject.GObject):
     def bobot_poll(self):
         self.butia.reconnect()
         self.change_color_blocks()
-        self.pollthread=threading.Timer(10,self.bobot_poll)
+        self.pollthread=threading.Timer(3,self.bobot_poll)
         self.pollthread.start()
         
 
