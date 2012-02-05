@@ -39,7 +39,7 @@ WAIT_FOR_BOBOT = 4   # waiting trys for bobot-server (the butia robot lua server
 MAX_SPEED = 1023   # max velocity for AX-12 - 10 bits -
 MAX_SENSOR_PER_TYPE = 30
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
-COLOR_PRESENT = ["#00FF00","#008000"]
+COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 WHEELBASE = 28.00
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
