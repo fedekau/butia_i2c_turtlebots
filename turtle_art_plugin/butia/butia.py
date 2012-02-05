@@ -352,37 +352,30 @@ class Butia(gobject.GObject):
             
             butia_palette_blocks = self.tw.palettes[palette_name_to_index('butia')]
             for j in refreshable_modules_list:        
-                            
                 module = modules_name_from_device_id[j]
                 block_name = j + 'Butia'
-                print('pruebo el bloque:', block_name)                
                 if module in self.list_connected_devices:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
                             b.set_visibility(True)
                             b.set_colors(COLOR_PRESENT)
-                            print('    prendo el bloque:', b.name)
                 else:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
                             b.set_colors(COLOR_NOTPRESENT)
-                            print('    apago el bloque:', b.name)
                 for k in range(1, MAX_SENSOR_PER_TYPE):
                     module = modules_name_from_device_id[j] + str(k)
                     block_name = j + str(k) + 'Butia'
-                    print('pruebo el bloque:', block_name)
                     if module in self.list_connected_devices:
                         for b in butia_palette_blocks:
                             if (b.name == block_name):
                                 b.set_visibility(True)
                                 b.set_colors(COLOR_PRESENT)
-                                print('        prendo el bloque:', b.name)
                     else:
                         for b in butia_palette_blocks:
                             if (b.name == block_name):
                                 b.set_colors(COLOR_NOTPRESENT)
                                 b.set_visibility(False)
-                                print('        apago el bloque:', b.name)
 
             self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)
 
