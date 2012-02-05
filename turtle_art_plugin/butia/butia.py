@@ -95,7 +95,7 @@ class Butia(gobject.GObject):
         #start butia services
         self.bobot_launch()
         self.butia = butiaAPI.robot()
-
+        self.list_connected_devices = []
  
     
     def _check_init(self):
@@ -315,13 +315,14 @@ class Butia(gobject.GObject):
 
 
     def change_color_blocks(self):
+        old_list_connected_devices =  self.list_connected_devices 
+        self.list_connected_devices = self.butia.get_modules_list()
 
-        list_connected = self.butia.get_modules_list()
         
-        print 'lista modulos: ', list_connected
+        print 'lista modulos: ', self.list_connected_devices
         #hack to enable that when you drag the block from the palette to the program mantain the color correspondig with the state, because TB by defect paint in green
         for b in block_list:
-            if ('butia' in list_connected):
+            if ('butia' in self.list_connected_devices):
                 BOX_COLORS[b] = COLOR_PRESENT[:] 
             else:
                 BOX_COLORS[b] = COLOR_NOTPRESENT[:]
@@ -329,7 +330,7 @@ class Butia(gobject.GObject):
         for blk in self.tw.block_list.list:
             if blk.type in ['proto', 'block']:
                 if blk.name in block_list:
-                    if ('butia' in list_connected):
+                    if ('butia' in self.list_connected_devices):
                         blk.set_colors(COLOR_PRESENT)
                     else:
                         blk.set_colors(COLOR_NOTPRESENT)
@@ -343,7 +344,7 @@ class Butia(gobject.GObject):
                         
             module = modules_name_from_device_id[j]
             block_name = module + 'Butia'
-            if module in list_connected:
+            if module in self.list_connected_devices:
                 for b in butia_palette_blocks:
                     if (b.name == block_name):
                         b.set_visibility(True)
@@ -354,7 +355,7 @@ class Butia(gobject.GObject):
             for k in range(1,MAX_SENSOR_PER_TYPE):
                 module = modules_name_from_device_id[j] + str(k)
                 block_name = j + str(k) + 'Butia'
-                if module in list_connected:
+                if module in self.list_connected_devices:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
                             b.set_visibility(True)
