@@ -341,17 +341,12 @@ class Butia(gobject.GObject):
             if module in refreshable_module_list:      
                 set_changed_device_block.append(device_id_from_module_name[module])
 
-        print 'set de changed device block:', set_changed_device_block
-        print 'new devices es:', set_new_device_module
         if set_changed_device_module == set([]):
             refresh = False
-            print 'no refresco'
         else:
             refresh = True
-            print 'refresco'
 
         if refresh:  # the same with the battery level
-            print 'lista modulos cambiados: ', set_changed_device_module
             #hack to enable that when you drag the block from the palette to the program mantain the color correspondig with the state, because TB by defect paint in green
             for b in static_block_list:
                 if ('butia' in self.list_connected_device_module):
@@ -367,7 +362,6 @@ class Butia(gobject.GObject):
                         else:
                             blk.set_colors(COLOR_NOTPRESENT)
                     elif blk.name == 'batterychargeButia':
-                        print 'bateria'
                         blk.set_colors(self.batteryColor())
 
             
