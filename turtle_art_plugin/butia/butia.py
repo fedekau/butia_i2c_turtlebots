@@ -127,14 +127,6 @@ class Butia(gobject.GObject):
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
-        primitive_dictionary['refreshButia'] = self.refreshButia
-        palette.add_block('refreshButia',  # the name of your block
-                     style='basic-style',  # the block style
-                     label=_('Refresh Butia'),  # the label for the block
-                     prim_name='refreshButia',  # code reference (see below)
-                     help_string=_('Search for a connected Butiá robot'))
-        self.tw.lc.def_prim('refreshButia', 0, lambda self : primitive_dictionary['refreshButia']())
-
         primitive_dictionary['batterychargeButia'] = self.batterychargeButia
         palette.add_block('batterychargeButia',  # the name of your block
                      style='box-style',  # the block style

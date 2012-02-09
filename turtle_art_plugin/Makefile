@@ -17,10 +17,10 @@ all: help
 
 help:
 	@echo 
-	@echo "This is a Makefile for compile/construct TurtleArtButia.        "
-	@echo "The follow objetives are defined:                                "
+	@echo " This is a Makefile for compile/construct TurtleArtButia.        "
+	@echo " The follow objetives are defined:                               "
 	@echo "    xo : Generate the XO distribuible package                    "
-	@echo "    fakeinstall: compile all necessary for TurtleArtButia         "
+	@echo "    fakeinstall: compile all necessary for TurtleArtButia        "
 	@echo "                 and make a fake install using a symlink         "
 	@echo "                 this allow to work and easy change the code     "
 	@echo "    install: install activity                                    "
@@ -33,8 +33,11 @@ help:
 	@echo "              the other traslations all already set in mainline  "
 	@echo "              of Walter, so use that traslations.                "
 	@echo "                                                                 "
-	@echo "    For more info contact \"butia@fing.edu.uy\"                  "
-	@echo "    wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki  "
+	@echo " The follow parameters are optional:                             "
+	@echo "    TURTLEARTVERSION=[version or commit] (default $(TURTLEARTVERSION))"
+	@echo "                                                                 "
+	@echo "           For more info contact \"butia@fing.edu.uy\"           "
+	@echo "   wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki   "
 	@echo "                                                                 "    
 
 
