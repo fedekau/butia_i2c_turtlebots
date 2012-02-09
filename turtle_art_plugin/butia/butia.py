@@ -109,6 +109,7 @@ class Butia(gobject.GObject):
         self.bobot_launch()
         self.butia = butiaAPI.robot()
         self.list_connected_device_module = []
+        self.can_refresh = True
  
     
     def _check_init(self):
@@ -299,15 +300,15 @@ class Butia(gobject.GObject):
         #self.dynamicLoadBlockColors()
 
     def start(self):
-        #self.tw.show_toolbar_palette(palette_name_to_index('butia'),regenerate=True)
-        pass
+        can_refresh = True
 
     def refreshButia(self):
-        pass
-
+        self.butia.reconnect()
+        self.change_color_blocks()
 
     def stop(self):
         """ stop is called when stop button is pressed. """
+        can_refresh = False
 
     def goto_background(self):
         """ goto_background is called when the activity is sent to the
@@ -346,7 +347,7 @@ class Butia(gobject.GObject):
         else:
             refresh = True
 
-        if refresh:  # the same with the battery level
+        if refresh and can_refresh:  # the same with the battery level
             #hack to enable that when you drag the block from the palette to the program mantain the color correspondig with the state, because TB by defect paint in green
             for b in static_block_list:
                 if ('butia' in self.list_connected_device_module):
