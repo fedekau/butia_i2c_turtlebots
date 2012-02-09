@@ -51,9 +51,10 @@ function BaseBoard:new(bb)
 			bobot.debugprint("u4b:new:the module name returned a nil value, trying to recover...")
 			retry = retry+1
 		end
-		assert(name)
-		local d = bobot_device:new({name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
-		bb.devices[name]=d
+		if(name) then
+			local d = bobot_device:new({name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
+			bb.devices[name]=d
+		end
 	end	
 --bobot.debugprint ('----------------')
 	bb:force_close_all()
