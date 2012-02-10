@@ -292,7 +292,7 @@ class Butia(gobject.GObject):
         #self.dynamicLoadBlockColors()
 
     def start(self):
-        can_refresh = True
+        can_refresh = False
 
     def refreshButia(self):
         self.butia.reconnect()
@@ -300,7 +300,7 @@ class Butia(gobject.GObject):
 
     def stop(self):
         """ stop is called when stop button is pressed. """
-        can_refresh = False
+        can_refresh = True
 
     def goto_background(self):
         """ goto_background is called when the activity is sent to the
