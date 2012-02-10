@@ -96,7 +96,7 @@ refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance'
 refreshable_module_list = ['luz', 'grises', 'temp', 'dist', 'boton', 'tilt', 'magnet', 'vibra', 'led' ]
 
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
-              'backwardDistance', 'turnXdegree', 'LCDdisplayButia'] 
+              'backwardDistance', 'turnXdegree', 'LCDdisplayButia', 'batterychargeButia'] 
 
 class Butia(gobject.GObject):
     actualSpeed = 600 # velocidad con la que realiza los movimientos forward, backward, left y right
@@ -302,32 +302,65 @@ class Butia(gobject.GObject):
     def start(self):
         can_refresh = False
 
+    #get the block name and returns the corresponding module name and its index
+    #example: in: distance1Butia out: 1 , dist
+    def block_2_index_and_name(self, block_name):
+        index = block_name.strip('Butia').strip(str(refreshable_block_list[:]))
+        name  = block_name.strip('Butia').strip('12345678') #FIXME unhardcode this
+        if index:
+            return index, name
+        else:
+            return '', name
+  
     def refreshButia(self):
         self.butia.reconnect()
+ 
+        old_list_connected_device_module =  self.list_connected_device_module 
+        self.list_connected_device_module = self.butia.get_modules_list()
+        set_old_connected_device_module = set(old_list_connected_device_module)
+        set_connected_device_module = set(self.list_connected_device_module)
+        set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
+        set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
+        set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
+
         butia_palette=self.tw.palettes[palette_name_to_index('butia')]
-        for b in butia_palette:
-            print (b.name.partition('Butia')[0])
-            index = b.name.strip('Butia').strip(str(refreshable_block_list[:]))
-            name = b.name.strip('Butia').strip('12345678')
-            print 'index', index
-            print 'name', name
-            if name in modules_name_from_device_id :
-                module_name = modules_name_from_device_id[name] + index 
+
+        for blk in self.tw.block_list.list:   #repaints program area blocks
+            if blk.type in ['proto', 'block']:
+                blk_index, blk_name = self.block_2_index_and_name(blk.name)
+                if (blk_name in static_block_list) or (blk_name in refreshable_block_list):
+                    #if ('butia' in self.list_connected_device_module):
+                    if blk_name in modules_name_from_device_id:                    
+                        module = modules_name_from_device_id[blk_name] + blk_index 
+                        print'pruebo el módulo: ', module
+                        if  module in self.list_connected_device_module:
+                            blk.set_colors(COLOR_PRESENT)
+                            BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+                        else:
+                            blk.set_colors(COLOR_NOTPRESENT)
+                            BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
+
+        for blk in butia_palette:
+            blk_index, blk_name = self.block_2_index_and_name(blk.name)
+            #print 'la lista de devices_id_from_module es:', device_id_from_module_name 
+            #print 'el block name es:', blk_name
+            if blk_name in modules_name_from_device_id:
+                module_name = modules_name_from_device_id[blk_name] + blk_index     
             else:
-                module_name = ' '
-            print 'module_name', module_name
-            if str(name) in refreshable_block_list:
-                if self.butia.isPresent(module_name) == False:
-                    if index :
-                        b.set_visibility(False)
-                    b.set_colors(COLOR_NOTPRESENT)
-                    BOX_COLORS[b.name] = COLOR_NOTPRESENT[:]
-                    print 'despinto', b.name
+                module_name = ''
+            #print 'module_name', module_name
+            if str(blk_name) in refreshable_block_list:
+                if module_name not in self.list_connected_device_module:
+                    if blk_index !='' :
+                        blk.set_visibility(False)
+                    blk.set_colors(COLOR_NOTPRESENT)
+                    BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
+                    #print 'despinto', blk.name
                 else:
-                    b.set_visibility(True)
-                    b.set_colors(COLOR_PRESENT)
-                    BOX_COLORS[b.name] = COLOR_PRESENT[:]
-                    print 'pinto', b.name
+                    blk.set_visibility(True)
+                    blk.set_colors(COLOR_PRESENT)
+                    BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+                    #print 'pinto', blk.name
         self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)	
 #        
 #        self.change_color_blocks()
