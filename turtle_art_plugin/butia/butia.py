@@ -127,6 +127,14 @@ class Butia(gobject.GObject):
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
+        primitive_dictionary['refreshButia'] = self.refreshButia
+        palette.add_block('refreshButia',  # the name of your block
+                     style='basic-style',  # the block style
+                     label=_('refresh Butia'),  # the label for the block
+                     prim_name='refreshButia',  # code reference (see below)
+                     help_string=_('force to refresh the state of the butia plugin blocks'))
+        self.tw.lc.def_prim('refreshButia', 0, lambda self: primitive_dictionary['refreshButia']())
+
         primitive_dictionary['batterychargeButia'] = self.batterychargeButia
         palette.add_block('batterychargeButia',  # the name of your block
                      style='box-style',  # the block style
@@ -248,14 +256,14 @@ class Butia(gobject.GObject):
                     label=(label_name_from_device_id[j] + ' ' + _('Butia')),  # the label for the block
                     prim_name= j + 'Butia',  # code reference (see below)
                     default=[255],
-                    help_string=_(modules_help[j]))
+                    help_string=_(modules_help[j])),
                     self.tw.lc.def_prim(j + 'Butia', 1, lambda self, x,y=j: primitive_dictionary[y + 'Butia'](x))
                 else:
                     palette.add_block(j + 'Butia',  # the name of your block
                     style=blockstyle,  # the block style
                     label=(label_name_from_device_id[j] + ' ' + _('Butia')),  # the label for the block
                     prim_name= j + 'Butia',  # code reference (see below)
-                    help_string=_(modules_help[j]))
+                    help_string=_(modules_help[j])),
                     self.tw.lc.def_prim(j + 'Butia', 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
 
                 if self.butia.isPresent(modules_name_from_device_id[j]) == False:
@@ -287,8 +295,8 @@ class Butia(gobject.GObject):
         
 
         #timer to poll butia changes
-        self.pollthread=threading.Timer(5,self.bobot_poll)
-        self.pollthread.start()
+        ##self.pollthread=threading.Timer(3,self.bobot_poll)
+        ##self.pollthread.start()
         #self.dynamicLoadBlockColors()
 
     def start(self):
@@ -296,7 +304,33 @@ class Butia(gobject.GObject):
 
     def refreshButia(self):
         self.butia.reconnect()
-        self.change_color_blocks()
+        butia_palette=self.tw.palettes[palette_name_to_index('butia')]
+        for b in butia_palette:
+            print (b.name.partition('Butia')[0])
+            index = b.name.strip('Butia').strip(str(refreshable_block_list[:]))
+            name = b.name.strip('Butia').strip('12345678')
+            print 'index', index
+            print 'name', name
+            if name in modules_name_from_device_id :
+                module_name = modules_name_from_device_id[name] + index 
+            else:
+                module_name = ' '
+            print 'module_name', module_name
+            if str(name) in refreshable_block_list:
+                if self.butia.isPresent(module_name) == False:
+                    if index :
+                        b.set_visibility(False)
+                    b.set_colors(COLOR_NOTPRESENT)
+                    BOX_COLORS[b.name] = COLOR_NOTPRESENT[:]
+                    print 'despinto', b.name
+                else:
+                    b.set_visibility(True)
+                    b.set_colors(COLOR_PRESENT)
+                    BOX_COLORS[b.name] = COLOR_PRESENT[:]
+                    print 'pinto', b.name
+        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)	
+#        
+#        self.change_color_blocks()
 
     def stop(self):
         """ stop is called when stop button is pressed. """
@@ -318,8 +352,6 @@ class Butia(gobject.GObject):
         self.butia.close()
         self.butia.closeService()
 
-
-
     def change_color_blocks(self):
         old_list_connected_device_module =  self.list_connected_device_module 
         self.list_connected_device_module = self.butia.get_modules_list()
@@ -339,23 +371,23 @@ class Butia(gobject.GObject):
         else:
             refresh = True
 
-        if refresh and can_refresh:  # the same with the battery level
+        if refresh and self.can_refresh:  # the same with the battery level
             #hack to enable that when you drag the block from the palette to the program mantain the color correspondig with the state, because TB by defect paint in green
-            for b in static_block_list:
-                if ('butia' in self.list_connected_device_module):
-                    BOX_COLORS[b] = COLOR_PRESENT[:] 
-                else:
-                    BOX_COLORS[b] = COLOR_NOTPRESENT[:]
+#            for b in static_block_list:
+#                if ('butia' in self.list_connected_device_module):
+#                    BOX_COLORS[b] = COLOR_PRESENT[:] 
+#                else:
+#                    BOX_COLORS[b] = COLOR_NOTPRESENT[:]
             #endhack
-            for blk in self.tw.block_list.list:   #FIXME NO ENTIENDO ESTO
-                if blk.type in ['proto', 'block']:
-                    if blk.name in static_block_list:
-                        if ('butia' in self.list_connected_device_module):
-                            blk.set_colors(COLOR_PRESENT)
-                        else:
-                            blk.set_colors(COLOR_NOTPRESENT)
-                    elif blk.name == 'batterychargeButia':
-                        blk.set_colors(self.batteryColor())
+#            for blk in self.tw.block_list.list:   #FIXME NO ENTIENDO ESTO
+#                if blk.type in ['proto', 'block']:
+#                    if blk.name in static_block_list:
+#                        if ('butia' in self.list_connected_device_module):
+#                            blk.set_colors(COLOR_PRESENT)
+#                        else:
+#                            blk.set_colors(COLOR_NOTPRESENT)
+#                    elif blk.name == 'batterychargeButia':
+#                        blk.set_colors(self.batteryColor())
 
             
             butia_palette_blocks = self.tw.palettes[palette_name_to_index('butia')]
@@ -365,12 +397,13 @@ class Butia(gobject.GObject):
                 if module in self.list_connected_device_module:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
-                            b.set_visibility(True)
+                            #b.set_visibility(True) para mi esto no va
                             b.set_colors(COLOR_PRESENT)
                 else:
                     for b in butia_palette_blocks:
                         if (b.name == block_name):
                             b.set_colors(COLOR_NOTPRESENT)
+                            #BOX_COLORS[b.name] = COLOR_NOTPRESENT[:]
                 for k in range(1, MAX_SENSOR_PER_TYPE):
                     module = modules_name_from_device_id[j] + str(k)
                     block_name = j + str(k) + 'Butia'
