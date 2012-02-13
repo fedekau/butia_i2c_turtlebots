@@ -1,5 +1,8 @@
-
-
 [submodule "turtle_art_plugin/mainline"]
 	path = turtle_art_plugin/mainline
 	url = git://git.sugarlabs.org/turtleart/mainline.git
+
+[submodule "nxt_plugin"]
+        path = turtle_art_plugin/plugin
+        url = git://git.sugarlabs.org/nxt_plugin/mainline.git
+
