@@ -7,7 +7,7 @@
 # in others words => writen by butia TEAM!
 
 
-TURTLEARTVERSION=v131
+TURTLEARTVERSION=v134
 
 CWD=$(cwd)
 
@@ -149,13 +149,16 @@ apply_hard_plugins: apply_localization butiaXO
 	cp -rLf butia tmp/plugins/
 	cp -rLf sumtia tmp/plugins/
 	cp -rLf followme/ tmp/plugins/
+        cp -rLf nxt_plugin/ tmp/plugins/
+        cp -rLf wedo_plugin/ tmp/plugins/
 
 apply_sym_plugins: apply_localization butiaXO
 	# let's make symlinks, it lets you, edit and try, lot more ease!
 	ln -s `pwd`/butia tmp/plugins/butia
 	ln -s `pwd`/sumtia tmp/plugins/sumtia
 	ln -s `pwd`/followme tmp/plugins/followme
-
+	ln -s `pwd`/nxt_plugin tmp/plugins/nxt_plugin
+	ln -s `pwd`/wedo_plugin tmp/plugins/wedo_plugin
 
 xo: apply_hard_plugins
 	# ok, let's make this .xo
