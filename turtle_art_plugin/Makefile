@@ -7,7 +7,7 @@
 # in others words => writen by butia TEAM!
 
 
-TURTLEARTVERSION=v134
+TURTLEARTVERSION=v136
 
 CWD=$(cwd)
 
@@ -54,29 +54,23 @@ walterGIT:
 	# I want a especific version of TurtleArts!
 	(cd mainline && git reset --hard) # please erase any modific file
 	(cd mainline && git clean -xdf) # please erase any untraced file
-	(cd mainline && git checkout $(TURTLEARTVERSION))
+	(cd mainline && git checkout origin/master)
 
 wedoGIT:
-	# ok, let's init and update the submodules (only works if you are in the root of git)
-	(cd .. && git submodule init)
-	(cd .. && git submodule update)  # This don't work if local changes, commit local change before
 	# goto mainline (NXT plugin code) and check if everything is OK!
 	(cd WeDoMore && git fetch) #make sure we have the last changes of the git
 	# I want a especific version of TurtleArts!
 	(cd WeDoMore && git reset --hard) # please erase any modific file
 	(cd WeDoMore && git clean -xdf) # please erase any untraced file
-	(cd WeDoMore && git checkout $('origin/master'))
+	(cd WeDoMore && git checkout origin/master)
 
 nxtGIT:
-	# ok, let's init and update the submodules (only works if you are in the root of git)
-	(cd .. && git submodule init)
-	(cd .. && git submodule update)  # This don't work if local changes, commit local change before
 	# goto mainline (NXT plugin code) and check if everything is OK!
 	(cd nxt_plugin && git fetch) #make sure we have the last changes of the git
 	# I want a especific version of TurtleArts!
 	(cd nxt_plugin && git reset --hard) # please erase any modific file
 	(cd nxt_plugin && git clean -xdf) # please erase any untraced file
-	(cd nxt_plugin && git checkout $('origin/master'))
+	(cd nxt_plugin && git checkout origin/master)
 
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
