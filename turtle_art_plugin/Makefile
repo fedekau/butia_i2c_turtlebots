@@ -75,13 +75,13 @@ nxtGIT:
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
 
-POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
+POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot nxt_plugin/po/nxt_plugin.pot
 POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
 
 POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
-              followme/po/FollowMe.notraslated.pot
+              followme/po/FollowMe.notraslated.pot nxt_plugin/po/nxt_plugin.notraslated.pot
 
-PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po
+PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po nxt_plugin/po/es.po
 
 
 ## Generate pot of plugins
@@ -105,6 +105,11 @@ followme/po/FollowMe.pot: followme/followme.py
 	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
 	xgettext $(POT_PROP) $< -o $@
 
+nxt_plugin/po/nxt_plugin.pot: nxt_plugin/nxt_plugin.py
+	echo msgid \"\" > $@
+	echo msgstr \"\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
+	xgettext $(POT_PROP) $< -o $@
 
 ## Generate a pot of MSGID that ARE NOT ALREADY translated in mainline (Walter GIT)
 genpot_notraslated: $(POT_NT_FILES)
@@ -121,6 +126,10 @@ followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
 	$(MAKE) walterGIT
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
+nxt_plugin/po/nxt_plugin.notraslated.pot: nxt_plugin/po/nxt_plugin.pot
+	$(MAKE) walterGIT nxtGIT
+	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+
 
 ## update de es.po files of plugins using the pot of not already translated
 updatepo: $(PO_FILES)
@@ -134,6 +143,8 @@ sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
 followme/po/es.po: followme/po/FollowMe.notraslated.pot
 	msgmerge --update --no-fuzzy-matching  $@ $<
 
+nxt_plugin/po/es.po: nxt_plugin/po/nxt_plugin.notraslated.pot
+	msgmerge --update --no-fuzzy-matching  $@ $<
 
 ################ Support for lua (bobot-server) #############
 
@@ -159,6 +170,7 @@ apply_localization: mktmpfolder $(PO_FILES)
 	msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
+	msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
 
 apply_hard_plugins: apply_localization butiaXO
 	cp -rLf butia tmp/plugins/
@@ -223,4 +235,4 @@ uninstall:
 
 
 # targets that not represent generated files
-.PHONY: all clean clean_tmp clean_pot clean_xo walterGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help
+.PHONY: all clean clean_tmp clean_pot clean_xo walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help
