@@ -151,9 +151,6 @@ mktmpfolder: walterGIT nxtGIT wedoGIT
 	rm -rf tmp
 	cp -rL mainline tmp
 	rm -rf tmp/.git
-	cp -rL nxt_plugin tmp
-	rm -rf tmp/.git
-	cp -rL wedo_plugin tmp
 	# lets patch the activity.info and add some icons (TurtleArt => TurtleArtButia)
 	cp -rLf stagin/* tmp/
 
