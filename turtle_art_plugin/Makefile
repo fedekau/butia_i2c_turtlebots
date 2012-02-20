@@ -81,7 +81,7 @@ POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
 POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
               followme/po/FollowMe.notraslated.pot nxt_plugin/po/nxt_plugin.notraslated.pot
 
-PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po nxt_plugin/po/es.po
+PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po
 
 
 ## Generate pot of plugins
@@ -105,11 +105,6 @@ followme/po/FollowMe.pot: followme/followme.py
 	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
 	xgettext $(POT_PROP) $< -o $@
 
-nxt_plugin/po/nxt_plugin.pot: nxt_plugin/nxt_plugin.py
-	echo msgid \"\" > $@
-	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-	xgettext $(POT_PROP) $< -o $@
 
 ## Generate a pot of MSGID that ARE NOT ALREADY translated in mainline (Walter GIT)
 genpot_notraslated: $(POT_NT_FILES)
@@ -143,8 +138,6 @@ sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
 followme/po/es.po: followme/po/FollowMe.notraslated.pot
 	msgmerge --update --no-fuzzy-matching  $@ $<
 
-nxt_plugin/po/es.po: nxt_plugin/po/nxt_plugin.notraslated.pot
-	msgmerge --update --no-fuzzy-matching  $@ $<
 
 ################ Support for lua (bobot-server) #############
 
