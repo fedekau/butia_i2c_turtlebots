@@ -344,7 +344,7 @@ class Butia(gobject.GObject):
 
     #if there exists new devices connected or disconections to the butia IO board, then it change the color of the blocks corresponding to the device 
     def check_for_device_change(self):
-        self.butia.refresht()
+        self.butia.refresh()
         old_list_connected_device_module =  self.list_connected_device_module 
         self.list_connected_device_module = self.butia.get_modules_list()
         set_old_connected_device_module = set(old_list_connected_device_module)
