@@ -23,6 +23,7 @@ import time
 import math
 import os
 import threading
+import re
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import palette_blocks
@@ -110,7 +111,12 @@ class Butia(gobject.GObject):
         self.butia = butiaAPI.robot()
         self.list_connected_device_module = []
         self.can_refresh = True
- 
+        self.regex = re.compile(r"""^		#Start of the string
+				(\D*?)			# name, an string  without digits, the ? mark says that it's not greedy, to avoid to consume also the "Butia" part, in case it's present
+				(?:Butia)?			# an ocurrence of the "Butia" string, the first ? mark says that the group hasn't to be returned, the second that the group might or not be present 
+				(\d*)				# index, a group comprised only of digits, posibly absent
+				$				# end of the string, this regex must match all of the input
+			   """, re.X) # Verbose definition, to include comments
     
     def _check_init(self):
         if self.butia is None:
@@ -305,15 +311,14 @@ class Butia(gobject.GObject):
     #get the block name and returns the corresponding module name and its index
     #example: in: distance1Butia out: 1 , dist
     def block_2_index_and_name(self, block_name):
-        index = block_name.strip('Butia').strip(str(refreshable_block_list[:]))
-        name  = block_name.strip('Butia').strip('12345678') #FIXME unhardcode this
-        if index:
-            return index, name
-        else:
-            return '', name
+        """ Splits block_name in name and index, 
+	returns a tuple (name,index)
+	"""
+	result=self.regex.search(block_name)
+	return result.groups()
   
     def refreshButia(self):
-        self.butia.reconnect()
+        self.butia.refresh()
  
         old_list_connected_device_module =  self.list_connected_device_module 
         self.list_connected_device_module = self.butia.get_modules_list()
@@ -618,7 +623,7 @@ class Butia(gobject.GObject):
             os.system(cmd)
 
     def bobot_poll(self):
-        self.butia.reconnect()
+        self.butia.refresh()
         self.change_color_blocks()
         self.pollthread=threading.Timer(3,self.bobot_poll)
         self.pollthread.start()

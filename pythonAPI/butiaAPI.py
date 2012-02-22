@@ -115,6 +115,13 @@ class robot:
         msg = 'QUIT'
         return self.doCommand(msg)
 
+    # refresh board status
+    def refresh(self):
+        msg = 'INIT'
+            #bobot server instance is running, but we have to check for new or remove hardware
+        if (self.doCommand(msg)==ERROR_SENSOR_READ):
+                self.reconnect()
+
     #######################################################################
     ### Useful functions 
     #######################################################################
