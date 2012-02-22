@@ -133,7 +133,7 @@ class Butia(gobject.GObject):
                      label=_('refresh Butia'),  # the label for the block
                      prim_name='refreshButia',  # code reference (see below)
                      help_string=_('force to refresh the state of the butia plugin blocks'))
-        self.tw.lc.def_prim('refreshButia', 0, lambda self: primitive_dictionary['change_butia_palette_colors']())
+        self.tw.lc.def_prim('refreshButia', 0, lambda self: primitive_dictionary['refreshButia']())
 
         primitive_dictionary['batterychargeButia'] = self.batterychargeButia
         palette.add_block('batterychargeButia',  # the name of your block
@@ -292,71 +292,49 @@ class Butia(gobject.GObject):
                                      hidden=isHidden )
                         self.tw.lc.def_prim(module + 'Butia', 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
         
-        
-
         #timer to poll butia changes
         self.pollthread=threading.Timer(3,self.bobot_poll)
         self.pollthread.start()
 
     def start(self):
-        can_refresh = False
+        self.can_refresh = False
 
     #get the block name and returns the corresponding module name and its index
     #example: in: distance1Butia out: 1 , dist
     def block_2_index_and_name(self, block_name):
-        index = block_name.strip('Butia').strip(str(refreshable_block_list[:]))
-        name  = block_name.strip('Butia').strip('12345678') #FIXME unhardcode this
+        index = block_name.replace('Butia','').strip(str(refreshable_block_list[:]))
+        name  = block_name.replace('Butia','').strip('12345678') #FIXME unhardcode this
         if index:
             return index, name
         else:
             return '', name
   
     def change_butia_palette_colors(self):
-        butia_palette=self.tw.palettes[palette_name_to_index('butia')]
-
-        #repaints program area blocks
+        #repaints program area blocks (proto) and palette blocks (block)
         for blk in self.tw.block_list.list:   
-            if blk.type in ['proto', 'block']:
+             if blk.type in ['proto', 'block']:
                 blk_index, blk_name = self.block_2_index_and_name(blk.name)
                 if (blk_name in static_block_list) or (blk_name in refreshable_block_list):
-                    #if ('butia' in self.list_connected_device_module):
-                    if blk_name in modules_name_from_device_id:                    
-                        module = modules_name_from_device_id[blk_name] + blk_index 
-                        print'pruebo el módulo: ', module
-                        if  module in self.list_connected_device_module:
-                            blk.set_colors(COLOR_PRESENT)
-                            BOX_COLORS[blk.name] = COLOR_PRESENT[:]
-                        else:
-                            blk.set_colors(COLOR_NOTPRESENT)
-                            BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
-
-        #repaints palette blocks
-        for blk in butia_palette:
-            blk_index, blk_name = self.block_2_index_and_name(blk.name)
-            #print 'la lista de devices_id_from_module es:', device_id_from_module_name 
-            #print 'el block name es:', blk_name
-            if blk_name in modules_name_from_device_id:
-                module_name = modules_name_from_device_id[blk_name] + blk_index     
-            else:
-                module_name = ''
-            #print 'module_name', module_name
-            if str(blk_name) in refreshable_block_list:
-                if module_name not in self.list_connected_device_module:
-                    if blk_index !='' :
-                        blk.set_visibility(False)
-                    blk.set_colors(COLOR_NOTPRESENT)
-                    BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
-                    #print 'despinto', blk.name
-                else:
-                    blk.set_visibility(True)
-                    blk.set_colors(COLOR_PRESENT)
-                    BOX_COLORS[blk.name] = COLOR_PRESENT[:]
-                    #print 'pinto', blk.name
+                    if blk_name in modules_name_from_device_id:
+                        module_name = modules_name_from_device_id[blk_name] + blk_index     
+                    else:
+                        module_name = ''
+                    if module_name not in self.list_connected_device_module:
+                        if blk_index !='' :
+                            if blk.type == 'proto': # only make invisible the block in the palette not in the program area  
+                                blk.set_visibility(False)
+                        blk.set_colors(COLOR_NOTPRESENT)
+                        BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
+                    else:
+                        if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area   
+                            blk.set_visibility(True)
+                        blk.set_colors(COLOR_PRESENT)
+                        BOX_COLORS[blk.name] = COLOR_PRESENT[:]
 
         #impact changes in turtle blocks palette
         self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)	
-    #if there exists new devices connected or disconections to the butia IO board, then it change the color of the blocks corresponding to the device 
 
+    #if there exists new devices connected or disconections to the butia IO board, then it change the color of the blocks corresponding to the device 
     def check_for_device_change(self):
         self.butia.reconnect()
  
@@ -373,13 +351,12 @@ class Butia(gobject.GObject):
         else:
             has_to_refresh = True
 
-        if has_to_refresh:
+        if has_to_refresh and self.can_refresh:
             self.change_butia_palette_colors()
-
 
     def stop(self):
         """ stop is called when stop button is pressed. """
-        can_refresh = True
+        self.can_refresh = True
 
     def goto_background(self):
         """ goto_background is called when the activity is sent to the
