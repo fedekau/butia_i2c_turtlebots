@@ -81,6 +81,12 @@ class robot:
             return -1
         return 0
 
+    # ask bobot for refresh is state of devices connected
+    def refresh(self):
+        msg = 'INIT'
+        #bobot server instance is running, but we have to check for new or remove hardware
+        return self.doCommand(msg)
+
     # close the comunication with the bobot
     def close(self):
         try:
@@ -119,8 +125,10 @@ class robot:
     def refresh(self):
         msg = 'INIT'
             #bobot server instance is running, but we have to check for new or remove hardware
-        if (self.doCommand(msg)==ERROR_SENSOR_READ):
-                self.reconnect()
+        result = self.doCommand(msg)
+        if (result == ERROR_SENSOR_READ):
+                result = self.reconnect()
+        return result
 
     #######################################################################
     ### Useful functions 
