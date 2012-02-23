@@ -75,11 +75,11 @@ nxtGIT:
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
 
-POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot nxt_plugin/po/nxt_plugin.pot
+POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot 
 POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
 
 POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
-              followme/po/FollowMe.notraslated.pot nxt_plugin/po/nxt_plugin.notraslated.pot
+              followme/po/FollowMe.notraslated.pot
 
 PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po
 
@@ -119,10 +119,6 @@ sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
 
 followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
 	$(MAKE) walterGIT
-	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-
-nxt_plugin/po/nxt_plugin.notraslated.pot: nxt_plugin/po/nxt_plugin.pot
-	$(MAKE) walterGIT nxtGIT
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
 
