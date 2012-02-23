@@ -85,7 +85,11 @@ class robot:
     def refresh(self):
         msg = 'INIT'
         #bobot server instance is running, but we have to check for new or remove hardware
-        return self.doCommand(msg)
+        result = self.doCommand(msg)
+        if (result == ERROR_SENSOR_READ):
+                result = self.reconnect()
+        return result
+
 
     # close the comunication with the bobot
     def close(self):
@@ -120,15 +124,6 @@ class robot:
     def closeService(self):
         msg = 'QUIT'
         return self.doCommand(msg)
-
-    # refresh board status
-    def refresh(self):
-        msg = 'INIT'
-            #bobot server instance is running, but we have to check for new or remove hardware
-        result = self.doCommand(msg)
-        if (result == ERROR_SENSOR_READ):
-                result = self.reconnect()
-        return result
 
     #######################################################################
     ### Useful functions 
