@@ -113,8 +113,8 @@ class Butia(gobject.GObject):
         self.can_refresh = True
         self.regex = re.compile(r"""^		#Start of the string
 				(\D*?)			# name, an string  without digits, the ? mark says that it's not greedy, to avoid to consume also the "Butia" part, in case it's present
-				(?:Butia)?			# an ocurrence of the "Butia" string, the first ? mark says that the group hasn't to be returned, the second that the group might or not be present 
 				(\d*)				# index, a group comprised only of digits, posibly absent
+				(?:Butia)?			# an ocurrence of the "Butia" string, the first ? mark says that the group hasn't to be returned, the second that the group might or not be present 
 				$				# end of the string, this regex must match all of the input
 			   """, re.X) # Verbose definition, to include comments
     
@@ -312,6 +312,7 @@ class Butia(gobject.GObject):
 	returns a tuple (name,index)
 	"""
 	result=self.regex.search(block_name)
+	#print result.groups(),block_name
 	return result.groups()
   
     def refreshButia(self):
