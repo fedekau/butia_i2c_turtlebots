@@ -106,17 +106,18 @@ class Butia(gobject.GObject):
         self.tw = parent
         self.butia = None
         self.pollthread = None
+        self.pollrun = True
         #start butia services
         self.bobot_launch()
         self.butia = butiaAPI.robot()
         self.list_connected_device_module = []
         self.can_refresh = True
         self.regex = re.compile(r"""^		#Start of the string
-				(\D*?)			# name, an string  without digits, the ? mark says that it's not greedy, to avoid to consume also the "Butia" part, in case it's present
-				(\d*)				# index, a group comprised only of digits, posibly absent
-				(?:Butia)?			# an ocurrence of the "Butia" string, the first ? mark says that the group hasn't to be returned, the second that the group might or not be present 
-				$				# end of the string, this regex must match all of the input
-			   """, re.X) # Verbose definition, to include comments
+                                (\D*?)			# name, an string  without digits, the ? mark says that it's not greedy, to avoid to consume also the "Butia" part, in case it's present
+                                (\d*)				# index, a group comprised only of digits, posibly absent
+                                (?:Butia)?			# an ocurrence of the "Butia" string, the first ? mark says that the group hasn't to be returned, the second that the group might or not be present 
+                                $				# end of the string, this regex must match all of the input
+                        """, re.X) # Verbose definition, to include comments
     
     def _check_init(self):
         if self.butia is None:
@@ -312,7 +313,6 @@ class Butia(gobject.GObject):
 	returns a tuple (name,index)
 	"""
 	result=self.regex.search(block_name)
-	#print result.groups(),block_name
 	return result.groups()
   
     def refreshButia(self):
@@ -379,6 +379,7 @@ class Butia(gobject.GObject):
     def quit(self):
         """ cleanup is called when the activity is exiting. """
         self.pollthread.cancel()
+        self.pollrun = False
         self.butia.close()
         self.butia.closeService()
 
@@ -549,7 +550,10 @@ class Butia(gobject.GObject):
     def bobot_poll(self):
         self.butia.refresh()
         self.check_for_device_change()
-        self.pollthread=threading.Timer(3,self.bobot_poll)
-        self.pollthread.start()
-        
+        if(self.pollrun):
+                self.pollthread=threading.Timer(3,self.bobot_poll)
+                self.pollthread.start()
+        else:
+                debug_output("Ending butia poll")
+
 

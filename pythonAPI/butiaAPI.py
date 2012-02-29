@@ -25,7 +25,7 @@
 import socket
 import string
 import math
-import threading 
+import threading
 
 ERROR_SENSOR_READ = -1 
 
@@ -62,7 +62,7 @@ class robot:
         except:
             ret = ERROR_SENSOR_READ # Doesn't return here to release the lock
         self.lock.release()
-
+        
         if ((ret == 'nil value') or (ret == '') or (ret == None) or (ret == 'fail')):
             ret = ERROR_SENSOR_READ
         return ret
