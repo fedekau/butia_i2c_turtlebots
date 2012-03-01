@@ -376,7 +376,7 @@ class Butia(gobject.GObject):
         else:
             has_to_refresh = True
 
-        if has_to_refresh and self.can_refresh:
+        if (self.can_refresh and has_to_refresh):
             self.change_butia_palette_colors()
 
     def stop(self):
