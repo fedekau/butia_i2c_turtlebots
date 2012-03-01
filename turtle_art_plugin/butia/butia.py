@@ -110,7 +110,7 @@ class Butia(gobject.GObject):
         #start butia services
         self.bobot_launch()
         self.butia = butiaAPI.robot()
-        self.list_connected_device_module = []
+        self.list_connected_device_module = ['butia']
         self.can_refresh = True
         self.regex = re.compile(r"""^		#Start of the string
                                 (\D*?)			# name, an string  without digits, the ? mark says that it's not greedy, to avoid to consume also the "Butia" part, in case it's present
@@ -363,21 +363,22 @@ class Butia(gobject.GObject):
     #if there exists new devices connected or disconections to the butia IO board, then it change the color of the blocks corresponding to the device 
     def check_for_device_change(self):
         
-        old_list_connected_device_module =  self.list_connected_device_module 
-        self.list_connected_device_module = self.butia.get_modules_list()
-        set_old_connected_device_module = set(old_list_connected_device_module)
-        set_connected_device_module = set(self.list_connected_device_module)
-        set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
-        set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
-        set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
+        if self.can_refresh:
+            old_list_connected_device_module =  self.list_connected_device_module 
+            self.list_connected_device_module = self.butia.get_modules_list()
+            set_old_connected_device_module = set(old_list_connected_device_module)
+            set_connected_device_module = set(self.list_connected_device_module)
+            set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
+            set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
+            set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
 
-        if set_changed_device_module == set([]):
-            has_to_refresh = False
-        else:
-            has_to_refresh = True
+            if set_changed_device_module == set([]):
+                has_to_refresh = False
+            else:
+                has_to_refresh = True
 
-        if (self.can_refresh and has_to_refresh):
-            self.change_butia_palette_colors()
+            if has_to_refresh:
+                self.change_butia_palette_colors()
 
     def stop(self):
         """ stop is called when stop button is pressed. """
@@ -411,7 +412,7 @@ class Butia(gobject.GObject):
                     sentRight = "0"
         else:
                     sentRight = "1"
-        self.butia.setMotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
+        self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
     def forwardButia(self):
         self._check_init()

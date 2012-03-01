@@ -86,8 +86,8 @@ class robot:
         msg = 'INIT'
         #bobot server instance is running, but we have to check for new or remove hardware
         result = self.doCommand(msg)
-        #if (result == ERROR_SENSOR_READ):
-        #        result = self.reconnect()
+        if (result == ERROR_SENSOR_READ):
+                result = self.reconnect()
         #return result
 
 
