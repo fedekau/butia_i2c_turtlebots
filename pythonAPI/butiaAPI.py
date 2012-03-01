@@ -86,9 +86,9 @@ class robot:
         msg = 'INIT'
         #bobot server instance is running, but we have to check for new or remove hardware
         result = self.doCommand(msg)
-        if (result == ERROR_SENSOR_READ):
-                result = self.reconnect()
-        return result
+        #if (result == ERROR_SENSOR_READ):
+        #        result = self.reconnect()
+        #return result
 
 
     # close the comunication with the bobot
@@ -174,7 +174,7 @@ class robot:
 
     # returns the approximate charge of the battery        
     def getBatteryCharge(self):
-        return self.callModule('butia', 'get_volt')
+        return int(self.callModule('butia', 'get_volt'))
 
     # returns the firmware version 
     def getVersion(self):
