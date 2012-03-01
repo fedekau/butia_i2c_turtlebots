@@ -120,6 +120,7 @@ class Butia(gobject.GObject):
                         """, re.X) # Verbose definition, to include comments
     
     def _check_init(self):
+        #FIXME: with the thread, is necessary this function?
         if self.butia is None:
             debug_output("reinitializing butia ...")
             self.butia = butiaAPI.robot()
@@ -310,22 +311,37 @@ class Butia(gobject.GObject):
     #example: in: distance1Butia out: 1 , dist
     def block_2_index_and_name(self, block_name):
         """ Splits block_name in name and index, 
-	returns a tuple (name,index)
-	"""
-	result=self.regex.search(block_name)
-	return result.groups()
-  
+        returns a tuple (name,index)
+        """
+        result = self.regex.search(block_name)
+        if result:
+            return result.groups()
+        else:
+            return ('', 0)
+
     def refreshButia(self):
         self.butia.refresh()
   
     def change_butia_palette_colors(self):
+        battery = int(self.butia.getBatteryCharge())
+        COLOR_STATIC = self.staticBlocksColor(battery)
+        COLOR_BATTERY = self.batteryColor(battery)
         #repaints program area blocks (proto) and palette blocks (block)
-        for blk in self.tw.block_list.list:   
-             if blk.type in ['proto', 'block']:
-                blk_index, blk_name = self.block_2_index_and_name(blk.name)
-                if (blk_name in static_block_list) or (blk_name in refreshable_block_list):
+        for blk in self.tw.block_list.list:
+            #FIXME: exits another type of blocks? 
+            #if blk.type in ['proto', 'block']:
+            if (blk.name in static_block_list):
+                if (blk.name == 'batterychargeButia'):
+                    blk.set_colors(COLOR_BATTERY)
+                    BOX_COLORS[blk.name] = COLOR_BATTERY[:]
+                else:
+                    blk.set_colors(COLOR_STATIC)
+                    BOX_COLORS[blk.name] = COLOR_STATIC[:]
+            else:
+                blk_name, blk_index = self.block_2_index_and_name(blk.name)
+                if (blk_name in refreshable_block_list):
                     if blk_name in modules_name_from_device_id:
-                        module_name = modules_name_from_device_id[blk_name] + blk_index     
+                        module_name = modules_name_from_device_id[blk_name] + blk_index
                     else:
                         module_name = ''
                     if module_name not in self.list_connected_device_module:
@@ -340,12 +356,13 @@ class Butia(gobject.GObject):
                         blk.set_colors(COLOR_PRESENT)
                         BOX_COLORS[blk.name] = COLOR_PRESENT[:]
 
+
         #impact changes in turtle blocks palette
         self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)	
 
     #if there exists new devices connected or disconections to the butia IO board, then it change the color of the blocks corresponding to the device 
     def check_for_device_change(self):
-        self.butia.refresh()
+        
         old_list_connected_device_module =  self.list_connected_device_module 
         self.list_connected_device_module = self.butia.get_modules_list()
         set_old_connected_device_module = set(old_list_connected_device_module)
@@ -457,11 +474,10 @@ class Butia(gobject.GObject):
         return self.butia.getButton(sensorid)
 
     def batterychargeButia(self):
-        self._check_init()
+        #self._check_init()
         return int(self.butia.getBatteryCharge())
 
-    def batteryColor(self):
-        battery = int(self.butia.getBatteryCharge())
+    def batteryColor(self, battery):
         if (battery == -1) or (battery == 255):
             return COLOR_NOTPRESENT
         elif ((battery < 254) and (battery >= 195)):
@@ -472,6 +488,12 @@ class Butia(gobject.GObject):
             return ["#FFA500","#808080"]
         else:
             return ["#FF0000","#808080"]
+
+    def staticBlocksColor(self, battery):
+        if (battery == -1) or (battery == 255) or (battery < 74):
+            return COLOR_NOTPRESENT
+        else:
+            return COLOR_PRESENT
 
     def ambientlightButia(self, sensorid=''):
         self._check_init()
