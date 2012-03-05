@@ -205,7 +205,7 @@ function BaseBoard:force_close_all()
 			d.handler=nil
 		end
 	else	
-		bobot.debugprintprint("u4b:force_close_all:comunication with I/O board write error", write_res)
+		bobot.debugprint("u4b:force_close_all:comunication with I/O board write error", write_res)
 	end
 end
 
