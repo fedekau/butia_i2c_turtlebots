@@ -107,6 +107,7 @@ class Butia(gobject.GObject):
         self.butia = None
         self.pollthread = None
         self.pollrun = True
+        self.old_battery_value = -1
         #start butia services
         self.bobot_launch()
         self.butia = butiaAPI.robot()
@@ -135,7 +136,7 @@ class Butia(gobject.GObject):
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
-        primitive_dictionary['refreshButia'] = self.change_butia_palette_colors
+        primitive_dictionary['refreshButia'] = self.refreshButia
         palette.add_block('refreshButia',  # the name of your block
                      style='basic-style',  # the block style
                      label=_('refresh Butia'),  # the label for the block
@@ -319,10 +320,9 @@ class Butia(gobject.GObject):
         else:
             return ('', 0)
 
+
     def refreshButia(self):
         self.butia.refresh()
-  
-    def change_butia_palette_colors(self):
         battery = int(self.butia.getBatteryCharge())
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
@@ -359,6 +359,53 @@ class Butia(gobject.GObject):
 
         #impact changes in turtle blocks palette
         self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)	
+  
+    def change_butia_palette_colors(self):
+
+        battery = int(self.butia.getBatteryCharge())
+        if (battery == self.old_battery_value):
+            change_statics_blocks = False
+        else:
+            change_statics_blocks = True
+            self.old_battery_value = battery
+            COLOR_STATIC = self.staticBlocksColor(battery)
+            COLOR_BATTERY = self.batteryColor(battery)
+        
+        #repaints program area blocks (proto) and palette blocks (block)
+        for blk in self.tw.block_list.list:
+            #FIXME: exits another type of blocks? 
+            #if blk.type in ['proto', 'block']:
+            if (change_statics_blocks):
+                if (blk.name in static_block_list):
+                    if (blk.name == 'batterychargeButia'):
+                        blk.set_colors(COLOR_BATTERY)
+                        BOX_COLORS[blk.name] = COLOR_BATTERY[:]
+                    else:
+                        blk.set_colors(COLOR_STATIC)
+                        BOX_COLORS[blk.name] = COLOR_STATIC[:]
+            else:
+                blk_name, blk_index = self.block_2_index_and_name(blk.name)
+                if (blk_name in refreshable_block_list):
+                    if blk_name in modules_name_from_device_id:
+                        module_name = modules_name_from_device_id[blk_name] + blk_index
+                    else:
+                        module_name = ''
+                    if module_name in self.set_changed_device_module:
+                        if module_name not in self.list_connected_device_module:
+                            if blk_index !='' :
+                                if blk.type == 'proto': # only make invisible the block in the palette not in the program area  
+                                    blk.set_visibility(False)
+                            blk.set_colors(COLOR_NOTPRESENT)
+                            BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
+                        else:
+                            if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area   
+                                blk.set_visibility(True)
+                            blk.set_colors(COLOR_PRESENT)
+                            BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+
+
+        #impact changes in turtle blocks palette
+        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)	
 
     #if there exists new devices connected or disconections to the butia IO board, then it change the color of the blocks corresponding to the device 
     def check_for_device_change(self):
@@ -370,9 +417,9 @@ class Butia(gobject.GObject):
             set_connected_device_module = set(self.list_connected_device_module)
             set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
             set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
-            set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
+            self.set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
 
-            if set_changed_device_module == set([]):
+            if self.set_changed_device_module == set([]):
                 has_to_refresh = False
             else:
                 has_to_refresh = True
