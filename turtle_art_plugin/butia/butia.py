@@ -38,7 +38,7 @@ from gettext import gettext as _
 ERROR_SENSOR_READ = -1   # default return value in case of error when reading a sensor
 WAIT_FOR_BOBOT = 4   # waiting trys for bobot-server (the butia robot lua server)
 MAX_SPEED = 1023   # max velocity for AX-12 - 10 bits -
-MAX_SENSOR_PER_TYPE = 8
+MAX_SENSOR_PER_TYPE = 4
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 WHEELBASE = 28.00
@@ -249,6 +249,7 @@ class Butia(gobject.GObject):
         primitive_dictionary['magneticinductionButia'] = self.magneticinductionButia
         primitive_dictionary['vibrationButia'] = self.vibrationButia
 
+        self.list_connected_device_module = self.butia.get_modules_list()
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
@@ -275,13 +276,13 @@ class Butia(gobject.GObject):
                     help_string=_(modules_help[j])),
                     self.tw.lc.def_prim(j + 'Butia', 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
 
-                if self.butia.isPresent(modules_name_from_device_id[j]) == False:
+                if not (modules_name_from_device_id[j] in self.list_connected_device_module):
                     special_block_colors[j+ 'Butia'] = COLOR_NOTPRESENT
 
                 for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
                     isHidden = True
-                    if self.butia.isPresent(modules_name_from_device_id[j] + str(k)) == True:
+                    if ((modules_name_from_device_id[j] + str(k)) in self.list_connected_device_module):
                         isHidden = False
                     if blockstyle == 'basic-style-1arg':
                         palette.add_block(module + 'Butia',  # the name of your block 
