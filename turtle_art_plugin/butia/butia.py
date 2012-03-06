@@ -107,7 +107,7 @@ class Butia(gobject.GObject):
         self.butia = None
         self.pollthread = None
         self.pollrun = True
-        self.old_battery_value = -1
+        self.old_battery_value = 0
         #start butia services
         self.bobot_launch()
         self.butia = butiaAPI.robot()
