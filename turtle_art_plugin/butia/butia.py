@@ -177,6 +177,14 @@ class Butia(gobject.GObject):
                      prim_name='forwardDistance',  # code reference (see below)
                      help_string=_('move the Butia robot forward a predefined distance'))
         self.tw.lc.def_prim('forwardDistance', 1, lambda self, x: primitive_dictionary['forwardDistance'](x))
+
+        primitive_dictionary['leftButia'] = self.leftButia
+        palette.add_block('leftButia',  # the name of your block
+                     style='basic-style',  # the block style
+                     label=_('left Butia'),  # the label for the block
+                     prim_name='leftButia',  # code reference (see below)
+                     help_string=_('turn the Butia robot at left'))
+        self.tw.lc.def_prim('leftButia', 0, lambda self: primitive_dictionary['leftButia']())
         
         primitive_dictionary['backwardButia'] = self.backwardButia
         palette.add_block('backwardButia',  # the name of your block
@@ -194,14 +202,6 @@ class Butia(gobject.GObject):
                      prim_name='backwardDistance',  # code reference (see below)
                      help_string=_('move the Butia robot backward a predefined distance'))
         self.tw.lc.def_prim('backwardDistance', 1, lambda self, x: primitive_dictionary['backwardDistance'](x))
-
-        primitive_dictionary['leftButia'] = self.leftButia
-        palette.add_block('leftButia',  # the name of your block
-                     style='basic-style',  # the block style
-                     label=_('left Butia'),  # the label for the block
-                     prim_name='leftButia',  # code reference (see below)
-                     help_string=_('turn the Butia robot at left'))
-        self.tw.lc.def_prim('leftButia', 0, lambda self: primitive_dictionary['leftButia']())
 
         primitive_dictionary['rightButia'] = self.rightButia
         palette.add_block('rightButia',  # the name of your block
