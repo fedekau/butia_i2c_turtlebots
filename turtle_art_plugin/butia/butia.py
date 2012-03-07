@@ -131,139 +131,113 @@ class Butia(gobject.GObject):
 
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
-        self._check_init()
-        battery = int(self.butia.getBatteryCharge())
-        COLOR_STATIC = self.staticBlocksColor(battery)
-        COLOR_BATTERY = self.batteryColor(battery)
 
         palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
         primitive_dictionary['refreshButia'] = self.refreshButia
-        palette.add_block('refreshButia',
-                    style='basic-style',
-                    label=_('refresh Butia'),
-                    prim_name='refreshButia',
-                    colors=COLOR_PRESENT,
-                    help_string=_('force to refresh the state of the butia plugin blocks'))
+        palette.add_block('refreshButia',  # the name of your block
+                     style='basic-style',  # the block style
+                     label=_('refresh Butia'),  # the label for the block
+                     prim_name='refreshButia',  # code reference (see below)
+                     help_string=_('force to refresh the state of the butia plugin blocks'))
         self.tw.lc.def_prim('refreshButia', 0, lambda self: primitive_dictionary['refreshButia']())
+
         special_block_colors['refreshButia'] = COLOR_PRESENT
 
         primitive_dictionary['batterychargeButia'] = self.batterychargeButia
-        palette.add_block('batterychargeButia',
-                    style='box-style',
-                    label=_('battery charge Butia'),
-                    prim_name='batterychargeButia',
-                    colors=COLOR_BATTERY,
-                    help_string=_('returns the battery charge as a number between 0 and 255'))
+        palette.add_block('batterychargeButia',  # the name of your block
+                     style='box-style',  # the block style
+                     label=_('battery charge Butia'),  # the label for the block
+                     prim_name='batterychargeButia',  # code reference (see below)
+                     help_string=_('returns the battery charge as a number between 0 and 255'))
         self.tw.lc.def_prim('batterychargeButia', 0, lambda self: primitive_dictionary['batterychargeButia']())
-        special_block_colors['batterychargeButia'] = COLOR_BATTERY
 
         primitive_dictionary['speedButia'] = self.speedButia
-        palette.add_block('speedButia',
-                    style='basic-style-1arg',
-                    label=_('speed Butia'),
-                    prim_name='speedButia',
-                    default=[600],
-                    colors=COLOR_STATIC,
-                    help_string=_('set the speed of the Butia motors as a value between 0 and 1023, passed by an argument'))
+        palette.add_block('speedButia',  # the name of your block
+                     style='basic-style-1arg',  # the block style
+                     label=_('speed Butia'),  # the label for the block
+                     prim_name='speedButia',  # code reference (see below)
+                     default=[600],
+                     help_string=_('set the speed of the Butia motors as a value between 0 and 1023, passed by an argument'))
         self.tw.lc.def_prim('speedButia', 1, lambda self, x: primitive_dictionary['speedButia'](x))
-        special_block_colors['speedButia'] = COLOR_STATIC
         
         primitive_dictionary['forwardButia'] = self.forwardButia
-        palette.add_block('forwardButia',
-                    style='basic-style',
-                    label=_('forward Butia'),
-                    prim_name='forwardButia',
-                    colors=COLOR_STATIC,
-                    help_string=_('move the Butia robot forward'))
+        palette.add_block('forwardButia',  # the name of your block
+                     style='basic-style',  # the block style
+                     label=_('forward Butia'),  # the label for the block
+                     prim_name='forwardButia',  # code reference (see below)
+                     help_string=_('move the Butia robot forward'))
         self.tw.lc.def_prim('forwardButia', 0, lambda self: primitive_dictionary['forwardButia']())
-        special_block_colors['forwardButia'] = COLOR_STATIC
 
         primitive_dictionary['forwardDistance'] = self.forwardDistance
-        palette.add_block('forwardDistance',
-                    style='basic-style-1arg',
-                    label=_('forward Butia'),
-                    default=[5],
-                    prim_name='forwardDistance',
-                    colors=COLOR_STATIC,
-                    help_string=_('move the Butia robot forward a predefined distance'))
+        palette.add_block('forwardDistance',  # the name of your block
+                     style='basic-style-1arg',  # the block style
+                     label=_('forward Butia'),  # the label for the block
+                     default=[5],  
+                     prim_name='forwardDistance',  # code reference (see below)
+                     help_string=_('move the Butia robot forward a predefined distance'))
         self.tw.lc.def_prim('forwardDistance', 1, lambda self, x: primitive_dictionary['forwardDistance'](x))
-        special_block_colors['forwardDistance'] = COLOR_STATIC
 
         primitive_dictionary['leftButia'] = self.leftButia
-        palette.add_block('leftButia',
-                    style='basic-style',
-                    label=_('left Butia'),
-                    prim_name='leftButia',
-                    colors=COLOR_STATIC,
-                    help_string=_('turn the Butia robot at left'))
+        palette.add_block('leftButia',  # the name of your block
+                     style='basic-style',  # the block style
+                     label=_('left Butia'),  # the label for the block
+                     prim_name='leftButia',  # code reference (see below)
+                     help_string=_('turn the Butia robot at left'))
         self.tw.lc.def_prim('leftButia', 0, lambda self: primitive_dictionary['leftButia']())
-        special_block_colors['leftButia'] = COLOR_STATIC
         
         primitive_dictionary['backwardButia'] = self.backwardButia
-        palette.add_block('backwardButia',
-                    style='basic-style',
-                    label=_('backward Butia'),
-                    prim_name='backwardButia',
-                    colors=COLOR_STATIC,
-                    help_string=_('move the Butia robot backward'))
+        palette.add_block('backwardButia',  # the name of your block
+                     style='basic-style',  # the block style
+                     label=_('backward Butia'),  # the label for the block
+                     prim_name='backwardButia',  # code reference (see below)
+                     help_string=_('move the Butia robot backward'))
         self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
-        special_block_colors['backwardButia'] = COLOR_STATIC
 
         primitive_dictionary['backwardDistance'] = self.backwardDistance
-        palette.add_block('backwardDistance',
-                    style='basic-style-1arg',
-                    label=_('backward Butia'),
-                    default=[5],  
-                    prim_name='backwardDistance',
-                    colors=COLOR_STATIC,
-                    help_string=_('move the Butia robot backward a predefined distance'))
+        palette.add_block('backwardDistance',  # the name of your block
+                     style='basic-style-1arg',  # the block style
+                     label=_('backward Butia'),  # the label for the block
+                     default=[5],  
+                     prim_name='backwardDistance',  # code reference (see below)
+                     help_string=_('move the Butia robot backward a predefined distance'))
         self.tw.lc.def_prim('backwardDistance', 1, lambda self, x: primitive_dictionary['backwardDistance'](x))
-        special_block_colors['backwardDistance'] = COLOR_STATIC
 
         primitive_dictionary['rightButia'] = self.rightButia
-        palette.add_block('rightButia',
-                    style='basic-style',
-                    label=_('right Butia'),
-                    prim_name='rightButia',
-                    colors=COLOR_STATIC,
-                    help_string=_('turn the Butia robot at right'))
+        palette.add_block('rightButia',  # the name of your block
+                     style='basic-style',  # the block style
+                     label=_('right Butia'),  # the label for the block
+                     prim_name='rightButia',  # code reference (see below)
+                     help_string=_('turn the Butia robot at right'))
         self.tw.lc.def_prim('rightButia', 0, lambda self: primitive_dictionary['rightButia']())
-        special_block_colors['rightButia'] = COLOR_STATIC
 
         primitive_dictionary['turnXdegree'] = self.turnXdegree
-        palette.add_block('turnXdegree',
-                    style='basic-style-1arg',
-                    label=_('turn Butia'),
-                    default=[45],  
-                    prim_name='turnXdegree',
-                    colors=COLOR_STATIC,
-                    help_string=_('turn the Butia robot x degrees'))
+        palette.add_block('turnXdegree',  # the name of your block
+                     style='basic-style-1arg',  # the block style
+                     label=_('turn Butia'),  # the label for the block
+                     default=[45],  
+                     prim_name='turnXdegree',  # code reference (see below)
+                     help_string=_('turn the Butia robot x degrees'))
         self.tw.lc.def_prim('turnXdegree', 1, lambda self, x: primitive_dictionary['turnXdegree'](x))
-        special_block_colors['turnXdegree'] = COLOR_STATIC
 
         primitive_dictionary['stopButia'] = self.stopButia
-        palette.add_block('stopButia',
-                    style='basic-style',
-                    label=_('stop Butia'),
-                    prim_name='stopButia',
-                    colors=COLOR_STATIC,
-                    help_string=_('stop the Butia robot'))
+        palette.add_block('stopButia',  # the name of your block
+                     style='basic-style',  # the block style
+                     label=_('stop Butia'),  # the label for the block
+                     prim_name='stopButia',  # code reference (see below)
+                     help_string=_('stop the Butia robot'))
         self.tw.lc.def_prim('stopButia', 0, lambda self: primitive_dictionary['stopButia']())
-        special_block_colors['stopButia'] = COLOR_STATIC
 
         primitive_dictionary['LCDdisplayButia'] = self.LCDdisplayButia
-        palette.add_block('LCDdisplayButia',
-                    style='basic-style-1arg',
-                    label=_('display Butia'),
-                    default=[_('Hello World    Butia            ')],   
-                    prim_name='LCDdisplayButia',
-                    colors=COLOR_STATIC,
-                    help_string=_('print text in Butia robot 32-character ASCII display'))
+        palette.add_block('LCDdisplayButia',  # the name of your block
+                     style='basic-style-1arg',  # the block style
+                     label=_('display Butia'),  # the label for the block
+                     default=[_('Hello World    Butia            ')],   
+                     prim_name='LCDdisplayButia',  # code reference (see below)
+                     help_string=_('print text in Butia robot 32-character ASCII display'))
         self.tw.lc.def_prim('LCDdisplayButia', 1, lambda self, x: primitive_dictionary['LCDdisplayButia'](x))
-        special_block_colors['LCDdisplayButia'] = COLOR_STATIC
 
 
         #add every function in the code 
@@ -289,18 +263,18 @@ class Butia(gobject.GObject):
             (blockstyle , listofmodules) = i
             for j in listofmodules:
                 if blockstyle == 'basic-style-1arg':
-                    palette.add_block(j + 'Butia',
-                    style=blockstyle,
-                    label=(label_name_from_device_id[j] + ' ' + _('Butia')),
-                    prim_name= j + 'Butia',
+                    palette.add_block(j + 'Butia',  # the name of your block
+                    style=blockstyle,  # the block style
+                    label=(label_name_from_device_id[j] + ' ' + _('Butia')),  # the label for the block
+                    prim_name= j + 'Butia',  # code reference (see below)
                     default=[255],
                     help_string=_(modules_help[j])),
                     self.tw.lc.def_prim(j + 'Butia', 1, lambda self, x,y=j: primitive_dictionary[y + 'Butia'](x))
                 else:
-                    palette.add_block(j + 'Butia',
-                    style=blockstyle,
-                    label=(label_name_from_device_id[j] + ' ' + _('Butia')),
-                    prim_name= j + 'Butia',
+                    palette.add_block(j + 'Butia',  # the name of your block
+                    style=blockstyle,  # the block style
+                    label=(label_name_from_device_id[j] + ' ' + _('Butia')),  # the label for the block
+                    prim_name= j + 'Butia',  # code reference (see below)
                     help_string=_(modules_help[j])),
                     self.tw.lc.def_prim(j + 'Butia', 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
 
@@ -313,19 +287,19 @@ class Butia(gobject.GObject):
                     if ((modules_name_from_device_id[j] + str(k)) in self.list_connected_device_module):
                         isHidden = False
                     if blockstyle == 'basic-style-1arg':
-                        palette.add_block(module + 'Butia',
-                                     style=blockstyle,
-                                     label=( label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
-                                     prim_name= module + 'Butia',
+                        palette.add_block(module + 'Butia',  # the name of your block 
+                                     style=blockstyle,  # the block style
+                                     label=( label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),  # the label for the block
+                                     prim_name= module + 'Butia',  # code reference (see below)
                                      help_string=_(modules_help[j]),
                                      default=[255],
                                      hidden=isHidden )
                         self.tw.lc.def_prim(module + 'Butia', 1, lambda self, x, y=k, z=j: primitive_dictionary[z + 'Butia'](x,y))
                     else:
-                        palette.add_block(module + 'Butia', 
-                                     style=blockstyle,
-                                     label=(label_name_from_device_id[j] + str(k) + ' ' + _('Butia')),
-                                     prim_name= module + 'Butia',
+                        palette.add_block(module + 'Butia',  # the name of your block   
+                                     style=blockstyle,  # the block style
+                                     label=(label_name_from_device_id[j] + str(k) + ' ' + _('Butia')),  # the label for the block
+                                     prim_name= module + 'Butia',  # code reference (see below)
                                      help_string=_(modules_help[j]),
                                      hidden=isHidden )
                         self.tw.lc.def_prim(module + 'Butia', 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
@@ -350,6 +324,7 @@ class Butia(gobject.GObject):
             return result.groups()
         else:
             return ('', 0)
+
 
     def refreshButia(self):
         self.butia.refresh()
@@ -663,5 +638,4 @@ class Butia(gobject.GObject):
                 self.pollthread.start()
         else:
                 debug_output("Ending butia poll")
-
 
