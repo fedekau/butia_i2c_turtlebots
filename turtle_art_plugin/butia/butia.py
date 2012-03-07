@@ -111,7 +111,7 @@ class Butia(gobject.GObject):
         #start butia services
         self.bobot_launch()
         self.butia = butiaAPI.robot()
-        self.list_connected_device_module = ['butia']
+        #self.list_connected_device_module = ['butia']
         self.can_refresh = True
         self.regex = re.compile(r"""^		#Start of the string
                                 (\D*?)			# name, an string  without digits, the ? mark says that it's not greedy, to avoid to consume also the "Butia" part, in case it's present
@@ -132,7 +132,7 @@ class Butia(gobject.GObject):
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
 
-        palette = make_palette('butia', colors=COLOR_PRESENT, help_string=_('Butia Robot'))
+        palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
@@ -143,6 +143,8 @@ class Butia(gobject.GObject):
                      prim_name='refreshButia',  # code reference (see below)
                      help_string=_('force to refresh the state of the butia plugin blocks'))
         self.tw.lc.def_prim('refreshButia', 0, lambda self: primitive_dictionary['refreshButia']())
+
+        special_block_colors['refreshButia'] = COLOR_PRESENT
 
         primitive_dictionary['batterychargeButia'] = self.batterychargeButia
         palette.add_block('batterychargeButia',  # the name of your block
@@ -276,8 +278,8 @@ class Butia(gobject.GObject):
                     help_string=_(modules_help[j])),
                     self.tw.lc.def_prim(j + 'Butia', 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
 
-                if not (modules_name_from_device_id[j] in self.list_connected_device_module):
-                    special_block_colors[j+ 'Butia'] = COLOR_NOTPRESENT
+                if (modules_name_from_device_id[j] in self.list_connected_device_module):
+                    special_block_colors[j+ 'Butia'] = COLOR_PRESENT
 
                 for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
@@ -301,6 +303,8 @@ class Butia(gobject.GObject):
                                      help_string=_(modules_help[j]),
                                      hidden=isHidden )
                         self.tw.lc.def_prim(module + 'Butia', 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
+
+        self.list_connected_device_module = []
         
         #timer to poll butia changes
         self.pollthread=threading.Timer(3,self.bobot_poll)
@@ -359,7 +363,7 @@ class Butia(gobject.GObject):
 
 
         #impact changes in turtle blocks palette
-        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)	
+        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=True)	
   
     def change_butia_palette_colors(self):
 
@@ -431,6 +435,7 @@ class Butia(gobject.GObject):
     def stop(self):
         """ stop is called when stop button is pressed. """
         self.can_refresh = True
+        self.butia.set2MotorSpeed('0', '0', '0', '0')
 
     def goto_background(self):
         """ goto_background is called when the activity is sent to the
