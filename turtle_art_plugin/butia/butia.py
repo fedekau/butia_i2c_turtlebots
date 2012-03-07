@@ -307,7 +307,7 @@ class Butia(gobject.GObject):
         self.list_connected_device_module = []
         
         #timer to poll butia changes
-        self.pollthread=threading.Timer(3,self.bobot_poll)
+        self.pollthread=threading.Timer(10,self.bobot_poll)
         self.pollthread.start()
 
     def start(self):
@@ -328,38 +328,44 @@ class Butia(gobject.GObject):
 
     def refreshButia(self):
         self.butia.refresh()
+
         battery = int(self.butia.getBatteryCharge())
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
+
+        # get the list with all butia palette blocks
+        butia_palette = self.tw.palettes[palette_name_to_index('butia')]
+
         #repaints program area blocks (proto) and palette blocks (block)
         for blk in self.tw.block_list.list:
-            #FIXME: exits another type of blocks? 
-            #if blk.type in ['proto', 'block']:
-            if (blk.name in static_block_list):
-                if (blk.name == 'batterychargeButia'):
-                    blk.set_colors(COLOR_BATTERY)
-                    BOX_COLORS[blk.name] = COLOR_BATTERY[:]
-                else:
-                    blk.set_colors(COLOR_STATIC)
-                    BOX_COLORS[blk.name] = COLOR_STATIC[:]
-            else:
-                blk_name, blk_index = self.block_2_index_and_name(blk.name)
-                if (blk_name in refreshable_block_list):
-                    if blk_name in modules_name_from_device_id:
-                        module_name = modules_name_from_device_id[blk_name] + blk_index
+            if blk.name in butia_palette:
+                #NOTE: blocks types: proto, block, trash, deleted
+                if blk.type in ['proto', 'block']:
+                    if (blk.name in static_block_list):
+                        if (blk.name == 'batterychargeButia'):
+                            blk.set_colors(COLOR_BATTERY)
+                            BOX_COLORS[blk.name] = COLOR_BATTERY[:]
+                        else:
+                            blk.set_colors(COLOR_STATIC)
+                            BOX_COLORS[blk.name] = COLOR_STATIC[:]
                     else:
-                        module_name = ''
-                    if module_name not in self.list_connected_device_module:
-                        if blk_index !='' :
-                            if blk.type == 'proto': # only make invisible the block in the palette not in the program area  
-                                blk.set_visibility(False)
-                        blk.set_colors(COLOR_NOTPRESENT)
-                        BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
-                    else:
-                        if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area   
-                            blk.set_visibility(True)
-                        blk.set_colors(COLOR_PRESENT)
-                        BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+                        blk_name, blk_index = self.block_2_index_and_name(blk.name)
+                        if (blk_name in refreshable_block_list):
+                            if blk_name in modules_name_from_device_id:
+                                module_name = modules_name_from_device_id[blk_name] + blk_index
+                            else:
+                                module_name = ''
+                            if module_name not in self.list_connected_device_module:
+                                if blk_index !='' :
+                                    if blk.type == 'proto': # only make invisible the block in the palette not in the program area  
+                                        blk.set_visibility(False)
+                                blk.set_colors(COLOR_NOTPRESENT)
+                                BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
+                            else:
+                                if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area   
+                                    blk.set_visibility(True)
+                                blk.set_colors(COLOR_PRESENT)
+                                BOX_COLORS[blk.name] = COLOR_PRESENT[:]
 
 
         #impact changes in turtle blocks palette
@@ -375,38 +381,42 @@ class Butia(gobject.GObject):
             self.old_battery_value = battery
             COLOR_STATIC = self.staticBlocksColor(battery)
             COLOR_BATTERY = self.batteryColor(battery)
+
+        # get the list with all butia palette blocks
+        butia_palette = self.tw.palettes[palette_name_to_index('butia')]
         
         #repaints program area blocks (proto) and palette blocks (block)
         for blk in self.tw.block_list.list:
-            #FIXME: exits another type of blocks? 
-            #if blk.type in ['proto', 'block']:
-            if (change_statics_blocks):
-                if (blk.name in static_block_list):
-                    if (blk.name == 'batterychargeButia'):
-                        blk.set_colors(COLOR_BATTERY)
-                        BOX_COLORS[blk.name] = COLOR_BATTERY[:]
+            if blk.name in butia_palette:
+                #NOTE: blocks types: proto, block, trash, deleted
+                if blk.type in ['proto', 'block']:
+                    if (blk.name in static_block_list):
+                        if (change_statics_blocks):
+                            if (blk.name == 'batterychargeButia'):
+                                blk.set_colors(COLOR_BATTERY)
+                                BOX_COLORS[blk.name] = COLOR_BATTERY[:]
+                            else:
+                                blk.set_colors(COLOR_STATIC)
+                                BOX_COLORS[blk.name] = COLOR_STATIC[:]
                     else:
-                        blk.set_colors(COLOR_STATIC)
-                        BOX_COLORS[blk.name] = COLOR_STATIC[:]
-            else:
-                blk_name, blk_index = self.block_2_index_and_name(blk.name)
-                if (blk_name in refreshable_block_list):
-                    if blk_name in modules_name_from_device_id:
-                        module_name = modules_name_from_device_id[blk_name] + blk_index
-                    else:
-                        module_name = ''
-                    if module_name in self.set_changed_device_module:
-                        if module_name not in self.list_connected_device_module:
-                            if blk_index !='' :
-                                if blk.type == 'proto': # only make invisible the block in the palette not in the program area  
-                                    blk.set_visibility(False)
-                            blk.set_colors(COLOR_NOTPRESENT)
-                            BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
-                        else:
-                            if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area   
-                                blk.set_visibility(True)
-                            blk.set_colors(COLOR_PRESENT)
-                            BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+                        blk_name, blk_index = self.block_2_index_and_name(blk.name)
+                        if (blk_name in refreshable_block_list):
+                            if blk_name in modules_name_from_device_id:
+                                module_name = modules_name_from_device_id[blk_name] + blk_index
+                            else:
+                                module_name = ''
+                            if module_name in self.set_changed_device_module:
+                                if module_name not in self.list_connected_device_module:
+                                    if blk_index !='' :
+                                        if blk.type == 'proto': # only make invisible the block in the palette not in the program area  
+                                            blk.set_visibility(False)
+                                    blk.set_colors(COLOR_NOTPRESENT)
+                                    BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
+                                else:
+                                    if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area   
+                                        blk.set_visibility(True)
+                                    blk.set_colors(COLOR_PRESENT)
+                                    BOX_COLORS[blk.name] = COLOR_PRESENT[:]
 
 
         #impact changes in turtle blocks palette
@@ -435,6 +445,7 @@ class Butia(gobject.GObject):
     def stop(self):
         """ stop is called when stop button is pressed. """
         self.can_refresh = True
+        self._check_init()
         self.butia.set2MotorSpeed('0', '0', '0', '0')
 
     def goto_background(self):
@@ -456,7 +467,6 @@ class Butia(gobject.GObject):
 
     def set_vels(self, left, right):
         self._check_init()
-        #print "Setear velocidades: " + str(left) + "-" + str(right)
         if left>0:
                     sentLeft = "0"
         else:
@@ -583,16 +593,13 @@ class Butia(gobject.GObject):
 
     def LCDdisplayButia(self, text='________________________________'):
         self._check_init()
-        text = str(text)
-        text = text.replace(' ', '_')
-        self.butia.callModule('display', 'escribir' , text) #FIXME export operation in API
+        self.butia.writeLCD(text)
 
     def ledButia(self, level, sensorid=''):
         self._check_init()
         self.butia.setLed(level)
     
     def speedButia(self, speed):
-        #print "Setear velocidad actual: " + str(speed)
         if speed < 0:
             speed = -speed
         if speed > MAX_SPEED:
