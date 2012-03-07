@@ -225,3 +225,11 @@ class robot:
     # set the led intensity
     def setLed(self, number= '', nivel = 255):
         return self.callModule('led' + str(number), 'setLight', str(math.trunc(nivel)))
+
+    # FIXME: check the lenght of text?
+    # write a text in LCD display
+    def writeLCD(self, text):
+        text = str(text)
+        text = text.replace(' ', '_')
+        self.callModule('display', 'escribir' , text)
+
