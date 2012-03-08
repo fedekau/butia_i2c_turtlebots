@@ -108,6 +108,7 @@ class Butia(gobject.GObject):
         self.pollthread = None
         self.pollrun = True
         self.old_battery_value = 0
+        self.all_blocks = []
         #start butia services
         self.bobot_launch()
         self.butia = butiaAPI.robot()
@@ -279,6 +280,7 @@ class Butia(gobject.GObject):
             (blockstyle , listofmodules) = i
             for j in listofmodules:
                 block_name = j + 'Butia'
+                self.all_blocks.append(block_name)
                 if blockstyle == 'basic-style-1arg':
                     palette.add_block(block_name,  # the name of your block
                     style=blockstyle,  # the block style
@@ -293,7 +295,7 @@ class Butia(gobject.GObject):
                     label=(label_name_from_device_id[j] + ' ' + _('Butia')),  # the label for the block
                     prim_name= block_name,  # code reference (see below)
                     help_string=_(modules_help[j])),
-                    self.tw.lc.def_prim(block_name', 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
+                    self.tw.lc.def_prim(block_name, 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
 
                 if (modules_name_from_device_id[j] in self.list_connected_device_module):
                     special_block_colors[block_name] = COLOR_PRESENT
@@ -306,6 +308,7 @@ class Butia(gobject.GObject):
                 for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
                     block_name = module + 'Butia'
+                    self.all_blocks.append(block_name)
                     isHidden = True
                     if ((modules_name_from_device_id[j] + str(k)) in self.list_connected_device_module):
                         isHidden = False
@@ -363,12 +366,9 @@ class Butia(gobject.GObject):
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
 
-        # get the list with all butia palette blocks
-        butia_palette = self.tw.palettes[palette_name_to_index('butia')]
-
         #repaints program area blocks (proto) and palette blocks (block)
         for blk in self.tw.block_list.list:
-            if blk.name in butia_palette:
+            if blk.name in self.all_blocks:
                 #NOTE: blocks types: proto, block, trash, deleted
                 if blk.type in ['proto', 'block']:
                     if (blk.name in static_block_list):
@@ -412,12 +412,9 @@ class Butia(gobject.GObject):
             COLOR_STATIC = self.staticBlocksColor(battery)
             COLOR_BATTERY = self.batteryColor(battery)
 
-        # get the list with all butia palette blocks
-        butia_palette = self.tw.palettes[palette_name_to_index('butia')]
-        
         #repaints program area blocks (proto) and palette blocks (block)
         for blk in self.tw.block_list.list:
-            if blk.name in butia_palette:
+            if blk.name in self.all_blocks:
                 #NOTE: blocks types: proto, block, trash, deleted
                 if blk.type in ['proto', 'block']:
                     if (blk.name in static_block_list):
