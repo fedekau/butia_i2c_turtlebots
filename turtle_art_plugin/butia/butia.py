@@ -305,26 +305,27 @@ class Butia(gobject.GObject):
 
                 for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
+                    block_name = module + 'Butia'
                     isHidden = True
                     if ((modules_name_from_device_id[j] + str(k)) in self.list_connected_device_module):
                         isHidden = False
                     if blockstyle == 'basic-style-1arg':
-                        palette.add_block(module + 'Butia',  # the name of your block 
+                        palette.add_block(block_name,  # the name of your block 
                                      style=blockstyle,  # the block style
                                      label=( label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),  # the label for the block
-                                     prim_name= module + 'Butia',  # code reference (see below)
+                                     prim_name= block_name,  # code reference (see below)
                                      help_string=_(modules_help[j]),
                                      default=[255],
                                      hidden=isHidden )
-                        self.tw.lc.def_prim(module + 'Butia', 1, lambda self, x, y=k, z=j: primitive_dictionary[z + 'Butia'](x,y))
+                        self.tw.lc.def_prim(block_name, 1, lambda self, x, y=k, z=j: primitive_dictionary[z + 'Butia'](x,y))
                     else:
-                        palette.add_block(module + 'Butia',  # the name of your block   
+                        palette.add_block(block_name,  # the name of your block   
                                      style=blockstyle,  # the block style
                                      label=(label_name_from_device_id[j] + str(k) + ' ' + _('Butia')),  # the label for the block
-                                     prim_name= module + 'Butia',  # code reference (see below)
+                                     prim_name= block_name,  # code reference (see below)
                                      help_string=_(modules_help[j]),
                                      hidden=isHidden )
-                        self.tw.lc.def_prim(module + 'Butia', 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
+                        self.tw.lc.def_prim(block_name, 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
 
                     if not(isHidden):
                         special_block_colors[block_name] = COLOR_PRESENT
