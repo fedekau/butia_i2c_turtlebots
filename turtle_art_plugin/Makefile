@@ -57,10 +57,26 @@ walterGIT:
 	#(cd mainline && git checkout $(TURTLEARTVERSION))
 	(cd mainline && git checkout origin/master)
 
+wedoGIT:
+	# goto mainline (NXT plugin code) and check if everything is OK!
+	(cd WeDoMore && git fetch) #make sure we have the last changes of the git
+	# I want a especific version of TurtleArts!
+	(cd WeDoMore && git reset --hard) # please erase any modific file
+	(cd WeDoMore && git clean -xdf) # please erase any untraced file
+	(cd WeDoMore && git checkout origin/master)
+
+nxtGIT:
+	# goto mainline (NXT plugin code) and check if everything is OK!
+	(cd nxt_plugin && git fetch) #make sure we have the last changes of the git
+	# I want a especific version of TurtleArts!
+	(cd nxt_plugin && git reset --hard) # please erase any modific file
+	(cd nxt_plugin && git clean -xdf) # please erase any untraced file
+	(cd nxt_plugin && git checkout origin/master)
+
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
 
-POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
+POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot 
 POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
 
 POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
@@ -131,7 +147,7 @@ butiaXO:
 
 ################ Construction...
 
-mktmpfolder: walterGIT
+mktmpfolder: walterGIT nxtGIT wedoGIT
 	#making folders and copying mainline
 	rm -rf tmp
 	cp -rL mainline tmp
@@ -144,18 +160,22 @@ apply_localization: mktmpfolder $(PO_FILES)
 	msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
+	msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
 
 apply_hard_plugins: apply_localization butiaXO
 	cp -rLf butia tmp/plugins/
 	cp -rLf sumtia tmp/plugins/
 	cp -rLf followme/ tmp/plugins/
+	cp -rLf nxt_plugin/ tmp/plugins/
+	cp -rLf wedo_plugin/ tmp/plugins/
 
 apply_sym_plugins: apply_localization butiaXO
 	# let's make symlinks, it lets you, edit and try, lot more ease!
 	ln -s `pwd`/butia tmp/plugins/butia
 	ln -s `pwd`/sumtia tmp/plugins/sumtia
 	ln -s `pwd`/followme tmp/plugins/followme
-
+	ln -s `pwd`/nxt_plugin tmp/plugins/nxt_plugin
+	ln -s `pwd`/wedo_plugin tmp/plugins/wedo_plugin
 
 xo: apply_hard_plugins
 	# ok, let's make this .xo
@@ -205,4 +225,4 @@ uninstall:
 
 
 # targets that not represent generated files
-.PHONY: all clean clean_tmp clean_pot clean_xo walterGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help
+.PHONY: all clean clean_tmp clean_pot clean_xo walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help
