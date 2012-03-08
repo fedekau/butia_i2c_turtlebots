@@ -54,8 +54,8 @@ walterGIT:
 	# I want a especific version of TurtleArts!
 	(cd mainline && git reset --hard) # please erase any modific file
 	(cd mainline && git clean -xdf) # please erase any untraced file
-	(cd mainline && git checkout $(TURTLEARTVERSION))
-
+	#(cd mainline && git checkout $(TURTLEARTVERSION))
+	(cd mainline && git checkout origin/master)
 
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
@@ -162,7 +162,7 @@ xo: apply_hard_plugins
 	(cd tmp && python setup.py fix_manifest)
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
-	$(MAKE) clean_tmp
+	#$(MAKE) clean_tmp
 
 install: xo
 	sugar-install-bundle *.xo

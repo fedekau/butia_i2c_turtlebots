@@ -51,9 +51,10 @@ function BaseBoard:new(bb)
 			bobot.debugprint("u4b:new:the module name returned a nil value, trying to recover...")
 			retry = retry+1
 		end
-		assert(name)
-		local d = bobot_device:new({name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
-		bb.devices[name]=d
+		if(name) then
+			local d = bobot_device:new({name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
+			bb.devices[name]=d
+		end
 	end	
 --bobot.debugprint ('----------------')
 	bb:force_close_all()
@@ -204,7 +205,7 @@ function BaseBoard:force_close_all()
 			d.handler=nil
 		end
 	else	
-		bobot.debugprintprint("u4b:force_close_all:comunication with I/O board write error", write_res)
+		bobot.debugprint("u4b:force_close_all:comunication with I/O board write error", write_res)
 	end
 end
 
