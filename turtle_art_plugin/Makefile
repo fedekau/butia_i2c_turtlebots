@@ -160,7 +160,6 @@ apply_localization: mktmpfolder $(PO_FILES)
 	msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
-	msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
 
 apply_hard_plugins: apply_localization butiaXO
 	cp -rLf butia tmp/plugins/
