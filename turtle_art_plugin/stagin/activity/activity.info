@@ -1,5 +1,5 @@
 [Activity]
-name = Turtle Art Butia
+name = TurtleBots
 activity_version = 7
 license = MIT
 bundle_id = org.laptop.TurtleArtButia
