@@ -178,6 +178,7 @@ apply_sym_plugins: apply_localization butiaXO
 
 xo: apply_hard_plugins
 	# ok, let's make this .xo
+	(cd tmp && python setup.py fix_manifest)
 	(cd tmp && python setup.py build)
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
@@ -192,6 +193,7 @@ fakeinstall: apply_sym_plugins
 	rm -rf ~/Activities/TurtleArtButia.activity
 	mkdir -p ~/Activities
 	# fix localization and index
+	(cd tmp && python setup.py fix_manifest)
 	(cd tmp && python setup.py build)
 	(cd tmp && python setup.py dev)
 
