@@ -19,7 +19,7 @@ msgstr ""
 
 
 msgid "TurtleBots"
-msgstr "TortuBots"
+msgstr "TurtleBots"
 
 #: butia.py:48
 msgid "adjust LED intensity between 0 and 255"
