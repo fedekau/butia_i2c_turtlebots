@@ -193,7 +193,7 @@ fakeinstall: apply_sym_plugins
 	mkdir -p ~/Activities
 	# fix localization and index
 	(cd tmp && python setup.py fix_manifest)
-	(cd tmp && python setup.py dev)
+	#(cd tmp && python setup.py dev)
 
 
 
