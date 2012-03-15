@@ -46,7 +46,7 @@ WHEELBASE = 28.00
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
 modules_help['led'] = _("adjust LED intensity between 0 and 255")
-modules_help['grayscale'] = _("returns the object gray level encountered him as a number between 0 and 1023")
+modules_help['grayscale'] = _("returns the object gray level as a number between 0 and 1023")
 modules_help['button'] = _("returns 1 when the button is press and 0 otherwise")
 modules_help['ambientlight'] = _("returns the ambient light level as a number between 0 and 1023")
 modules_help['temperature'] = _("returns the ambient temperature as a number between 0 and 255")
