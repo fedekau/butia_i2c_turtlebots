@@ -189,11 +189,11 @@ install: xo
 
 
 fakeinstall: apply_sym_plugins
-	rm -rf ~/Activities/TurtleArtButia.activity
+	rm -rf ~/Activities/TurtleBots.activity
 	mkdir -p ~/Activities
 	# fix localization and index
 	(cd tmp && python setup.py fix_manifest)
-	#(cd tmp && python setup.py dev)
+	(cd tmp && python setup.py dev)
 
 
 
@@ -206,7 +206,7 @@ clean:
 	$(MAKE) clean_tmp
 	$(MAKE) clean_xo
 	# this remove only if it's a symlink ; don't remove if installed
-	rm -f ~/Activities/TurtleArtButia.activity
+	rm -f ~/Activities/TurtleBots.activity
 
 clean_tmp:
 	rm -rf tmp
@@ -218,7 +218,7 @@ clean_xo:
 	rm -f *.xo
 
 uninstall:
-	rm -rf ~/Activities/TurtleArtButia.activity
+	rm -rf ~/Activities/TurtleBots.activity
 	
 
 
