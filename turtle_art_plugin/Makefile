@@ -47,8 +47,8 @@ help:
 
 walterGIT:
 	# ok, let's init and update the submodules (only works if you are in the root of git)
-	(cd .. && git submodule init)
-	(cd .. && git submodule update)  # This don't work if local changes, commit local change before
+	#(cd .. && git submodule init)
+	#(cd .. && git submodule update)  # This don't work if local changes, commit local change before
 	# goto mainline (Walter code) and check if everything is OK!
 	(cd mainline && git fetch) #make sure we have the last changes of the git
 	# I want a especific version of TurtleArts!
