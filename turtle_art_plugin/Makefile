@@ -46,31 +46,31 @@ help:
 
 
 walterGIT:
-	# ok, let's init and update the submodules (only works if you are in the root of git)
-	#(cd .. && git submodule init)
-	#(cd .. && git submodule update)  # This don't work if local changes, commit local change before
-	# goto mainline (Walter code) and check if everything is OK!
-	(cd mainline && git fetch) #make sure we have the last changes of the git
-	# I want a especific version of TurtleArts!
-	(cd mainline && git reset --hard) # please erase any modific file
-	(cd mainline && git clean -xdf) # please erase any untraced file
-	#(cd mainline && git checkout $(TURTLEARTVERSION))
+	# walter GIT
+	# init and update the submodules (only works if you are in the root of git)
+	(cd .. && git submodule init)
+	# This don't work if local changes, commit local change before
+	(cd .. && git submodule update)
+	# make sure we have the last changes of the git
+	(cd mainline && git fetch)
+	# erase any untraced file
+	(cd mainline && git clean -xdf)
+	# goto origin/master
 	(cd mainline && git checkout origin/master)
 
+	# a especific version of Turtle
+	#(cd mainline && git checkout $(TURTLEARTVERSION))
+
 wedoGIT:
-	# goto mainline (NXT plugin code) and check if everything is OK!
-	(cd WeDoMore && git fetch) #make sure we have the last changes of the git
-	# I want a especific version of TurtleArts!
-	(cd WeDoMore && git reset --hard) # please erase any modific file
-	(cd WeDoMore && git clean -xdf) # please erase any untraced file
+	# wedo GIT
+	(cd WeDoMore && git fetch)
+	(cd WeDoMore && git clean -xdf)
 	(cd WeDoMore && git checkout origin/master)
 
 nxtGIT:
-	# goto mainline (NXT plugin code) and check if everything is OK!
-	(cd nxt_plugin && git fetch) #make sure we have the last changes of the git
-	# I want a especific version of TurtleArts!
-	(cd nxt_plugin && git reset --hard) # please erase any modific file
-	(cd nxt_plugin && git clean -xdf) # please erase any untraced file
+	# NXT GIT
+	(cd nxt_plugin && git fetch)
+	(cd nxt_plugin && git clean -xdf)
 	(cd nxt_plugin && git checkout origin/master)
 
 
@@ -111,15 +111,12 @@ followme/po/FollowMe.pot: followme/followme.py
 genpot_notraslated: $(POT_NT_FILES)
 
 butia/po/Butia.notraslated.pot: butia/po/Butia.pot 
-	$(MAKE) walterGIT
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
 sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
-	$(MAKE) walterGIT
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
 followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
-	$(MAKE) walterGIT
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
 
@@ -147,7 +144,7 @@ butiaXO:
 
 ################ Construction...
 
-mktmpfolder: walterGIT nxtGIT wedoGIT
+mktmpfolder:
 	#making folders and copying mainline
 	rm -rf tmp
 	cp -rL mainline tmp
@@ -168,7 +165,7 @@ apply_hard_plugins: apply_localization butiaXO
 	cp -rLf nxt_plugin/ tmp/plugins/
 	cp -rLf wedo_plugin/ tmp/plugins/
 
-apply_sym_plugins: apply_localization butiaXO
+apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
 	# let's make symlinks, it lets you, edit and try, lot more ease!
 	ln -s `pwd`/butia tmp/plugins/butia
 	ln -s `pwd`/sumtia tmp/plugins/sumtia
