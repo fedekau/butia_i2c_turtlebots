@@ -50,7 +50,7 @@ walterGIT:
 	# init and update the submodules (only works if you are in the root of git)
 	(cd .. && git submodule init)
 	# This don't work if local changes, commit local change before
-	(cd .. && git submodule update)
+	#(cd .. && git submodule update)
 	# make sure we have the last changes of the git
 	(cd mainline && git fetch)
 	# erase any untraced file
