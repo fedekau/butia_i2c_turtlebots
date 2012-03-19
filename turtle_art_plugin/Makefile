@@ -19,6 +19,8 @@ help:
 	@echo 
 	@echo " This is a Makefile for compile/construct TurtleArtButia.        "
 	@echo " The follow objetives are defined:                               "
+	@echo "    first: Execute this command to init the submodules only the  "
+	@echo "          first time after clone                                 "
 	@echo "    xo : Generate the XO distribuible package                    "
 	@echo "    fakeinstall: compile all necessary for TurtleArtButia        "
 	@echo "                 and make a fake install using a symlink         "
