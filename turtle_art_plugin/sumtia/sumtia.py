@@ -29,16 +29,13 @@ from TurtleArt.tautils import debug_output
 
 from gettext import gettext as _
 
-#constants definitions
-
-
+from plugins.plugin import Plugin
    
-class Sumtia(gobject.GObject):
-	vel = 10
+class Sumtia(Plugin):
+	
 	def __init__(self, parent):
-		gobject.GObject.__init__(self)
 		self.tw = parent
-		#        self.butia = None
+        self.vel = 10
 
 	def setup(self):		
 		# Start the connection with the robot
@@ -213,7 +210,6 @@ class Sumtia(gobject.GObject):
 
 	def stop(self):
 		""" stop is called when stop button is pressed. """
-		self.api.liberarRecursos()
 		pass
 
 	def goto_background(self):
@@ -228,7 +224,7 @@ class Sumtia(gobject.GObject):
 
 	def quit(self):
 		""" cleanup is called when the activity is exiting. """
-		pass
+		self.api.liberarRecursos()
 
     # Sumtia helper functions for apiSumoUY.py interaction
 
