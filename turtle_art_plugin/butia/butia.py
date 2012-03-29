@@ -32,6 +32,8 @@ from TurtleArt.talogo import primitive_dictionary
 from TurtleArt.taconstants import BOX_COLORS
 from TurtleArt.tautils import debug_output
 
+from plugins.plugin import Plugin
+
 from gettext import gettext as _
 
 #constants definitions
@@ -99,10 +101,9 @@ refreshable_module_list = ['luz', 'grises', 'temp', 'dist', 'boton', 'tilt', 'ma
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
               'backwardDistance', 'turnXdegree', 'LCDdisplayButia', 'batterychargeButia'] 
 
-class Butia(gobject.GObject):
+class Butia(Plugin):
     actualSpeed = 600 # velocidad con la que realiza los movimientos forward, backward, left y right
     def __init__(self, parent):
-        gobject.GObject.__init__(self)
         self.tw = parent
         self.butia = None
         self.pollthread = None
@@ -581,7 +582,7 @@ class Butia(gobject.GObject):
         return int(self.butia.getBatteryCharge())
 
     def batteryColor(self, battery):
-        if (battery == -1) or (battery == 255):
+        if (battery == -1): # or (battery == 255):
             return COLOR_NOTPRESENT
         elif ((battery < 254) and (battery >= 195)):
             return COLOR_PRESENT
@@ -652,7 +653,7 @@ class Butia(gobject.GObject):
         And without libreadline and libhistory dependency
         """
         debug_output('initialising butia...')
-        cmd = 'ps ax'
+        cmd = 'ps ax | grep lua'
         pids = os.popen(cmd)
         x = pids.readlines()
         bobotAlive = False
@@ -662,8 +663,7 @@ class Butia(gobject.GObject):
                 bobotAlive = True
                 debug_output('bobot is alive!')
                 break
-            else:                
-                bobotAlive = False
+
         if(bobotAlive==False):
             debug_output('creating bobot')
             cmd = 'cd plugins/butia/butia_support ; ./lua bobot-server.lua &'
