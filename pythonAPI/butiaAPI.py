@@ -174,7 +174,13 @@ class robot:
 
     # returns the approximate charge of the battery        
     def getBatteryCharge(self):
-        return int(self.callModule('butia', 'get_volt'))
+        bat = ERROR_SENSOR_READ
+        try:
+            bat = self.callModule('butia', 'get_volt')
+            bat = int(bat)
+        except:
+            pass
+        return bat
 
     # returns the firmware version 
     def getVersion(self):
