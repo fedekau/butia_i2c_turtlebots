@@ -135,7 +135,7 @@ class Butia(Plugin):
         """ Setup is called once, when the Turtle Window is created. """
 
         self._check_init()
-        battery = int(self.butia.getBatteryCharge())
+        battery = self.butia.getBatteryCharge()
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
 
@@ -375,7 +375,7 @@ class Butia(Plugin):
     def refreshButia(self):
         self.butia.refresh()
 
-        battery = int(self.butia.getBatteryCharge())
+        battery = self.butia.getBatteryCharge()
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
 
@@ -416,7 +416,7 @@ class Butia(Plugin):
   
     def change_butia_palette_colors(self):
 
-        battery = int(self.butia.getBatteryCharge())
+        battery = self.butia.getBatteryCharge()
         if (battery == self.old_battery_value):
             change_statics_blocks = False
         else:
@@ -579,7 +579,7 @@ class Butia(Plugin):
 
     def batterychargeButia(self):
         self._check_init()
-        return int(self.butia.getBatteryCharge())
+        return self.butia.getBatteryCharge()
 
     def batteryColor(self, battery):
         if (battery == -1): # or (battery == 255):
