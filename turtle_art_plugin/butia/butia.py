@@ -675,8 +675,6 @@ class Butia(Plugin):
 
         self.pollthread=threading.Timer(3,self.bobot_poll)
         self.pollthread.start()
-        print 'prop thread'
-        print dir(self.pollthread)
 
     def bobot_poll(self):
         self.butia.refresh()
