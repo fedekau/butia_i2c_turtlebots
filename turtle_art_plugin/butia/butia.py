@@ -24,6 +24,9 @@ import math
 import os
 import threading
 import re
+import subprocess
+import commands
+
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import palette_blocks
@@ -111,10 +114,13 @@ class Butia(Plugin):
         self.old_battery_value = 0
         self.all_blocks = []
         #start butia services
-        self.bobot_launch()
+        self.bobot = None
+        self.pollthread=threading.Timer(0,self.bobot_launch)
+        self.pollthread.start()
+        #self.bobot_launch()
         self.butia = butiaAPI.robot()
         #self.list_connected_device_module = ['butia']
-        self.can_refresh = True
+        self.can_refresh = False
         self.regex = re.compile(r"""^		#Start of the string
                                 (\D*?)			# name, an string  without digits, the ? mark says that it's not greedy, to avoid to consume also the "Butia" part, in case it's present
                                 (\d*)				# index, a group comprised only of digits, posibly absent
@@ -353,8 +359,10 @@ class Butia(Plugin):
         self.list_connected_device_module = []
         
         #timer to poll butia changes
-        self.pollthread=threading.Timer(10,self.bobot_poll)
-        self.pollthread.start()
+        #self.pollthread=threading.Timer(5,self.bobot_poll)
+        #self.pollthread.start()
+
+        self.can_refresh = True
 
     def start(self):
         self.can_refresh = False
@@ -500,10 +508,12 @@ class Butia(Plugin):
 
     def quit(self):
         """ cleanup is called when the activity is exiting. """
-        self.pollthread.cancel()
         self.pollrun = False
+        self.pollthread.cancel()
         self.butia.close()
         self.butia.closeService()
+        if self.bobot:
+            self.bobot.kill()
 
     def set_vels(self, left, right):
         self._check_init()
@@ -653,21 +663,20 @@ class Butia(Plugin):
         And without libreadline and libhistory dependency
         """
         debug_output('initialising butia...')
-        cmd = 'ps ax | grep lua'
-        pids = os.popen(cmd)
-        x = pids.readlines()
-        bobotAlive = False
-        for y in x:
-            p = y.find('bobot-server')
-            if p >= 0: # process running
-                bobotAlive = True
-                debug_output('bobot is alive!')
-                break
+        output = commands.getoutput('ps -ax | grep lua')
+        if 'bobot-server' in output:
+            debug_output('bobot is alive!')
+        else:
+            try:
+                debug_output('creating bobot')
+                self.bobot = subprocess.Popen(['./lua', 'bobot-server.lua'], cwd='./plugins/butia/butia_support')
+            except:
+                debug_output('ERROR creating bobot')
 
-        if(bobotAlive==False):
-            debug_output('creating bobot')
-            cmd = 'cd plugins/butia/butia_support ; ./lua bobot-server.lua &'
-            os.system(cmd)
+        self.pollthread=threading.Timer(3,self.bobot_poll)
+        self.pollthread.start()
+        print 'prop thread'
+        print dir(self.pollthread)
 
     def bobot_poll(self):
         self.butia.refresh()
