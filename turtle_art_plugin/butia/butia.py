@@ -677,8 +677,9 @@ class Butia(Plugin):
         self.pollthread.start()
 
     def bobot_poll(self):
-        self.butia.refresh()
-        self.check_for_device_change()
+        if self.butia:
+            self.butia.refresh()
+            self.check_for_device_change()
         if(self.pollrun):
                 self.pollthread=threading.Timer(3,self.bobot_poll)
                 self.pollthread.start()
