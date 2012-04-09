@@ -394,11 +394,9 @@ class Butia(Plugin):
                 if blk.type in ['proto', 'block']:
                     if (blk.name in static_block_list):
                         if (blk.name == 'batterychargeButia'):
-                            blk.set_colors(COLOR_BATTERY)
                             BOX_COLORS[blk.name] = COLOR_BATTERY[:]
                         else:
-                            blk.set_colors(COLOR_STATIC)
-                            BOX_COLORS[blk.name] = COLOR_STATIC[:]
+                            BOX_COLORS[blk.name] = COLOR_STATIC[:]                        
                     else:
                         blk_name, blk_index = self.block_2_index_and_name(blk.name)
                         if (blk_name in refreshable_block_list):
@@ -410,13 +408,12 @@ class Butia(Plugin):
                                 if blk_index !='' :
                                     if blk.type == 'proto': # only make invisible the block in the palette not in the program area  
                                         blk.set_visibility(False)
-                                blk.set_colors(COLOR_NOTPRESENT)
                                 BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
                             else:
                                 if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area   
                                     blk.set_visibility(True)
-                                blk.set_colors(COLOR_PRESENT)
                                 BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+                    blk.refresh() 
 
 
         #impact changes in turtle blocks palette
@@ -441,10 +438,8 @@ class Butia(Plugin):
                     if (blk.name in static_block_list):
                         if (change_statics_blocks):
                             if (blk.name == 'batterychargeButia'):
-                                blk.set_colors(COLOR_BATTERY)
                                 BOX_COLORS[blk.name] = COLOR_BATTERY[:]
                             else:
-                                blk.set_colors(COLOR_STATIC)
                                 BOX_COLORS[blk.name] = COLOR_STATIC[:]
                     else:
                         blk_name, blk_index = self.block_2_index_and_name(blk.name)
@@ -458,13 +453,12 @@ class Butia(Plugin):
                                     if blk_index !='' :
                                         if blk.type == 'proto': # only make invisible the block in the palette not in the program area  
                                             blk.set_visibility(False)
-                                    blk.set_colors(COLOR_NOTPRESENT)
                                     BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
                                 else:
                                     if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area   
                                         blk.set_visibility(True)
-                                    blk.set_colors(COLOR_PRESENT)
                                     BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+                    blk.refresh() 
 
 
         #impact changes in turtle blocks palette
