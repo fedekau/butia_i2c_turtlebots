@@ -63,7 +63,7 @@ class robot:
             ret = ERROR_SENSOR_READ # Doesn't return here to release the lock
         self.lock.release()
         
-        if ((ret == 'nil value') or (ret == '') or (ret == None) or (ret == 'fail') or (ret == 'missing driver')):
+        if ((ret == 'nil value') or (ret == None) or (ret == 'fail') or (ret == 'missing driver')):
             ret = ERROR_SENSOR_READ
         return ret
           
