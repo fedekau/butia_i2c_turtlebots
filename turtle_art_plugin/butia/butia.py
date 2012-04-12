@@ -502,8 +502,9 @@ class Butia(Plugin):
         """ cleanup is called when the activity is exiting. """
         self.pollrun = False
         self.pollthread.cancel()
-        self.butia.close()
-        self.butia.closeService()
+        if self.butia:
+            self.butia.close()
+            self.butia.closeService()
         if self.bobot:
             self.bobot.kill()
 
