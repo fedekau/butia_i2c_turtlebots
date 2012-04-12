@@ -1,4 +1,6 @@
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
+# 
 # Copyright (c) 2011 Butiá Team butia@fing.edu.uy 
 # Butia is a free open plataform for robotics projects
 # www.fing.edu.uy/inco/proyectos/butia
@@ -105,7 +107,7 @@ static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia',
               'backwardDistance', 'turnXdegree', 'LCDdisplayButia', 'batterychargeButia'] 
 
 class Butia(Plugin):
-    actualSpeed = 600 # velocidad con la que realiza los movimientos forward, backward, left y right
+    actualSpeed = 600
     def __init__(self, parent):
         self.tw = parent
         self.butia = None
@@ -113,13 +115,11 @@ class Butia(Plugin):
         self.pollrun = True
         self.old_battery_value = 0
         self.all_blocks = []
-        #start butia services
         self.bobot = None
+        self.butia = None
+        self.list_connected_device_module = []
         self.pollthread=threading.Timer(0,self.bobot_launch)
         self.pollthread.start()
-        #self.bobot_launch()
-        self.butia = butiaAPI.robot()
-        #self.list_connected_device_module = ['butia']
         self.can_refresh = False
         self.regex = re.compile(r"""^		#Start of the string
                                 (\D*?)			# name, an string  without digits, the ? mark says that it's not greedy, to avoid to consume also the "Butia" part, in case it's present
@@ -128,20 +128,15 @@ class Butia(Plugin):
                                 $				# end of the string, this regex must match all of the input
                         """, re.X) # Verbose definition, to include comments
     
-    def _check_init(self):
-        #FIXME: with the thread, is necessary this function?
-        if self.butia is None:
-            debug_output("reinitializing butia ...")
-            self.butia = butiaAPI.robot()
-            #self.butia.abrirSensor()
-            #self.butia.abrirMotores()
-        
 
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
 
-        self._check_init()
-        battery = self.butia.getBatteryCharge()
+        if self.butia:
+            battery = self.butia.getBatteryCharge()
+        else:
+            battery = ERROR_SENSOR_READ
+
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
 
@@ -287,7 +282,11 @@ class Butia(Plugin):
         primitive_dictionary['magneticinductionButia'] = self.magneticinductionButia
         primitive_dictionary['vibrationButia'] = self.vibrationButia
 
-        self.list_connected_device_module = self.butia.get_modules_list()
+        if self.butia:
+            self.list_connected_device_module = self.butia.get_modules_list()
+        else:
+            self.list_connected_device_module = []
+        
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
@@ -358,10 +357,6 @@ class Butia(Plugin):
 
         self.list_connected_device_module = []
         
-        #timer to poll butia changes
-        #self.pollthread=threading.Timer(5,self.bobot_poll)
-        #self.pollthread.start()
-
         self.can_refresh = True
 
     def start(self):
@@ -381,9 +376,12 @@ class Butia(Plugin):
 
 
     def refreshButia(self):
-        self.butia.refresh()
-
-        battery = self.butia.getBatteryCharge()
+        if self.butia:
+            self.butia.refresh()
+            battery = self.butia.getBatteryCharge()
+        else:
+            battery = ERROR_SENSOR_READ
+              
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
 
@@ -487,8 +485,8 @@ class Butia(Plugin):
     def stop(self):
         """ stop is called when stop button is pressed. """
         self.can_refresh = True
-        self._check_init()
-        self.butia.set2MotorSpeed('0', '0', '0', '0')
+        if self.butia:
+            self.butia.set2MotorSpeed('0', '0', '0', '0')
 
     def goto_background(self):
         """ goto_background is called when the activity is sent to the
@@ -510,25 +508,23 @@ class Butia(Plugin):
             self.bobot.kill()
 
     def set_vels(self, left, right):
-        self._check_init()
-        if left>0:
-                    sentLeft = "0"
+        if left > 0:
+            sentLeft = "0"
         else:
-                    sentLeft = "1"
-        if right>0:
-                    sentRight = "0"
+            sentLeft = "1"
+        if right > 0:
+            sentRight = "0"
         else:
-                    sentRight = "1"
-        self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
+            sentRight = "1"
+        if self.butia:
+            self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
     def forwardButia(self):
-        self._check_init()
         self.set_vels(self.actualSpeed, self.actualSpeed)
         #self.tw.canvas.setpen(True)
         #self.tw.canvas.forward(100)
 
     def forwardDistance(self, dist):
-        self._check_init()
         #FIXME 8.29 para que velocidad? Vel = Dist / Tiempo => Tiempo = Dist / Vel
         tiempo = dist / 8.29
         self.set_vels(self.actualSpeed, self.actualSpeed)
@@ -539,11 +535,9 @@ class Butia(Plugin):
         self.tw.canvas.forward(dist)
 
     def backwardButia(self):
-        self._check_init()
         self.set_vels(-self.actualSpeed, -self.actualSpeed)
 
     def backwardDistance(self, dist):
-        self._check_init()
         #FIXME cambiar el 8.29 por valor que dependa de velocidad
         tiempo = dist / 8.29
         self.set_vels(-self.actualSpeed, -self.actualSpeed)
@@ -553,15 +547,12 @@ class Butia(Plugin):
         self.set_vels(0, 0)
 
     def leftButia(self):
-        self._check_init()
         self.set_vels(self.actualSpeed, -self.actualSpeed)
 
     def rightButia(self):
-        self._check_init()
         self.set_vels(-self.actualSpeed, self.actualSpeed)
 
     def turnXdegree(self, degrees):
-        self._check_init()
         #FIXME cambiar el 8.29 por valor que dependa de velocidad
         tiempo = (degrees * WHEELBASE * 3.14) / (360 * 8.29)
         if degrees > 0:
@@ -574,16 +565,19 @@ class Butia(Plugin):
         self.set_vels(0, 0)
 
     def stopButia(self):
-        self._check_init()
         self.set_vels(0, 0)
 
     def buttonButia(self, sensorid=''):
-        self._check_init()
-        return self.butia.getButton(sensorid)
+        if self.butia:
+            return self.butia.getButton(sensorid)
+        else:
+            return ERROR_SENSOR_READ
 
     def batterychargeButia(self):
-        self._check_init()
-        return self.butia.getBatteryCharge()
+        if self.butia:
+            return self.butia.getBatteryCharge()
+        else:
+            return ERROR_SENSOR_READ
 
     def batteryColor(self, battery):
         if (battery == -1): # or (battery == 255):
@@ -604,44 +598,64 @@ class Butia(Plugin):
             return COLOR_PRESENT
 
     def ambientlightButia(self, sensorid=''):
-        self._check_init()
-        return self.butia.getAmbientLight(sensorid)
+        if self.butia:
+            return self.butia.getAmbientLight(sensorid)
+        else:
+            return ERROR_SENSOR_READ
 
     def distanceButia(self, sensorid=''):
-        self._check_init()
-        return self.butia.getDistance(sensorid)
+        if self.butia:
+            return self.butia.getDistance(sensorid)
+        else:
+            return ERROR_SENSOR_READ
 
     def grayscaleButia(self, sensorid=''):
-        self._check_init()
-        return self.butia.getGrayScale(sensorid)
+        if self.butia:
+            return self.butia.getGrayScale(sensorid)
+        else:
+            return ERROR_SENSOR_READ
         
     def temperatureButia(self, sensorid=''):
-        self._check_init()
-        return self.butia.getTemperature(sensorid)
+        if self.butia:
+            return self.butia.getTemperature(sensorid)
+        else:
+            return ERROR_SENSOR_READ
 
     def vibrationButia(self, sensorid=''):
-        self._check_init()
-        return self.butia.getVibration(sensorid)
+        if self.butia:
+            return self.butia.getVibration(sensorid)
+        else:
+            return ERROR_SENSOR_READ
 
     def tiltButia(self, sensorid=''):
-        self._check_init()
-        return self.butia.getTilt(sensorid)
+        if self.butia:
+            return self.butia.getTilt(sensorid)
+        else:
+            return ERROR_SENSOR_READ
 
     def capacitivetouchButia(self, sensorid=''):
-        self._check_init()
-        return self.butia.getCapacitive(sensorid)
+        if self.butia:
+            return self.butia.getCapacitive(sensorid)
+        else:
+            return ERROR_SENSOR_READ
 
     def magneticinductionButia(self, sensorid=''):
-        self._check_init()
-        return self.butia.getMagneticInduction(sensorid)
+        if self.butia:
+            return self.butia.getMagneticInduction(sensorid)
+        else:
+            return ERROR_SENSOR_READ
 
     def LCDdisplayButia(self, text='________________________________'):
-        self._check_init()
-        self.butia.writeLCD(text)
+        if self.butia:
+            self.butia.writeLCD(text)
+        else:
+            return ERROR_SENSOR_READ
 
     def ledButia(self, level, sensorid=''):
-        self._check_init()
-        self.butia.setLed(level)
+        if self.butia:
+            self.butia.setLed(level)
+        else:
+            return ERROR_SENSOR_READ
     
     def speedButia(self, speed):
         if speed < 0:
@@ -667,13 +681,14 @@ class Butia(Plugin):
             except:
                 debug_output('ERROR creating bobot')
 
+        self.butia = butiaAPI.robot()
+
         self.pollthread=threading.Timer(3,self.bobot_poll)
         self.pollthread.start()
 
     def bobot_poll(self):
-        if self.butia:
-            self.butia.refresh()
-            self.check_for_device_change()
+        self.butia.refresh()
+        self.check_for_device_change()
         if(self.pollrun):
                 self.pollthread=threading.Timer(3,self.bobot_poll)
                 self.pollthread.start()
