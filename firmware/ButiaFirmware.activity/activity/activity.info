@@ -1,0 +1,8 @@
+[Activity]
+name = ButiaFirmware
+bundle_id = uy.edu.fing.ButiaFirmware
+class = ButiaFirmwareUpdate.ButiaFirmware
+icon = butiafirmware
+activity_version = 1
+host_version = 1
+show_launcher = yes
