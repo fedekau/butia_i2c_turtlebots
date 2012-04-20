@@ -174,9 +174,6 @@ class Followme(Plugin):
         pass
 
     def prim_followRGB(self, R, G, B):
-        if (self.cam_present and not(self.cam_on)):
-            self.cam.start()
-            self.cam_on = True
         if (R < 0) or (R > 255):
             R = 255
         if (G < 0) or (G > 255):
@@ -186,9 +183,6 @@ class Followme(Plugin):
         self.colorc = (R, G, B)
 
     def prim_follow(self, x):
-        if (self.cam_present and not(self.cam_on)):
-            self.cam.start()
-            self.cam_on = True
         if x == 0:
             self.colorc = (255, 0, 0)
         elif x == 10:
@@ -217,9 +211,6 @@ class Followme(Plugin):
             self.colorc = (255, 255, 255)
             
     def prim_threshold(self, R, G, B):
-        if (self.cam_present and not(self.cam_on)):
-            self.cam.start()
-            self.cam_on = True
         if (R < 0) or (R > 255):
             R = 25
         if (G < 0) or (G > 255):
@@ -229,9 +220,6 @@ class Followme(Plugin):
         self.threshold = (R, G, B)
     
     def prim_pixels_min(self, x):
-        if (self.cam_present and not(self.cam_on)):
-            self.cam.start()
-            self.cam_on = True
         if x < 0:
             x = 1
         self.pixels_min = x
@@ -239,8 +227,11 @@ class Followme(Plugin):
     def prim_calibrate(self):
         if self.cam_present:
             if not(self.cam_on):
-                self.cam.start()
-                self.cam_on = True
+                try:
+                    self.cam.start()
+                    self.cam_on = True
+                except:
+                    return
             self.screen = pygame.display.set_mode((1200,900))
             self.clock = pygame.time.Clock()
             self.clock.tick(10)
@@ -266,8 +257,11 @@ class Followme(Plugin):
     def prim_xposition(self):
         if self.cam_present:
             if not(self.cam_on):
-                self.cam.start()
-                self.cam_on = True
+                try:
+                    self.cam.start()
+                    self.cam_on = True
+                except:
+                    return (-1)
             self.capture = self.cam.get_image(self.capture)
             self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
                                                 self.threshold)
@@ -283,8 +277,11 @@ class Followme(Plugin):
     def prim_yposition(self):
         if self.cam_present:
             if not(self.cam_on):
-                self.cam.start()
-                self.cam_on = True
+                try:
+                    self.cam.start()
+                    self.cam_on = True
+                except:
+                    return (-1)
             self.capture = self.cam.get_image(self.capture)
             self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
                                                 self.threshold)
@@ -300,8 +297,11 @@ class Followme(Plugin):
     def prim_pixels(self):
         if self.cam_present:
             if not(self.cam_on):
+            try:
                 self.cam.start()
                 self.cam_on = True
+            except:
+                return (-1)
             self.capture = self.cam.get_image(self.capture)
             self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
                                                 self.threshold)
