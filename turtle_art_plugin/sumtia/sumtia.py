@@ -37,19 +37,12 @@ class Sumtia(Plugin):
         self.tw = parent
         self.vel = 10
 
+        self.api = apiSumoUY.apiSumoUY()
+        self.api.setPuertos()
+        self.api.conectarse() 
+
     def setup(self):        
-        # Start the connection with the robot
-        try:
-            self.api = apiSumoUY.apiSumoUY()
-            self.api.setPuertos()
-            err = self.api.conectarse()    
-        except:
-            error = True
-            print "Exeption: Error trying to connect..."
-            
-        if err == -1:
-            print "SumoAPI: Error trying to connect..."
-             
+
         """ Setup is called once, when the Turtle Window is created. """     
 
         palette = make_palette('sumtia', colors=["#00FF00","#008000"], help_string=_('SumBot'))
@@ -204,10 +197,8 @@ class Sumtia(Plugin):
 
     def start(self):
         """ start is called when run button is pressed. """
-        #self.tw.show_toolbar_palette(palette_name_to_index('sumtia'),regenerate=True)
         pass
  
-
     def stop(self):
         """ stop is called when stop button is pressed. """
         pass
