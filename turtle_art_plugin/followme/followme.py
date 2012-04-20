@@ -297,11 +297,11 @@ class Followme(Plugin):
     def prim_pixels(self):
         if self.cam_present:
             if not(self.cam_on):
-            try:
-                self.cam.start()
-                self.cam_on = True
-            except:
-                return (-1)
+                try:
+                    self.cam.start()
+                    self.cam_on = True
+                except:
+                    return (-1)
             self.capture = self.cam.get_image(self.capture)
             self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
                                                 self.threshold)
