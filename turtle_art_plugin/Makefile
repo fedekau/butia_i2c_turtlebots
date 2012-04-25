@@ -167,8 +167,6 @@ apply_hard_plugins: apply_localization butiaXO
 	cp -rLf followme/ tmp/plugins/
 	cp -rLf nxt_plugin/ tmp/plugins/
 	cp -rLf wedo_plugin/ tmp/plugins/
-	rm -rf tmp/plugins/nxt_plugin/.git
-	rm -f tmp/plugins/nxt_plugin/.gitignore
 
 apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
 	# let's make symlinks, it lets you, edit and try, lot more ease!
@@ -179,6 +177,9 @@ apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
 	ln -s `pwd`/wedo_plugin tmp/plugins/wedo_plugin
 
 xo: apply_hard_plugins
+	# remove .git from NXT plugin
+	rm -rf tmp/plugins/nxt_plugin/.git
+	rm -f tmp/plugins/nxt_plugin/.gitignore
 	# ok, let's make this .xo
 	(cd tmp && python setup.py fix_manifest)
 	(cd tmp && python setup.py dist_xo)
