@@ -34,14 +34,14 @@ end
 process["LISTI"] = function ()
     if bobot.baseboards then
         bobot.debugprint("listing instanced modules...")
-    	for _, bb in pairs(bobot.baseboards) do
-    		local handler_size=bb.get_handler_size()
+        for _, bb in pairs(bobot.baseboards) do
+    	    local handler_size=bb:get_handler_size()
             for i=1, handler_size do
-                t_handler = bb.get_handler_type(i)
-		        bobot.debugprint("handler_type= ",t_handler)
+                t_handler = bb:get_handler_type(i)
+                bobot.debugprint("handler=", i-1 ," type=" ,t_handler)
             end
-		end
-	end
+        end
+    end
 end
 
 
