@@ -120,7 +120,7 @@ class Butia(Plugin):
         self.list_connected_device_module = []
         self.pollthread=threading.Timer(0,self.bobot_launch)
         self.pollthread.start()
-        self.can_refresh = False
+        self.can_refresh = True
         self.regex = re.compile(r"""^		#Start of the string
                                 (\D*?)			# name, an string  without digits, the ? mark says that it's not greedy, to avoid to consume also the "Butia" part, in case it's present
                                 (\d*)				# index, a group comprised only of digits, posibly absent
@@ -407,7 +407,7 @@ class Butia(Plugin):
                                     if blk.type == 'proto': # only make invisible the block in the palette not in the program area  
                                         blk.set_visibility(False)
                                 BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
-                            else:
+                            else: 
                                 if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area   
                                     blk.set_visibility(True)
                                 BOX_COLORS[blk.name] = COLOR_PRESENT[:]
@@ -688,12 +688,15 @@ class Butia(Plugin):
         self.pollthread.start()
 
     def bobot_poll(self):
-        if self.pollrun:
-            self.butia.refresh()
-            self.check_for_device_change()
-            self.pollthread=threading.Timer(3,self.bobot_poll)
-            self.pollthread.start()
+        if self.can_refresh:
+            if self.pollrun:
+                self.butia.refresh()
+                self.check_for_device_change()
+                self.pollthread=threading.Timer(3,self.bobot_poll)
+                self.pollthread.start()
+            else:
+                debug_output("Ending butia poll")
         else:
-            debug_output("Ending butia poll")
+            self.pollthread=threading.Timer(3,self.bobot_poll)
 
 
