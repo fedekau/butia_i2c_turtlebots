@@ -112,12 +112,12 @@ class Butia(Plugin):
         self.tw = parent
         self.butia = None
         self.pollthread = None
-        self.pollrun = False
+        self.pollrun = True
         self.old_battery_value = 0
         self.bobot = None
         self.butia = None
         self.list_connected_device_module = []
-        self.pollthread=threading.Timer(0,self.bobot_launch)
+        self.pollthread=threading.Timer(0, self.bobot_launch)
         self.pollthread.start()
         self.can_refresh = True
         self.regex = re.compile(r"""^		#Start of the string
@@ -633,7 +633,7 @@ class Butia(Plugin):
 
     def ledButia(self, level, sensorid=''):
         if self.butia:
-            self.butia.setLed(level)
+            self.butia.setLed(level, sensorid)
         else:
             return ERROR_SENSOR_READ
     

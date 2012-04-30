@@ -229,7 +229,7 @@ class robot:
         return self.callModule('magnet' + str(number), 'getCampo')
 
     # set the led intensity
-    def setLed(self, number= '', nivel = 255):
+    def setLed(self, nivel = 255, number= ''):
         return self.callModule('led' + str(number), 'setLight', str(math.trunc(nivel)))
 
     # FIXME: check the lenght of text?
