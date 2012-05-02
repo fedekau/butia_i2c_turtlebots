@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -12,7 +13,7 @@
    height="55"
    id="svg2568"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.48.3.1 r9886"
    version="1.0"
    sodipodi:docname="sumtiaoff.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
@@ -34,8 +35,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.5"
-     inkscape:cx="6.542026"
-     inkscape:cy="15.454282"
+     inkscape:cx="6.7314595"
+     inkscape:cy="15.564304"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
@@ -43,9 +44,10 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1280"
-     inkscape:window-height="725"
+     inkscape:window-height="715"
      inkscape:window-x="0"
-     inkscape:window-y="25" />
+     inkscape:window-y="24"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata2573">
     <rdf:RDF>
@@ -89,7 +91,7 @@
        inkscape:transform-center-y="-27.029669" />
     <path
        sodipodi:type="arc"
-       style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#282828;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
        id="path2383"
        sodipodi:cx="378.57144"
        sodipodi:cy="515.2193"
@@ -100,7 +102,7 @@
        inkscape:transform-center-x="-143.05957"
        inkscape:transform-center-y="-27.18903" />
     <rect
-       style="fill:#2b1100;stroke:#000000;stroke-width:0.11741486;stroke-opacity:0.12177124"
+       style="fill:#ffffff;stroke:#000000;stroke-width:0.11741486000000000;stroke-opacity:0.12177124000000000"
        id="rect3221"
        width="8.7122355"
        height="0.96758056"
@@ -109,7 +111,7 @@
        inkscape:transform-center-x="-143.1138"
        inkscape:transform-center-y="-32.24995" />
     <rect
-       style="fill:#2b1100;stroke:#000000;stroke-width:0.11741486;stroke-opacity:0.12177124"
+       style="fill:#ffffff;stroke:#000000;stroke-width:0.11741486000000000;stroke-opacity:0.12177124000000000"
        id="rect3223"
        width="8.7122355"
        height="0.96758056"
