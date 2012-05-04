@@ -26,6 +26,106 @@ local MAX_RETRY 				                = 20
 
 local BaseBoard = {}
 
+
+--executes s on the console and returns the output
+local function run_shell (s) 
+	local f = io.popen(s) -- runs command
+	local l = f:read("*a") -- read output of command
+	f:close()
+	return l
+end
+
+local drivers = {}
+local function parse_drivers()
+	local driver_files=run_shell("sh -c 'ls drivers/*.lua 2> /dev/null'")
+	for filename in driver_files:gmatch('drivers%/(%S+)%.lua') do
+		--print ("Driver", filename)
+		drivers[filename] = 'openable'
+	end
+	driver_files=run_shell("sh -c 'ls drivers/hotplug/*.lua 2> /dev/null'")
+	for filename in driver_files:gmatch('drivers%/hotplug%/(%S+)%.lua') do
+		--print ("Driver", filename)
+		drivers[filename] = 'hotplug'
+	end
+end
+parse_drivers()
+
+local function load_modules(bb)
+	local retry = 0
+	bb.modules = {}
+
+	local n_modules=bb:get_user_modules_size()
+	while(n_modules == nil and retry < MAX_RETRY)do
+		n_modules=bb:get_user_modules_size()
+		bobot.debugprint("u4b:the module list size returned a nil value, trying to recover...")
+		retry = retry+1
+	end
+	retry=0
+	bobot.debugprint ("Reading modules:", n_modules)
+	for i=1, n_modules do
+		local name=bb:get_user_module_line(i)
+		while(name == nil and retry < MAX_RETRY) do
+			bobot.debugprint("u4b:the module  returned a nil value, trying to recover...")
+			name=bb:get_handler_type(i)
+			retry = retry+1
+		end
+--print ("M", i, name)
+		if(name) then
+			bb.modules[i]=name
+			bb.modules[name]=true
+		end
+	end		
+end
+
+local function load_module_handlers(bb)
+	local retry = 0
+	bb.devices = {}
+	
+	local n_module_handlers=bb:get_handler_size()
+	while(n_module_handlers == nil and retry < MAX_RETRY)do
+		n_module_handlers=bb:get_handler_size()
+		bobot.debugprint("u4b:the module handler list size returned a nil value, trying to recover...")
+		retry = retry+1
+	end
+	retry=0
+	bobot.debugprint ("Reading moduleshandlers:", n_module_handlers)
+	for i=1, n_module_handlers do
+		local t_handler = bb:get_handler_type(i)
+		while(t_handler == nil and retry < MAX_RETRY) do
+			bobot.debugprint("u4b:the module handler returned a nil value, trying to recover...")
+			t_handler = bb:get_handler_type(i)
+			retry = retry+1
+		end
+		if(t_handler and t_handler<255) then
+--print ("T", i, t_handler)
+			local module=bb.modules[t_handler+1]
+			local name=module
+			if drivers[module]=='hotplug' then
+				name=name.."@"..(i-1)
+			end
+--print("TT", name)
+			local d = bobot_device:new({handler=i-1,module=module,name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
+			bb.devices[name]=d
+		end
+	end	
+end
+
+
+function BaseBoard:refresh()
+	--Load available modules
+	load_modules(self)
+
+	--Load instantianted modules
+	 load_module_handlers(self)
+	 
+	for _, module in ipairs(self.modules) do
+		if drivers[module]=='openable' and not self.devices[module] then
+			local d = bobot_device:new({module=module,name=module, baseboard=self}) -- in_endpoint=0x01, out_endpoint=0x01})
+			self.devices[module]=d
+		end
+	end
+end
+
 --Instantiates BaseBoard object.
 --Loads list of modules installed on baseboard
 function BaseBoard:new(bb)
@@ -36,30 +136,9 @@ function BaseBoard:new(bb)
 	--OO boilerplate
    	setmetatable(bb, self)
 	self.__index = self
-
-	local retry = 0
-	bb.devices = {}
-	--read modules list
-	local n_modules=bb:get_user_modules_size()
-	while(n_modules == nil and retry < MAX_RETRY)do
-		n_modules=bb:get_user_modules_size()
-		bobot.debugprint("u4b:new:the module list size returned a nil value, trying to recover...")
-		retry = retry+1
-	end
-	retry=0
-	bobot.debugprint ("Reading modules:", n_modules)
-	for i=1, n_modules do
-		local name=bb:get_user_module_line(i)
-		while(name == nil and retry < MAX_RETRY) do
-			name=bb:get_user_module_line(i)
-			bobot.debugprint("u4b:new:the module name returned a nil value, trying to recover...")
-			retry = retry+1
-		end
-		if(name) then
-			local d = bobot_device:new({name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
-			bb.devices[name]=d
-		end
-	end	
+	
+	bb:refresh()
+	
 --bobot.debugprint ('----------------')
 	bb:force_close_all()
 --bobot.debugprint ('================')

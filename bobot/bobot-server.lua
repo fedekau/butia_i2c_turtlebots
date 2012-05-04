@@ -89,7 +89,7 @@ local function read_devices_list()
 		for d_name,d in pairs(bb.devices) do
 			local regname = get_device_name(d_name)
 			devices[regname]=d
-			bobot.debugprint("=====d_name ",d_name," regname ",regname)
+			bobot.debugprint("=====d_name ",d_name," module",d.module)
 		end
 		bfound = true
 	end
@@ -169,9 +169,13 @@ socket_handlers[server_h]=function()
 	end
 end
 
+function server_refresh ()
+	read_devices_list()
+end
+
 function server_init ()
 	bobot.init(arg)
-	read_devices_list()
+	server_refresh()
 end
 
 

@@ -42,6 +42,7 @@ function Device:new(d)
 	--parameters sanity check
 	assert(type(d)=="table")
 	assert(type(d.name)=="string")
+	assert(type(d.module)=="string")
 	assert(type(d.baseboard)=="table")
 	assert(type(d.baseboard.comms)=="table")
 	assert(type(d.baseboard.comms.send)=="function")
@@ -56,7 +57,7 @@ function Device:new(d)
 	d.comms_read = d.baseboard.comms.read
 
 	--attempt to load api from driver
-	local f, err = load_driver(d.name)
+	local f, err = load_driver(d.module)
 	if f then
 		d._G=d
 		

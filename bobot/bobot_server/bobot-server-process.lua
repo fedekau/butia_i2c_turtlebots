@@ -21,6 +21,14 @@ process = {}
 process["INIT"] = function () --to check the new state of hardware on the fly
 	server_init()
 end
+process["REFRESH"] = function () --to check the new state of hardware on the fly
+	for _, bb in pairs(bobot.baseboards) do
+		bb:refresh()
+	end
+	server_refresh()
+end
+
+
 process["LIST"] = function ()
 	local ret,comma = "", ""
 	for d_name, _ in pairs(devices) do
