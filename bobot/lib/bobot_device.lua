@@ -41,7 +41,7 @@ end
 function Device:new(d)
 	--parameters sanity check
 	assert(type(d)=="table")
-	assert(type(d.name)=="string")
+	--assert(type(d.name)=="string")
 	assert(type(d.module)=="string")
 	assert(type(d.baseboard)=="table")
 	assert(type(d.baseboard.comms)=="table")
@@ -64,7 +64,7 @@ function Device:new(d)
 		setfenv(f, d) --the driver's environment is the device
 		local status, err=pcall(f) 
 		if status then
-			bobot.debugprint("u4d:new:Success loading driver:", d.name)
+			bobot.debugprint("u4d:new:Success loading driver:", d.module)
 		else
 			bobot.debugprint("u4d:new:Error initializing driver:", tostring(err))
 		end
@@ -80,7 +80,7 @@ end
 function Device:open(in_endpoint, out_endpoint)
 	--state & parameter sanity check
 	assert(self.handler==nil)
-	assert(type(self.name)=="string")
+	--assert(type(self.name)=="string")
 	assert(type(in_endpoint)=="number" or type(self.in_endpoint)=="number")
 	assert(type(self.comms_send)=="function")
 	assert(type(self.comms_read)=="function")
@@ -90,7 +90,7 @@ function Device:open(in_endpoint, out_endpoint)
 	if in_endpoint then self.in_endpoint = in_endpoint end
 	if out_endpoint then self.out_endpoint = out_endpoint end
 
-	local module_name=self.name .."\000" -- usb4all expect null terminated names
+	local module_name=self.module .."\000" -- usb4all expect null terminated names
 
 	local open_packet_length = string_char(HEADER_PACKET_SIZE + string_len(module_name)) 
 
@@ -116,10 +116,10 @@ function Device:open(in_endpoint, out_endpoint)
 	local handler = string_byte(data, 5)
 	--hander -1 meand error
 	if handler==255 then
-		bobot.debugprint ("u4d:open:Already open!",self.name,self.handler)
+		bobot.debugprint ("u4d:open:Already open!",self.module,self.handler)
 		return
 	else
-		bobot.debugprint ("u4d:open:Success!",self.name,handler)
+		bobot.debugprint ("u4d:open:Success!",self.module,handler)
 		self.handler = handler --self.handler set means device is open
 		return true
 	end

@@ -53,7 +53,6 @@ function comms_usb.init(baseboards)
 	libusb.find_devices()
 
 	local buses=libusb.get_busses()
-	local n_boards=0
 	for dirname, bus in pairs(buses) do 			--iterate buses
 		local devices=libusb.get_devices(bus)
 		for filename, device in pairs(devices) do	--iterate devices
@@ -90,13 +89,13 @@ function comms_usb.init(baseboards)
 					bobot.debugprint("Warning: skipping already present board:", iSerial)
 				else
 					--bobot.debugprint("Baseboard:", iSerial)
-					baseboards[iSerial]=bb
-					n_boards=n_boards+1
+					baseboards[bb]=true
+					baseboards[#baseboards+1]=bb
 				end
 			end
 		end
 	end
-	return n_boards
+	return #baseboards
 end
 
 return comms_usb

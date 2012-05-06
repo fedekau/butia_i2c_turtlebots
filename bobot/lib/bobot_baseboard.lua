@@ -63,23 +63,36 @@ local function load_modules(bb)
 	retry=0
 	bobot.debugprint ("Reading modules:", n_modules)
 	for i=1, n_modules do
-		local name=bb:get_user_module_line(i)
-		while(name == nil and retry < MAX_RETRY) do
+		local modulename=bb:get_user_module_line(i)
+		while(modulename == nil and retry < MAX_RETRY) do
 			bobot.debugprint("u4b:the module  returned a nil value, trying to recover...")
-			name=bb:get_handler_type(i)
+			modulename=bb:get_handler_type(i)
 			retry = retry+1
 		end
 --print ("M", i, name)
-		if(name) then
-			bb.modules[i]=name
-			bb.modules[name]=true
+		if(modulename) then
+			bb.modules[i]=modulename
+			if drivers[modulename]=='openable' then
+				local d = bobot_device:new({
+					module=modulename,
+					--name=module, 
+					baseboard=bb,
+					hotplug=false,
+					in_endpoint=0x01, out_endpoint=0x01,
+				}) -- in_endpoint=0x01, out_endpoint=0x01})
+				bb.devices[d]=true
+				bb.devices[#bb.devices+1]=d
+				
+				bb.modules[modulename]=d
+			else
+				bb.modules[modulename]=true
+			end
 		end
 	end		
 end
 
 local function load_module_handlers(bb)
 	local retry = 0
-	bb.devices = {}
 	
 	local n_module_handlers=bb:get_handler_size()
 	while(n_module_handlers == nil and retry < MAX_RETRY)do
@@ -98,32 +111,37 @@ local function load_module_handlers(bb)
 		end
 		if(t_handler and t_handler<255) then
 --print ("T", i, t_handler)
-			local module=bb.modules[t_handler+1]
-			local name=module
-			if drivers[module]=='hotplug' then
-				name=name.."@"..(i-1)
+			local modulename=bb.modules[t_handler+1]
+			local moduledev=bb.modules[modulename]
+			if type(moduledev)=='table' 
+			and not moduledev.handler then
+				moduledev.handler=i-1
+			elseif moduledev==true then 
+				--name=name.."@"..(i-1)
+				local d = bobot_device:new({
+					handler=i-1,
+					module=modulename,
+					--name=name, 
+					baseboard=bb,
+					hotplug=(drivers[modulename]=='hotplug'),
+					in_endpoint=0x01, out_endpoint=0x01,
+				}) -- in_endpoint=0x01, out_endpoint=0x01})
+				bb.devices[d]=true
+				bb.devices[#bb.devices+1]=d
 			end
---print("TT", name)
-			local d = bobot_device:new({handler=i-1,module=module,name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
-			bb.devices[name]=d
 		end
 	end	
 end
 
 
 function BaseBoard:refresh()
+	self.devices = {}
+
 	--Load available modules
 	load_modules(self)
 
 	--Load instantianted modules
 	 load_module_handlers(self)
-	 
-	for _, module in ipairs(self.modules) do
-		if drivers[module]=='openable' and not self.devices[module] then
-			local d = bobot_device:new({module=module,name=module, baseboard=self}) -- in_endpoint=0x01, out_endpoint=0x01})
-			self.devices[module]=d
-		end
-	end
 end
 
 --Instantiates BaseBoard object.
@@ -150,7 +168,7 @@ function BaseBoard:close()
 	--state sanity check
 	assert(type(self.devices)=="table")
 
-	for _,d in pairs(self.devices) do
+	for _,d in ipairs(self.devices) do
 		if type(d.handler)=="number" then
 			bobot.debugprint ("closing", d.name, d.handler)
 			d:close()
@@ -286,7 +304,7 @@ end
 -- resets the baseboard, after this operation the baseboard will claim reenumeration to the operative system
 -- this function is deprecated by force_close_all
 function BaseBoard:close_all()
-	for d_name,d in pairs(self.devices) do
+	for _,d in ipairs(self.devices) do
 		--bobot.debugprint ("===", d.name,d.handler)
 		if d.handler then d:close() end
 	end
@@ -336,7 +354,7 @@ function BaseBoard:force_close_all()
 		else
 			--bobot.debugprint("u4b:force_close_all:libusb read",string.byte(data,1,string.len(data)))
 		end
-		for d_name,d in pairs(self.devices) do
+		for _,d in ipairs(self.devices) do
 			--bobot.debugprint ("===", d.name,d.handler)
 			d.handler=nil
 		end
