@@ -26,6 +26,7 @@ process["REFRESH"] = function () --to check the new state of hardware on the fly
 		bb:refresh()
 	end
 	server_refresh()
+	return 'ok'
 end
 
 
