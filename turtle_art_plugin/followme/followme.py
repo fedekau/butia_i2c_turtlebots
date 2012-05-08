@@ -109,7 +109,7 @@ class Followme(Plugin):
                           style='basic-style',
                           label=_('save calibration 1'),
                           prim_name='savecalibration1',
-                          help_string=_('stores numeric value in Variable 1'))
+                          help_string=_('stores a calibration in calibration 1'))
         self.parent.lc.def_prim('savecalibration1', 0,
                              lambda self: primitive_dictionary['savecalibration'](
                 'calibration1', None))
@@ -119,7 +119,7 @@ class Followme(Plugin):
                           style='basic-style',
                           label=_('save calibration 2'),
                           prim_name='savecalibration2',
-                          help_string=_('stores numeric value in Variable 2'))
+                          help_string=_('stores a calibration in calibration 2'))
         self.parent.lc.def_prim('savecalibration2', 0,
                              lambda self: primitive_dictionary['savecalibration'](
                 'calibration2', None))
@@ -127,10 +127,11 @@ class Followme(Plugin):
         primitive_dictionary['savecalibration'] = self._prim_savecalibration
         palette.add_block('savecalibrationN',
                           style='basic-style-1arg',
-                          label=_('save calibration'),
+                          label=_('calibration'),
                           prim_name='savecalibrationN',
+                          string_or_number=True,
                           default='3',
-                          help_string=_('stores numeric value in Variable 2'))
+                          help_string=_('stores a personalized calibration'))
         self.parent.lc.def_prim('savecalibrationN', 1,
                              lambda self, x: primitive_dictionary['savecalibration'](
                 'calibration', x))
@@ -157,13 +158,14 @@ class Followme(Plugin):
                         primitive_dictionary['calibration']('calibration2', None))
 
         primitive_dictionary['calibration'] = self._prim_calibration
-        palette.add_block('calibration',
+        palette.add_block('calibrationN',
                           style='number-style-1strarg',
                           label=_('calibration'),
-                          prim_name='calibration',
+                          prim_name='calibrationN',
+                          string_or_number=True,
                           default=3,
-                          help_string=_('named variable '))
-        self.parent.lc.def_prim('calibration', 1,
+                          help_string=_('return a personalized calibration'))
+        self.parent.lc.def_prim('calibrationN', 1,
                              lambda self, x: primitive_dictionary['calibration']('calibration', x))
 
         primitive_dictionary['xposition'] = self.prim_xposition
