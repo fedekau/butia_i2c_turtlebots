@@ -86,7 +86,7 @@ class Followme(Plugin):
         primitive_dictionary['followRGB'] = self.prim_followRGB
         palette.add_block('followRGB',
                         style='basic-style-3arg',
-                        label=[('FollowMe  G'), ('R'), ('B')],
+                        label=[(_('follow') + '  ' + _('G')), _('R'), _('B')],
                         default=[255, 255, 255],
                         help_string=_('follow a RGB color'),
                         prim_name='followRGB')
@@ -96,13 +96,12 @@ class Followme(Plugin):
         primitive_dictionary['threshold'] = self.prim_threshold
         palette.add_block('threshold',
                         style='basic-style-3arg',
-                        label=[('Threshold  G'), ('R'), ('B')],
+                        label=[(_('threshold') + '  ' + _('G')), _('R'), _('B')],
                         default=[25, 25, 25],
                         help_string=_('set a threshold for a RGB color'),
                         prim_name='threshold')
         self.parent.lc.def_prim('threshold', 3, lambda self, x, y, z:
                         primitive_dictionary['threshold'](x, y, z))
-
 
         primitive_dictionary['savecalibration'] = self._prim_savecalibration
         palette.add_block('savecalibration1',
@@ -135,7 +134,6 @@ class Followme(Plugin):
         self.parent.lc.def_prim('savecalibrationN', 1,
                              lambda self, x: primitive_dictionary['savecalibration'](
                 'calibration', x))
-
 
         primitive_dictionary['calibration'] = self._prim_calibration
         palette.add_block('calibration1',
@@ -201,7 +199,7 @@ class Followme(Plugin):
         primitive_dictionary['follow'] = self.prim_follow
         palette.add_block('follow',
                         style='basic-style-1arg',
-                        label=('FollowMe '),
+                        label=('follow'),
                         default=0,
                         help_string=_('follow a turtle color'),
                         prim_name='follow')
@@ -211,7 +209,7 @@ class Followme(Plugin):
         primitive_dictionary['pixels_min'] = self.prim_pixels_min
         palette.add_block('pixels_min',
                         style='basic-style-1arg',
-                        label=('Pixels Min'),
+                        label=('minimum pixels'),
                         default=10,
                         help_string=_('set the minimal number of pixels to follow'),
                         prim_name='pixels_min')
@@ -416,13 +414,13 @@ class Followme(Plugin):
         if self.calibrations.has_key(name):
             return self.calibrations[name]
         else:
-            raise logoerror('#empty calibration#')
+            raise logoerror(_('empty calibration'))
 
     def str_to_tuple(self, x):
         try:
             t = x.split(',')
             return (int(t[0]), int(t[1]), int(t[2]))
         except:
-            raise logoerror('#error in string convertion#')
+            raise logoerror(_('error in string convertion'))
 
 
