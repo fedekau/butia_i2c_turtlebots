@@ -199,9 +199,9 @@ class Followme(Plugin):
         primitive_dictionary['follow'] = self.prim_follow
         palette.add_block('follow',
                         style='basic-style-1arg',
-                        label=('follow'),
+                        label=_('follow'),
                         default=0,
-                        help_string=_('follow a turtle color'),
+                        help_string=_('follow a color or calibration'),
                         prim_name='follow')
         self.parent.lc.def_prim('follow', 1, lambda self, x:
                         primitive_dictionary['follow'](x))
@@ -209,7 +209,7 @@ class Followme(Plugin):
         primitive_dictionary['pixels_min'] = self.prim_pixels_min
         palette.add_block('pixels_min',
                         style='basic-style-1arg',
-                        label=('minimum pixels'),
+                        label=_('minimum pixels'),
                         default=10,
                         help_string=_('set the minimal number of pixels to follow'),
                         prim_name='pixels_min')
