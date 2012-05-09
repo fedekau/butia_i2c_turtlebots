@@ -386,7 +386,7 @@ class Butia(Plugin):
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
         
-        self.list_connected_device_module = ['admin', 'pnp', 'port:1', 'boton:2', 'port:3', 'boton:4', 'port:5', 'temp:6']
+        #self.list_connected_device_module = ['admin', 'pnp', 'port:1', 'boton:2', 'port:3', 'boton:4', 'port:5', 'temp:6']
         l = self.list_2_module_and_port(self.list_connected_device_module)
 
         self.match_list = []
@@ -439,9 +439,9 @@ class Butia(Plugin):
                             block_names[blk.name][0] = blk_name + ':' + val
 
                             if module == 'led':
-                                self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=int(i), z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
+                                self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=int(val), z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
                             else:
-                                self.tw.lc.def_prim(blk.name, 0, lambda self, y=int(i) , z=blk_name: primitive_dictionary[z+ 'Butia'](y))
+                                self.tw.lc.def_prim(blk.name, 0, lambda self, y=int(val) , z=blk_name: primitive_dictionary[z+ 'Butia'](y))
 
                             if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
                                 blk.set_visibility(True)
