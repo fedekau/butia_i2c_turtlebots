@@ -5,24 +5,24 @@
 local bobot_device = require("bobot_device")
 local bobot = require("bobot")
 
-local NULL_BYTE				                    = string.char(0x00)
-local DEFAULT_PACKET_SIZE    	          	    = 0x04
-local GET_USER_MODULES_SIZE_COMMAND           	= string.char(0x05)
-local GET_USER_MODULE_LINE_COMMAND		        = string.char(0x06)
-local GET_HANDLER_SIZE_COMMAND                  = string.char(0x0A)
-local GET_HANDLER_TYPE_COMMAND                  = string.char(0x0B)
-local GET_LINES_RESPONSE_PACKET_SIZE 	        = 6
-local GET_LINE_RESPONSE_PACKET_SIZE 	        = 12
-local GET_HANDLER_TYPE_PACKET_SIZE              = 0x05
-local GET_HANDLER_RESPONSE_PACKET_SIZE 	        = 5 --
-local ADMIN_HANDLER_SEND_COMMAND 		        = string.char(0x00)
-local ADMIN_MODULE_IN_ENDPOINT		            = 0x01
-local ADMIN_MODULE_OUT_ENDPOINT        	        = 0x81
-local GET_USER_MODULE_LINE_PACKET_SIZE 	        = 0x05
-local CLOSEALL_BASE_BOARD_COMMAND             	= string.char(0x07) 
-local CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE	= 5
-local TIMEOUT	                                = 250 --ms
-local MAX_RETRY 				                = 20
+local NULL_BYTE = string.char(0x00)
+local DEFAULT_PACKET_SIZE = 0x04
+local GET_USER_MODULES_SIZE_COMMAND = string.char(0x05)
+local GET_USER_MODULE_LINE_COMMAND = string.char(0x06)
+local GET_HANDLER_SIZE_COMMAND = string.char(0x0A)
+local GET_HANDLER_TYPE_COMMAND = string.char(0x0B)
+local GET_LINES_RESPONSE_PACKET_SIZE = 6
+local GET_LINE_RESPONSE_PACKET_SIZE = 12
+local GET_HANDLER_TYPE_PACKET_SIZE = 0x05
+local GET_HANDLER_RESPONSE_PACKET_SIZE = 5 --
+local ADMIN_HANDLER_SEND_COMMAND = string.char(0x00)
+local ADMIN_MODULE_IN_ENDPOINT = 0x01
+local ADMIN_MODULE_OUT_ENDPOINT = 0x81
+local GET_USER_MODULE_LINE_PACKET_SIZE = 0x05
+local CLOSEALL_BASE_BOARD_COMMAND = string.char(0x07) 
+local CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE = 5
+local TIMEOUT = 250 --ms
+local MAX_RETRY = 20
 
 local BaseBoard = {}
 
@@ -39,12 +39,12 @@ local drivers = {}
 local function parse_drivers()
 	local driver_files=run_shell("sh -c 'ls drivers/*.lua 2> /dev/null'")
 	for filename in driver_files:gmatch('drivers%/(%S+)%.lua') do
-		--print ("Driver", filename)
+		--print ("Driver openable", filename)
 		drivers[filename] = 'openable'
 	end
 	driver_files=run_shell("sh -c 'ls drivers/hotplug/*.lua 2> /dev/null'")
 	for filename in driver_files:gmatch('drivers%/hotplug%/(%S+)%.lua') do
-		--print ("Driver", filename)
+		--print ("Driver hotplug", filename)
 		drivers[filename] = 'hotplug'
 	end
 end
@@ -62,15 +62,14 @@ local function load_modules(bb)
 	end
 	retry=0
 	bobot.debugprint ("Reading modules:", n_modules)
-	for i=1, n_modules do
+	for i = 1, n_modules do
 		local modulename=bb:get_user_module_line(i)
 		while(modulename == nil and retry < MAX_RETRY) do
 			bobot.debugprint("u4b:the module  returned a nil value, trying to recover...")
 			modulename=bb:get_handler_type(i)
 			retry = retry+1
 		end
---print ("M", i, name)
-		if(modulename) then
+		if modulename then
 			bb.modules[i]=modulename
 			if drivers[modulename]=='openable' then
 				local d = bobot_device:new({
@@ -110,7 +109,6 @@ local function load_module_handlers(bb)
 			retry = retry+1
 		end
 		if(t_handler and t_handler<255) then
---print ("T", i, t_handler)
 			local modulename=bb.modules[t_handler+1]
 			local moduledev=bb.modules[modulename]
 			if type(moduledev)=='table' 
@@ -126,8 +124,12 @@ local function load_module_handlers(bb)
 					hotplug=(drivers[modulename]=='hotplug'),
 					in_endpoint=0x01, out_endpoint=0x01,
 				}) -- in_endpoint=0x01, out_endpoint=0x01})
-				bb.devices[d]=true
-				bb.devices[#bb.devices+1]=d
+				if d then 
+					bb.devices[d]=true
+					bb.devices[#bb.devices+1]=d
+				end
+			else
+				error ("No device!")
 			end
 		end
 	end	
@@ -158,7 +160,7 @@ function BaseBoard:new(bb)
 	bb:refresh()
 	
 --bobot.debugprint ('----------------')
-	bb:force_close_all()
+	--bb:force_close_all()
 --bobot.debugprint ('================')
 	return bb
 end

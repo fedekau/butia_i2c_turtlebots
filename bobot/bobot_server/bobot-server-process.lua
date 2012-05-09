@@ -22,9 +22,9 @@ process["INIT"] = function () --to check the new state of hardware on the fly
 	server_init()
 end
 process["REFRESH"] = function () --to check the new state of hardware on the fly
-	for _, bb in ipairs(bobot.baseboards) do
-		bb:refresh()
-	end
+	--for _, bb in ipairs(bobot.baseboards) do
+	--	bb:refresh()
+	--end
 	server_refresh()
 	return 'ok'
 end
@@ -32,8 +32,8 @@ end
 
 process["LIST"] = function ()
 	local ret,comma = "", ""
-	for d_name, _ in pairs(devices) do
-		ret = ret .. comma .. d_name
+	for _, d in ipairs(devices) do
+		ret = ret .. comma .. d.name
 		comma=","
 	end
 	return ret

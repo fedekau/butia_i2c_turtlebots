@@ -6,18 +6,18 @@ local string_char = string.char
 local string_len  = string.len
 local string_byte = string.byte
 
-local OPEN_COMMAND			= string_char(0x00)
-local CLOSE_COMMAND         		= string_char(0x01)
-local HEADER_PACKET_SIZE	        = 6
-local NULL_BYTE         		= string_char(0x00)
-local ADMIN_MODULE_IN_ENDPOINT  	= 0x01
-local ADMIN_MODULE_OUT_ENDPOINT		= 0x81
-local ADMIN_HANDLER_SEND_COMMAND	= string_char(0x00)
-local OPEN_RESPONSE_PACKET_SIZE		= 5 
-local CLOSE_RESPONSE_PACKET_SIZE	= 2 
-local TIMEOUT				= 200 --ms
+local OPEN_COMMAND = string_char(0x00)
+local CLOSE_COMMAND = string_char(0x01)
+local HEADER_PACKET_SIZE = 6
+local NULL_BYTE = string_char(0x00)
+local ADMIN_MODULE_IN_ENDPOINT = 0x01
+local ADMIN_MODULE_OUT_ENDPOINT = 0x81
+local ADMIN_HANDLER_SEND_COMMAND = string_char(0x00)
+local OPEN_RESPONSE_PACKET_SIZE = 5 
+local CLOSE_RESPONSE_PACKET_SIZE = 2 
+local TIMEOUT = 200 --ms
 
-local READ_HEADER_SIZE		        = 3
+local READ_HEADER_SIZE = 3
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 
@@ -30,9 +30,15 @@ local Device = {
 	tostring=tostring
 }
 
-local function load_driver(modulename)
+local function load_driver(d)
+	local modulename=d.module
 	local drivername=string.match(modulename, '^(.-)%d*$')
-	local f, err = loadfile(my_path.."../drivers/"..drivername..".lua")
+	local f, err
+	if d.hotplug then
+		f, err = loadfile(my_path.."../drivers/hotplug/"..drivername..".lua")
+	else
+		f, err = loadfile(my_path.."../drivers/"..drivername..".lua")
+	end
 	return f, err
 end
 
@@ -57,7 +63,7 @@ function Device:new(d)
 	d.comms_read = d.baseboard.comms.read
 
 	--attempt to load api from driver
-	local f, err = load_driver(d.module)
+	local f, err = load_driver(d)
 	if f then
 		d._G=d
 		
@@ -70,6 +76,7 @@ function Device:new(d)
 		end
 	else
 		bobot.debugprint("u4d:new:Error loading driver:", err)
+		return nil
 	end
 	
 	return d
