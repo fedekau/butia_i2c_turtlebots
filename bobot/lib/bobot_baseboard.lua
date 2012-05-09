@@ -5,26 +5,146 @@
 local bobot_device = require("bobot_device")
 local bobot = require("bobot")
 
-local NULL_BYTE				                    = string.char(0x00)
-local DEFAULT_PACKET_SIZE    	          	    = 0x04
-local GET_USER_MODULES_SIZE_COMMAND           	= string.char(0x05)
-local GET_USER_MODULE_LINE_COMMAND		        = string.char(0x06)
-local GET_HANDLER_SIZE_COMMAND                  = string.char(0x0A)
-local GET_HANDLER_TYPE_COMMAND                  = string.char(0x0B)
-local GET_LINES_RESPONSE_PACKET_SIZE 	        = 6
-local GET_LINE_RESPONSE_PACKET_SIZE 	        = 12
-local GET_HANDLER_TYPE_PACKET_SIZE              = 0x05
-local GET_HANDLER_RESPONSE_PACKET_SIZE 	        = 5 --
-local ADMIN_HANDLER_SEND_COMMAND 		        = string.char(0x00)
-local ADMIN_MODULE_IN_ENDPOINT		            = 0x01
-local ADMIN_MODULE_OUT_ENDPOINT        	        = 0x81
-local GET_USER_MODULE_LINE_PACKET_SIZE 	        = 0x05
-local CLOSEALL_BASE_BOARD_COMMAND             	= string.char(0x07) 
-local CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE	= 5
-local TIMEOUT	                                = 250 --ms
-local MAX_RETRY 				                = 20
+local NULL_BYTE = string.char(0x00)
+local DEFAULT_PACKET_SIZE = 0x04
+local GET_USER_MODULES_SIZE_COMMAND = string.char(0x05)
+local GET_USER_MODULE_LINE_COMMAND = string.char(0x06)
+local GET_HANDLER_SIZE_COMMAND = string.char(0x0A)
+local GET_HANDLER_TYPE_COMMAND = string.char(0x0B)
+local GET_LINES_RESPONSE_PACKET_SIZE = 6
+local GET_LINE_RESPONSE_PACKET_SIZE = 12
+local GET_HANDLER_TYPE_PACKET_SIZE = 0x05
+local GET_HANDLER_RESPONSE_PACKET_SIZE = 5 --
+local ADMIN_HANDLER_SEND_COMMAND = string.char(0x00)
+local ADMIN_MODULE_IN_ENDPOINT = 0x01
+local ADMIN_MODULE_OUT_ENDPOINT = 0x81
+local GET_USER_MODULE_LINE_PACKET_SIZE = 0x05
+local CLOSEALL_BASE_BOARD_COMMAND = string.char(0x07) 
+local CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE = 5
+local TIMEOUT = 250 --ms
+local MAX_RETRY = 20
 
 local BaseBoard = {}
+
+
+--executes s on the console and returns the output
+local function run_shell (s) 
+	local f = io.popen(s) -- runs command
+	local l = f:read("*a") -- read output of command
+	f:close()
+	return l
+end
+
+local drivers = {}
+local function parse_drivers()
+	local driver_files=run_shell("sh -c 'ls drivers/*.lua 2> /dev/null'")
+	for filename in driver_files:gmatch('drivers%/(%S+)%.lua') do
+		--print ("Driver openable", filename)
+		drivers[filename] = 'openable'
+	end
+	driver_files=run_shell("sh -c 'ls drivers/hotplug/*.lua 2> /dev/null'")
+	for filename in driver_files:gmatch('drivers%/hotplug%/(%S+)%.lua') do
+		--print ("Driver hotplug", filename)
+		drivers[filename] = 'hotplug'
+	end
+end
+parse_drivers()
+
+local function load_modules(bb)
+	local retry = 0
+	bb.modules = {}
+
+	local n_modules=bb:get_user_modules_size()
+	while(n_modules == nil and retry < MAX_RETRY)do
+		n_modules=bb:get_user_modules_size()
+		bobot.debugprint("u4b:the module list size returned a nil value, trying to recover...")
+		retry = retry+1
+	end
+	retry=0
+	bobot.debugprint ("Reading modules:", n_modules)
+	for i = 1, n_modules do
+		local modulename=bb:get_user_module_line(i)
+		while(modulename == nil and retry < MAX_RETRY) do
+			bobot.debugprint("u4b:the module  returned a nil value, trying to recover...")
+			modulename=bb:get_handler_type(i)
+			retry = retry+1
+		end
+		if modulename then
+			bb.modules[i]=modulename
+			if drivers[modulename]=='openable' then
+				local d = bobot_device:new({
+					module=modulename,
+					--name=module, 
+					baseboard=bb,
+					hotplug=false,
+					in_endpoint=0x01, out_endpoint=0x01,
+				}) -- in_endpoint=0x01, out_endpoint=0x01})
+				bb.devices[d]=true
+				bb.devices[#bb.devices+1]=d
+				
+				bb.modules[modulename]=d
+			else
+				bb.modules[modulename]=true
+			end
+		end
+	end		
+end
+
+local function load_module_handlers(bb)
+	local retry = 0
+	
+	local n_module_handlers=bb:get_handler_size()
+	while(n_module_handlers == nil and retry < MAX_RETRY)do
+		n_module_handlers=bb:get_handler_size()
+		bobot.debugprint("u4b:the module handler list size returned a nil value, trying to recover...")
+		retry = retry+1
+	end
+	retry=0
+	bobot.debugprint ("Reading moduleshandlers:", n_module_handlers)
+	for i=1, n_module_handlers do
+		local t_handler = bb:get_handler_type(i)
+		while(t_handler == nil and retry < MAX_RETRY) do
+			bobot.debugprint("u4b:the module handler returned a nil value, trying to recover...")
+			t_handler = bb:get_handler_type(i)
+			retry = retry+1
+		end
+		if(t_handler and t_handler<255) then
+			local modulename=bb.modules[t_handler+1]
+			local moduledev=bb.modules[modulename]
+			if type(moduledev)=='table' 
+			and not moduledev.handler then
+				moduledev.handler=i-1
+			elseif moduledev==true then 
+				--name=name.."@"..(i-1)
+				local d = bobot_device:new({
+					handler=i-1,
+					module=modulename,
+					--name=name, 
+					baseboard=bb,
+					hotplug=(drivers[modulename]=='hotplug'),
+					in_endpoint=0x01, out_endpoint=0x01,
+				}) -- in_endpoint=0x01, out_endpoint=0x01})
+				if d then 
+					bb.devices[d]=true
+					bb.devices[#bb.devices+1]=d
+				end
+			else
+				error ("No device!")
+			end
+		end
+	end	
+end
+
+
+function BaseBoard:refresh()
+	self.devices = {}
+
+	--Load available modules
+	load_modules(self)
+
+	--Load instantianted modules
+	 load_module_handlers(self)
+end
 
 --Instantiates BaseBoard object.
 --Loads list of modules installed on baseboard
@@ -36,32 +156,11 @@ function BaseBoard:new(bb)
 	--OO boilerplate
    	setmetatable(bb, self)
 	self.__index = self
-
-	local retry = 0
-	bb.devices = {}
-	--read modules list
-	local n_modules=bb:get_user_modules_size()
-	while(n_modules == nil and retry < MAX_RETRY)do
-		n_modules=bb:get_user_modules_size()
-		bobot.debugprint("u4b:new:the module list size returned a nil value, trying to recover...")
-		retry = retry+1
-	end
-	retry=0
-	bobot.debugprint ("Reading modules:", n_modules)
-	for i=1, n_modules do
-		local name=bb:get_user_module_line(i)
-		while(name == nil and retry < MAX_RETRY) do
-			name=bb:get_user_module_line(i)
-			bobot.debugprint("u4b:new:the module name returned a nil value, trying to recover...")
-			retry = retry+1
-		end
-		if(name) then
-			local d = bobot_device:new({name=name, baseboard=bb}) -- in_endpoint=0x01, out_endpoint=0x01})
-			bb.devices[name]=d
-		end
-	end	
+	
+	bb:refresh()
+	
 --bobot.debugprint ('----------------')
-	bb:force_close_all()
+	--bb:force_close_all()
 --bobot.debugprint ('================')
 	return bb
 end
@@ -71,7 +170,7 @@ function BaseBoard:close()
 	--state sanity check
 	assert(type(self.devices)=="table")
 
-	for _,d in pairs(self.devices) do
+	for _,d in ipairs(self.devices) do
 		if type(d.handler)=="number" then
 			bobot.debugprint ("closing", d.name, d.handler)
 			d:close()
@@ -207,7 +306,7 @@ end
 -- resets the baseboard, after this operation the baseboard will claim reenumeration to the operative system
 -- this function is deprecated by force_close_all
 function BaseBoard:close_all()
-	for d_name,d in pairs(self.devices) do
+	for _,d in ipairs(self.devices) do
 		--bobot.debugprint ("===", d.name,d.handler)
 		if d.handler then d:close() end
 	end
@@ -257,7 +356,7 @@ function BaseBoard:force_close_all()
 		else
 			--bobot.debugprint("u4b:force_close_all:libusb read",string.byte(data,1,string.len(data)))
 		end
-		for d_name,d in pairs(self.devices) do
+		for _,d in ipairs(self.devices) do
 			--bobot.debugprint ("===", d.name,d.handler)
 			d.handler=nil
 		end

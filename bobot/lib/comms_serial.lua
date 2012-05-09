@@ -85,7 +85,8 @@ function comms_serial.init(baseboards)
 	end
 	bobot.debugprint ("cs:", tty)
 	local bb = bobot_baseboard:new({idBoard=tty, comms=comms_serial})
-	baseboards[tty]=bb
+	baseboards[bb]=true
+	baseboards[#baseboards+1]=bb
 
 	return 1
 end

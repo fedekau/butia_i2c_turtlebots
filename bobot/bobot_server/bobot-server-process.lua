@@ -21,10 +21,19 @@ process = {}
 process["INIT"] = function () --to check the new state of hardware on the fly
 	server_init()
 end
+process["REFRESH"] = function () --to check the new state of hardware on the fly
+	--for _, bb in ipairs(bobot.baseboards) do
+	--	bb:refresh()
+	--end
+	server_refresh()
+	return 'ok'
+end
+
+
 process["LIST"] = function ()
 	local ret,comma = "", ""
-	for d_name, _ in pairs(devices) do
-		ret = ret .. comma .. d_name
+	for _, d in ipairs(devices) do
+		ret = ret .. comma .. d.name
 		comma=","
 	end
 	return ret
@@ -34,7 +43,7 @@ end
 process["LISTI"] = function ()
     if bobot.baseboards then
         bobot.debugprint("listing instanced modules...")
-        for _, bb in pairs(bobot.baseboards) do
+        for _, bb in ipairs(bobot.baseboards) do
     	    local handler_size=bb:get_handler_size()
             for i=1, handler_size do
                 t_handler = bb:get_handler_type(i)
@@ -133,7 +142,7 @@ process["CALL"] = function (parameters)
 end
 process["CLOSEALL"] = function ()
 	if bobot.baseboards then
-		for _, bb in pairs(bobot.baseboards) do
+		for _, bb in ipairs(bobot.baseboards) do
 			-- guille: I dont undestain this part? ;
 			-- in the master:HEAD is not commented the second line
 			-- but is comented in branch bobot2 ; sow... That i do?
