@@ -193,44 +193,44 @@ class robot:
     
     # return the value of button: 1 if pressed, 0 otherwise
     def getButton(self, number=''):
-        return self.callModule('boton' + str(number), 'getBoton')
+        return self.callModule('boton:' + str(number), 'getBoton')
     
     # return the value en ambient light sensor
     def getAmbientLight(self, number=''):
-        return self.callModule('luz' + str(number), 'getLuz')
+        return self.callModule('luz:' + str(number), 'getLuz')
 
     # return the value of the distance sensor
     def getDistance(self, number=''):
-        return self.callModule('dist' + str(number), 'getDistancia')
+        return self.callModule('dist:' + str(number), 'getDistancia')
     
     # return the value of the grayscale sensor
     def getGrayScale(self, number=''):
-        return self.callModule('grises' + str(number), 'getLevel')
+        return self.callModule('grises:' + str(number), 'getLevel')
 
     # return the value of the temperature sensor
     def getTemperature(self, number=''):
-        return self.callModule('temp' + str(number), 'getTemp')
+        return self.callModule('temp:' + str(number), 'getTemp')
 
     # return the value of the vibration sensor
     def getVibration(self, number=''):
-        return self.callModule('vibra' + str(number), 'getVibra')
+        return self.callModule('vibra:' + str(number), 'getVibra')
 
     # return the value of the tilt sensor
     def getTilt(self, number=''):
-        return self.callModule('tilt' + str(number), 'getTilt')
+        return self.callModule('tilt:' + str(number), 'getTilt')
 
     # FIXME: the name of the module and the function...
     # return the value of the capacitive touch sensor
     def getCapacitive(self, number=''):
-        return self.callModule('capacitive' + str(number), 'getCapa')
+        return self.callModule('capacitive:' + str(number), 'getCapa')
 
     # return the value of the magnetic induction sensor
     def getMagneticInduction(self, number=''):
-        return self.callModule('magnet' + str(number), 'getCampo')
+        return self.callModule('magnet:' + str(number), 'getCampo')
 
     # set the led intensity
     def setLed(self, nivel = 255, number= ''):
-        return self.callModule('led' + str(number), 'setLight', str(math.trunc(nivel)))
+        return self.callModule('led:' + str(number), 'setLight', str(math.trunc(nivel)))
 
     # FIXME: check the lenght of text?
     # write a text in LCD display
