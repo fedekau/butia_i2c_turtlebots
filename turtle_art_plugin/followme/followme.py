@@ -421,6 +421,6 @@ class Followme(Plugin):
             t = x.split(',')
             return (int(t[0]), int(t[1]), int(t[2]))
         except:
-            raise logoerror(_('error in string convertion'))
+            raise logoerror(_('error in string conversion'))
 
 
