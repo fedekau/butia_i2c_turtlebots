@@ -359,6 +359,13 @@ class Butia(Plugin):
         else:
             return ('', 0)
 
+    def list_2_module_and_port(self, l):
+        r = []
+        for e in l:
+            port = None
+            module, port = e.split(':')
+            r.append((module, port))
+        return r
 
     def refreshButia(self):
         if self.butia:
@@ -369,6 +376,10 @@ class Butia(Plugin):
               
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
+
+        l = list_2_module_and_port(self.list_connected_device_module)
+        self.d = dict(l)
+        self.v = self.d.values()
 
         #repaints program area blocks (proto) and palette blocks (block)
         for blk in self.tw.block_list.list:
@@ -383,16 +394,30 @@ class Butia(Plugin):
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
                     if (blk_name in refreshable_block_list):
-                        if blk_name in modules_name_from_device_id:
-                            module_name = modules_name_from_device_id[blk_name] + blk_index
-                        else:
-                            module_name = ''
-                        if module_name not in self.list_connected_device_module:
+                        module = modules_name_from_device_id[blk_name]
+
+                        if not (mod in self.v):
+
                             if blk_index !='' :
                                 if blk.type == 'proto': # only make invisible the block in the palette not in the program area
                                     blk.set_visibility(False)
+                            blk._set_labels(0, blk_name)
                             BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
                         else:
+                            key = self.v.index(mod)
+                            keys = self.d.keys()
+                            index = 0
+                            i = keys[self.v.index(mod)]
+                            index = self.d.pop(i)
+                            self.v = self.d.values()
+                            blk.spr.set_label(blk_name + ':' + i)
+                            block_names[blk.name][0] = blk_name + ':' + i
+
+                            if mod == 'led':
+                                self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=i, z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
+                            else:
+                                self.tw.lc.def_prim(blk.name, 0, lambda self, y=i , z=blk_name: primitive_dictionary[z+ 'Butia'](y))
+
                             if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
                                 blk.set_visibility(True)
                             BOX_COLORS[blk.name] = COLOR_PRESENT[:]
@@ -670,7 +695,7 @@ class Butia(Plugin):
         if self.pollrun:
             if self.can_refresh:
                 self.butia.refresh()
-                self.check_for_device_change()
+                #self.check_for_device_change()
             self.pollthread=threading.Timer(3,self.bobot_poll)
             self.pollthread.start()
         else:
