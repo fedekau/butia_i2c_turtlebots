@@ -83,7 +83,7 @@ class robot:
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
-        msg = 'INIT'
+        msg = 'REFRESH'
         #bobot server instance is running, but we have to check for new or remove hardware
         result = self.doCommand(msg)
         if (result == ERROR_SENSOR_READ):
