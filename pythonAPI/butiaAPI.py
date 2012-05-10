@@ -44,6 +44,7 @@ class robot:
         self.port = port
         self.client = None
         self.fclient = None
+        self.make_init = True
         self.reconnect()
 
        
@@ -83,13 +84,11 @@ class robot:
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
-        msg = 'REFRESH'
-        #bobot server instance is running, but we have to check for new or remove hardware
-        result = self.doCommand(msg)
-        if (result == ERROR_SENSOR_READ):
-                result = self.reconnect()
-        #return result
-
+        if not(self.make_init):
+            msg = 'REFRESH'
+            result = self.doCommand(msg)
+        else:
+            result = self.reconnect()
 
     # close the comunication with the bobot
     def close(self):
@@ -139,8 +138,10 @@ class robot:
         msg = 'LIST'
         ret = self.doCommand(msg)
         if not (ret == '' or ret == -1):
+            self.make_init = False
             return ret.split(',')
         else:
+           self.make_init = True
            return []
 
     # loopBack: send a message to butia and wait to recibe the same
