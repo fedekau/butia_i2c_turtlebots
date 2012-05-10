@@ -423,29 +423,33 @@ class Butia(Plugin):
 
                         s = module + blk_index
                         if not(s in self.match_dict):
-                            
-
+                        
                             if blk_index !='' :
                                 if blk.type == 'proto': # only make invisible the block in the palette not in the program area
                                     blk.set_visibility(False)
-                                    blk._set_labels(0, blk_name)
+
+                            label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
+
+                            value = blk_index
                             BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
                         else:
                             val = self.match_dict[s]
+                            value = int(val)
+                            label = label_name_from_device_id[blk_name] + ':' + val + ' ' + _('Butia')
 
-                            #print 'i asociado: ', val, 'al bloke :', s
-
-                            blk.spr.set_label(blk_name + ':' + val)
-                            block_names[blk.name][0] = blk_name + ':' + val
-
-                            if module == 'led':
-                                self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=int(val), z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
-                            else:
-                                self.tw.lc.def_prim(blk.name, 0, lambda self, y=int(val) , z=blk_name: primitive_dictionary[z+ 'Butia'](y))
 
                             if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
                                 blk.set_visibility(True)
                             BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+
+
+                        if module == 'led':
+                            self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
+                        else:
+                            self.tw.lc.def_prim(blk.name, 0, lambda self, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](y))
+
+                        blk.spr.set_label(label)
+                        block_names[blk.name][0] = label
                         blk.refresh()
 
 
