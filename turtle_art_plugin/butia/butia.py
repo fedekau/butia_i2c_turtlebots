@@ -382,7 +382,7 @@ class Butia(Plugin):
         else:
             battery = ERROR_SENSOR_READ
               
-        battery = 120
+        #battery = 120
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
         
