@@ -60,6 +60,7 @@ local function load_modules(bb)
 		bobot.debugprint("u4b:the module list size returned a nil value, trying to recover...")
 		retry = retry+1
 	end
+	if not n_modules then return end
 	retry=0
 	bobot.debugprint ("Reading modules:", n_modules)
 	for i = 1, n_modules do
@@ -99,6 +100,7 @@ local function load_module_handlers(bb)
 		bobot.debugprint("u4b:the module handler list size returned a nil value, trying to recover...")
 		retry = retry+1
 	end
+	if not n_module_handlers then return end
 	retry=0
 	bobot.debugprint ("Reading moduleshandlers:", n_module_handlers)
 	for i=1, n_module_handlers do
