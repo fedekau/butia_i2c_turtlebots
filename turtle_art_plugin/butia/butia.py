@@ -370,9 +370,21 @@ class Butia(Plugin):
                     r.append((port, module))
             except:
                 pass
-
-        #print 'lista r: ', r
         return r
+
+    def make_match_list(self, l):
+        match_list = []
+        for t in l:
+            i = 0
+            for index in range(0, int(t[0])-1):
+                x = (str(index), t[1])
+                if x in l:
+                    i = i + 1
+            if i == 0:
+                match_list.append((t[1], t[0]))
+            else:
+                match_list.append((t[1] + str(i), t[0]))
+        return match_list
 
     def refreshButia(self):
         if self.butia:
@@ -389,19 +401,9 @@ class Butia(Plugin):
         #self.list_connected_device_module = ['admin', 'pnp', 'port:1', 'boton:2', 'port:3', 'boton:4', 'port:5', 'temp:6']
         l = self.list_2_module_and_port(self.list_connected_device_module)
 
-        self.match_list = []
-        for t in l:
-            i = 0
-            for index in range(0, int(t[0])-1):
-                x = (str(index), t[1])
-                if x in l:
-                    i = i + 1
-            if i == 0:
-                self.match_list.append((t[1], t[0]))
-            else:
-                self.match_list.append((t[1] + str(i), t[0]))
+        m_list = self.make_match_list(l)
 
-        self.match_dict = dict(self.match_list)
+        self.match_dict = dict(m_list)
         
         self.d = dict(l)
         self.v = self.d.values()
