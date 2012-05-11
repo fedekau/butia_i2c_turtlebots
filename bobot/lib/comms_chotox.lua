@@ -15,7 +15,7 @@ function init(baseboards)
 
 	local n_boards=1
 	--local bb = bobot_baseboard.BaseBoard:new({idBoard=iSerial, comms=comms_usb})
-	local bb = {idBoard=1, comms=comms_chotox}
+	local bb = {type='chotox', idBoard=1, comms=comms_chotox}
 	local devices={}
 	for i, name in ipairs({"led","led1","grises","grises1","dist","temp","butia","display","butia"}) do
 		local dd={name=name, baseboard=bb, handler=i}

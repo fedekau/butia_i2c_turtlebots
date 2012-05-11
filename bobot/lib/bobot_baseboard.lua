@@ -71,8 +71,8 @@ local function load_modules(bb)
 			retry = retry+1
 		end
 		if modulename then
-			bb.modules[i]=modulename
 			if drivers[modulename]=='openable' then
+				bb.modules[i]=modulename
 				local d = bobot_device:new({
 					module=modulename,
 					--name=module, 
@@ -84,8 +84,12 @@ local function load_modules(bb)
 				bb.devices[#bb.devices+1]=d
 				
 				bb.modules[modulename]=d
-			else
+			elseif drivers[modulename]=='hotplug' then
+				bb.modules[i]=modulename
 				bb.modules[modulename]=true
+				bb.hotplug = true -- bb has a hotplug module
+			else
+				bobot.debugprint("Loading modules: missing driver for",modulename)
 			end
 		end
 	end		
@@ -93,6 +97,8 @@ end
 
 local function load_module_handlers(bb)
 	local retry = 0
+	
+	if bb.comms.type=='serial' then return end
 	
 	local n_module_handlers=bb:get_handler_size()
 	while(n_module_handlers == nil and retry < MAX_RETRY)do
@@ -131,7 +137,7 @@ local function load_module_handlers(bb)
 					bb.devices[#bb.devices+1]=d
 				end
 			else
-				error ("No device!")
+				bobot.debugprint ("No opened device!")
 			end
 		end
 	end	
