@@ -212,12 +212,7 @@ function BaseBoard:get_user_modules_size()
 			return user_modules_size
 		end
 	else	
-	    local retry = 0
-        while(write_res == nil and retry < MAX_RETRY) do
-			write_res = comms.send(ADMIN_MODULE_IN_ENDPOINT, get_user_modules_size_packet, TIMEOUT)
-			bobot.debugprint("u4b:get_user_modules_size:comunication with I/O board write error", write_res)
-			retry = retry+1
-		end
+		bobot.debugprint("u4b:get_user_modules_size:comunication with I/O board write error", write_res)
 		return 0
    	end
 end
