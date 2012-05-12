@@ -72,7 +72,7 @@ local function get_device_name(d)
 --print("DEVICENAME", d.module, d.hotplug, d.handler)
 	local board_id, port_id = '', ''
 	if #bobot.baseboards>1 then
-		board_id=':'..d.baseboard.idBoard
+		board_id='@'..d.baseboard.idBoard
 	end
 	if d.hotplug then 
 		port_id = ':'..d.handler
