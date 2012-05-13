@@ -44,6 +44,7 @@ class robot:
         self.port = port
         self.client = None
         self.fclient = None
+        self.make_init = True
         self.reconnect()
 
        
@@ -83,13 +84,11 @@ class robot:
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
-        msg = 'INIT'
-        #bobot server instance is running, but we have to check for new or remove hardware
-        result = self.doCommand(msg)
-        if (result == ERROR_SENSOR_READ):
-                result = self.reconnect()
-        #return result
-
+        if not(self.make_init):
+            msg = 'REFRESH'
+            result = self.doCommand(msg)
+        else:
+            result = self.reconnect()
 
     # close the comunication with the bobot
     def close(self):
@@ -139,8 +138,10 @@ class robot:
         msg = 'LIST'
         ret = self.doCommand(msg)
         if not (ret == '' or ret == -1):
+            self.make_init = False
             return ret.split(',')
         else:
+           self.make_init = True
            return []
 
     # loopBack: send a message to butia and wait to recibe the same
@@ -193,44 +194,44 @@ class robot:
     
     # return the value of button: 1 if pressed, 0 otherwise
     def getButton(self, number=''):
-        return self.callModule('boton' + str(number), 'getBoton')
+        return self.callModule('boton:' + str(number), 'getBoton')
     
     # return the value en ambient light sensor
     def getAmbientLight(self, number=''):
-        return self.callModule('luz' + str(number), 'getLuz')
+        return self.callModule('luz:' + str(number), 'getLuz')
 
     # return the value of the distance sensor
     def getDistance(self, number=''):
-        return self.callModule('dist' + str(number), 'getDistancia')
+        return self.callModule('dist:' + str(number), 'getDistancia')
     
     # return the value of the grayscale sensor
     def getGrayScale(self, number=''):
-        return self.callModule('grises' + str(number), 'getLevel')
+        return self.callModule('grises:' + str(number), 'getLevel')
 
     # return the value of the temperature sensor
     def getTemperature(self, number=''):
-        return self.callModule('temp' + str(number), 'getTemp')
+        return self.callModule('temp:' + str(number), 'getTemp')
 
     # return the value of the vibration sensor
     def getVibration(self, number=''):
-        return self.callModule('vibra' + str(number), 'getVibra')
+        return self.callModule('vibra:' + str(number), 'getVibra')
 
     # return the value of the tilt sensor
     def getTilt(self, number=''):
-        return self.callModule('tilt' + str(number), 'getTilt')
+        return self.callModule('tilt:' + str(number), 'getTilt')
 
     # FIXME: the name of the module and the function...
     # return the value of the capacitive touch sensor
     def getCapacitive(self, number=''):
-        return self.callModule('capacitive' + str(number), 'getCapa')
+        return self.callModule('capacitive:' + str(number), 'getCapa')
 
     # return the value of the magnetic induction sensor
     def getMagneticInduction(self, number=''):
-        return self.callModule('magnet' + str(number), 'getCampo')
+        return self.callModule('magnet:' + str(number), 'getCampo')
 
     # set the led intensity
     def setLed(self, nivel = 255, number= ''):
-        return self.callModule('led' + str(number), 'setLight', str(math.trunc(nivel)))
+        return self.callModule('led:' + str(number), 'setLight', str(math.trunc(nivel)))
 
     # FIXME: check the lenght of text?
     # write a text in LCD display
