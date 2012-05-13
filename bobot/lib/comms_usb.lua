@@ -20,7 +20,7 @@ local READ_HEADER_SIZE      = 3
 local libusb_handler 
 
 
-local comms_usb = {type='usb'}
+local comms_usb = {}
 
 function comms_usb.send(endpoint, data, timeout)
 	--parameters sanity check

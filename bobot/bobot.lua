@@ -39,6 +39,7 @@ B.init = function  ( comms )
 			if not comm_lib then
 				B.debugprint("Could not open library:", comm)
 			else
+				comm_lib.type=comm
 				n_boards[comm] = comm_lib.init(B.baseboards)
 				n_boards_total = n_boards_total + n_boards[comm]
 			end

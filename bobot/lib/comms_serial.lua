@@ -27,7 +27,7 @@ local function split_words(s)
 	return words
 end
 
-local comms_serial = {type='serial'}
+local comms_serial = {}
 
 function comms_serial.send(endpoint, data, timeout)
 	--parameters sanity check
