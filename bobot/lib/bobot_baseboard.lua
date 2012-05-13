@@ -55,44 +55,44 @@ local function load_modules(bb)
 	bb.modules = {}
 
 	local n_modules=bb:get_user_modules_size()
-	while(n_modules == nil and retry < MAX_RETRY)do
+	while n_modules == nil and retry < MAX_RETRY do
 		n_modules=bb:get_user_modules_size()
 		bobot.debugprint("u4b:the module list size returned a nil value, trying to recover...")
 		retry = retry+1
 	end
-	if not n_modules then return end
+	if not n_modules then return nil end
 	retry=0
 	bobot.debugprint ("Reading modules:", n_modules)
 	for i = 1, n_modules do
 		local modulename=bb:get_user_module_line(i)
-		while(modulename == nil and retry < MAX_RETRY) do
+		while modulename == nil and retry < MAX_RETRY do
 			bobot.debugprint("u4b:the module  returned a nil value, trying to recover...")
 			modulename=bb:get_handler_type(i)
 			retry = retry+1
 		end
-		if modulename then
-			if drivers[modulename]=='openable' then
-				bb.modules[i]=modulename
-				local d = bobot_device:new({
-					module=modulename,
-					--name=module, 
-					baseboard=bb,
-					hotplug=false,
-					in_endpoint=0x01, out_endpoint=0x01,
-				}) -- in_endpoint=0x01, out_endpoint=0x01})
-				bb.devices[d]=true
-				bb.devices[#bb.devices+1]=d
-				
-				bb.modules[modulename]=d
-			elseif drivers[modulename]=='hotplug' then
-				bb.modules[i]=modulename
-				bb.modules[modulename]=true
-				bb.hotplug = true -- bb has a hotplug module
-			else
-				bobot.debugprint("Loading modules: missing driver for",modulename)
-			end
+		if not modulename then return nil end
+		if drivers[modulename]=='openable' then
+			bb.modules[i]=modulename
+			local d = bobot_device:new({
+				module=modulename,
+				--name=module, 
+				baseboard=bb,
+				hotplug=false,
+				in_endpoint=0x01, out_endpoint=0x01,
+			}) -- in_endpoint=0x01, out_endpoint=0x01})
+			bb.devices[d]=true
+			bb.devices[#bb.devices+1]=d
+			
+			bb.modules[modulename]=d
+		elseif drivers[modulename]=='hotplug' then
+			bb.modules[i]=modulename
+			bb.modules[modulename]=true
+			bb.hotplug = true -- bb has a hotplug module
+		else
+			bobot.debugprint("Loading modules: missing driver for",modulename)
 		end
-	end		
+	end
+	return true
 end
 
 local function load_module_handlers(bb)
@@ -101,12 +101,12 @@ local function load_module_handlers(bb)
 	if bb.comms.type=='serial' then return end
 	
 	local n_module_handlers=bb:get_handler_size()
-	while(n_module_handlers == nil and retry < MAX_RETRY)do
+	while n_module_handlers == nil and retry < MAX_RETRY do
 		n_module_handlers=bb:get_handler_size()
 		bobot.debugprint("u4b:the module handler list size returned a nil value, trying to recover...")
 		retry = retry+1
 	end
-	if not n_module_handlers then return end
+	if not n_module_handlers then return nil end
 	retry=0
 	bobot.debugprint ("Reading moduleshandlers:", n_module_handlers)
 	for i=1, n_module_handlers do
@@ -116,7 +116,8 @@ local function load_module_handlers(bb)
 			t_handler = bb:get_handler_type(i)
 			retry = retry+1
 		end
-		if(t_handler and t_handler<255) then
+		if not t_handler then return nil end
+		if t_handler<255  then
 			local modulename=bb.modules[t_handler+1]
 			local moduledev=bb.modules[modulename]
 			if type(moduledev)=='table' 
@@ -140,18 +141,22 @@ local function load_module_handlers(bb)
 				bobot.debugprint ("No opened device!")
 			end
 		end
-	end	
+	end
+	return true
 end
 
 
 function BaseBoard:refresh()
 	self.devices = {}
 
-	--Load available modules
-	load_modules(self)
+	if not load_modules(self) then
+		return nil,"failure reading modules"
+	end
 
-	--Load instantianted modules
-	 load_module_handlers(self)
+	if not load_module_handlers(self) then
+		return nil,"failure reading module handlers"
+	end
+	return true
 end
 
 --Instantiates BaseBoard object.

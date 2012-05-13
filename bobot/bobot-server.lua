@@ -186,8 +186,11 @@ socket_handlers[server_h]=function()
 end
 
 function server_refresh ()
-	for _, bb in ipairs(bobot.baseboards) do
-		bb:refresh()
+	for i, bb in ipairs(bobot.baseboards) do
+		if not bb:refresh() then
+			bobot.baseboards[bb]=nil
+			bobot.baseboards[i]=nil
+		end
 	end
 	read_devices_list()
 end
@@ -205,7 +208,11 @@ bobot.debugprint("Listening...")
 while 1 do
 	local recvt_ready, _, err=socket.select(recvt, nil, TIMEOUT_REFRESH)
 	if err=='timeout' then
-		server_refresh ()
+		if #bobot.baseboards==0 then 
+			server_init ()
+		else
+			server_refresh ()
+		end
 	else
 		local skt=recvt_ready[1]
 		socket_handlers[skt]()
