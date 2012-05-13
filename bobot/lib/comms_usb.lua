@@ -85,13 +85,9 @@ function comms_usb.init(baseboards)
 				local iSerial=descriptor.iSerialNumber
 				local bb = bobot_baseboard:new({idBoard=iSerial, comms=comms_usb})
 				--bb:force_close_all()
-				if baseboards[iSerial] then
-					bobot.debugprint("Warning: skipping already present board:", iSerial)
-				else
-					--bobot.debugprint("Baseboard:", iSerial)
-					baseboards[bb]=true
-					baseboards[#baseboards+1]=bb
-				end
+				--bobot.debugprint("Baseboard:", iSerial)
+
+				baseboards[#baseboards+1]=bb
 			end
 		end
 	end

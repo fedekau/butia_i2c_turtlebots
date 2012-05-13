@@ -36,7 +36,7 @@ local ADDRESS = "*"
 local PORT_B = 2009 --B is for bobot
 local PORT_H = 2010 --H is for http
 
-local TIMEOUT_REFRESH = 5
+local TIMEOUT_REFRESH = 3
 
 local socket = require("socket")
 local process = require("bobot-server-process").process
@@ -188,7 +188,6 @@ end
 function server_refresh ()
 	for i, bb in ipairs(bobot.baseboards) do
 		if not bb:refresh() then
-			bobot.baseboards[bb]=nil
 			bobot.baseboards[i]=nil
 		end
 	end
