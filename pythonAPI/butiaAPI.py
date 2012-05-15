@@ -44,7 +44,6 @@ class robot:
         self.port = port
         self.client = None
         self.fclient = None
-        self.make_init = True
         self.reconnect()
 
        
@@ -54,7 +53,7 @@ class robot:
         @param msg message to be executed
         """
         msg = msg +'\n'
-        ret = -1
+        ret = ERROR_SENSOR_READ
         self.lock.acquire()
         try:     
             self.client.send(msg) 
@@ -79,16 +78,13 @@ class robot:
             #bobot server instance is running, but we have to check for new or remove hardware
             self.doCommand(msg)
         except:
-            return -1
+            return ERROR_SENSOR_READ
         return 0
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
-        if not(self.make_init):
-            msg = 'REFRESH'
-            result = self.doCommand(msg)
-        else:
-            result = self.reconnect()
+        msg = 'REFRESH'
+        return self.doCommand(msg)
 
     # close the comunication with the bobot
     def close(self):
@@ -100,7 +96,7 @@ class robot:
                 self.client.close()
                 self.client = None
         except:
-            return -1
+            return ERROR_SENSOR_READ
         return 0
 
     #######################################################################
@@ -137,11 +133,9 @@ class robot:
     def get_modules_list(self):
         msg = 'LIST'
         ret = self.doCommand(msg)
-        if not (ret == '' or ret == -1):
-            self.make_init = False
+        if not (ret == '' or ret == ERROR_SENSOR_READ):
             return ret.split(',')
         else:
-           self.make_init = True
            return []
 
     # loopBack: send a message to butia and wait to recibe the same
@@ -151,7 +145,7 @@ class robot:
         if ret != -1 :
             return self.callModule('lback', 'read')
         else:
-            return -1
+            return ERROR_SENSOR_READ
             
 
     #######################################################################
