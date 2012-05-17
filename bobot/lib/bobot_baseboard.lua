@@ -11,9 +11,9 @@ local GET_USER_MODULES_SIZE_COMMAND = string.char(0x05)
 local GET_USER_MODULE_LINE_COMMAND = string.char(0x06)
 local GET_HANDLER_SIZE_COMMAND = string.char(0x0A)
 local GET_HANDLER_TYPE_COMMAND = string.char(0x0B)
-local GET_LINES_RESPONSE_PACKET_SIZE = 6
+local GET_LINES_RESPONSE_PACKET_SIZE = 5
 local GET_LINE_RESPONSE_PACKET_SIZE = 12
-local GET_HANDLER_TYPE_PACKET_SIZE = 0x05
+local GET_HANDLER_TYPE_PACKET_SIZE = 5
 local GET_HANDLER_RESPONSE_PACKET_SIZE = 5 --
 local ADMIN_HANDLER_SEND_COMMAND = string.char(0x00)
 local ADMIN_MODULE_IN_ENDPOINT = 0x01
@@ -213,7 +213,7 @@ function BaseBoard:get_user_modules_size()
 			bobot.debugprint("u4b:get_user_modules_size:comunication with I/O board read error", err)
 			return 0
 		else
-			local user_modules_size = string.byte(data, 5)	
+			local user_modules_size = string.byte(data, 5)
 			return user_modules_size
 		end
 	else	
