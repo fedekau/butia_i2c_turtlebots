@@ -1,3 +1,46 @@
+VERSION 10
+I Uses this Turtle commit a0ef174... Push many PO files from Pootle
++FollowMe guarda N calibraciones
+/La tortuga oculta los bloques al ejecutar run
+/Se mejora la tortuga en su ejecución desde Gnome
+
+VERSION 9
++se mejora el tiempo al salir
++se agrega que desde Gnome pregunte por guardar y cierre los plugins
++varias limpiezas en el plugin Sumtia
++FollowMe solo prende la cámara cuando usa X, e Y
++se elimina carpeta .git en el plugin NxT
++se agrega Listi en bobot
++se elimina refresh butia innecesario en el thread (se incrementa la velocidad de ejecución)
++se mejora el refresh de cada bloque eliminando llamadas innecesarias
++se arregla el bloque LED
++se usa TutleBlocks 138+ 
+
+VERSION 8
++Se limpia el plugin de Sumtia
++Se ajusta el plugin Sumtia a PEP8
++Utiliza el nuevo plugin de NXT
++Se limpia el plugin de Butia
++Se arregla el tipo de carga_de_bateria
++Se valida cuando el objeto Butia no se creó
++Se utiliza blk.refresh en lugar de blk.set_color()
++Se corrige error en el comando INIT
++Se mejora el tiempo de detección de que el robot se desconectó
++Se agrega bobot_launch a un thread
++Se mejora el tiempo que tarda la actividad en abrir.
++Se utiliza la versión de TurtleArt 138+
+
+VERSION 7
++Se extienden las funcionalidades agregando los plugin para: Lego WeDo, 
+NxT. Además de tener los usuales: Butiá, FollowMe y Sumtia.
++Se cambia el nombre de TurtleArt Butiá a: TurtleBots.
++Plugin Butiá: se agrega thread que refresca el estado del robot con 
+los sensores que tiene en cada momento, además de muchas otras mejoras.
++Plugin FollowMe: se agrega posibilidad de setear el umbral con un 
+bloque.
++Plugin NxT: se agregan validaciones y chequeos internos.
++Plugin WeDo: se corrige un problema en el nombre de un bloque.
+
 VERSION 6
 / update i10n-es
 + fix redraw function at start
