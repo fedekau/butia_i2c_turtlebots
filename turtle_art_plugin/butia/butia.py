@@ -470,12 +470,12 @@ class Butia(Plugin):
     def goto_background(self):
         """ goto_background is called when the activity is sent to the
         background. """
-        pass
+        self.can_refresh = False
 
     def return_to_foreground(self):
         """ return_to_foreground is called when the activity returns to
         the foreground. """
-        pass
+        self.can_refresh = True
 
     def quit(self):
         """ cleanup is called when the activity is exiting. """
