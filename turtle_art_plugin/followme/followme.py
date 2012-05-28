@@ -68,13 +68,18 @@ class Followme(Plugin):
     def dynamicLoadBlockColors(self):
         if not(self.cam_present):
             BOX_COLORS['followRGB'] = COLOR_NOTPRESENT
-            BOX_COLORS['follow'] = COLOR_NOTPRESENT
             BOX_COLORS['threshold'] = COLOR_NOTPRESENT
-            BOX_COLORS['pixels_min'] = COLOR_NOTPRESENT
-            BOX_COLORS['calibrate'] = COLOR_NOTPRESENT
+            BOX_COLORS['savecalibration1'] = COLOR_NOTPRESENT
+            BOX_COLORS['savecalibration2'] = COLOR_NOTPRESENT
+            BOX_COLORS['savecalibrationN'] = COLOR_NOTPRESENT
+            BOX_COLORS['calibration1'] = COLOR_NOTPRESENT
+            BOX_COLORS['calibration2'] = COLOR_NOTPRESENT
+            BOX_COLORS['calibrationN'] = COLOR_NOTPRESENT
             BOX_COLORS['xposition'] = COLOR_NOTPRESENT
             BOX_COLORS['yposition'] = COLOR_NOTPRESENT
             BOX_COLORS['pixels'] = COLOR_NOTPRESENT
+            BOX_COLORS['follow'] = COLOR_NOTPRESENT
+            BOX_COLORS['pixels_min'] = COLOR_NOTPRESENT
 
     def setup(self):
 
