@@ -31,8 +31,8 @@ class ButiaUpdateCore():
 
 
 # frame alert user about flashing firmware to Butia!
-class AlertContainer(gtk.VBox , ): 
-    def __init__(self, activity):
+class AlertContainer(gtk.VBox): 
+    def __init__(self):
         gtk.VBox.__init__(self)
         #box11 = gtk.VBox()
         img = gtk.Image()
@@ -62,8 +62,7 @@ class ButiaFirmwareUpdateGTK(gtk.Container):
 
     
  
-class ButiaFirmwareUpdate(activity.Activity):
-
+class ButiaFirmware(activity.Activity):
     #EVETS
     def on_acceptButton(self, widget, data=None):
         logging.info('Hello World')
@@ -79,6 +78,7 @@ class ButiaFirmwareUpdate(activity.Activity):
     def __init__(self, handle):
         print "running activity init", handle
         activity.Activity.__init__(self, handle, False)
+        #activity.Activity.__init__(self, handle)
         print "activity running"
  
         # Creates the Toolbox. It contains the Activity Toolbar, which is the
