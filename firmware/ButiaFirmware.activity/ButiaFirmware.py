@@ -2,12 +2,24 @@ from sugar.activity import activity
 import logging
  
 import sys, os
+import time
+import serial
 import gtk
 from gettext import gettext as _
 
 class FlashingArduino:
     def __init__(self):
         print "running activity init"
+
+    def reboot(self):
+        ser = serial.Serial("/dev/ttyUSB0")
+        ser.setDTR(1)
+        time.sleep(0.5)
+        ser.setDTR(0)
+        ser.close()
+
+    def flash(self):
+        print "todo"
 
 
 #TODO class FlashingUSB4ALL:
@@ -95,9 +107,7 @@ class ButiaFirmware(activity.Activity):
         # function hello() passing it None as its argument.  The hello()
         # function is defined above.
         #self.button.connect("clicked", self.hello, None)
-
-
-
+        
         # Set the button to be our canvas. The canvas is the main section of
         # every Sugar Window. It fills all the area below the toolbox.
         #self.set_canvas(self.button)
