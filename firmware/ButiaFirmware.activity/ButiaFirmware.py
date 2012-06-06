@@ -1,6 +1,8 @@
 from sugar.activity import activity
 import logging
- 
+
+import shlex
+import subprocess
 import sys, os
 import time
 import serial
@@ -9,7 +11,7 @@ from gettext import gettext as _
 
 class FlashingArduino:
     def __init__(self):
-        print "running activity init"
+        pass
 
     def reboot(self):
         ser = serial.Serial("/dev/ttyUSB0")
@@ -19,7 +21,22 @@ class FlashingArduino:
         ser.close()
 
     def flash(self):
-        print "todo"
+        #          m1280        ATmega1280
+        # MCU=m1280
+        # UPLOAD_RATE = 57600
+        # AVRDUDE_PROGRAMMER = stk500v1
+        #
+        #
+        # AVRDUDE_PORT = $(PORT)
+        # AVRDUDE_WRITE_FLASH = -U flash:w:applet/$(TARGET).hex
+        # AVRDUDE_FLAGS = -V -F \
+        # -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER) \
+        # -b $(UPLOAD_RATE)
+        #
+        #$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH)
+        #
+        # avrdude -V -F -p m1280 -P /dev/ttyUSB0 -c stk500v1 -b 57600 -U flash:w:mega.hex
+        proc = subprocess.Popen(shlex.split("./avrdude -C avrdude.conf -V -F -p m1280 -P /dev/ttyUSB0 -c stk500v1 -b 57600 -U flash:w:mega.hex"))
 
 
 #TODO class FlashingUSB4ALL:
@@ -107,6 +124,12 @@ class ButiaFirmware(activity.Activity):
         # function hello() passing it None as its argument.  The hello()
         # function is defined above.
         #self.button.connect("clicked", self.hello, None)
+
+        ll = FlashingArduino()
+        ll.reboot()
+        ll.flash()
+
+
         
         # Set the button to be our canvas. The canvas is the main section of
         # every Sugar Window. It fills all the area below the toolbox.
