@@ -42,7 +42,10 @@ class FlashingArduino:
 #TODO class FlashingUSB4ALL:
 #TODO    def __init__(self)
 
-
+def on_click(event):
+    board = FlashingArduino()
+    board.reboot()
+    board.flash()
 
 class ButiaUpdateCore():
     def killmeHARD(self):
@@ -76,6 +79,7 @@ class AlertContainer(gtk.VBox):
         button_reject = gtk.Button("UPSI!")
         button_reject.show()
         button_accept = gtk.Button("CONTINUAR")
+        button_accept.connect("clicked",on_click)
         button_accept.show()
         box12.add(button_reject)
         box12.add(button_accept)
@@ -124,11 +128,6 @@ class ButiaFirmware(activity.Activity):
         # function hello() passing it None as its argument.  The hello()
         # function is defined above.
         #self.button.connect("clicked", self.hello, None)
-
-        ll = FlashingArduino()
-        ll.reboot()
-        ll.flash()
-
 
         
         # Set the button to be our canvas. The canvas is the main section of
