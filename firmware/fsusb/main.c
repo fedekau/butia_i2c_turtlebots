@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
 
     if(!strcmp(argv[1], "--force_program")) {
       switch_board_to_bootloader();
-      sleep(1);
+      sleep(2);
       program_file(argv[2]);
       exit(reset());
     }
