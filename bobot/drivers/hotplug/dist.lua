@@ -1,0 +1,24 @@
+local device = _G
+
+local getDist=string.char(0x01)
+local string_byte=string.byte
+
+api={}
+api.getDistancia = {}
+api.getDistancia.parameters = {} -- -- no input parameters
+api.getDistancia.returns = {[1]={rname="par1", rtype="int"}} 
+api.getDistancia.call = function ()
+	device:send(getDist) -- codigo de operacion 1 = obtener distancia- analog value
+	local sen_anl_response = device:read(3) 
+	local raw_val	
+	if not sen_anl_response or string_byte(sen_anl_response or "00000000", 2) == nil or string_byte(sen_anl_response or "00000000", 3) == nil
+	then 
+		raw_val = "nil value"
+	else
+		raw_val = (string_byte(sen_anl_response, 2) or 0)* 256 + (string_byte(sen_anl_response, 3) or 0)
+		raw_val = 1024 - raw_val
+
+	end	
+	return raw_val  
+	
+end

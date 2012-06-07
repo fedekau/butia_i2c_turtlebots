@@ -8,15 +8,15 @@ License at file end.
 ]]
 
 
-assert(package.loadlib("Debug/libluausb.so","luaopen_libusb"))()
+assert(package.loadlib("./libluausb.so","luaopen_libusb"))()
 
 --libusb.find_busses()
 --libusb.find_devices()
 
 print ("\n------------------------------------")
 print ("-- A few exported constants:")
-print ("USB_CLASS_HUB", USB_CLASS_HUB)
-print ("USB_DT_STRING", USB_DT_STRING)
+print ("USB_CLASS_HUB", libusb.USB_CLASS_HUB)
+print ("USB_DT_STRING", libusb.USB_DT_STRING)
 
 print ("\n------------------------------------")
 print ("-- Dumping libusb:", libusb)

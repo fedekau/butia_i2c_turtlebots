@@ -1,9 +1,0 @@
-
-Andres@linux-lqlp:~/lua_robot_mips> ../openwrt_sandbox/kamikaze/staging_dir/toolchain-mipsel_gcc4.1.2/bin/mipsel-linux-gcc -I/home/Andres/openwrt_sandbox//kamikaze/build_dir/mipsel/lua-5.1.4/src/  -I/home/Andres/openwrt_sandbox/kamikaze/build_dir/mipsel/libusb-0.1.12/ -c -fPIC -fno-stack-protector /home/Andres/lua_robot_mips/lualibusb.c
-
-
-../openwrt_sandbox/kamikaze/staging_dir/toolchain-mipsel_gcc4.1.2/bin/mipsel-linux-ld -shared -soname libluausb.so.1 -o libluausb.so.1.0 -L/home/Andres/openwrt_sandbox/kamikaze/build_dir/mipsel/libusb-0.1.12/.libs/ -L/home/Andres/openwrt_sandbox/kamikaze/build_dir/mipsel/lua-5.1.4/ipkg/liblua/usr/lib/ -lusb lualibusb.o
-
-
-
-

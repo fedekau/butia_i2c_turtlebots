@@ -1,3 +1,0 @@
-import pippy
-
-print " ".join(pippy.sound.getSoundList())

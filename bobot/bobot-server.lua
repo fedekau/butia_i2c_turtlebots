@@ -1,38 +1,85 @@
 #!/usr/bin/lua
 
+--[[
 
-package.path=package.path..";./lib/?.lua"
+Syntax
+
+	# lua bobot-server.lua [DEBUG] [connection]*
+
+Parameters:
+	DEBUG		enables debug printing in bobot
+	connection	a list of connection services to attempt. Supported
+			values in bobot (for now) are usb, serial and chotox
+
+If no connection services are provided, defaults to usb and serial.
+
+Examples:
+	Start with debug disabled and the dummy chotox service, only:
+	# lua bobot-server.lua chotox
+
+	Start with debug enabled and the serial services only:
+	# lua bobot-server.lua DEBUG serial
+
+	Start with debug disabled and the usb and serial services (same as default):
+	# lua bobot-server.lua usb serial
+
+--]]
+
+--package.path=package.path..";./bobot_server/?.lua"
+local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]] or "./"
+package.path=package.path..";"..my_path.."bobot_server/?.lua;"
+			..my_path.."lib/?.lua;"..my_path.."?.lua"
+
+--tcp listening address
+local N_PROTOCOLS = 2
+local ADDRESS = "*"
+local PORT_B = 2009 --B is for bobot
+local PORT_H = 2010 --H is for http
+
+local TIMEOUT_REFRESH = 3
 
 local socket = require("socket")
 local process = require("bobot-server-process").process
 local http_serve = require("bobot-server-http").serve
 
 local bobot = require("bobot")
---local bobot = require("chotox")
 
-for _, v in ipairs(arg) do
-	if v=="debug" then 
-		bobot.debugprint = function(...) print(...) end 
-		bobot.debugprint("Debugging messages enabled")
+local set_debug
+for i, v in ipairs(arg) do
+	if v=="DEBUG" then
+		set_debug=true 
+		table.remove(arg, i)
 		break
 	end
 end
+if set_debug then 
+	bobot.debugprint = print
+	bobot.debugprint("Debugging messages enabled")
+else
+	bobot.debugprint = function() end
+end
 
---tcp listening address
-local ADDRESS = "*"
-local PORT_B = 2009 --B is for bobot
-local PORT_H = 2010 --H is for http
 
 local server_b = assert(socket.bind(ADDRESS, PORT_B))
 local server_h = assert(socket.bind(ADDRESS, PORT_H))
 
 local recvt={[1]=server_b, [2]=server_h}
 
-local baseboards = bobot.baseboards
-
 devices = {}
 
-local function get_device_name(n)
+local function get_device_name(d)
+
+--print("DEVICENAME", d.module, d.hotplug, d.handler)
+	local board_id, port_id = '', ''
+	if #bobot.baseboards>1 then
+		board_id='@'..d.baseboard.idBoard
+	end
+	if d.hotplug then 
+		port_id = ':'..d.handler
+	end
+	
+	local n=d.module..board_id..port_id
+	
 	if not devices[n] then
 		return n
 	end
@@ -51,34 +98,25 @@ local function read_devices_list()
 	bobot.debugprint("=Listing Devices")
 	local bfound
 	devices={}
-	for b_name, bb in pairs(baseboards) do
-    		bobot.debugprint("===board ", b_name)
-		for d_name,d in pairs(bb.devices) do
-			local regname = get_device_name(d_name)
+	for _, bb in ipairs(bobot.baseboards) do
+		bobot.debugprint("===board ", bb.idBoard)
+		for _,d in ipairs(bb.devices) do
+			local regname = get_device_name(d)
 			devices[regname]=d
-    			bobot.debugprint("=====d_name ",d_name," regname ",regname)
+			devices[#devices+1]=d
+			d.name=regname
+			bobot.debugprint("=====module ",d.module," name",regname)
 		end
 		bfound = true
 	end
-	if not bfound then bobot.debugprint ("ls:WARN: No Baseboard found.") end
-end
-
-function check_open_device(d, ep1, ep2)
-	if not d then return end
-	if d.handler then
-		bobot.debugprint("ls:Already open ", d.name, d.handler)
-		return true
-	else
-		debugprint ("ls:Opening", d.name, d.handler)
-		return d:open(ep1 or 1, ep2 or 1) --TODO asignacion de ep?
-	end
+	if not bfound then bobot.debugprint("ls:WARN: No Baseboard found.") end
 end
 
 local function split_words(s)
-	words={}
+	local words={}
 
 	for p in string.gmatch(s, "%S+") do
-		words[#words+1	]=p
+		words[#words+1]=p
 	end
 	
 	return words
@@ -111,6 +149,10 @@ socket_handlers[server_b]=function()
 				if not process[command] then
 					bobot.debugprint("bs:Command not supported:", command)
 				else
+					if command=="QUIT" and #recvt>N_PROTOCOLS+1 then
+						client:send("server in use\n")
+						return
+					end
 					local ret = process[command](words) or ""
 					client:send(ret .. "\n")
 				end
@@ -143,14 +185,34 @@ socket_handlers[server_h]=function()
 	end
 end
 
+function server_refresh ()
+	for i, bb in ipairs(bobot.baseboards) do
+		if not bb:refresh() then
+			bobot.baseboards[i]=nil
+		end
+	end
+	read_devices_list()
+end
 
-read_devices_list()
-print ("Listening...")
+function server_init ()
+	bobot.init(arg)
+	read_devices_list()
+end
+
+
+server_init()
+bobot.debugprint("Listening...")
 -- loop forever waiting for clients
 
 while 1 do
-	local recvt_ready, _, err=socket.select(recvt, nil, 1)
-	if err~='timeout' then
+	local recvt_ready, _, err=socket.select(recvt, nil, TIMEOUT_REFRESH)
+	if err=='timeout' then
+		if #bobot.baseboards==0 then 
+			server_init ()
+		else
+			server_refresh ()
+		end
+	else
 		local skt=recvt_ready[1]
 		socket_handlers[skt]()
 	end

@@ -25,8 +25,8 @@
 #define CAGATA_AVOID 2000  
 #define TIMEOUT -2
 #define DEBUG 0
-#define VERBOUSE 0
-#define VERBOUSE_TIMEOUT 0
+#define VERBOSE 0
+#define VERBOSE_TIMEOUT 0
 #define PACKET_LEN 10
 #define MAX_RETRIES 5
 
@@ -72,7 +72,7 @@ int serialport_write_len(int fd, unsigned char* str, int len){
     int n = write(fd, str, len);
     //printf("se manda un largo %d y se pidio %d\n", n, len);
     if( n!=len ){
-	printf("problemas en el send\n");
+	//printf("problemas en el send\n");
         return -1;
     }
     return 0;
@@ -107,11 +107,11 @@ int serialport_read(int fd, unsigned char* str, int len, int timeout){
 	//printf("serialport_read retorna como leidos %i bytes\n", n);
 	if (n == -1){
         if (errno == EAGAIN){
-            printf("problemas en serialcomm:read\n");
+            //printf("problemas en serialcomm:read\n");
             usleep(250000);
 		}
 		else{
-			perror("read()");
+			//perror("read()");
 		}
 	}
     if( n!=len )
@@ -135,7 +135,7 @@ int serialport_init(const char* serialport, int baud){
     fd = open(serialport, O_RDWR | O_NOCTTY | O_NONBLOCK);
 	//printf("fd after open is %i %i", fd, errno);
     if (fd == -1)  {
-            perror("init_serialport: Unable to open port ");
+            //perror("init_serialport: Unable to open port ");
             return -1;
     }
     struct termios options;
@@ -198,7 +198,7 @@ int serialport_init(const char* serialport, int baud){
       //  tcsetattr(fd,TCSANOW,&options);
         send_msg(fd, echo, 4);
         leidos=read_msg(fd, respuesta, CAGATA_AVOID);
-        printf("serialcomm:TIMEOUT %i, trying to recover...\n", leidos);
+        //printf("serialcomm:TIMEOUT %i, trying to recover...\n", leidos);
         retries--;
     } while((leidos == -2) && retries>0);
     if(leidos== -2){
@@ -208,10 +208,10 @@ int serialport_init(const char* serialport, int baud){
     do {
         b=0;
         leidos=receive_data(fd, &b, 1, 200);
-        printf ("serialcomm: purging buffer %02X, %i...\n", b, leidos);
+        //printf ("serialcomm: purging buffer %02X, %i...\n", b, leidos);
         //leidos=read_msg(fd, respuesta, CAGATA_AVOID);
     }  while(leidos != -2);  
-    #if VERBOUSE    
+    #if VERBOSE    
     printf("se leyeron %d bytes \n", leidos);
     for(i=0; i<PACKET_LEN; i++){
         printf("respuesta pos[%d]=%02X \n", i, *(respuesta + i));
@@ -300,7 +300,7 @@ int read_msg (int handler, unsigned char *buffer, int timeout) {                
 	gettimeofday(&now, NULL);
     timevaladd(&now, &timeout_timeval);
     end = now;    
-    #if VERBOUSE_TIMEOUT        
+    #if VERBOSE_TIMEOUT        
     printf("-----------------------nuevo mensaje a leer %d\n", timeout);
     #endif
     while (1) {
@@ -311,7 +311,7 @@ int read_msg (int handler, unsigned char *buffer, int timeout) {                
         if (newtimeout_ms<0) {
             newtimeout_ms=0;
         }
-        #if VERBOUSE_TIMEOUT        
+        #if VERBOSE_TIMEOUT        
         printf("--------------------------voy a esperar %d milisegundos... y me pidieron para el mensaje %d\n", newtimeout_ms, timeout);
         #endif
         leidos=receive_data(handler, &b, 1, newtimeout_ms);

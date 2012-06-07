@@ -1,1 +1,0 @@
-../../bobot/test_sensor_grises_motor.lua

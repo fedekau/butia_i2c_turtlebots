@@ -1,1 +1,0 @@
-../../bobot/test_luz.lua

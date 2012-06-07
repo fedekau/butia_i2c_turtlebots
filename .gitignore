@@ -8,7 +8,34 @@
 *~
 *.swp
 *.o
-*.so
+*.pyc
+*.xo
+*.a
+*.pot
+
+#### *.so NOT ALL *.so should be ignored
+#### static SO that cant be genereted or links to so should be keep
+#### for example static SO lib/mime/core.so using by lua
+#### or simbolics link to .so in bobotxo
+
+## .SO ignored because can be genereted from source
+lualibusb/libluausb.so
+serialcomm/serialcomm.so
+serialcomm/lua_bindings/lua_serialcomm.so
+bobot/lib/libluausb.so
+bobot/lib/lua_serialcomm.so
+libs/luasocket-2.0.2/src/mime.so.1.0.2
+libs/luasocket-2.0.2/src/socket.so.2.0.2
+
+## generated lua y luac from Makefile
+libs/lua-5.1.4/src/lua
+libs/lua-5.1.4/src/luac
+
+## temporary folder for TortugArteButia
+turtle_art_plugin/tmp
+
 
 # Also is posible to ignore all subdirectory or files in that directory
 # tmp/**/* 
+
+butialo/staging/**/*

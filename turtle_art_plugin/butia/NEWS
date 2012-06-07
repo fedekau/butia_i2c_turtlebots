@@ -1,3 +1,16 @@
+VERSION 6
+/ update i10n-es
++ fix redraw function at start
+
+VERSION 5 
++ some clean up of dead code in pythonAPI
++ integration with turtleart version 114
++ followme plugin included
++ sumo.uy plugin included
++ turn by degrees block
++ turn X degrees
++ move robot move turtle in screen
+
 VERSION 4
 + if comunication with ax12 motors is not ok we paint in gray motor related blocks
 + bobot not print information to the standard output by defaul, only if debug is set
@@ -46,15 +59,16 @@ I TurtleBlocks nesecita pycurl [apt-get install python-pycurl]
 / Tortugarte [TAButia-v1.1.activity] movido a /branches/ (deprecated)
 
 
-##########################################################################################
+####################################################################################
 
-Estructura del NEWS
+NEWS Structure!
 I info
-+ Agregado
-- sacado
-/ cambiado
-//TODO: por hacer
-//FIXME: funciona pero...
++ added
+- removed
+/ changed
+//TODO: thing todo
+//FIXME: thing to fix
 
-Sirvase cambiar a su gusto este NEWS, agregando nueva informacion al comienzo del archivo
-Deje cambios importantes o relevantes para definir los changelogs de una version a otra
+Please improve this NEWS, adding new information at the beginning of this file
+Add important or relevant changes to define the changelogs from one version to another
+- Team Butia -

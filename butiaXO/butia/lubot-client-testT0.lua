@@ -1,1 +1,0 @@
-../../bobot/lubot-client-testT0.lua

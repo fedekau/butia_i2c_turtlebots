@@ -1,6 +1,6 @@
 local device = _G
 local RD_TEMP = string.char(0x34, 0x02)
-local char000 = or string.char(0,0,0)
+local char000 = string.char(0,0,0)
 
 
 api={}
