@@ -24,7 +24,7 @@
 #include "fsusb.h"
 #include <string.h>
 
-picdem_handle *usbdev;
+picdem_handle *usbdev = NULL;
 
 
 typedef int scan_callback_t(int,int,mi_byte_t*,char*);
@@ -216,8 +216,6 @@ int program_file(char *file)
 
 }
 
-
-
 int write_range(int base, int top, FILE *f)
 {
   bl_packet bp;
@@ -305,6 +303,19 @@ int switch_board_to_bootloader(){
   switch_bootloader(usb4allboard);
   return 0;
 }
+
+int reset(){
+  if (usbdev == NULL)
+    usbdev=rjl_fsusb_open();
+  reset_board(usbdev);
+  return 0;
+}
+
+int program_file_and_reset(char *file){
+  program_file(file);
+  reset(usbdev); 
+}
+
 int main(int argc, char *argv[])
 {
   if(argc < 2 || argc > 3) {
@@ -315,6 +326,9 @@ int main(int argc, char *argv[])
   if(argc == 2) {
     if(!strcmp(argv[1], "--bootloader")){ 
       exit(switch_board_to_bootloader());
+    }
+    if(!strcmp(argv[1], "--reset")){ 
+      exit(reset());
     }
   }
   if(argc == 3) {
@@ -329,7 +343,8 @@ int main(int argc, char *argv[])
     if(!strcmp(argv[1], "--force_program")) {
       switch_board_to_bootloader();
       sleep(1);
-      exit(program_file(argv[2]));
+      program_file(argv[2]);
+      exit(reset());
     }
 
     if(!strcmp(argv[1], "--read")) {

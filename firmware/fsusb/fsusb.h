@@ -35,5 +35,6 @@ void rjl_write_block(picdem_handle *d, int offset, byte *data);
 //void rjl_erase_block(picdem_handle *d, int offset);
 void rjl_write_config_block(picdem_handle *d, int offset, int len, byte *data);
 void switch_bootloader(picdem_handle *d);
+void reset_board(picdem_handle *d);
 
 #endif /* __FSUSB_H__ */

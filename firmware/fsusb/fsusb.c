@@ -460,6 +460,16 @@ picdem_handle *rjl_usb4all_open(void)
   return NULL;
 }
 
+// write on 64-byte boundaries only in blocks of 64 bytes
+void reset_board(picdem_handle *d)
+{
+  bl_packet p;
+  p.command=RESET;
+  p.len=1;
+  usb_bulk_write(d, fsusb_endpoint, (char*)&p, 2, fsusb_timeout);
+  return 0;
+}
+
 void switch_bootloader(picdem_handle *d){
     char switch_to_bootloader_cmd[SW_BOOT_MSG_SIZE];
     switch_to_bootloader_cmd[0] = 0x00; /*send command to handler 0 (admin)*/
