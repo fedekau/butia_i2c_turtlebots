@@ -9,6 +9,13 @@ import serial
 import gtk
 from gettext import gettext as _
 
+class FlashingUSB4all:
+    def __init__(self):
+        pass
+
+    def flash(self):
+        proc = subprocess.Popen(shlex.split("./fsusb --force_program usb4butia.hex"))
+
 class FlashingArduino:
     def __init__(self):
         pass
@@ -38,13 +45,14 @@ class FlashingArduino:
         # avrdude -V -F -p m1280 -P /dev/ttyUSB0 -c stk500v1 -b 57600 -U flash:w:mega.hex
         proc = subprocess.Popen(shlex.split("./avrdude -C avrdude.conf -V -F -p m1280 -P /dev/ttyUSB0 -c stk500v1 -b 57600 -U flash:w:mega.hex"))
 
-
-#TODO class FlashingUSB4ALL:
-#TODO    def __init__(self)
-
 def on_click(event):
     board = FlashingArduino()
     board.reboot()
+    board.flash()
+
+
+def on_click2(event):
+    board = FlashingUSB4all()
     board.flash()
 
 class ButiaUpdateCore():
