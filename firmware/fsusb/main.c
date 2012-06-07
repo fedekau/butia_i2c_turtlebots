@@ -151,7 +151,8 @@ void show_usage(void)
   printf("fsusb --program <file>   program board with <file> and verify\n");
   printf("fsusb --verify <file>    verify board against <file>\n");
   printf("fsusb --read <file>      read board, saving result in <file>\n");
-  printf("fsusb --bootloader       to switch the board to bootloader program\n");
+  printf("fsusb --bootloader       to switch the board to bootloader program being in usb4butia program\n");
+  printf("fsusb --reset            to switch the board to usb4butia program being in bootloader program\n");
 }
 
 
