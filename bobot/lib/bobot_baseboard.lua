@@ -320,6 +320,21 @@ function BaseBoard:close_all()
 	end
 end
 
+-- switch the baseboard to the bootloader program implementend as a usb4all command to the admin module
+function BaseBoard:switch_to_bootloader()
+	--state & parameter sanity check
+	assert(type(self.comms)=="table")
+	
+	local comms=self.comms
+	-- In case of reset_base_board command is atended by admin module in handler 0 and send operation is 000
+	local handler_packet = ADMIN_HANDLER_SEND_COMMAND .. string.char(DEFAULT_PACKET_SIZE) .. NULL_BYTE
+	local admin_packet = string.char(0x09)  --SWITCH_TO_BOOT_BASE_BOARD_COMMAND
+	local boot_base_board_packet  = handler_packet .. admin_packet
+
+	local write_res = comms.send(ADMIN_MODULE_IN_ENDPOINT, boot_base_board_packet, TIMEOUT)
+    --from this moment the board is reseted, so there is nothing more to do
+end
+
 function BaseBoard:reset()
 	--state & parameter sanity check
 	assert(type(self.comms)=="table")
@@ -327,7 +342,7 @@ function BaseBoard:reset()
 	local comms=self.comms
 	-- In case of reset_base_board command is atended by admin module in handler 0 and send operation is 000
 	local handler_packet = ADMIN_HANDLER_SEND_COMMAND .. string.char(DEFAULT_PACKET_SIZE) .. NULL_BYTE
-	local admin_packet = string.char(0xFF)  --CLOSEALL_BASE_BOARD_COMMAND
+	local admin_packet = string.char(0xFF)  --RESET_BASE_BOARD_COMMAND
 	local reset_base_board_packet  = handler_packet .. admin_packet
 
 	local write_res = comms.send(ADMIN_MODULE_IN_ENDPOINT, reset_base_board_packet, TIMEOUT)

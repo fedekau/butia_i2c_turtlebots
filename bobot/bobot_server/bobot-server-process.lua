@@ -143,12 +143,17 @@ end
 process["CLOSEALL"] = function ()
 	if bobot.baseboards then
 		for _, bb in ipairs(bobot.baseboards) do
-			-- guille: I dont undestain this part? ;
-			-- in the master:HEAD is not commented the second line
-			-- but is comented in branch bobot2 ; sow... That i do?
-			-- TODO check if delete or not the next line
-			---bb:close_all()
+            --this command closes all the open user modules
+            --it does not have sense with plug and play
 			bb:force_close_all() --modif andrew
+		end
+	end
+	return "ok"
+end
+process["BOOTLOADER"] = function ()
+	if bobot.baseboards then
+		for _, bb in ipairs(bobot.baseboards) do
+			bb:switch_to_bootloader()
 		end
 	end
 	return "ok"
