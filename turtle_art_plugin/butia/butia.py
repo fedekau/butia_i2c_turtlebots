@@ -68,9 +68,9 @@ modules_help['vibration'] = _("switches from 0 to 1, the frequency depends on th
 
 modules_name_from_device_id = {} 
 modules_name_from_device_id['led'] = 'led'
-modules_name_from_device_id['button'] = 'boton'
-modules_name_from_device_id['grayscale'] = 'grises'
-modules_name_from_device_id['ambientlight'] = 'luz'
+modules_name_from_device_id['button'] = 'button'
+modules_name_from_device_id['grayscale'] = 'grey'
+modules_name_from_device_id['ambientlight'] = 'light'
 modules_name_from_device_id['temperature'] = 'temp'
 modules_name_from_device_id['distance'] = 'dist'
 modules_name_from_device_id['tilt'] = 'tilt'
@@ -79,9 +79,9 @@ modules_name_from_device_id['vibration'] = 'vibra'
 
 device_id_from_module_name = {} 
 device_id_from_module_name['led'] = 'led'
-device_id_from_module_name['boton'] = 'button'
-device_id_from_module_name['grises'] = 'grayscale'
-device_id_from_module_name['luz'] = 'ambientlight'
+device_id_from_module_name['button'] = 'button'
+device_id_from_module_name['grey'] = 'grayscale'
+device_id_from_module_name['light'] = 'ambientlight'
 device_id_from_module_name['temp'] = 'temperature'
 device_id_from_module_name['dist'] = 'distance'
 device_id_from_module_name['tilt'] = 'tilt'
@@ -102,7 +102,7 @@ label_name_from_device_id['vibration'] = _('vibration')
 #list of devices that will be checked in the refresh event
 refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led' ]
 
-refreshable_module_list = ['luz', 'grises', 'temp', 'dist', 'boton', 'tilt', 'magnet', 'vibra', 'led' ]
+refreshable_module_list = ['light', 'grey', 'temp', 'dist', 'button', 'tilt', 'magnet', 'vibra', 'led' ]
 
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
               'backwardDistance', 'turnXdegree', 'LCDdisplayButia', 'batterychargeButia'] 
