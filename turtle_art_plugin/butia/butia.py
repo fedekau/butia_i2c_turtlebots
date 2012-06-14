@@ -359,52 +359,18 @@ class Butia(Plugin):
         else:
             return ('', 0)
 
-
     def refreshButia(self):
         if self.butia:
             self.butia.refresh()
+        self.change_butia_palette_colors()
+
+    def change_butia_palette_colors(self):
+
+        if self.butia:
             battery = self.butia.getBatteryCharge()
         else:
             battery = ERROR_SENSOR_READ
-              
-        COLOR_STATIC = self.staticBlocksColor(battery)
-        COLOR_BATTERY = self.batteryColor(battery)
 
-        #repaints program area blocks (proto) and palette blocks (block)
-        for blk in self.tw.block_list.list:
-            #NOTE: blocks types: proto, block, trash, deleted
-            if blk.type in ['proto', 'block']:
-                if (blk.name in static_block_list):
-                    if (blk.name == 'batterychargeButia'):
-                        BOX_COLORS[blk.name] = COLOR_BATTERY[:]
-                    else:
-                        BOX_COLORS[blk.name] = COLOR_STATIC[:]
-                    blk.refresh()
-                else:
-                    blk_name, blk_index = self.block_2_index_and_name(blk.name)
-                    if (blk_name in refreshable_block_list):
-                        if blk_name in modules_name_from_device_id:
-                            module_name = modules_name_from_device_id[blk_name] + blk_index
-                        else:
-                            module_name = ''
-                        if module_name not in self.list_connected_device_module:
-                            if blk_index !='' :
-                                if blk.type == 'proto': # only make invisible the block in the palette not in the program area
-                                    blk.set_visibility(False)
-                            BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
-                        else:
-                            if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
-                                blk.set_visibility(True)
-                            BOX_COLORS[blk.name] = COLOR_PRESENT[:]
-                        blk.refresh()
-
-
-        #impact changes in turtle blocks palette
-        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=True)	
-  
-    def change_butia_palette_colors(self):
-
-        battery = self.butia.getBatteryCharge()
         if (battery == self.old_battery_value):
             change_statics_blocks = False
         else:
@@ -445,7 +411,11 @@ class Butia(Plugin):
 
 
         #impact changes in turtle blocks palette
-        self.tw.show_toolbar_palette(palette_name_to_index('butia'), regenerate=True, show=False)	
+        try:
+            index = palette_name_to_index('butia')
+            self.tw.show_toolbar_palette(index, regenerate=True, show=False)
+        except:
+            pass
 
     #if there exists new devices connected or disconections to the butia IO board, then it change the color of the blocks corresponding to the device 
     def check_for_device_change(self):
@@ -661,9 +631,11 @@ class Butia(Plugin):
             except:
                 debug_output('ERROR creating bobot')
 
+        time.sleep(1)
+
         self.butia = butiaAPI.robot()
 
-        self.pollthread=threading.Timer(3,self.bobot_poll)
+        self.pollthread = threading.Timer(3, self.bobot_poll)
         self.pollthread.start()
 
     def bobot_poll(self):
@@ -671,7 +643,7 @@ class Butia(Plugin):
             if self.can_refresh:
                 self.butia.refresh()
                 self.check_for_device_change()
-            self.pollthread=threading.Timer(3,self.bobot_poll)
+            self.pollthread=threading.Timer(3, self.bobot_poll)
             self.pollthread.start()
         else:
             debug_output("Ending butia poll")
