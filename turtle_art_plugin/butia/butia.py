@@ -362,7 +362,7 @@ class Butia(Plugin):
     def refreshButia(self):
         if self.butia:
             self.butia.refresh()
-        self.change_butia_palette_colors()
+        self.check_for_device_change(True)
 
     def change_butia_palette_colors(self):
 
@@ -418,7 +418,7 @@ class Butia(Plugin):
             pass
 
     #if there exists new devices connected or disconections to the butia IO board, then it change the color of the blocks corresponding to the device 
-    def check_for_device_change(self):
+    def check_for_device_change(self, force_refresh=False):
         
         old_list_connected_device_module =  self.list_connected_device_module
         self.list_connected_device_module = self.butia.get_modules_list()
@@ -428,7 +428,7 @@ class Butia(Plugin):
         set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
         self.set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
 
-        if not(self.set_changed_device_module == set([])):
+        if not(self.set_changed_device_module == set([])) or force_refresh:
             self.change_butia_palette_colors()
 
     def stop(self):
