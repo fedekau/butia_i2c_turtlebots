@@ -153,6 +153,7 @@ void show_usage(void)
   printf("fsusb --read <file>      read board, saving result in <file>\n");
   printf("fsusb --bootloader       to switch the board to bootloader program being in usb4butia program\n");
   printf("fsusb --reset            to switch the board to usb4butia program being in bootloader program\n");
+  printf("fsusb --force_program    to switch the board to bootloader mode, program with <file>, verify, and reboot the board to run the new programed firmware \n");
 }
 
 
