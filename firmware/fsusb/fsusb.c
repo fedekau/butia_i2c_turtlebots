@@ -321,7 +321,6 @@ picdem_handle *rjl_fsusb_open(void)
 {
   struct usb_device *device;
   struct usb_bus* bus;
-  unsigned char buf[2];
 
 
   if (geteuid()!=0) {
@@ -401,8 +400,6 @@ picdem_handle *rjl_usb4all_open(void)
 {
   struct usb_device *device;
   struct usb_bus* bus;
-  unsigned char buf[2];
-
 
   if (geteuid()!=0) {
     bad("This program must be run as root, or made setuid root");
@@ -467,7 +464,6 @@ void reset_board(picdem_handle *d)
   p.command=RESET;
   p.len=1;
   usb_bulk_write(d, fsusb_endpoint, (char*)&p, 2, fsusb_timeout);
-  return 0;
 }
 
 void switch_bootloader(picdem_handle *d){
