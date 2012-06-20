@@ -1,6 +1,6 @@
 local device = _G
 local RD_VERSION = string.char(0x00) -- lee la versión del firmware de la placa
-local GET_VOLT = string.char(0x03) -- obtiene el voltage de la batería
+local GET_VOLT = string.char(0x01) -- obtiene el voltage de la batería
 
 api={}
 api.read_ver = {}
