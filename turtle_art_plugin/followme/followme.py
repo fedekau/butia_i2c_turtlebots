@@ -68,13 +68,18 @@ class Followme(Plugin):
     def dynamicLoadBlockColors(self):
         if not(self.cam_present):
             BOX_COLORS['followRGB'] = COLOR_NOTPRESENT
-            BOX_COLORS['follow'] = COLOR_NOTPRESENT
             BOX_COLORS['threshold'] = COLOR_NOTPRESENT
-            BOX_COLORS['pixels_min'] = COLOR_NOTPRESENT
-            BOX_COLORS['calibrate'] = COLOR_NOTPRESENT
+            BOX_COLORS['savecalibration1'] = COLOR_NOTPRESENT
+            BOX_COLORS['savecalibration2'] = COLOR_NOTPRESENT
+            BOX_COLORS['savecalibrationN'] = COLOR_NOTPRESENT
+            BOX_COLORS['calibration1'] = COLOR_NOTPRESENT
+            BOX_COLORS['calibration2'] = COLOR_NOTPRESENT
+            BOX_COLORS['calibrationN'] = COLOR_NOTPRESENT
             BOX_COLORS['xposition'] = COLOR_NOTPRESENT
             BOX_COLORS['yposition'] = COLOR_NOTPRESENT
             BOX_COLORS['pixels'] = COLOR_NOTPRESENT
+            BOX_COLORS['follow'] = COLOR_NOTPRESENT
+            BOX_COLORS['pixels_min'] = COLOR_NOTPRESENT
 
     def setup(self):
 
@@ -219,24 +224,27 @@ class Followme(Plugin):
 
     def stop(self):
         if (self.cam_present and self.cam_on):
-            self.cam.stop()
-            self.cam_on = False
+            try:
+                self.cam.stop()
+                self.cam_on = False
+            except:
+                pass
 
     def quit(self):
         if (self.cam_present and self.cam_on):
-            self.cam.stop()
-            self.cam_on = False
+            try:
+                self.cam.stop()
+                self.cam_on = False
+            except:
+                pass
             
     def clear(self):
         pass
 
     def prim_followRGB(self, R, G, B):
-        if type(R) == float:
-            R = int(R)
-        if type(G) == float:
-            G = int(G)
-        if type(B) == float:
-            B = int(B)
+        R = int(R)
+        G = int(G)
+        B = int(B)
 
         if (R < 0) or (R > 255):
             R = 255
@@ -244,6 +252,7 @@ class Followme(Plugin):
             G = 255
         if (B < 0) or (B > 255):
             B = 255
+
         self.colorc = (R, G, B)
 
     def prim_follow(self, x):
@@ -280,12 +289,9 @@ class Followme(Plugin):
             self.colorc = (255, 255, 255)
             
     def prim_threshold(self, R, G, B):
-        if type(R) == float:
-            R = int(R)
-        if type(G) == float:
-            G = int(G)
-        if type(B) == float:
-            B = int(B)
+        R = int(R)
+        G = int(G)
+        B = int(B)
 
         if (R < 0) or (R > 255):
             R = 25
@@ -293,6 +299,7 @@ class Followme(Plugin):
             G = 25
         if (B < 0) or (B > 255):
             B = 25
+
         self.threshold = (R, G, B)
     
     def prim_pixels_min(self, x):
@@ -337,60 +344,65 @@ class Followme(Plugin):
         return (self.colorc[0], self.colorc[1], self.colorc[2])
 
     def prim_xposition(self):
+        res = -1
         if self.cam_present:
             if not(self.cam_on):
                 try:
                     self.cam.start()
                     self.cam_on = True
                 except:
-                    return (-1)
-            self.capture = self.cam.get_image(self.capture)
-            self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
-                                                self.threshold)
-            self.connected = self.mask.connected_component()
-            if (self.connected.count() > self.pixels):
-                centroid = self.mask.centroid()
-                return (320 - centroid[0])
-            else:
-                return (-1)
-        else:
-            return (-1)
+                    pass
+            if self.cam_on:
+                try:
+                    self.capture = self.cam.get_image(self.capture)
+                    self.mask = pygame.mask.from_threshold(self.capture, self.colorc, self.threshold)
+                    self.connected = self.mask.connected_component()
+                    if (self.connected.count() > self.pixels):
+                        centroid = self.mask.centroid()
+                        res = 320 - centroid[0]
+                except:
+                    pass
+        return res
 
     def prim_yposition(self):
+        res = -1
         if self.cam_present:
             if not(self.cam_on):
                 try:
                     self.cam.start()
                     self.cam_on = True
                 except:
-                    return (-1)
-            self.capture = self.cam.get_image(self.capture)
-            self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
-                                                self.threshold)
-            self.connected = self.mask.connected_component()
-            if (self.connected.count() > self.pixels):
-                centroid = self.mask.centroid()
-                return (240 - centroid[1])
-            else:
-                return (-1)
-        else:
-            return (-1)
+                    pass
+            if self.cam_on:
+                try:
+                    self.capture = self.cam.get_image(self.capture)
+                    self.mask = pygame.mask.from_threshold(self.capture, self.colorc, self.threshold)
+                    self.connected = self.mask.connected_component()
+                    if (self.connected.count() > self.pixels):
+                        centroid = self.mask.centroid()
+                        res = 240 - centroid[1]
+                except:
+                    pass
+        return res
 
     def prim_pixels(self):
+        res = -1
         if self.cam_present:
             if not(self.cam_on):
                 try:
                     self.cam.start()
                     self.cam_on = True
                 except:
-                    return (-1)
-            self.capture = self.cam.get_image(self.capture)
-            self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
-                                                self.threshold)
-            self.connected = self.mask.connected_component()
-            return self.connected.count()
-        else:
-            return (-1)
+                    pass
+            if self.cam_on:
+                try:
+                    self.capture = self.cam.get_image(self.capture)
+                    self.mask = pygame.mask.from_threshold(self.capture, self.colorc, self.threshold)
+                    self.connected = self.mask.connected_component()
+                    res = self.connected.count()
+                except:
+                    pass
+        return res
 
 
     def _prim_savecalibration(self, name, x):
