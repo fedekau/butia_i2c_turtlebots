@@ -139,7 +139,7 @@ class Butia(Plugin):
         COLOR_STATIC = self.staticBlocksColor(battery)
         COLOR_BATTERY = self.batteryColor(battery)
 
-        palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'))
+        palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'), init_on_start=True)
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
