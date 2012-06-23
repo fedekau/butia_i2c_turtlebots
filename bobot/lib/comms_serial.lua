@@ -7,7 +7,7 @@ local bobot = require("bobot")
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 assert(package.loadlib(my_path .. "lua_serialcomm.so","luaopen_serialcomm"))()
-local serialcomm=serialcomm; _G.serialcomm=nil
+local serialcomm=_G.serialcomm; _G.serialcomm=nil
 
 local serial_handler 
 

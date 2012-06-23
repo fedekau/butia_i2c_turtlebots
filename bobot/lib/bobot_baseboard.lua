@@ -100,8 +100,6 @@ end
 local function load_module_handlers(bb)
 	local retry = 0
 	
-	if bb.comms.type=='serial' then return end
-	
 	local n_module_handlers=bb:get_handler_size()
 	while n_module_handlers == nil and retry < MAX_RETRY do
 		n_module_handlers=bb:get_handler_size()
