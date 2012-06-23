@@ -185,7 +185,7 @@ socket_handlers[server_h]=function()
 	end
 end
 
-local function server_refresh ()
+function server_refresh ()
 	for i, bb in ipairs(bobot.baseboards) do
 		if not bb:refresh() then
 			bobot.baseboards[i]=nil
@@ -194,7 +194,7 @@ local function server_refresh ()
 	read_devices_list()
 end
 
-local function server_init ()
+function server_init ()
 	bobot.init(arg)
 	read_devices_list()
 end
