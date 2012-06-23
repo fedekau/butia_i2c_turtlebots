@@ -188,7 +188,8 @@ end
 function server_refresh ()
 	local refreshed
 	for i, bb in ipairs(bobot.baseboards) do
-		if bb.refresh and not (bb.comms.type=='serial' and bb.devices) then 
+		--if bb.refresh and not (bb.comms.type=='serial' and bb.devices) then 
+		if bb.refresh and bb.hotplug then 
 			if not bb:refresh() then
 				bobot.baseboards[i]=nil
 			end
