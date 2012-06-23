@@ -1,6 +1,6 @@
 local device = _G
 local RD_VERSION=string.char(0x00)
-local SET_VEL_2MTR=string.char(0x01) -- código de op para mover dos motores con vel y sentido
+local SET_VEL_2MTR=0x01 -- código de op para mover dos motores con vel y sentido
 local TEST_MOTORS=string.char(0x02)
 local SET_VEL_MTR = 0x01 -- código de op para mover un motor con vel y sentido
 

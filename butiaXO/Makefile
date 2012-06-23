@@ -5,9 +5,7 @@ all:  dependency
 
 dependency:
 	$(MAKE) -C ../serialcomm/lua_bindings
-#ifdef USB4ALL
 	$(MAKE) -C ../lualibusb
-#endif
 	$(MAKE) -C ../libs/lua-5.1.4 linux
 	$(MAKE) -C ../libs/luasocket
 

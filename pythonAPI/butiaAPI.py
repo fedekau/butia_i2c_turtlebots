@@ -154,11 +154,11 @@ class robot:
 
     def set2MotorSpeed(self, leftSense = '0', leftSpeed = '0', rightSense = '0', rightSpeed = '0'):
             msg = leftSense + ' ' + leftSpeed + ' ' + rightSense + ' ' + rightSpeed
-            return self.callModule('motores', 'setvel2mtr', msg)
+            return self.callModule('motors', 'setvel2mtr', msg)
      
     def setMotorSpeed(self, idMotor = '0', sense = '0', speed = '0'):
             msg = idMotor + ' ' + sense + ' ' + speed
-            return self.callModule('motores', 'setvelmtr', msg)
+            return self.callModule('motors', 'setvelmtr', msg)
 
     #######################################################################
     ### Operations for butia.lua driver
@@ -188,40 +188,40 @@ class robot:
     
     # return the value of button: 1 if pressed, 0 otherwise
     def getButton(self, number=''):
-        return self.callModule('boton:' + str(number), 'getBoton')
+        return self.callModule('button:' + str(number), 'getValue')
     
     # return the value en ambient light sensor
     def getAmbientLight(self, number=''):
-        return self.callModule('luz:' + str(number), 'getLuz')
+        return self.callModule('light:' + str(number), 'getValue')
 
     # return the value of the distance sensor
     def getDistance(self, number=''):
-        return self.callModule('dist:' + str(number), 'getDistancia')
+        return self.callModule('dist:' + str(number), 'getValue')
     
     # return the value of the grayscale sensor
     def getGrayScale(self, number=''):
-        return self.callModule('grises:' + str(number), 'getLevel')
+        return self.callModule('grey:' + str(number), 'getValue')
 
     # return the value of the temperature sensor
     def getTemperature(self, number=''):
-        return self.callModule('temp:' + str(number), 'getTemp')
+        return self.callModule('temp:' + str(number), 'getValue')
 
     # return the value of the vibration sensor
     def getVibration(self, number=''):
-        return self.callModule('vibra:' + str(number), 'getVibra')
+        return self.callModule('vibra:' + str(number), 'getValue')
 
     # return the value of the tilt sensor
     def getTilt(self, number=''):
-        return self.callModule('tilt:' + str(number), 'getTilt')
+        return self.callModule('tilt:' + str(number), 'getValue')
 
     # FIXME: the name of the module and the function...
     # return the value of the capacitive touch sensor
     def getCapacitive(self, number=''):
-        return self.callModule('capacitive:' + str(number), 'getCapa')
+        return self.callModule('capacitive:' + str(number), 'getValue')
 
     # return the value of the magnetic induction sensor
     def getMagneticInduction(self, number=''):
-        return self.callModule('magnet:' + str(number), 'getCampo')
+        return self.callModule('magnet:' + str(number), 'getValue')
 
     # set the led intensity
     def setLed(self, nivel = 255, number= ''):
