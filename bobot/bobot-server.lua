@@ -187,7 +187,7 @@ end
 
 function server_refresh ()
 	for i, bb in ipairs(bobot.baseboards) do
-		if not bb:refresh() then
+		if bb.refresh and not bb:refresh() then
 			bobot.baseboards[i]=nil
 		end
 	end
