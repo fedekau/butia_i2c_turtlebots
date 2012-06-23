@@ -1,15 +1,15 @@
-module(..., package.seeall);
-
 local bobot_device = require("bobot_device")
 
-function send(endpoint, data, timeout)
+local comms_chotox = {}
+
+function comms_chotox.send(endpoint, data, timeout)
 end
 
-function read(endpoint, len, timeout)
+function comms_chotox.read(endpoint, len, timeout)
 end
 
 
-function init(baseboards)
+function comms_chotox.init(baseboards)
 	--parameters sanity check
 	assert(type(baseboards)=="table")
 
@@ -18,7 +18,7 @@ function init(baseboards)
 	local bb = {idBoard=1, comms=comms_chotox}
 	local devices={}
 	for i, name in ipairs({"led","led1","grises","grises1","dist","temp","butia","display","butia"}) do
-		local dd={name=name, baseboard=bb, handler=i}
+		local dd={name=name, module=name, baseboard=bb, handler=i}
 		dd.open = function() return true end
 		dd.close = function() end
 		dd.read = function() return "" end
@@ -33,4 +33,4 @@ function init(baseboards)
 	return n_boards
 end
 
-
+return comms_chotox
