@@ -452,10 +452,7 @@ class Butia(Plugin):
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
                     if (blk_name in refreshable_block_list):
-                        if blk_name in modules_name_from_device_id_1:
-                            module_name = modules_name_from_device_id_1[blk_name] + blk_index
-                        else:
-                            module_name = ''
+                        module_name = modules_name_from_device_id_1[blk_name] + blk_index
                         if module_name in self.set_changed_device_module:
                             if module_name not in self.list_connected_device_module:
                                 if blk_index !='' :
@@ -520,7 +517,12 @@ class Butia(Plugin):
     def check_for_device_change(self, force_refresh=False):
         
         old_list_connected_device_module =  self.list_connected_device_module
-        self.list_connected_device_module = self.butia.get_modules_list()
+
+        if self.butia:
+            self.list_connected_device_module = self.butia.get_modules_list()
+        else:
+            self.list_connected_device_module = []
+
         set_old_connected_device_module = set(old_list_connected_device_module)
         set_connected_device_module = set(self.list_connected_device_module)
         set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
