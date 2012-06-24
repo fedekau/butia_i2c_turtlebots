@@ -19,11 +19,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gobject
 import butiaAPI
 import time
-import math
-import os
 import threading
 import re
 import subprocess
@@ -31,7 +28,6 @@ import commands
 
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
-from TurtleArt.tapalette import palette_blocks
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary
 from TurtleArt.taconstants import BOX_COLORS
