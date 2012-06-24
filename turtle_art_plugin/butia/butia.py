@@ -455,7 +455,7 @@ class Butia(Plugin):
         #impact changes in turtle blocks palette
         try:
             index = palette_name_to_index('butia')
-            self.tw.show_toolbar_palette(index, regenerate=True, show=False)
+            self.tw.regenerate_palette(index)
         except:
             pass
 
