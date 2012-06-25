@@ -30,7 +30,6 @@ from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary
-from TurtleArt.taconstants import BOX_COLORS
 from TurtleArt.tautils import debug_output
 from TurtleArt.tawindow import block_names
 
@@ -160,7 +159,6 @@ class Butia(Plugin):
                      help_string=_('force to refresh the state of the butia plugin blocks'))
         self.tw.lc.def_prim('refreshButia', 0, lambda self: primitive_dictionary['refreshButia']())
         special_block_colors['refreshButia'] = COLOR_PRESENT
-        BOX_COLORS['refreshButia'] = COLOR_PRESENT
 
         primitive_dictionary['batterychargeButia'] = self.batterychargeButia
         palette.add_block('batterychargeButia',
@@ -169,7 +167,7 @@ class Butia(Plugin):
                      prim_name='batterychargeButia',
                      help_string=_('returns the battery charge as a number between 0 and 255'))
         self.tw.lc.def_prim('batterychargeButia', 0, lambda self: primitive_dictionary['batterychargeButia']())
-        BOX_COLORS['batterychargeButia'] = COLOR_NOTPRESENT
+        special_block_colors['batterychargeButia'] = COLOR_NOTPRESENT
 
         primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',
@@ -179,7 +177,7 @@ class Butia(Plugin):
                      default=[600],
                      help_string=_('set the speed of the Butia motors as a value between 0 and 1023, passed by an argument'))
         self.tw.lc.def_prim('speedButia', 1, lambda self, x: primitive_dictionary['speedButia'](x))
-        BOX_COLORS['speedButia'] = COLOR_NOTPRESENT
+        special_block_colors['speedButia'] = COLOR_NOTPRESENT
         
         primitive_dictionary['forwardButia'] = self.forwardButia
         palette.add_block('forwardButia',
@@ -188,7 +186,7 @@ class Butia(Plugin):
                      prim_name='forwardButia',
                      help_string=_('move the Butia robot forward'))
         self.tw.lc.def_prim('forwardButia', 0, lambda self: primitive_dictionary['forwardButia']())
-        BOX_COLORS['forwardButia'] = COLOR_NOTPRESENT
+        special_block_colors['forwardButia'] = COLOR_NOTPRESENT
 
         primitive_dictionary['forwardDistance'] = self.forwardDistance
         palette.add_block('forwardDistance',
@@ -198,7 +196,7 @@ class Butia(Plugin):
                      prim_name='forwardDistance',
                      help_string=_('move the Butia robot forward a predefined distance'))
         self.tw.lc.def_prim('forwardDistance', 1, lambda self, x: primitive_dictionary['forwardDistance'](x))
-        BOX_COLORS['forwardDistance'] = COLOR_NOTPRESENT
+        special_block_colors['forwardDistance'] = COLOR_NOTPRESENT
 
         primitive_dictionary['leftButia'] = self.leftButia
         palette.add_block('leftButia',
@@ -207,7 +205,7 @@ class Butia(Plugin):
                      prim_name='leftButia',
                      help_string=_('turn the Butia robot at left'))
         self.tw.lc.def_prim('leftButia', 0, lambda self: primitive_dictionary['leftButia']())
-        BOX_COLORS['leftButia'] = COLOR_NOTPRESENT
+        special_block_colors['leftButia'] = COLOR_NOTPRESENT
         
         primitive_dictionary['backwardButia'] = self.backwardButia
         palette.add_block('backwardButia',
@@ -216,7 +214,7 @@ class Butia(Plugin):
                      prim_name='backwardButia',
                      help_string=_('move the Butia robot backward'))
         self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
-        BOX_COLORS['backwardButia'] = COLOR_NOTPRESENT
+        special_block_colors['backwardButia'] = COLOR_NOTPRESENT
 
         primitive_dictionary['backwardDistance'] = self.backwardDistance
         palette.add_block('backwardDistance',
@@ -226,7 +224,7 @@ class Butia(Plugin):
                      prim_name='backwardDistance',
                      help_string=_('move the Butia robot backward a predefined distance'))
         self.tw.lc.def_prim('backwardDistance', 1, lambda self, x: primitive_dictionary['backwardDistance'](x))
-        BOX_COLORS['backwardDistance'] = COLOR_NOTPRESENT
+        special_block_colors['backwardDistance'] = COLOR_NOTPRESENT
 
         primitive_dictionary['rightButia'] = self.rightButia
         palette.add_block('rightButia',
@@ -235,7 +233,7 @@ class Butia(Plugin):
                      prim_name='rightButia',
                      help_string=_('turn the Butia robot at right'))
         self.tw.lc.def_prim('rightButia', 0, lambda self: primitive_dictionary['rightButia']())
-        BOX_COLORS['rightButia'] = COLOR_NOTPRESENT
+        special_block_colors['rightButia'] = COLOR_NOTPRESENT
 
         primitive_dictionary['turnXdegree'] = self.turnXdegree
         palette.add_block('turnXdegree',
@@ -245,7 +243,7 @@ class Butia(Plugin):
                      prim_name='turnXdegree',
                      help_string=_('turn the Butia robot x degrees'))
         self.tw.lc.def_prim('turnXdegree', 1, lambda self, x: primitive_dictionary['turnXdegree'](x))
-        BOX_COLORS['turnXdegree'] = COLOR_NOTPRESENT
+        special_block_colors['turnXdegree'] = COLOR_NOTPRESENT
 
         primitive_dictionary['stopButia'] = self.stopButia
         palette.add_block('stopButia',
@@ -254,7 +252,7 @@ class Butia(Plugin):
                      prim_name='stopButia',
                      help_string=_('stop the Butia robot'))
         self.tw.lc.def_prim('stopButia', 0, lambda self: primitive_dictionary['stopButia']())
-        BOX_COLORS['stopButia'] = COLOR_NOTPRESENT
+        special_block_colors['stopButia'] = COLOR_NOTPRESENT
 
         primitive_dictionary['LCDdisplayButia'] = self.LCDdisplayButia
         palette.add_block('LCDdisplayButia',
@@ -264,7 +262,7 @@ class Butia(Plugin):
                      prim_name='LCDdisplayButia',
                      help_string=_('print text in Butia robot 32-character ASCII display'))
         self.tw.lc.def_prim('LCDdisplayButia', 1, lambda self, x: primitive_dictionary['LCDdisplayButia'](x))
-        BOX_COLORS['LCDdisplayButia'] = COLOR_NOTPRESENT
+        special_block_colors['LCDdisplayButia'] = COLOR_NOTPRESENT
 
 
         #add every function in the code 
@@ -306,8 +304,6 @@ class Butia(Plugin):
                     self.tw.lc.def_prim(block_name, 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
 
                 special_block_colors[block_name] = COLOR_NOTPRESENT
-                BOX_COLORS[block_name] = COLOR_NOTPRESENT
-                
 
                 for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
@@ -332,7 +328,6 @@ class Butia(Plugin):
                         self.tw.lc.def_prim(block_name, 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
 
                     special_block_colors[block_name] = COLOR_NOTPRESENT
-                    BOX_COLORS[block_name] = COLOR_NOTPRESENT
 
         self.list_connected_device_module = []
         
@@ -418,9 +413,9 @@ class Butia(Plugin):
                 if (blk.name in static_block_list):
                     if (change_statics_blocks):
                         if (blk.name == 'batterychargeButia'):
-                            BOX_COLORS[blk.name] = COLOR_BATTERY[:]
+                            special_block_colors[blk.name] = COLOR_BATTERY[:]
                         else:
-                            BOX_COLORS[blk.name] = COLOR_STATIC[:]
+                            special_block_colors[blk.name] = COLOR_STATIC[:]
                         blk.refresh()
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
@@ -431,11 +426,11 @@ class Butia(Plugin):
                                 if blk_index !='' :
                                     if blk.type == 'proto': # only make invisible the block in the palette not in the program area
                                         blk.set_visibility(False)
-                                BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
+                                special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
                             else:
                                 if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
                                     blk.set_visibility(True)
-                                BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+                                special_block_colors[blk.name] = COLOR_PRESENT[:]
                         blk.refresh()
 
 
@@ -451,9 +446,9 @@ class Butia(Plugin):
                 if (blk.name in static_block_list):
                     if (change_statics_blocks):
                         if (blk.name == 'batterychargeButia'):
-                            BOX_COLORS[blk.name] = COLOR_BATTERY[:]
+                            special_block_colors[blk.name] = COLOR_BATTERY[:]
                         else:
-                            BOX_COLORS[blk.name] = COLOR_STATIC[:]
+                            special_block_colors[blk.name] = COLOR_STATIC[:]
                         blk.refresh()
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
@@ -467,14 +462,14 @@ class Butia(Plugin):
 
                             label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
                             value = blk_index
-                            BOX_COLORS[blk.name] = COLOR_NOTPRESENT[:]
+                            special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
                         else:
                             val = self.match_dict[s]
                             value = int(val)
                             label = label_name_from_device_id[blk_name] + ':' + val + ' ' + _('Butia')
                             if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
                                 blk.set_visibility(True)
-                            BOX_COLORS[blk.name] = COLOR_PRESENT[:]
+                            special_block_colors[blk.name] = COLOR_PRESENT[:]
 
                         if module == 'led':
                             self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
