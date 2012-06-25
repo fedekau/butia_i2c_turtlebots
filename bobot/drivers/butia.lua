@@ -1,5 +1,5 @@
 local device = _G
-local RD_VERSION = string.char(0x00) -- lee la versión del firmware de la placa
+local RD_VERSION = string.char(0x02) -- lee la versión del firmware de la placa (Igual para 1.0 y 2.0)
 local GET_VOLT = string.char(0x03) -- obtiene el voltage de la batería (Igual para 1.0 y 2.0)
 
 api={}
@@ -9,8 +9,8 @@ api.read_ver.returns = {[1]={rname="data", rtype="string"}}
 api.read_ver.call = function (data)
 	device:send(RD_VERSION)
 	local ret = device:read(2)
-	--local devolver = string.byte(ret , 2) --leo el segundo byte obtenido que tiene la versión (el primero tiene el opcode)
-    local devolver = (string.byte(version_response,2) or 0) + (string.byte(version_response,3) or 0)* 256
+	local devolver = string.byte(ret , 2) --leo el segundo byte obtenido que tiene la versión (el primero tiene el opcode)
+    --local devolver = (string.byte(version_response,2) or 0) + (string.byte(version_response,3) or 0)* 256
 	return devolver	
 end
 
