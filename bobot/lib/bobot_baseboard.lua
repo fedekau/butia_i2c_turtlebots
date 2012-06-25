@@ -37,17 +37,19 @@ local function run_shell (s)
 	return l
 end
 
-local drivers = {}
+openable = {}
+hotplug = {}
+
 local function parse_drivers()
 	local driver_files=run_shell("sh -c 'ls "..my_path.."../drivers/*.lua 2> /dev/null'")
 	for filename in driver_files:gmatch('drivers%/(%S+)%.lua') do
 		--print ("Driver openable", filename)
-		drivers[filename] = 'openable'
+		openable[filename] = true
 	end
 	driver_files=run_shell("sh -c 'ls "..my_path.."../drivers/hotplug/*.lua 2> /dev/null'")
 	for filename in driver_files:gmatch('drivers%/hotplug%/(%S+)%.lua') do
 		--print ("Driver hotplug", filename)
-		drivers[filename] = 'hotplug'
+		hotplug[filename] = true
 	end
 end
 parse_drivers()
@@ -73,7 +75,7 @@ local function load_modules(bb)
 			retry = retry+1
 		end
 		if not modulename then return nil end
-		if drivers[modulename]=='openable' then
+		if openable[modulename] then
 			bb.modules[i]=modulename
 			local d = bobot_device:new({
 				module=modulename,
@@ -86,7 +88,7 @@ local function load_modules(bb)
 			bb.devices[#bb.devices+1]=d
 			
 			bb.modules[modulename]=d
-		elseif drivers[modulename]=='hotplug' then
+		elseif hotplug[modulename] then
 			bb.modules[i]=modulename
 			bb.modules[modulename]=true
 			bb.hotplug = true -- bb has a hotplug module
@@ -130,7 +132,7 @@ local function load_module_handlers(bb)
 					module=modulename,
 					--name=name, 
 					baseboard=bb,
-					hotplug=(drivers[modulename]=='hotplug'),
+					hotplug=(hotplug[modulename]),
 					in_endpoint=0x01, out_endpoint=0x01,
 				}) -- in_endpoint=0x01, out_endpoint=0x01})
 				if d then 
