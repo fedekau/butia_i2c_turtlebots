@@ -1,23 +1,19 @@
 local device = _G
 
-local char00=string.char(0x00)
+local GET_VALUE=string.char(0x00)
+local string_byte=string.byte
 
--- descripción: permite conocer el estado el botón en un momento dado.
--- entrada: no tiene.
--- salida: estado del botón. Posibles estados: 1 presionado, 0 libre.
+-- description: lets us know button's current status
+-- input: empty
+-- output: button's current status. Possible status: 1 pressed - 0 not pressed
 api={}
-api.getBoton = {}
-api.getBoton.parameters = {} -- no tiene parámetros de entrada
-api.getBoton.returns = {[1]={rname="state", rtype="int"}} -- 1 = presionado, 0 = libre
-api.getBoton.call = function ()
-	device:send(char00) 			-- codigo de operacion = 0 
-	local sen_dig_response = device:read(2) -- leo 2 bytes (opcode, data)
-	local raw_val
-	if not sen_dig_response or string.byte(sen_dig_response or "00000000", 2) == nil 
-	then 
-		raw_val = "nil value"
-	else
-		raw_val = string.byte(sen_dig_response, 2) -- me quedo con los datos 
-	end	
+api.getValue = {}
+api.getValue.parameters = {} -- no input parameters
+api.getValue.returns = {[1]={rname="state", rtype="int"}}
+api.getValue.call = function ()
+	device:send(GET_VALUE) -- operation code 1 = get button's status
+	local sen_dig_response = device:read(2) -- 2 bytes to read (opcode, data)
+    if not sen_dig_response or #sen_dig_response~=2 then return -1 end
+	local raw_val = string_byte(sen_dig_response, 2) or 0 -- keep data
 	return raw_val 
 end
