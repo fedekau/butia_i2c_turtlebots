@@ -86,7 +86,10 @@ class robot:
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
-        msg = 'REFRESH'
+        if self.ver == BUTIA_1:
+            msg = 'REFRESH'
+        else:
+            msg = 'INIT'
         return self.doCommand(msg)
 
     # close the comunication with the bobot
