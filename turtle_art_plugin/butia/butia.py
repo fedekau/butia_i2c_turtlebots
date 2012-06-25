@@ -44,6 +44,7 @@ MAX_SENSOR_PER_TYPE = 4
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 WHEELBASE = 28.00
+BUTIA_1 = 20
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
@@ -77,7 +78,7 @@ modules_name_from_device_id_2['button'] = 'button'
 modules_name_from_device_id_2['grayscale'] = 'grey'
 modules_name_from_device_id_2['ambientlight'] = 'light'
 modules_name_from_device_id_2['temperature'] = 'temp'
-modules_name_from_device_id_2['distance'] = 'dist'
+modules_name_from_device_id_2['distance'] = 'distanc'
 modules_name_from_device_id_2['tilt'] = 'tilt'
 modules_name_from_device_id_2['magneticinduction'] = 'magnet'
 modules_name_from_device_id_2['vibration'] = 'vibra'
@@ -99,7 +100,7 @@ device_id_from_module_name_2['button'] = 'button'
 device_id_from_module_name_2['grey'] = 'grayscale'
 device_id_from_module_name_2['light'] = 'ambientlight'
 device_id_from_module_name_2['temp'] = 'temperature'
-device_id_from_module_name_2['dist'] = 'distance'
+device_id_from_module_name_2['distanc'] = 'distance'
 device_id_from_module_name_2['tilt'] = 'tilt'
 device_id_from_module_name_2['magnet'] = 'magneticinduction'
 device_id_from_module_name_2['vibra'] = 'vibration'
@@ -383,16 +384,17 @@ class Butia(Plugin):
             version = self.butia.getVersion()
         else:
             self.battery_value = ERROR_SENSOR_READ
-            version = '20'
+            version = BUTIA_1
 
         change_statics_blocks = False
         if not(self.battery_value == self.old_battery_value):
             change_statics_blocks = True
             self.old_battery_value = self.battery_value
-            COLOR_STATIC = self.staticBlocksColor(self.battery_value)
-            COLOR_BATTERY = self.batteryColor(self.battery_value)
 
-        if version == '20':
+        COLOR_STATIC = self.staticBlocksColor(self.battery_value)
+        COLOR_BATTERY = self.batteryColor(self.battery_value)
+
+        if version == BUTIA_1:
             self.refresh_palette_1(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
         else:
             self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
