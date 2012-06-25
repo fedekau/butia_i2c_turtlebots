@@ -51,6 +51,7 @@ function comms_usb.init(baseboards)
 	--refresh devices and buses
 	libusb.find_busses()
 	libusb.find_devices()
+	local n_boards = 0
 
 	local buses=libusb.get_busses()
 	for dirname, bus in pairs(buses) do 			--iterate buses
@@ -88,10 +89,11 @@ function comms_usb.init(baseboards)
 				--bobot.debugprint("Baseboard:", iSerial)
 
 				baseboards[#baseboards+1]=bb
+				n_boards = n_boards + 1
 			end
 		end
 	end
-	return #baseboards
+	return n_boards 
 end
 
 return comms_usb
