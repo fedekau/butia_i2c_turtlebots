@@ -2,6 +2,8 @@
 
 --module(..., package.seeall);
 
+local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
+
 local bobot_device = require("bobot_device")
 local bobot = require("bobot")
 
@@ -37,12 +39,12 @@ end
 
 local drivers = {}
 local function parse_drivers()
-	local driver_files=run_shell("sh -c 'ls drivers/*.lua 2> /dev/null'")
+	local driver_files=run_shell("sh -c 'ls "..my_path.."../drivers/*.lua 2> /dev/null'")
 	for filename in driver_files:gmatch('drivers%/(%S+)%.lua') do
 		--print ("Driver openable", filename)
 		drivers[filename] = 'openable'
 	end
-	driver_files=run_shell("sh -c 'ls drivers/hotplug/*.lua 2> /dev/null'")
+	driver_files=run_shell("sh -c 'ls "..my_path.."../drivers/hotplug/*.lua 2> /dev/null'")
 	for filename in driver_files:gmatch('drivers%/hotplug%/(%S+)%.lua') do
 		--print ("Driver hotplug", filename)
 		drivers[filename] = 'hotplug'
@@ -97,8 +99,6 @@ end
 
 local function load_module_handlers(bb)
 	local retry = 0
-	
-	if bb.comms.type=='serial' then return end
 	
 	local n_module_handlers=bb:get_handler_size()
 	while n_module_handlers == nil and retry < MAX_RETRY do

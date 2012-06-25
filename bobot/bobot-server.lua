@@ -186,12 +186,17 @@ socket_handlers[server_h]=function()
 end
 
 function server_refresh ()
+	local refreshed
 	for i, bb in ipairs(bobot.baseboards) do
-		if not bb:refresh() then
-			bobot.baseboards[i]=nil
+		--if bb.refresh and not (bb.comms.type=='serial' and bb.devices) then 
+		if bb.refresh and bb.hotplug then 
+			if not bb:refresh() then
+				bobot.baseboards[i]=nil
+			end
+			refreshed=true
 		end
 	end
-	read_devices_list()
+	if refreshed then read_devices_list() end
 end
 
 function server_init ()

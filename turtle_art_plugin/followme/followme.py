@@ -24,7 +24,7 @@ from gettext import gettext as _
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary, logoerror
-from TurtleArt.taconstants import BOX_COLORS
+from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tautils import convert
 
 sys.path.insert(0, os.path.abspath('./plugins/followme/lib'))
@@ -67,19 +67,19 @@ class Followme(Plugin):
 
     def dynamicLoadBlockColors(self):
         if not(self.cam_present):
-            BOX_COLORS['followRGB'] = COLOR_NOTPRESENT
-            BOX_COLORS['threshold'] = COLOR_NOTPRESENT
-            BOX_COLORS['savecalibration1'] = COLOR_NOTPRESENT
-            BOX_COLORS['savecalibration2'] = COLOR_NOTPRESENT
-            BOX_COLORS['savecalibrationN'] = COLOR_NOTPRESENT
-            BOX_COLORS['calibration1'] = COLOR_NOTPRESENT
-            BOX_COLORS['calibration2'] = COLOR_NOTPRESENT
-            BOX_COLORS['calibrationN'] = COLOR_NOTPRESENT
-            BOX_COLORS['xposition'] = COLOR_NOTPRESENT
-            BOX_COLORS['yposition'] = COLOR_NOTPRESENT
-            BOX_COLORS['pixels'] = COLOR_NOTPRESENT
-            BOX_COLORS['follow'] = COLOR_NOTPRESENT
-            BOX_COLORS['pixels_min'] = COLOR_NOTPRESENT
+            special_block_colors['followRGB'] = COLOR_NOTPRESENT
+            special_block_colors['threshold'] = COLOR_NOTPRESENT
+            special_block_colors['savecalibration1'] = COLOR_NOTPRESENT
+            special_block_colors['savecalibration2'] = COLOR_NOTPRESENT
+            special_block_colors['savecalibrationN'] = COLOR_NOTPRESENT
+            special_block_colors['calibration1'] = COLOR_NOTPRESENT
+            special_block_colors['calibration2'] = COLOR_NOTPRESENT
+            special_block_colors['calibrationN'] = COLOR_NOTPRESENT
+            special_block_colors['xposition'] = COLOR_NOTPRESENT
+            special_block_colors['yposition'] = COLOR_NOTPRESENT
+            special_block_colors['pixels'] = COLOR_NOTPRESENT
+            special_block_colors['follow'] = COLOR_NOTPRESENT
+            special_block_colors['pixels_min'] = COLOR_NOTPRESENT
 
     def setup(self):
 
