@@ -159,7 +159,7 @@ class Butia(Plugin):
                      style='basic-style',
                      label=_('refresh Butia'),
                      prim_name='refreshButia',
-                     help_string=_('force to refresh the state of the butia plugin blocks'))
+                     help_string=_('refresh the state of the Butia palette and blocks'))
         self.tw.lc.def_prim('refreshButia', 0, lambda self: primitive_dictionary['refreshButia']())
         special_block_colors['refreshButia'] = COLOR_PRESENT
 
