@@ -131,6 +131,7 @@ class Butia(Plugin):
         self.pollrun = True
         self.battery_value = -1
         self.old_battery_value = -1
+        self.version = BUTIA_1
         self.bobot = None
         self.butia = None
         self.match_list = []
@@ -382,10 +383,9 @@ class Butia(Plugin):
 
         if self.butia:
             self.battery_value = self.butia.getBatteryCharge()
-            version = self.butia.getVersion()
+            self.version = self.butia.getVersion()
         else:
             self.battery_value = ERROR_SENSOR_READ
-            version = BUTIA_1
 
         change_statics_blocks = False
         if not(self.battery_value == self.old_battery_value):
@@ -395,7 +395,7 @@ class Butia(Plugin):
         COLOR_STATIC = self.staticBlocksColor(self.battery_value)
         COLOR_BATTERY = self.batteryColor(self.battery_value)
 
-        if version == BUTIA_1:
+        if self.version == BUTIA_1:
             self.refresh_palette_1(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
         else:
             self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
