@@ -87,13 +87,11 @@ class robot:
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
-        if self.ver == BUTIA_1:
-            if self.list == []:
-                msg = 'INIT'
-                return self.doCommand(msg)
+        if (self.ver == BUTIA_1):
+            msg = 'INIT'
         else:
             msg = 'REFRESH'            
-            return self.doCommand(msg)
+        return self.doCommand(msg)
 
     # close the comunication with the bobot
     def close(self):
@@ -190,8 +188,6 @@ class robot:
     # returns the firmware version 
     def getVersion(self):
         self.ver = self.callModule('butia', 'read_ver')
-        if self.ver == ERROR_SENSOR_READ:
-            self.ver = BUTIA_1
         return self.ver
     
     # set de motor idMotor on determinate angle
