@@ -29,7 +29,7 @@ import threading
 
 ERROR_SENSOR_READ = -1
 
-BUTIA_1 = 20
+BUTIA_1 = '20'
 
 BOBOT_HOST = 'localhost'
 BOBOT_PORT = 2009
@@ -47,6 +47,7 @@ class robot:
         self.client = None
         self.fclient = None
         self.ver = BUTIA_1
+        self.list = []
         self.reconnect()
 
        
@@ -87,10 +88,13 @@ class robot:
     # ask bobot for refresh is state of devices connected
     def refresh(self):
         if self.ver == BUTIA_1:
-            msg = 'REFRESH'
+            if not(self.list == []):
+                print 'init'
+                msg = 'INIT'
+                return self.doCommand(msg)
         else:
-            msg = 'INIT'
-        return self.doCommand(msg)
+            msg = 'REFRESH'            
+            return self.doCommand(msg)
 
     # close the comunication with the bobot
     def close(self):
@@ -140,9 +144,10 @@ class robot:
         msg = 'LIST'
         ret = self.doCommand(msg)
         if not (ret == '' or ret == ERROR_SENSOR_READ):
-            return ret.split(',')
+            self.list = ret.split(',')
         else:
-           return []
+           self.list = []
+        return self.list
 
     # loopBack: send a message to butia and wait to recibe the same
     def loopBack(self, data):
@@ -186,6 +191,8 @@ class robot:
     # returns the firmware version 
     def getVersion(self):
         self.ver = self.callModule('butia', 'read_ver')
+        if self.ver == ERROR_SENSOR_READ:
+            self.ver = BUTIA_1
         return self.ver
     
     # set de motor idMotor on determinate angle

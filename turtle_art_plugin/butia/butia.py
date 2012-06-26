@@ -44,7 +44,8 @@ MAX_SENSOR_PER_TYPE = 4
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 WHEELBASE = 28.00
-BUTIA_1 = 20
+
+BUTIA_1 = '20'
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
