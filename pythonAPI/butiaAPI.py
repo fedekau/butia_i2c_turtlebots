@@ -88,8 +88,7 @@ class robot:
     # ask bobot for refresh is state of devices connected
     def refresh(self):
         if self.ver == BUTIA_1:
-            if not(self.list == []):
-                print 'init'
+            if self.list == []:
                 msg = 'INIT'
                 return self.doCommand(msg)
         else:
