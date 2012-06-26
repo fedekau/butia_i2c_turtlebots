@@ -8,8 +8,11 @@ api.read_ver.parameters = {}
 api.read_ver.returns = {[1]={rname="data", rtype="string"}}
 api.read_ver.call = function (data)
 	device:send(RD_VERSION)
+    local devolver = -1
 	local ret = device:read(2)
-	local devolver = string.byte(ret , 2) --leo el segundo byte obtenido que tiene la versión (el primero tiene el opcode)
+    if ret then
+        devolver = string.byte(ret , 2) --leo el segundo byte obtenido que tiene la versión (el primero tiene el opcode)
+    end
     --local devolver = (string.byte(version_response,2) or 0) + (string.byte(version_response,3) or 0)* 256
 	return devolver	
 end
