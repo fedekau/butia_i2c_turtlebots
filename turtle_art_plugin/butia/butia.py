@@ -332,9 +332,6 @@ class Butia(Plugin):
 
                     special_block_colors[block_name] = COLOR_NOTPRESENT
 
-        self.list_connected_device_module = []
-        
-        self.can_refresh = True
 
     def start(self):
         self.can_refresh = False
