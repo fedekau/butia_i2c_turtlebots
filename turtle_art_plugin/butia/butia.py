@@ -380,7 +380,9 @@ class Butia(Plugin):
 
         if self.butia:
             self.battery_value = self.butia.getBatteryCharge()
-            self.version = self.butia.getVersion()
+            ver = self.butia.getVersion()
+            if not(ver == ERROR_SENSOR_READ):
+                self.version = ver
         else:
             self.battery_value = ERROR_SENSOR_READ
 
