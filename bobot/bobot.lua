@@ -45,7 +45,7 @@ B.init = function  ( comms )
 			end
 		end
 		if n_boards_total == 0 then socket.sleep(1) end
-	until n_boards_total > 0 or os.time()-start_time > 4
+	until n_boards_total > 0 or os.time()-start_time > 3
 	
 	return n_boards_total
 end
