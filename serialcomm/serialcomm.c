@@ -22,7 +22,7 @@
 #define ESCAPE 0xFE
 #define SYNC   0xFF
 #define null   0x00
-#define CAGATA_AVOID 2000  
+#define CAGATA_AVOID 2
 #define TIMEOUT -2
 #define DEBUG 1
 #define VERBOSE 1
@@ -216,6 +216,7 @@ int serialport_init(const char* serialport, int baud){
     }  while(leidos != -2);  
     #if VERBOSE    
     printf("se leyeron %d bytes \n", leidos);
+    int i;
     for(i=0; i<PACKET_LEN; i++){
         printf("respuesta pos[%d]=%02X \n", i, *(respuesta + i));
     }
