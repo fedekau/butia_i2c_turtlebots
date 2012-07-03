@@ -29,7 +29,7 @@ import threading
 
 ERROR_SENSOR_READ = -1
 
-BUTIA_1 = '20'
+BUTIA_1 = 20
 
 BOBOT_HOST = 'localhost'
 BOBOT_PORT = 2009
@@ -46,8 +46,7 @@ class robot:
         self.port = port
         self.client = None
         self.fclient = None
-        self.ver = BUTIA_1
-        self.list = []
+        self.ver = ERROR_SENSOR_READ
         self.reconnect()
 
        
@@ -87,10 +86,10 @@ class robot:
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
-        if (self.ver == BUTIA_1):
+        if (self.ver == BUTIA_1) or (self.ver == ERROR_SENSOR_READ):
             msg = 'INIT'
         else:
-            msg = 'REFRESH'            
+            msg = 'REFRESH'
         return self.doCommand(msg)
 
     # close the comunication with the bobot
@@ -139,12 +138,11 @@ class robot:
     # returns a list of modules
     def get_modules_list(self):
         msg = 'LIST'
+        l = []
         ret = self.doCommand(msg)
         if not (ret == '' or ret == ERROR_SENSOR_READ):
-            self.list = ret.split(',')
-        else:
-           self.list = []
-        return self.list
+            l = ret.split(',')
+        return l
 
     # loopBack: send a message to butia and wait to recibe the same
     def loopBack(self, data):
@@ -177,9 +175,8 @@ class robot:
 
     # returns the approximate charge of the battery        
     def getBatteryCharge(self):
-        bat = ERROR_SENSOR_READ
+        bat = self.callModule('butia', 'get_volt')
         try:
-            bat = self.callModule('butia', 'get_volt')
             bat = int(bat)
         except:
             pass
@@ -187,7 +184,12 @@ class robot:
 
     # returns the firmware version 
     def getVersion(self):
-        self.ver = self.callModule('butia', 'read_ver')
+        ver = self.callModule('butia', 'read_ver')
+        try:
+            ver = int(ver)
+        except:
+            pass
+        self.ver = ver
         return self.ver
     
     # set de motor idMotor on determinate angle
