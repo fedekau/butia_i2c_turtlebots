@@ -24,9 +24,9 @@
 #define null   0x00
 #define CAGATA_AVOID 2000  
 #define TIMEOUT -2
-#define DEBUG 0
-#define VERBOSE 0
-#define VERBOSE_TIMEOUT 0
+#define DEBUG 1
+#define VERBOSE 1
+#define VERBOSE_TIMEOUT 1
 #define PACKET_LEN 10
 #define MAX_RETRIES 5
 
@@ -189,7 +189,10 @@ int serialport_init(const char* serialport, int baud){
 	//también fue necesario para que funcionara en las maquinas del taller, en la xo no es necesario
 	close(fd);
 	fd = open(serialport, O_RDWR | O_NOCTTY | O_NONBLOCK);
-
+    if (fd == -1)  {
+            //perror("init_serialport: Unable to open port ");
+            return -1;
+    }
     /* este codigo intenta hacer la espera necesaria luego de inicializar el puerto serial para que este quede funcional */    
     respuesta = (unsigned char*)malloc(6);
     unsigned char b;
