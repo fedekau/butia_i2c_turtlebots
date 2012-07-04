@@ -22,13 +22,16 @@
 #define ESCAPE 0xFE
 #define SYNC   0xFF
 #define null   0x00
-#define CAGATA_AVOID 2
+#define CAGATA_AVOID 2000
 #define TIMEOUT -2
-#define DEBUG 1
-#define VERBOSE 1
-#define VERBOSE_TIMEOUT 1
+#define DEBUG 0
+#define VERBOSE 0
+#define VERBOSE_TIMEOUT 0
 #define PACKET_LEN 10
 #define MAX_RETRIES 5
+
+/*constant for consume the buffer*/
+#define MAX_BUFFER_RETRIES 30000
 
 int timeout_counter = 0;
 struct termios oldoptions;
@@ -91,7 +94,7 @@ int serialport_read(int fd, unsigned char* str, int len, int timeout){
     struct timeval timeout_struct;
     /* set timeout value */
     timeout_struct.tv_usec = timeout * 1000;   /* microseconds */
-    timeout_struct.tv_sec  = 0;                /* seconds */
+    timeout_struct.tv_sec  = 0;               /* seconds */
     timevalfix(&timeout_struct);
     FD_ZERO(&readfs);
     FD_SET(fd, &readfs);
@@ -203,19 +206,21 @@ int serialport_init(const char* serialport, int baud){
         leidos=read_msg(fd, respuesta, CAGATA_AVOID);
         //printf("serialcomm:TIMEOUT %i, trying to recover...\n", leidos);
         retries--;
-    } while((leidos == -2) && retries>0);
+    } while((leidos == -2) && (retries>0));
     if(leidos== -2){
       return -1; //abort because problems with the serial node
     }
     /*consumo en buffer de entrada, hubiera sido interesante usar fsync o tcdrain (posix)*/
+    retries = MAX_BUFFER_RETRIES;
     do {
         b=0;
         leidos=receive_data(fd, &b, 1, 200);
         //printf ("serialcomm: purging buffer %02X, %i...\n", b, leidos);
         //leidos=read_msg(fd, respuesta, CAGATA_AVOID);
-    }  while(leidos != -2);  
+        retries--;
+    }  while((leidos != -2) && (retries>0));
     #if VERBOSE    
-    printf("se leyeron %d bytes \n", leidos);
+    printf("se leyeron %d bytes y se llega a MAX_BUFFER_RETRIES - %d intentos\n", leidos, retries);
     int i;
     for(i=0; i<PACKET_LEN; i++){
         printf("respuesta pos[%d]=%02X \n", i, *(respuesta + i));
