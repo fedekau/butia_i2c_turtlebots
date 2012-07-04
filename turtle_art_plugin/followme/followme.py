@@ -56,7 +56,7 @@ class Followme(Plugin):
             self.lcameras = pycam.list_cameras()
             if self.lcameras:
                 self.cam = pycam.Camera(self.lcameras[0], (320,240), 'RGB')
-                self.capture = pygame.surface.Surface((320,240))
+                self.capture = pygame.surface.Surface(self.cam.get_size())
                 self.mask = None
                 self.connected = None
                 self.cam_present = True
@@ -80,6 +80,10 @@ class Followme(Plugin):
             special_block_colors['pixels'] = COLOR_NOTPRESENT
             special_block_colors['follow'] = COLOR_NOTPRESENT
             special_block_colors['pixels_min'] = COLOR_NOTPRESENT
+            special_block_colors['camera_mode'] = COLOR_NOTPRESENT
+            special_block_colors['mode_rgb'] = COLOR_NOTPRESENT
+            special_block_colors['mode_yuv'] = COLOR_NOTPRESENT
+            special_block_colors['mode_hsv'] = COLOR_NOTPRESENT
 
     def setup(self):
 
@@ -221,6 +225,46 @@ class Followme(Plugin):
         self.parent.lc.def_prim('pixels_min', 1, lambda self, x:
                         primitive_dictionary['pixels_min'](x))
 
+        primitive_dictionary['camera_mode'] = self.prim_camera_mode
+        palette.add_block('camera_mode',
+                        style='basic-style-1arg',
+                        label=_('camera mode'),
+                        default='RGB',
+                        help_string=_('set the color mode of the camera: RGB; YUV or HSV'),
+                        prim_name='camera_mode')
+        self.parent.lc.def_prim('camera_mode', 1, lambda self, x:
+                        primitive_dictionary['camera_mode'](x))
+
+        primitive_dictionary['mode_rgb'] = self.prim_mode_rgb
+        palette.add_block('mode_rgb',
+                        style='box-style',
+                        label=_('RGB'),
+                        help_string=_('set the color mode of the camera to RGB'),
+                        value_block=True,
+                        prim_name='mode_rgb')
+        self.parent.lc.def_prim('mode_rgb', 0, lambda self:
+                        primitive_dictionary['mode_rgb']())
+
+        primitive_dictionary['mode_yuv'] = self.prim_mode_yuv
+        palette.add_block('mode_yuv',
+                        style='box-style',
+                        label=_('YUV'),
+                        help_string=_('set the color mode of the camera to YUV'),
+                        value_block=True,
+                        prim_name='mode_yuv')
+        self.parent.lc.def_prim('mode_yuv', 0, lambda self:
+                        primitive_dictionary['mode_yuv']())
+
+        primitive_dictionary['mode_hsv'] = self.prim_mode_hsv
+        palette.add_block('mode_hsv',
+                        style='box-style',
+                        label=_('HSV'),
+                        help_string=_('set the color mode of the camera to HSV'),
+                        value_block=True,
+                        prim_name='mode_hsv')
+        self.parent.lc.def_prim('mode_hsv', 0, lambda self:
+                        primitive_dictionary['mode_hsv']())
+
 
     def stop(self):
         if (self.cam_present and self.cam_on):
@@ -240,6 +284,33 @@ class Followme(Plugin):
             
     def clear(self):
         pass
+
+    def prim_camera_mode(self, mode):
+        m = 'RGB'
+        try:
+            m = str(mode)
+        except:
+            pass
+        m = m.upper()
+        if (m == 'RGB') or (m == 'YUV') or (m == 'HSV'):
+            if self.cam:
+                try:
+                    self.cam.stop()
+                except:
+                    pass
+            self.lcameras = pycam.list_cameras()
+            if self.lcameras:
+                self.cam = pycam.Camera(self.lcameras[0], (320,240), m)
+                self.capture = pygame.surface.Surface(self.cam.get_size())
+
+    def prim_mode_rgb(self):
+        return 'RGB'
+
+    def prim_mode_yuv(self):
+        return 'YUV'
+
+    def prim_mode_hsv(self):
+        return 'HSV'
 
     def prim_followRGB(self, R, G, B):
         R = int(R)
