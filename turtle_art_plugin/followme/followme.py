@@ -50,20 +50,67 @@ class Followme(Plugin):
         self.pixels_min = 10
         self.pixels = 0
         self.calibrations = {}
-        try:
-            pygame.init()
-            pycam.init()
-            self.lcameras = pycam.list_cameras()
-            if self.lcameras:
-                self.cam = pycam.Camera(self.lcameras[0], (320,240), 'RGB')
-                self.capture = pygame.surface.Surface(self.cam.get_size())
-                self.mask = None
-                self.connected = None
-                self.cam_present = True
-            else:
-                print _('The camera was not found.')
-        except:
-            print _('Error on the initialization of the camera.')
+        self.mask = None
+        self.connected = None
+        self.cam_present = True
+        pygame.init()
+        pycam.init()
+        self.get_camera('RGB')
+
+    def get_camera(self, mode):
+        tamanioc = (320, 240)
+        if self.cam:
+            try:
+                self.cam.stop()
+            except:
+                print _('Error in stop camera')
+        self.lcamaras = pygame.camera.list_cameras()
+        if self.lcamaras:
+            self.cam = pygame.camera.Camera(self.lcamaras[0], tamanioc, mode)
+            tamanioc = self.cam.get_size()
+            if not (tamanioc == (320, 240)):
+                self.cam = pygame.camera.Camera(self.lcamaras[0], (352, 288), mode)
+            try:
+                #self.cam.set_controls(brightness = 129)
+                self.cam.set_controls(True, False)
+                self.cam.start()
+                res = self.cam.get_controls()
+                self.flip = res[0]
+                tamanioc = self.cam.get_size()
+                self.captura = pygame.surface.Surface(tamanioc, 0, self.display)
+                self.captura_aux = pygame.surface.Surface(tamanioc, 0, self.display)
+            except:
+                print _('Error on initialization of the camera')
+        else:
+            print _('No cameras was found')
+
+    def stop_camera(self):
+        if (self.cam_present and self.cam_on):
+            try:
+                self.cam.stop()
+                self.cam_on = False
+            except:
+                print _('Error in stop camera')
+
+    def start_camera(self):
+        if (self.cam_present and not(self.cam_on)):
+            try:
+                self.cam.start()
+                self.cam_on = True
+            except:
+                print _('Error in start camera')
+
+    def get_mask(self):
+        if self.cam_on:
+            try:
+                self.capture = self.cam.get_image(self.capture)
+                pygame.transform.threshold(self.captura_aux, self.captura, self.colorc, 
+                            (self.threshold[0],self.threshold[1], self.threshold[2]), (0,0,0), 2)
+                self.mask = pygame.mask.from_threshold(self.captura_aux, self.colorc, self.threshold)
+            except:
+                print _('Error in get mask')
+        return self.mask
+
 
     def dynamicLoadBlockColors(self):
         if not(self.cam_present):
@@ -267,20 +314,10 @@ class Followme(Plugin):
 
 
     def stop(self):
-        if (self.cam_present and self.cam_on):
-            try:
-                self.cam.stop()
-                self.cam_on = False
-            except:
-                pass
+        self.stop_camera()
 
     def quit(self):
-        if (self.cam_present and self.cam_on):
-            try:
-                self.cam.stop()
-                self.cam_on = False
-            except:
-                pass
+        self.stop_camera()
             
     def clear(self):
         pass
@@ -293,16 +330,8 @@ class Followme(Plugin):
             pass
         m = m.upper()
         if (m == 'RGB') or (m == 'YUV') or (m == 'HSV'):
-            if self.cam:
-                try:
-                    self.cam.stop()
-                except:
-                    pass
-            self.lcameras = pycam.list_cameras()
-            if self.lcameras:
-                self.cam = pycam.Camera(self.lcameras[0], (320,240), m)
-                self.capture = pygame.surface.Surface(self.cam.get_size())
-
+            self.get_camera(m)
+                
     def prim_mode_rgb(self):
         return 'RGB'
 
@@ -382,99 +411,62 @@ class Followme(Plugin):
 
     def calibrate(self):
         self.colorc = (255, 255, 255)
-        if self.cam_present:
-            if not(self.cam_on):
-                try:
-                    self.cam.start()
-                    self.cam_on = True
-                except:
-                    pass
-            if self.cam_on:
-                self.screen = pygame.display.set_mode((1200,900))
-                self.clock = pygame.time.Clock()
-                self.clock.tick(10)
-                self.run = True
-                while self.run:
-                    while gtk.events_pending():
-                        gtk.main_iteration()
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                            self.run = False
-                        # click o tecla
-                        elif event.type == 3:
-                            self.run = False
-                    self.capture = self.cam.get_image(self.capture)
-                    self.capture = pygame.transform.flip(self.capture, True, False)
-                    self.screen.blit(self.capture, (0,0))
-                    rect = pygame.draw.rect(self.screen, (255,0,0), (100,100,50,50), 4)
-                    self.colorc = pygame.transform.average_color(self.capture, rect)
-                    self.screen.fill(self.colorc, (320,240,100,100))
-                    pygame.display.flip()
-                self.screen = pygame.display.quit()
-        
+        self.start_camera()
+        if self.cam_on:
+            self.screen = pygame.display.set_mode((1200,900))
+            self.clock = pygame.time.Clock()
+            self.clock.tick(10)
+            self.run = True
+            while self.run:
+                while gtk.events_pending():
+                    gtk.main_iteration()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.run = False
+                    # click o tecla
+                    elif event.type == 3:
+                        self.run = False
+                self.capture = self.cam.get_image(self.capture)
+                self.capture = pygame.transform.flip(self.capture, True, False)
+                self.screen.blit(self.capture, (0,0))
+                rect = pygame.draw.rect(self.screen, (255,0,0), (100,100,50,50), 4)
+                self.colorc = pygame.transform.average_color(self.capture, rect)
+                self.screen.fill(self.colorc, (320,240,100,100))
+                pygame.display.flip()
+            self.screen = pygame.display.quit()
+    
         return (self.colorc[0], self.colorc[1], self.colorc[2])
 
     def prim_xposition(self):
         res = -1
-        if self.cam_present:
-            if not(self.cam_on):
-                try:
-                    self.cam.start()
-                    self.cam_on = True
-                except:
-                    pass
-            if self.cam_on:
-                try:
-                    self.capture = self.cam.get_image(self.capture)
-                    self.mask = pygame.mask.from_threshold(self.capture, self.colorc, self.threshold)
-                    self.connected = self.mask.connected_component()
-                    if (self.connected.count() > self.pixels):
-                        centroid = self.mask.centroid()
-                        res = 320 - centroid[0]
-                except:
-                    pass
+        self.start_camera()
+        mask = self.get_mask()            
+        self.connected = mask.connected_component()
+        if (self.connected.count() > self.pixels):
+            centroid = self.mask.centroid()
+            if self.flip:
+                res = centroid[0]
+            else:
+                res = 320 - centroid[0]
         return res
 
     def prim_yposition(self):
         res = -1
-        if self.cam_present:
-            if not(self.cam_on):
-                try:
-                    self.cam.start()
-                    self.cam_on = True
-                except:
-                    pass
-            if self.cam_on:
-                try:
-                    self.capture = self.cam.get_image(self.capture)
-                    self.mask = pygame.mask.from_threshold(self.capture, self.colorc, self.threshold)
-                    self.connected = self.mask.connected_component()
-                    if (self.connected.count() > self.pixels):
-                        centroid = self.mask.centroid()
-                        res = 240 - centroid[1]
-                except:
-                    pass
+        self.start_camera()
+        mask = self.get_mask()            
+        self.connected = mask.connected_component()
+        if (self.connected.count() > self.pixels):
+            centroid = self.mask.centroid()
+            res = 240 - centroid[1]
         return res
 
     def prim_pixels(self):
         res = -1
-        if self.cam_present:
-            if not(self.cam_on):
-                try:
-                    self.cam.start()
-                    self.cam_on = True
-                except:
-                    pass
-            if self.cam_on:
-                try:
-                    self.capture = self.cam.get_image(self.capture)
-                    self.mask = pygame.mask.from_threshold(self.capture, self.colorc, self.threshold)
-                    self.connected = self.mask.connected_component()
-                    res = self.connected.count()
-                except:
-                    pass
+        self.start_camera()
+        mask = self.get_mask()            
+        self.connected = mask.connected_component()
+        res = self.connected.count()
         return res
-
 
     def _prim_savecalibration(self, name, x):
         c = self.calibrate()
