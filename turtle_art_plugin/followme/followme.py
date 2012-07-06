@@ -50,6 +50,7 @@ class Followme(Plugin):
         self.pixels_min = 10
         self.pixels = 0
         self.calibrations = {}
+        self.cam = None
         self.mask = None
         self.connected = None
         self.cam_present = True
@@ -59,11 +60,7 @@ class Followme(Plugin):
 
     def get_camera(self, mode):
         tamanioc = (320, 240)
-        if self.cam:
-            try:
-                self.cam.stop()
-            except:
-                print _('Error in stop camera')
+        self.stop_camera()
         self.lcamaras = pygame.camera.list_cameras()
         if self.lcamaras:
             self.cam = pygame.camera.Camera(self.lcamaras[0], tamanioc, mode)
@@ -73,12 +70,12 @@ class Followme(Plugin):
             try:
                 #self.cam.set_controls(brightness = 129)
                 self.cam.set_controls(True, False)
-                self.cam.start()
+                #self.cam.start()
                 res = self.cam.get_controls()
                 self.flip = res[0]
                 tamanioc = self.cam.get_size()
-                self.captura = pygame.surface.Surface(tamanioc, 0, self.display)
-                self.captura_aux = pygame.surface.Surface(tamanioc, 0, self.display)
+                self.capture = pygame.surface.Surface(tamanioc)
+                self.capture_aux = pygame.surface.Surface(tamanioc)
             except:
                 print _('Error on initialization of the camera')
         else:
@@ -104,9 +101,9 @@ class Followme(Plugin):
         if self.cam_on:
             try:
                 self.capture = self.cam.get_image(self.capture)
-                pygame.transform.threshold(self.captura_aux, self.captura, self.colorc, 
+                pygame.transform.threshold(self.capture_aux, self.capture, self.colorc, 
                             (self.threshold[0],self.threshold[1], self.threshold[2]), (0,0,0), 2)
-                self.mask = pygame.mask.from_threshold(self.captura_aux, self.colorc, self.threshold)
+                self.mask = pygame.mask.from_threshold(self.capture_aux, self.colorc, self.threshold)
             except:
                 print _('Error in get mask')
         return self.mask
