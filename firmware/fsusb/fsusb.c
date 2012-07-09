@@ -322,11 +322,6 @@ picdem_handle *rjl_fsusb_open(void)
   struct usb_device *device;
   struct usb_bus* bus;
 
-
-  if (geteuid()!=0) {
-    bad("This program must be run as root, or made setuid root");
-  }
-
 #ifdef USB_DEBUG
   usb_debug=4; 
 #endif
@@ -400,10 +395,6 @@ picdem_handle *rjl_usb4all_open(void)
 {
   struct usb_device *device;
   struct usb_bus* bus;
-
-  if (geteuid()!=0) {
-    bad("This program must be run as root, or made setuid root");
-  }
 
 #ifdef USB_DEBUG
   usb_debug=4; 
