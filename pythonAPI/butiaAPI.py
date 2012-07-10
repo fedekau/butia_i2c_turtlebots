@@ -160,11 +160,17 @@ class robot:
 
     def set2MotorSpeed(self, leftSense = '0', leftSpeed = '0', rightSense = '0', rightSpeed = '0'):
             msg = leftSense + ' ' + leftSpeed + ' ' + rightSense + ' ' + rightSpeed
-            return self.callModule('motors', 'setvel2mtr', msg)
+            if self.ver == BUTIA_1:
+                return self.callModule('motores', 'setvel2mtr', msg)
+            else:
+                return self.callModule('motors', 'setvel2mtr', msg)
      
     def setMotorSpeed(self, idMotor = '0', sense = '0', speed = '0'):
             msg = idMotor + ' ' + sense + ' ' + speed
-            return self.callModule('motors', 'setvelmtr', msg)
+            if self.ver == BUTIA_1:
+                return self.callModule('motores', 'setvelmtr', msg)
+            else:
+                return self.callModule('motors', 'setvelmtr', msg)
 
     #######################################################################
     ### Operations for butia.lua driver
