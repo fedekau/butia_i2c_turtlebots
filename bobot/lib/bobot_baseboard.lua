@@ -24,7 +24,7 @@ local GET_USER_MODULE_LINE_PACKET_SIZE = 0x05
 local CLOSEALL_BASE_BOARD_COMMAND = string.char(0x07) 
 local CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE = 5
 local TIMEOUT = 250 --ms
-local MAX_RETRY = 20
+local MAX_RETRY = 5
 
 local BaseBoard = {}
 
@@ -108,7 +108,7 @@ local function load_module_handlers(bb)
 		bobot.debugprint("u4b:the module handler list size returned a nil value, trying to recover...")
 		retry = retry+1
 	end
-	if not n_module_handlers then return nil end
+	if (not n_module_handlers) or (n_module_handlers == 255) then return nil end
 	retry=0
 	bobot.debugprint ("Reading moduleshandlers:", n_module_handlers)
 	for i=1, n_module_handlers do
