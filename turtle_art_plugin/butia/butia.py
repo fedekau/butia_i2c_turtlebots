@@ -592,16 +592,15 @@ class Butia(Plugin):
         resolve library dependences located in the bin directory of tortugarte.
         And without libreadline and libhistory dependency
         """
-        debug_output('initialising butia...')
         output = commands.getoutput('ps -ax | grep lua')
         if 'bobot-server' in output:
-            debug_output('bobot is alive!')
+            debug_output('Bobot is alive!')
         else:
             try:
-                debug_output('creating bobot')
+                debug_output('creating Bobot')
                 self.bobot = subprocess.Popen(['./lua', 'bobot-server.lua'], cwd='./plugins/butia/butia_support')
             except:
-                debug_output('ERROR creating bobot')
+                debug_output('ERROR creating Bobot')
 
         time.sleep(1)
 
