@@ -18,12 +18,12 @@ end
 
 raw_val = send("LIST")
 socket.sleep(1)
-_, pos = string.find(raw_val, "dist:")
+_, pos = string.find(raw_val, "distanc:")
 port = string.sub(raw_val,pos+1,pos+1)  -- get port number
 
 if pos then
     while true do
-	    print (send("CALL dist:"..port.." getValue"))
+	    print (send("CALL distanc:"..port.." getValue"))
 	    socket.sleep(0.01)
     end
 else
