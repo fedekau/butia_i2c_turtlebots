@@ -48,7 +48,7 @@ class apiSumoUY:
     rotR = -1
        
     def __init__(self):
-        print "SumoAPI: Init..."
+        pass
     
     def setPuertos(self, port_Cliente = 7001, ip_Server = "127.0.0.1", port_Server = 8001):
         
@@ -56,7 +56,7 @@ class apiSumoUY:
         self.ip_server = ip_Server
         self.port_server = port_Server
         
-        print "--- SumoAPI: Puertos Seleccionados ---"
+        print "SumoAPI: Puertos Seleccionados:"
         print self.port_cliente
         print self.ip_server
         print self.port_server    
