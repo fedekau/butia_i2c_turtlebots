@@ -108,7 +108,7 @@ local function load_module_handlers(bb)
 		bobot.debugprint("u4b:the module handler list size returned a nil value, trying to recover...")
 		retry = retry+1
 	end
-	if (not n_module_handlers) or (n_module_handlers == 255) then return nil end
+	if (not n_module_handlers) or (n_module_handlers > 32) then return nil end
 	retry=0
 	bobot.debugprint ("Reading moduleshandlers:", n_module_handlers)
 	for i=1, n_module_handlers do
