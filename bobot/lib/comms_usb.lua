@@ -5,7 +5,7 @@ local bobot = require("bobot")
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 assert(package.loadlib(my_path .. "libluausb.so","luaopen_libusb"))()
-local libusb=libusb; _G.libusb=nil
+local libusb=_G.libusb; _G.libusb=nil
 
 local usb_bulk_write = libusb.bulk_write
 local usb_bulk_read = libusb.bulk_read
@@ -51,9 +51,9 @@ function comms_usb.init(baseboards)
 	--refresh devices and buses
 	libusb.find_busses()
 	libusb.find_devices()
+	local n_boards = 0
 
 	local buses=libusb.get_busses()
-	local n_boards=0
 	for dirname, bus in pairs(buses) do 			--iterate buses
 		local devices=libusb.get_devices(bus)
 		for filename, device in pairs(devices) do	--iterate devices
@@ -86,17 +86,14 @@ function comms_usb.init(baseboards)
 				local iSerial=descriptor.iSerialNumber
 				local bb = bobot_baseboard:new({idBoard=iSerial, comms=comms_usb})
 				--bb:force_close_all()
-				if baseboards[iSerial] then
-					bobot.debugprint("Warning: skipping already present board:", iSerial)
-				else
-					--bobot.debugprint("Baseboard:", iSerial)
-					baseboards[iSerial]=bb
-					n_boards=n_boards+1
-				end
+				--bobot.debugprint("Baseboard:", iSerial)
+
+				baseboards[#baseboards+1]=bb
+				n_boards = n_boards + 1
 			end
 		end
 	end
-	return n_boards
+	return n_boards 
 end
 
 return comms_usb

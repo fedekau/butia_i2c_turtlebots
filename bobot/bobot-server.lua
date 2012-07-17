@@ -36,6 +36,8 @@ local ADDRESS = "*"
 local PORT_B = 2009 --B is for bobot
 local PORT_H = 2010 --H is for http
 
+local TIMEOUT_REFRESH = 3
+
 local socket = require("socket")
 local process = require("bobot-server-process").process
 local http_serve = require("bobot-server-http").serve
@@ -65,7 +67,19 @@ local recvt={[1]=server_b, [2]=server_h}
 
 devices = {}
 
-local function get_device_name(n)
+local function get_device_name(d)
+
+--print("DEVICENAME", d.module, d.hotplug, d.handler)
+	local board_id, port_id = '', ''
+	if #bobot.baseboards>1 then
+		board_id='@'..d.baseboard.idBoard
+	end
+	if d.hotplug then 
+		port_id = ':'..d.handler
+	end
+	
+	local n=d.module..board_id..port_id
+	
 	if not devices[n] then
 		return n
 	end
@@ -84,12 +98,14 @@ local function read_devices_list()
 	bobot.debugprint("=Listing Devices")
 	local bfound
 	devices={}
-	for b_name, bb in pairs(bobot.baseboards) do
-		bobot.debugprint("===board ", b_name)
-		for d_name,d in pairs(bb.devices) do
-			local regname = get_device_name(d_name)
+	for _, bb in ipairs(bobot.baseboards) do
+		bobot.debugprint("===board ", bb.idBoard)
+		for _,d in ipairs(bb.devices) do
+			local regname = get_device_name(d)
 			devices[regname]=d
-			bobot.debugprint("=====d_name ",d_name," regname ",regname)
+			devices[#devices+1]=d
+			d.name=regname
+			bobot.debugprint("=====module ",d.module," name",regname)
 		end
 		bfound = true
 	end
@@ -169,6 +185,20 @@ socket_handlers[server_h]=function()
 	end
 end
 
+function server_refresh ()
+	local refreshed
+	for i, bb in ipairs(bobot.baseboards) do
+		--if bb.refresh and not (bb.comms.type=='serial' and bb.devices) then 
+		if bb.refresh and bb.hotplug then 
+			if not bb:refresh() then
+				bobot.baseboards[i]=nil
+			end
+			refreshed=true
+		end
+	end
+	if refreshed then read_devices_list() end
+end
+
 function server_init ()
 	bobot.init(arg)
 	read_devices_list()
@@ -180,8 +210,14 @@ bobot.debugprint("Listening...")
 -- loop forever waiting for clients
 
 while 1 do
-	local recvt_ready, _, err=socket.select(recvt, nil, 1)
-	if err~='timeout' then
+	local recvt_ready, _, err=socket.select(recvt, nil, TIMEOUT_REFRESH)
+	if err=='timeout' then
+		if #bobot.baseboards==0 then 
+			server_init ()
+		else
+			server_refresh ()
+		end
+	else
 		local skt=recvt_ready[1]
 		socket_handlers[skt]()
 	end

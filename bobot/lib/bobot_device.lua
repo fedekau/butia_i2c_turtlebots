@@ -6,18 +6,18 @@ local string_char = string.char
 local string_len  = string.len
 local string_byte = string.byte
 
-local OPEN_COMMAND			= string_char(0x00)
-local CLOSE_COMMAND         		= string_char(0x01)
-local HEADER_PACKET_SIZE	        = 6
-local NULL_BYTE         		= string_char(0x00)
-local ADMIN_MODULE_IN_ENDPOINT  	= 0x01
-local ADMIN_MODULE_OUT_ENDPOINT		= 0x81
-local ADMIN_HANDLER_SEND_COMMAND	= string_char(0x00)
-local OPEN_RESPONSE_PACKET_SIZE		= 5 
-local CLOSE_RESPONSE_PACKET_SIZE	= 2 
-local TIMEOUT				= 200 --ms
+local OPEN_COMMAND = string_char(0x00)
+local CLOSE_COMMAND = string_char(0x01)
+local HEADER_PACKET_SIZE = 6
+local NULL_BYTE = string_char(0x00)
+local ADMIN_MODULE_IN_ENDPOINT = 0x01
+local ADMIN_MODULE_OUT_ENDPOINT = 0x81
+local ADMIN_HANDLER_SEND_COMMAND = string_char(0x00)
+local OPEN_RESPONSE_PACKET_SIZE = 5 
+local CLOSE_RESPONSE_PACKET_SIZE = 2 
+local TIMEOUT = 200 --ms
 
-local READ_HEADER_SIZE		        = 3
+local READ_HEADER_SIZE = 3
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 
@@ -30,9 +30,15 @@ local Device = {
 	tostring=tostring
 }
 
-local function load_driver(modulename)
+local function load_driver(d)
+	local modulename=d.module
 	local drivername=string.match(modulename, '^(.-)%d*$')
-	local f, err = loadfile(my_path.."../drivers/"..drivername..".lua")
+	local f, err
+	if d.hotplug then
+		f, err = loadfile(my_path.."../drivers/hotplug/"..drivername..".lua")
+	else
+		f, err = loadfile(my_path.."../drivers/"..drivername..".lua")
+	end
 	return f, err
 end
 
@@ -41,7 +47,8 @@ end
 function Device:new(d)
 	--parameters sanity check
 	assert(type(d)=="table")
-	assert(type(d.name)=="string")
+	--assert(type(d.name)=="string")
+	assert(type(d.module)=="string")
 	assert(type(d.baseboard)=="table")
 	assert(type(d.baseboard.comms)=="table")
 	assert(type(d.baseboard.comms.send)=="function")
@@ -56,19 +63,20 @@ function Device:new(d)
 	d.comms_read = d.baseboard.comms.read
 
 	--attempt to load api from driver
-	local f, err = load_driver(d.name)
+	local f, err = load_driver(d)
 	if f then
 		d._G=d
 		
 		setfenv(f, d) --the driver's environment is the device
 		local status, err=pcall(f) 
 		if status then
-			bobot.debugprint("u4d:new:Success loading driver:", d.name)
+			bobot.debugprint("u4d:new:Success loading driver:", d.module)
 		else
 			bobot.debugprint("u4d:new:Error initializing driver:", tostring(err))
 		end
 	else
 		bobot.debugprint("u4d:new:Error loading driver:", err)
+		return nil
 	end
 	
 	return d
@@ -79,7 +87,7 @@ end
 function Device:open(in_endpoint, out_endpoint)
 	--state & parameter sanity check
 	assert(self.handler==nil)
-	assert(type(self.name)=="string")
+	--assert(type(self.name)=="string")
 	assert(type(in_endpoint)=="number" or type(self.in_endpoint)=="number")
 	assert(type(self.comms_send)=="function")
 	assert(type(self.comms_read)=="function")
@@ -89,7 +97,7 @@ function Device:open(in_endpoint, out_endpoint)
 	if in_endpoint then self.in_endpoint = in_endpoint end
 	if out_endpoint then self.out_endpoint = out_endpoint end
 
-	local module_name=self.name .."\000" -- usb4all expect null terminated names
+	local module_name=self.module .."\000" -- usb4all expect null terminated names
 
 	local open_packet_length = string_char(HEADER_PACKET_SIZE + string_len(module_name)) 
 
@@ -115,10 +123,10 @@ function Device:open(in_endpoint, out_endpoint)
 	local handler = string_byte(data, 5)
 	--hander -1 meand error
 	if handler==255 then
-		bobot.debugprint ("u4d:open:Already open!",self.name,self.handler)
+		bobot.debugprint ("u4d:open:Already open!",self.module,self.handler)
 		return
 	else
-		bobot.debugprint ("u4d:open:Success!",self.name,handler)
+		bobot.debugprint ("u4d:open:Success!",self.module,handler)
 		self.handler = handler --self.handler set means device is open
 		return true
 	end

@@ -7,7 +7,7 @@ local bobot = require("bobot")
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 assert(package.loadlib(my_path .. "lua_serialcomm.so","luaopen_serialcomm"))()
-local serialcomm=serialcomm; _G.serialcomm=nil
+local serialcomm=_G.serialcomm; _G.serialcomm=nil
 
 local serial_handler 
 
@@ -85,7 +85,8 @@ function comms_serial.init(baseboards)
 	end
 	bobot.debugprint ("cs:", tty)
 	local bb = bobot_baseboard:new({idBoard=tty, comms=comms_serial})
-	baseboards[tty]=bb
+
+	baseboards[#baseboards+1]=bb
 
 	return 1
 end

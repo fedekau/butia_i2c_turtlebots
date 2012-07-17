@@ -39,12 +39,13 @@ B.init = function  ( comms )
 			if not comm_lib then
 				B.debugprint("Could not open library:", comm)
 			else
+				comm_lib.type=comm
 				n_boards[comm] = comm_lib.init(B.baseboards)
 				n_boards_total = n_boards_total + n_boards[comm]
 			end
 		end
 		if n_boards_total == 0 then socket.sleep(1) end
-	until n_boards_total > 0 or os.time()-start_time > 4
+	until n_boards_total > 0 or os.time()-start_time > 3
 	
 	return n_boards_total
 end

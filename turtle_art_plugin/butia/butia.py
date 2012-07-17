@@ -19,11 +19,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gobject
 import butiaAPI
 import time
-import math
-import os
 import threading
 import re
 import subprocess
@@ -31,10 +28,10 @@ import commands
 
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
-from TurtleArt.tapalette import palette_blocks
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary
 from TurtleArt.tautils import debug_output
+from TurtleArt.tawindow import block_names
 
 from plugins.plugin import Plugin
 
@@ -47,6 +44,8 @@ MAX_SENSOR_PER_TYPE = 4
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 WHEELBASE = 28.00
+
+BUTIA_1 = 20
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
@@ -63,27 +62,49 @@ modules_help['vibration'] = _("switches from 0 to 1, the frequency depends on th
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 
-modules_name_from_device_id = {} 
-modules_name_from_device_id['led'] = 'led'
-modules_name_from_device_id['button'] = 'boton'
-modules_name_from_device_id['grayscale'] = 'grises'
-modules_name_from_device_id['ambientlight'] = 'luz'
-modules_name_from_device_id['temperature'] = 'temp'
-modules_name_from_device_id['distance'] = 'dist'
-modules_name_from_device_id['tilt'] = 'tilt'
-modules_name_from_device_id['magneticinduction'] = 'magnet'
-modules_name_from_device_id['vibration'] = 'vibra'
+modules_name_from_device_id_1 = {} 
+modules_name_from_device_id_1['led'] = 'led'
+modules_name_from_device_id_1['button'] = 'boton'
+modules_name_from_device_id_1['grayscale'] = 'grises'
+modules_name_from_device_id_1['ambientlight'] = 'luz'
+modules_name_from_device_id_1['temperature'] = 'temp'
+modules_name_from_device_id_1['distance'] = 'dist'
+modules_name_from_device_id_1['tilt'] = 'tilt'
+modules_name_from_device_id_1['magneticinduction'] = 'magnet'
+modules_name_from_device_id_1['vibration'] = 'vibra'
 
-device_id_from_module_name = {} 
-device_id_from_module_name['led'] = 'led'
-device_id_from_module_name['boton'] = 'button'
-device_id_from_module_name['grises'] = 'grayscale'
-device_id_from_module_name['luz'] = 'ambientlight'
-device_id_from_module_name['temp'] = 'temperature'
-device_id_from_module_name['dist'] = 'distance'
-device_id_from_module_name['tilt'] = 'tilt'
-device_id_from_module_name['magnet'] = 'magneticinduction'
-device_id_from_module_name['vibra'] = 'vibration'
+modules_name_from_device_id_2 = {} 
+modules_name_from_device_id_2['led'] = 'led'
+modules_name_from_device_id_2['button'] = 'button'
+modules_name_from_device_id_2['grayscale'] = 'grey'
+modules_name_from_device_id_2['ambientlight'] = 'light'
+modules_name_from_device_id_2['temperature'] = 'temp'
+modules_name_from_device_id_2['distance'] = 'distanc'
+modules_name_from_device_id_2['tilt'] = 'tilt'
+modules_name_from_device_id_2['magneticinduction'] = 'magnet'
+modules_name_from_device_id_2['vibration'] = 'vibra'
+
+device_id_from_module_name_1 = {} 
+device_id_from_module_name_1['led'] = 'led'
+device_id_from_module_name_1['boton'] = 'button'
+device_id_from_module_name_1['grises'] = 'grayscale'
+device_id_from_module_name_1['luz'] = 'ambientlight'
+device_id_from_module_name_1['temp'] = 'temperature'
+device_id_from_module_name_1['dist'] = 'distance'
+device_id_from_module_name_1['tilt'] = 'tilt'
+device_id_from_module_name_1['magnet'] = 'magneticinduction'
+device_id_from_module_name_1['vibra'] = 'vibration'
+
+device_id_from_module_name_2 = {} 
+device_id_from_module_name_2['led'] = 'led'
+device_id_from_module_name_2['button'] = 'button'
+device_id_from_module_name_2['grey'] = 'grayscale'
+device_id_from_module_name_2['light'] = 'ambientlight'
+device_id_from_module_name_2['temp'] = 'temperature'
+device_id_from_module_name_2['distanc'] = 'distance'
+device_id_from_module_name_2['tilt'] = 'tilt'
+device_id_from_module_name_2['magnet'] = 'magneticinduction'
+device_id_from_module_name_2['vibra'] = 'vibration'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -96,7 +117,6 @@ label_name_from_device_id['tilt'] = _('tilt')
 label_name_from_device_id['magneticinduction'] = _('magnetic induction')
 label_name_from_device_id['vibration'] = _('vibration')
 
-#list of devices that will be checked in the refresh event
 refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led' ]
 
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
@@ -109,9 +129,12 @@ class Butia(Plugin):
         self.butia = None
         self.pollthread = None
         self.pollrun = True
-        self.old_battery_value = 0
+        self.battery_value = -1
+        self.old_battery_value = -1
+        self.version = BUTIA_1
         self.bobot = None
         self.butia = None
+        self.match_list = []
         self.list_connected_device_module = []
         self.pollthread=threading.Timer(0, self.bobot_launch)
         self.pollthread.start()
@@ -255,7 +278,7 @@ class Butia(Plugin):
         primitive_dictionary['tiltButia'] = self.tiltButia
         primitive_dictionary['magneticinductionButia'] = self.magneticinductionButia
         primitive_dictionary['vibrationButia'] = self.vibrationButia
-        
+
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
@@ -284,7 +307,7 @@ class Butia(Plugin):
                     self.tw.lc.def_prim(block_name, 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
 
                 special_block_colors[block_name] = COLOR_NOTPRESENT
-                    
+
                 for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
                     block_name = module + 'Butia'
@@ -307,18 +330,12 @@ class Butia(Plugin):
                                      hidden=isHidden )
                         self.tw.lc.def_prim(block_name, 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
 
-
                     special_block_colors[block_name] = COLOR_NOTPRESENT
 
-        self.list_connected_device_module = []
-        
-        self.can_refresh = True
 
     def start(self):
         self.can_refresh = False
 
-    #get the block name and returns the corresponding module name and its index
-    #example: in: distance1Butia out: 1 , dist
     def block_2_index_and_name(self, block_name):
         """ Splits block_name in name and index, 
         returns a tuple (name,index)
@@ -329,25 +346,67 @@ class Butia(Plugin):
         else:
             return ('', 0)
 
+    def list_2_module_and_port(self, l):
+        r = []
+        for e in l:
+            try:
+                module, port = e.split(':')
+                if module in device_id_from_module_name_2:
+                    r.append((port, module))
+            except:
+                pass
+        return r
+
+    def make_match_dict(self, l):
+        match_list = []
+        for t in l:
+            i = 0
+            for index in range(0, int(t[0])-1):
+                x = (str(index), t[1])
+                if x in l:
+                    i = i + 1
+            if i == 0:
+                match_list.append((t[1], t[0]))
+            else:
+                match_list.append((t[1] + str(i), t[0]))
+        return dict(match_list)
+
     def refreshButia(self):
         if self.butia:
             self.butia.refresh()
         self.check_for_device_change(True)
-
+  
     def change_butia_palette_colors(self):
 
         if self.butia:
-            battery = self.butia.getBatteryCharge()
+            self.battery_value = self.butia.getBatteryCharge()
+            ver = self.butia.getVersion()
+            if not(ver == ERROR_SENSOR_READ):
+                self.version = ver
         else:
-            battery = ERROR_SENSOR_READ
+            self.battery_value = ERROR_SENSOR_READ
 
-        if (battery == self.old_battery_value):
-            change_statics_blocks = False
-        else:
+        change_statics_blocks = False
+        if not(self.battery_value == self.old_battery_value):
             change_statics_blocks = True
-            self.old_battery_value = battery
-            COLOR_STATIC = self.staticBlocksColor(battery)
-            COLOR_BATTERY = self.batteryColor(battery)
+            self.old_battery_value = self.battery_value
+
+        COLOR_STATIC = self.staticBlocksColor(self.battery_value)
+        COLOR_BATTERY = self.batteryColor(self.battery_value)
+
+        if self.version == BUTIA_1:
+            self.refresh_palette_1(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
+        else:
+            self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
+
+        try:
+            index = palette_name_to_index('butia')
+            self.tw.regenerate_palette(index)
+        except:
+            pass
+
+
+    def refresh_palette_1(self, COLOR_STATIC, COLOR_BATTERY, change_statics_blocks):
 
         #repaints program area blocks (proto) and palette blocks (block)
         for blk in self.tw.block_list.list:
@@ -363,7 +422,7 @@ class Butia(Plugin):
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
                     if (blk_name in refreshable_block_list):
-                        module_name = modules_name_from_device_id[blk_name] + blk_index
+                        module_name = modules_name_from_device_id_1[blk_name] + blk_index
                         if module_name in self.set_changed_device_module:
                             if module_name not in self.list_connected_device_module:
                                 if blk_index !='' :
@@ -377,15 +436,56 @@ class Butia(Plugin):
                         blk.refresh()
 
 
-        #impact changes in turtle blocks palette
-        try:
-            index = palette_name_to_index('butia')
-            self.tw.regenerate_palette(index)
-        except:
-            pass
+    def refresh_palette_2(self, COLOR_STATIC, COLOR_BATTERY, change_statics_blocks):
 
-    #if there exists new devices connected or disconections to the butia IO board, then it change the color of the blocks corresponding to the device 
+        l = self.list_2_module_and_port(self.list_connected_device_module)
+        self.match_dict = self.make_match_dict(l)
+
+        #repaints program area blocks (proto) and palette blocks (block)
+        for blk in self.tw.block_list.list:
+            #NOTE: blocks types: proto, block, trash, deleted
+            if blk.type in ['proto', 'block']:
+                if (blk.name in static_block_list):
+                    if (change_statics_blocks):
+                        if (blk.name == 'batterychargeButia'):
+                            special_block_colors[blk.name] = COLOR_BATTERY[:]
+                        else:
+                            special_block_colors[blk.name] = COLOR_STATIC[:]
+                        blk.refresh()
+                else:
+                    blk_name, blk_index = self.block_2_index_and_name(blk.name)
+                    if (blk_name in refreshable_block_list):
+                        module = modules_name_from_device_id_2[blk_name]
+                        s = module + blk_index
+                        if not(s in self.match_dict):
+                            if blk_index !='' :
+                                if blk.type == 'proto': # only make invisible the block in the palette not in the program area
+                                    blk.set_visibility(False)
+
+                            label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
+                            value = blk_index
+                            special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
+                        else:
+                            val = self.match_dict[s]
+                            value = int(val)
+                            label = label_name_from_device_id[blk_name] + ':' + val + ' ' + _('Butia')
+                            if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
+                                blk.set_visibility(True)
+                            special_block_colors[blk.name] = COLOR_PRESENT[:]
+
+                        if module == 'led':
+                            self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
+                        else:
+                            self.tw.lc.def_prim(blk.name, 0, lambda self, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](y))
+
+                        blk.spr.set_label(label)
+                        block_names[blk.name][0] = label
+                        blk.refresh()
+
+
     def check_for_device_change(self, force_refresh=False):
+        """ if there exists new devices connected or disconections to the butia IO board, 
+         then it change the color of the blocks corresponding to the device """
         
         old_list_connected_device_module =  self.list_connected_device_module
 
@@ -602,11 +702,12 @@ class Butia(Plugin):
             except:
                 debug_output('ERROR creating Bobot')
 
+        # Sure that bobot is running
         time.sleep(1)
 
         self.butia = butiaAPI.robot()
 
-        self.pollthread = threading.Timer(3, self.bobot_poll)
+        self.pollthread=threading.Timer(3, self.bobot_poll)
         self.pollthread.start()
 
     def bobot_poll(self):

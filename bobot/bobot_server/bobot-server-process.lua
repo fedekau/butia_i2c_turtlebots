@@ -21,10 +21,19 @@ process = {}
 process["INIT"] = function () --to check the new state of hardware on the fly
 	server_init()
 end
+process["REFRESH"] = function () --to check the new state of hardware on the fly
+	--for _, bb in ipairs(bobot.baseboards) do
+	--	bb:refresh()
+	--end
+	server_refresh()
+	return 'ok'
+end
+
+
 process["LIST"] = function ()
 	local ret,comma = "", ""
-	for d_name, _ in pairs(devices) do
-		ret = ret .. comma .. d_name
+	for _, d in ipairs(devices) do
+		ret = ret .. comma .. d.name
 		comma=","
 	end
 	return ret
@@ -34,7 +43,7 @@ end
 process["LISTI"] = function ()
     if bobot.baseboards then
         bobot.debugprint("listing instanced modules...")
-        for _, bb in pairs(bobot.baseboards) do
+        for _, bb in ipairs(bobot.baseboards) do
     	    local handler_size=bb:get_handler_size()
             for i=1, handler_size do
                 t_handler = bb:get_handler_type(i)
@@ -133,13 +142,18 @@ process["CALL"] = function (parameters)
 end
 process["CLOSEALL"] = function ()
 	if bobot.baseboards then
-		for _, bb in pairs(bobot.baseboards) do
-			-- guille: I dont undestain this part? ;
-			-- in the master:HEAD is not commented the second line
-			-- but is comented in branch bobot2 ; sow... That i do?
-			-- TODO check if delete or not the next line
-			---bb:close_all()
+		for _, bb in ipairs(bobot.baseboards) do
+            --this command closes all the open user modules
+            --it does not have sense with plug and play
 			bb:force_close_all() --modif andrew
+		end
+	end
+	return "ok"
+end
+process["BOOTLOADER"] = function ()
+	if bobot.baseboards then
+		for _, bb in ipairs(bobot.baseboards) do
+			bb:switch_to_bootloader()
 		end
 	end
 	return "ok"
