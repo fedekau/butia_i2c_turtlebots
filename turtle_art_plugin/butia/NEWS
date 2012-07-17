@@ -1,3 +1,24 @@
+VERSION 12
++Compatibilidad con Butiá 1.0 and 2.0
+/Se usa TurtleBlocks 149.1+
+
+VERSION 11
+/Se traduce a inglés la butiaAPI
+/Actualización de Butia plugin para Inglés
+/Se unifican los métodos de refrescar
+/Actualización de estilo de los iconos de plugins
+/Se arregla la función get_volt
+/Más de verificación robusto para cámara en FollowMe
+/Se arregla un error menor de captura en el FollowMe
+-Se elimina el viejo permissions.info
+/Se usa el método de regeneración de Butia en el plug-in
+-Varias limpiezas de código
+/Utiliza special_colors en lugar de BOX_COLORS
++Se arregla el bug que usaba el 100% de CPU en Lua
++Añadir los bloques followme para establecer el modo de color de la cámara
+-Se quita "goto and return background" para setear la bandera de refresco
+/Se utiliza TurtleBlocks 149.1
+
 VERSION 10
 I Uses this Turtle commit a0ef174... Push many PO files from Pootle
 +FollowMe guarda N calibraciones
