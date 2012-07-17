@@ -61,7 +61,6 @@ walterGIT:
 	# goto origin/master
 	#(cd mainline && git checkout origin/master)
 	# a especific version of Turtle
-	# previo al cambio de las grampas
 	(cd mainline && git checkout 21111b93b925d56d1a78a08d464699517ab1476b)
 
 wedoGIT:
