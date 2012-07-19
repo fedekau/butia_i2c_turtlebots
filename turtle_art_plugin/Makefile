@@ -61,7 +61,7 @@ walterGIT:
 	# goto origin/master
 	#(cd mainline && git checkout origin/master)
 	# a especific version of Turtle
-	(cd mainline && git checkout 21111b93b925d56d1a78a08d464699517ab1476b)
+	(cd mainline && git checkout a04bfea5aabfed5f07a0c70126afd891a5284808)
 
 wedoGIT:
 	# wedo GIT
