@@ -361,7 +361,7 @@ class Butia(Plugin):
         match_list = []
         for t in l:
             i = 0
-            for index in range(0, int(t[0])-1):
+            for index in range(0, int(t[0])):
                 x = (str(index), t[1])
                 if x in l:
                     i = i + 1
