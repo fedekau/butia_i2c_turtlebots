@@ -376,20 +376,7 @@ class Butia(Plugin):
             self.butia.refresh()
         self.check_for_device_change(True)
   
-    def change_butia_palette_colors(self):
-
-        if self.butia:
-            self.battery_value = self.butia.getBatteryCharge()
-            ver = self.butia.getVersion()
-            if not(ver == ERROR_SENSOR_READ):
-                self.version = ver
-        else:
-            self.battery_value = ERROR_SENSOR_READ
-
-        change_statics_blocks = False
-        if not(self.battery_value == self.old_battery_value):
-            change_statics_blocks = True
-            self.old_battery_value = self.battery_value
+    def change_butia_palette_colors(self, change_statics_blocks):
 
         COLOR_STATIC = self.staticBlocksColor(self.battery_value)
         COLOR_BATTERY = self.batteryColor(self.battery_value)
@@ -491,8 +478,13 @@ class Butia(Plugin):
 
         if self.butia:
             self.list_connected_device_module = self.butia.get_modules_list()
+            self.battery_value = self.butia.getBatteryCharge()
+            ver = self.butia.getVersion()
+            if not(ver == ERROR_SENSOR_READ):
+                self.version = ver
         else:
             self.list_connected_device_module = []
+            self.battery_value = ERROR_SENSOR_READ
 
         set_old_connected_device_module = set(old_list_connected_device_module)
         set_connected_device_module = set(self.list_connected_device_module)
@@ -500,8 +492,13 @@ class Butia(Plugin):
         set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
         self.set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
 
-        if not(self.set_changed_device_module == set([])) or force_refresh:
-            self.change_butia_palette_colors()
+        change_statics_blocks = False
+        if not(self.battery_value == self.old_battery_value):
+            change_statics_blocks = True
+            self.old_battery_value = self.battery_value
+
+        if not(self.set_changed_device_module == set([])) or change_statics_blocks or force_refresh:
+            self.change_butia_palette_colors(change_statics_blocks)
 
     def stop(self):
         """ stop is called when stop button is pressed. """
