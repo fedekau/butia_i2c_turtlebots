@@ -7,7 +7,7 @@
 # in others words => writen by butia TEAM!
 
 
-TURTLEARTVERSION=v149
+TURTLEARTVERSION=v152
 
 CWD=$(cwd)
 
@@ -59,9 +59,9 @@ walterGIT:
 	# erase any untraced file
 	(cd mainline && git clean -xdf)
 	# goto origin/master
-	#(cd mainline && git checkout origin/master)
+	(cd mainline && git checkout origin/master)
 	# a especific version of Turtle
-	(cd mainline && git checkout 6ae104db18c310db137d62a8673c5f97cfdd5f1a)
+	#(cd mainline && git checkout 6ae104db18c310db137d62a8673c5f97cfdd5f1a)
 
 wedoGIT:
 	# wedo GIT
