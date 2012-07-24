@@ -59,9 +59,9 @@ walterGIT:
 	# erase any untraced file
 	(cd mainline && git clean -xdf)
 	# goto origin/master
-	(cd mainline && git checkout origin/master)
+	#(cd mainline && git checkout origin/master)
 	# a especific version of Turtle
-	#(cd mainline && git checkout 6ae104db18c310db137d62a8673c5f97cfdd5f1a)
+	(cd mainline && git checkout fedd581831d6912152384874a00e00689e58dde4)
 
 wedoGIT:
 	# wedo GIT
