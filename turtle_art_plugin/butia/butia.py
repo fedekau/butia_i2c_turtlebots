@@ -599,13 +599,9 @@ class Butia(Plugin):
             return ERROR_SENSOR_READ
 
     def batteryColor(self, battery):
-        if (battery == -1): # or (battery == 255):
+        if (battery == -1):
             return COLOR_NOTPRESENT
-        elif ((battery < 254) and (battery >= 195)):
-            return COLOR_PRESENT
-        elif ((battery < 194) and (battery >= 134)):
-            return ["#FFFF00","#808080"]
-        elif ((battery < 134) and (battery >= 74)):
+        elif ((battery < 254) and (battery >= 74)):
             return ["#FFA500","#808080"]
         else:
             return ["#FF0000","#808080"]
