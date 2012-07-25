@@ -111,7 +111,7 @@ msgstr "actualiza el estado de la paleta y de los bloques Butiá"
 
 #: butia.py:169
 msgid "battery charge Butia"
-msgstr "carga batería Butiá"
+msgstr "carga de batería Butiá"
 
 #: butia.py:171
 msgid "returns the battery charge as a number between 0 and 255"
