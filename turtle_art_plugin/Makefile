@@ -73,13 +73,13 @@ nxtGIT:
 	# NXT GIT
 	(cd nxt_plugin && git fetch)
 	(cd nxt_plugin && git clean -xdf)
-	(cd nxt_plugin && git checkout origin/master)
+	(cd nxt_plugin && git checkout 08524307ded436a001b2445c721a5eeab3a9771f)
 
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
 
 POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot 
-POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
+POT_PROP= --language=Python --add-comments=TRANS: --keyword=_
 
 POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
               followme/po/FollowMe.notraslated.pot
