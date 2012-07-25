@@ -107,7 +107,7 @@ msgstr "refrescar Butiá"
 
 #: butia.py:162
 msgid "refresh the state of the Butia palette and blocks"
-msgstr "refresca el estado de la paleta Butiá y de los bloques"
+msgstr "actualiza el estado de la paleta y de los bloques Butiá"
 
 #: butia.py:169
 msgid "battery charge Butia"
