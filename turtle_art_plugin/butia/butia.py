@@ -420,7 +420,7 @@ class Butia(Plugin):
                                 if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
                                     blk.set_visibility(True)
                                 special_block_colors[blk.name] = COLOR_PRESENT[:]
-                        blk.refresh()
+                            blk.refresh()
 
 
     def refresh_palette_2(self, COLOR_STATIC, COLOR_BATTERY, change_statics_blocks):
