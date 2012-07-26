@@ -1,3 +1,12 @@
+VERSION 14
+/Fix two equal sensors in contigous port
+/Refresh the palette when battery changes too
+/Update translation
+/Fix chotox code
+/Simplify battery colors: grey, orange and red
+/Fix locale problem when use in Gnome
+/Fix colored blocks at start
+
 VERSION 13
 /fix an identation in butiaAPI
 +added driver for light sensor
