@@ -39,7 +39,7 @@ msgstr "adelante SumBot"
 
 #: sumtia/sumtia.py:85
 msgid "move SumBot forward"
-msgstr "mueve adelante el SumBot"
+msgstr "mueve el SumBot hacia adelante"
 
 #: sumtia/sumtia.py:91
 msgid "backward SumBot"
@@ -47,15 +47,15 @@ msgstr "atrás SumBot"
 
 #: sumtia/sumtia.py:93
 msgid "move SumBot backward"
-msgstr "mueve atras el SumBot"
+msgstr "mueve el SumBot hacia atrás"
 
 #: sumtia/sumtia.py:99
 msgid "stop SumBot"
-msgstr "parar SumBot"
+msgstr "detener SumBot"
 
 #: sumtia/sumtia.py:101
 msgid "stop the SumBot"
-msgstr "para el SumBot"
+msgstr "detiene el SumBot"
 
 #: sumtia/sumtia.py:107
 msgid "left SumBot"
@@ -63,7 +63,7 @@ msgstr "izquierda SumBot"
 
 #: sumtia/sumtia.py:109
 msgid "turn left the SumBot"
-msgstr "gira a la izquierda el SumBot"
+msgstr "gira el SumBot hacia la izquierda"
 
 #: sumtia/sumtia.py:115
 msgid "right SumBot"
@@ -71,7 +71,7 @@ msgstr "derecha SumBot"
 
 #: sumtia/sumtia.py:117
 msgid "turn right the SumBot"
-msgstr "gira a la derecha el SumBot"
+msgstr "gira el SumBot hacia la derecha"
 
 #: sumtia/sumtia.py:125
 msgid "get the angle to the center of the dohyo"
@@ -79,7 +79,7 @@ msgstr "obtiene el ángulo al centro del dohyo"
 
 #: sumtia/sumtia.py:131
 msgid "angle to Enemy"
-msgstr "angulo al Enemigo"
+msgstr "ángulo al Enemigo"
 
 #: sumtia/sumtia.py:133
 msgid "get the angle to the Enemy"
@@ -91,7 +91,7 @@ msgstr "coor. x SumBot"
 
 #: sumtia/sumtia.py:141
 msgid "get the x coordinate of the SumBot"
-msgstr "obtiene la coordenada x del SumBot"
+msgstr "obtiene la coordenada x del Sumbot"
 
 #: sumtia/sumtia.py:147
 msgid "y coor. SumBot"
@@ -99,7 +99,7 @@ msgstr "coor. y SumBot"
 
 #: sumtia/sumtia.py:149
 msgid "get the y coordinate of the SumBot"
-msgstr "obtiene la coordenada y del SumBot"
+msgstr "obtiene la coordenada y del Sumbot"
 
 #: sumtia/sumtia.py:155
 msgid "x coor. Enemy"
@@ -135,7 +135,7 @@ msgstr "obtiene la rotación del Enemigo"
 
 #: sumtia/sumtia.py:189
 msgid "get the distance to the center of the dohyo"
-msgstr "obtiene la distancia a el centro del dohyo"
+msgstr "obtiene la distancia al centro del dohyo"
 
 #: sumtia/sumtia.py:195
 msgid "distance to Enemy"
@@ -147,4 +147,4 @@ msgstr "obtiene la distancia al Enemigo"
 
 #: sumtia/sumtia.py:205
 msgid "update information from the server"
-msgstr "actualizar la información desde el servidor"
+msgstr "actualiza la información desde el servidor"

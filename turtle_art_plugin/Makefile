@@ -7,7 +7,7 @@
 # in others words => writen by butia TEAM!
 
 
-TURTLEARTVERSION=v149
+TURTLEARTVERSION=v152
 
 CWD=$(cwd)
 
@@ -61,19 +61,19 @@ walterGIT:
 	# goto origin/master
 	#(cd mainline && git checkout origin/master)
 	# a especific version of Turtle
-	(cd mainline && git checkout 21111b93b925d56d1a78a08d464699517ab1476b)
+	(cd mainline && git checkout b305fa58a0cdcd2e2944916dd8dfc79152b0c553)
 
 wedoGIT:
 	# wedo GIT
 	(cd WeDoMore && git fetch)
 	(cd WeDoMore && git clean -xdf)
-	(cd WeDoMore && git checkout origin/master)
+	(cd WeDoMore && git checkout ad0baf7fff7db9488d2995845f4e351048f02c91)
 
 nxtGIT:
 	# NXT GIT
 	(cd nxt_plugin && git fetch)
 	(cd nxt_plugin && git clean -xdf)
-	(cd nxt_plugin && git checkout origin/master)
+	(cd nxt_plugin && git checkout 08524307ded436a001b2445c721a5eeab3a9771f)
 
 
 ########### POT GENERATION AND TRASLATION THINKS ###########

@@ -19,11 +19,11 @@ msgstr ""
 
 #: followme/followme.py:99
 msgid "set a threshold for a RGB color"
-msgstr "setea el umbral para un color RGB"
+msgstr "define el umbral para un color RGB"
 
 #: followme/followme.py:119
 msgid "set the minimal number of pixels to follow"
-msgstr "setea el minimo número de pixeles a seguir"
+msgstr "define el mínimo número de píxeles a seguir"
 
 #: followme/followme.py:127
 msgid "calibrate"
@@ -31,8 +31,8 @@ msgstr "calibrar"
 
 #: followme/followme.py:156
 msgid "pixels"
-msgstr "pixeles"
+msgstr "píxeles"
 
 #: followme/followme.py:157
 msgid "return the number of pixels of the biggest blob"
-msgstr "devuelve el numero de pixeles de la mancha mas grande"
+msgstr "devuelve el número de píxeles de la mancha mas grande"
