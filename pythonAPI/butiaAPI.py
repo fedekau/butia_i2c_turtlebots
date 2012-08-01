@@ -109,10 +109,6 @@ class robot:
     ### Operations to the principal module
     #######################################################################
 
-    # open the module 'modulename'
-    def openModule(self, modulename):
-        msg = 'OPEN ' + modulename
-        return self.doCommand(msg)
 
     # call the module 'modulename'
     def callModule(self, modulename, function , params = ''):
