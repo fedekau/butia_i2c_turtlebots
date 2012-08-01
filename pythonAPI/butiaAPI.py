@@ -119,7 +119,12 @@ class robot:
         msg = 'CALL ' + modulename + ' ' + function
         if params != '' :
             msg += ' ' + params
-        return self.doCommand(msg)
+        ret = self.doCommand(msg)
+        try:
+            ret = int(ret)
+        except:
+            ret = ERROR_SENSOR_READ
+        return ret
 
     # Close bobot service
     def closeService(self):
@@ -149,7 +154,8 @@ class robot:
         msg = 'lback send ' + data
         ret = self.doCommand(msg)
         if ret != -1 :
-            return self.callModule('lback', 'read')
+            msg = 'CALL lback read'
+            return self.doCommand(msg)
         else:
             return ERROR_SENSOR_READ
             
@@ -181,21 +187,11 @@ class robot:
 
     # returns the approximate charge of the battery        
     def getBatteryCharge(self):
-        bat = self.callModule('butia', 'get_volt')
-        try:
-            bat = int(bat)
-        except:
-            pass
-        return bat
+        return self.callModule('butia', 'get_volt')
 
     # returns the firmware version 
     def getVersion(self):
-        ver = self.callModule('butia', 'read_ver')
-        try:
-            ver = int(ver)
-        except:
-            pass
-        self.ver = ver
+        self.ver = self.callModule('butia', 'read_ver')
         return self.ver
     
     # set de motor idMotor on determinate angle
