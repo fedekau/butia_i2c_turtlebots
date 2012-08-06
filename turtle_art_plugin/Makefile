@@ -7,7 +7,7 @@
 # in others words => writen by butia TEAM!
 
 
-TURTLEARTVERSION=v152
+TURTLEARTVERSION=v154
 
 CWD=$(cwd)
 
@@ -193,8 +193,8 @@ install: xo
 fakeinstall: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
 	mkdir -p ~/Activities
-	# fix localization and index
-	(cd tmp && python setup.py fix_manifest)
+	# fix localization and index (fix_manifest deprecated: use build instead)
+	(cd tmp && python setup.py build)
 	(cd tmp && python setup.py dev)
 
 
