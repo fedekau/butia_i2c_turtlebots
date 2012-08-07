@@ -3,10 +3,16 @@ package.path=package.path..";bobot/?.lua;lib/?.lua"
 local myscriptname = arg[1]
 
 local stricter=require "stricter"
-local socket=require "socket"
 local bobot = require("bobot")
 local array=require("array")
 local eventlib=require("events")
+
+local run_shell = function(s)
+	local f = io.popen(s) -- runs command
+	local l = f:read("*a") -- read output of command
+	f:close()
+	return l
+end
 
 local set_debug
 for i, v in ipairs(arg) do
@@ -24,18 +30,7 @@ else
 end
 
 --close bobot-server, if running
-local host, port = "localhost", 2009
-local bobotserver = socket.connect(host, port)
-if bobotserver then
-	bobot.debugprint("Bobot server found, closing...")
-	bobotserver:settimeout(nil) --blocking
-	bobotserver:send("QUIT\n")
-	bobotserver:settimeout(0.5)
-	local ret, err = bobotserver:receive()
-	if ret then
-		bobot.debugprint("Could not close bobot-server:", ret)		
-	end
-end
+run_shell("sh -n kill_bobot_server.sh &> /dev/null")
 
 bobot.init()
 local baseboards = bobot.baseboards

@@ -1,5 +1,5 @@
 #!/bin/lua
-require "socket"
+--require "socket"
 
 local butialo=require "butialo"
 
@@ -68,7 +68,7 @@ if err then debug ('>',err) end
 				generator=generator.." )"
 				print ('>',generator)
 			end
-		end			
+		end
 	end
 end
 
