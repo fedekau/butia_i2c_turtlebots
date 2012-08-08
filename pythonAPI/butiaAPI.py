@@ -175,6 +175,32 @@ class robot:
             return self.callModule('motors', 'setvelmtr', msg)
 
     #######################################################################
+    ### Operations for ax.lua driver
+    #######################################################################
+
+    def wheel_mode(self, idMotor = '0'):
+        msg = idMotor
+        if self.ver == BUTIA_1:
+            return self.callModule('ax', 'wheel_mode', msg) ##TODO implement
+        else:
+            return self.callModule('ax', 'wheel_mode', msg)
+     
+    def joint_mode(self, idMotor = '0', min = '0', max = '1023'):
+        msg = idMotor + ' ' + min + ' ' + max
+        if self.ver == BUTIA_1:
+            return self.callModule('ax', 'joint_mode', msg) ##TODO implement
+        else:
+            return self.callModule('ax', 'joint_mode', msg)
+
+    def set_position(self, idMotor = '0', pos = '0'):
+        msg = idMotor + ' ' + pos
+        if self.ver == BUTIA_1:
+            return self.callModule('ax', 'set_position', msg) ##TODO implement
+        else:
+            return self.callModule('ax', 'set_position', msg)
+
+
+    #######################################################################
     ### Operations for butia.lua driver
     #######################################################################
 
