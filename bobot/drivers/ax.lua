@@ -1,6 +1,8 @@
 local device = _G
 local WRITE_INFO = 0x01
+local READ_INFO  = 0x02
 local char000    = string.char(0,0,0)
+local mode='wheel'
 
 --byte id,byte regstart, int value
 api={}
@@ -16,6 +18,8 @@ api.write_info.call = function (id, regstart, value)
     return raw_val
 end
 
+--- Set wheel mode.
+--Set the motor to continuous rotation mode.
 api.wheel_mode = {}
 api.wheel_mode.parameters = {[1]={rname="id", rtype="number", min=0, max=255}}
 api.wheel_mode.returns = {}
@@ -25,8 +29,14 @@ api.wheel_mode.call = function (id )
         local write_info_response = device:read(1) or string.char(0,0)
 		local ret = device:send(string.char(WRITE_INFO,id,0x08,0x00,0x00))
         local write_info_response = device:read(1) or string.char(0,0)
+        mode='wheel'
     end
 
+--- Set joint mode.
+-- Set the motor to joint mode. Angles are provided in degrees,
+-- in the full servo coverage (0 - 300 degrees arc)
+-- @param min the minimum joint angle (defaults to 0)
+-- @param max the maximum joint angle (defaults to 300)
 api.joint_mode = {}
 api.joint_mode.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="minimo", rtype="number", min=0, max=1023},[3]={rname="maximo", rtype="number", min=0, max=1023}}
 api.joint_mode.returns = {}
@@ -38,8 +48,14 @@ api.joint_mode.call = function (id ,minimo, maximo)
         local write_info_response = device:read(1) or string.char(0,0)
 		local ret = device:send(string.char(WRITE_INFO,id,0x08,math.floor(maximo / 256),maximo % 256))
         local write_info_response = device:read(1) or string.char(0,0)
+        mode='joint'
     end
 
+
+--- Set motor position.
+-- Set the target position for the motor's axle. Only works in
+-- joint mode.
+-- @param value Angle in degrees, in the 0 .. 300deg range.
 api.set_position = {}
 api.set_position.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="pos", rtype="number", min=0, max=1023}}
 api.set_position.returns = {}
@@ -49,5 +65,45 @@ api.set_position.call = function (id, pos )
         local ret = device:send(string.char(WRITE_INFO,id,0x1E,math.floor(pos / 256),pos % 256))
         local write_info_response = device:read(1) or string.char(0,0)
     end
+
+--- Get motor position.
+-- Read the axle position from the motor.
+-- @return The angle in deg. The reading is only valid in the 
+-- 0 .. 300deg range
+api.get_position = {}
+api.get_position.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="pos", rtype="number", min=0, max=1023}}
+api.get_position.returns = {[1]={rname="motor_position", rtype="number"}} --one return
+api.get_position.call = function(id)
+        local write_info_response = device:send(string.char(WRITE_INFO,id,0x24))
+        local read_info_response = device:send(string.char(READ_INFO,id)) --TODO add number of bytes to read
+		local value = device:read(3) or string.char(0,0)
+		if ret then 
+			local ang=0.29*(256 * (value % 256) + math.floor(value / 256))
+			return ang  -- deg
+		end
+	end
+
+--- Set motor speed.
+-- @param value If motor in joint mode, speed in deg/sec in the 1 .. 684 range 
+-- (0 means max available speed). 
+-- If in wheel mode, as a fraction of max torque (in the -1 .. 1 range).
+api.set_speed = {}
+api.set_speed.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="speed", rtype="number", min=-1, max=684}}
+api.set_speed.returns = {} --no return
+api.set_speed.call = function(value)
+	if mode=='joint' then
+		-- 0 .. 684 deg/sec
+		local vel=math.floor(value * 1.496)
+		local lowb, highb = get2bytes_unsigned(vel)
+		local ret = device:send(idb,0x20,string.char(lowb,highb))
+		if ret then return ret:byte() end
+	else --mode=='wheel'
+		-- -1 ..  +1 max torque
+		local vel=math.floor(value * 1023)
+		local lowb, highb = get2bytes_signed(vel)
+		local ret = device:send(idb,0x20,string.char(lowb,highb))
+		if ret then return ret:byte() end
+	end
+end
 
 
