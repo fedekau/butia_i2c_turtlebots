@@ -116,10 +116,10 @@ class robot:
         if params != '' :
             msg += ' ' + params
         ret = self.doCommand(msg)
-        try:
+        '''try:
             ret = int(ret)
         except:
-            ret = ERROR_SENSOR_READ
+            ret = ERROR_SENSOR_READ'''
         return ret
 
     # Close bobot service
@@ -198,6 +198,14 @@ class robot:
             return self.callModule('ax', 'set_position', msg) ##TODO implement
         else:
             return self.callModule('ax', 'set_position', msg)
+
+    def get_position(self, idMotor = '0'):
+        msg = idMotor
+        if self.ver == BUTIA_1:
+            return self.callModule('ax', 'get_position', msg) ##TODO implement
+        else:
+            return self.callModule('ax', 'get_position', msg)
+
 
 
     #######################################################################
