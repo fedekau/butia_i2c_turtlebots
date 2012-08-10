@@ -116,10 +116,10 @@ class robot:
         if params != '' :
             msg += ' ' + params
         ret = self.doCommand(msg)
-        '''try:
+        try:
             ret = int(ret)
         except:
-            ret = ERROR_SENSOR_READ'''
+            ret = ERROR_SENSOR_READ
         return ret
 
     # Close bobot service
