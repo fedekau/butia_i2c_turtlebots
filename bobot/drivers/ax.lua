@@ -1,6 +1,7 @@
 local device = _G
 local WRITE_INFO = 0x01
 local READ_INFO  = 0x02
+local GET_RAW_POS = 0x03
 local char000    = string.char(0,0,0)
 local mode='wheel'
 
@@ -66,6 +67,7 @@ api.set_position.call = function (id, pos )
         local write_info_response = device:read(1) or string.char(0,0)
     end
 
+
 --- Get motor position.
 -- Read the axle position from the motor.
 -- @return The angle in deg. The reading is only valid in the 
@@ -74,14 +76,16 @@ api.get_position = {}
 api.get_position.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="pos", rtype="number", min=0, max=1023}}
 api.get_position.returns = {[1]={rname="motor_position", rtype="number"}} --one return
 api.get_position.call = function(id)
-        local write_info_response = device:send(string.char(WRITE_INFO,id,0x24))
-        local read_info_response = device:send(string.char(READ_INFO,id)) --TODO add number of bytes to read
-		local value = device:read(3) or string.char(0,0)
-		if ret then 
-			local ang=0.29*(256 * (value % 256) + math.floor(value / 256))
-			return ang  -- deg
-		end
+        local send_response = device:send(string.char(GET_RAW_POS,id))
+		local value = device:read(3) or string.char(0,0,0)
+        local h_value = string.byte(value, 2)
+        local l_value = string.byte(value, 3)
+        local raw_angle = 256 * h_value + l_value
+		local ang=0.29*(raw_angle) -- deg ?
+		return raw_angle 
+
 	end
+
 
 --- Set motor speed.
 -- @param value If motor in joint mode, speed in deg/sec in the 1 .. 684 range 
