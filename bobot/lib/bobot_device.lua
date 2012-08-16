@@ -30,8 +30,12 @@ local Device = {
 	tostring=tostring
 }
 
+
+local drivers_cache = setmetatable({}, {__mode='kv'})
 local function load_driver(d)
 	local modulename=d.module
+	if drivers_cache[modulename] then return drivers_cache[modulename] end
+	
 	local drivername=string.match(modulename, '^(.-)%d*$')
 	local f, err
 	if d.hotplug then
@@ -39,6 +43,7 @@ local function load_driver(d)
 	else
 		f, err = loadfile(my_path.."../drivers/"..drivername..".lua")
 	end
+	drivers_cache[modulename] = f
 	return f, err
 end
 
