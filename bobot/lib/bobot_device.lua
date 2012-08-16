@@ -165,6 +165,7 @@ end
 --sends data (a string) to device
 function Device:send(data)
 	--state & parameter sanity check
+	data=tostring(data)
 	assert(type(data)=="string")
 	assert(type(self.handler)=="number")
 	assert(type(self.in_endpoint)=="number")
