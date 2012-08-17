@@ -6,6 +6,7 @@ local stricter=require "stricter"
 local bobot = require("bobot")
 local array=require("array")
 local eventlib=require("events")
+local socket=require("socket")
 
 local run_shell = function(s)
 	local f = io.popen(s) -- runs command
@@ -103,8 +104,7 @@ for _, n in ipairs(env.devices) do
 
 	local d=env.devices[n]
 	bobot.debugprint("adding global", n, d)
-	local modulename = n
-		--string.upper(string.sub(n, 1, 1))
+	local modulename = string.upper(string.sub(n, 1, 1))
 		--.. string.lower(string.sub(n, 2)) --lleva a "Boton"
 	env[modulename]=d
 end
