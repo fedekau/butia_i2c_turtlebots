@@ -16,10 +16,10 @@ local run_shell = function(s)
 end
 
 local set_debug
-for i, v in ipairs(arg) do
+for i, v in ipairs(_G.arg) do
 	if v=="DEBUG" then
 		set_debug=true 
-		table.remove(arg, i)
+		table.remove(_G.arg, i)
 		break
 	end
 end
@@ -30,13 +30,13 @@ else
 	bobot.debugprint = function() end
 end
 
-local myscriptname = arg[1]
+local myscriptname = _G.arg[1]
 
 --close bobot-server, if running
 run_shell("sh -n kill_bobot_server.sh &> /dev/null")
 
 bobot.init()
-local baseboards = bobot.baseboards
+--local baseboards = bobot.baseboards
 
 device ={}
 
@@ -100,12 +100,16 @@ env.util.new_array = array.new_array
 env.events = eventlib
 read_devices_list()
 env.devices = devices
-for _, n in ipairs(env.devices) do
+for i, d in ipairs(env.devices) do
 
-	local d=env.devices[n]
-	bobot.debugprint("adding global", n, d)
-	local modulename = string.upper(string.sub(n, 1, 1))
-		--.. string.lower(string.sub(n, 2)) --lleva a "Boton"
+--print ("----------------", i, d, d.name)
+	local name=d.name
+
+	local d=env.devices[name]
+	local modulename = name:sub(1, 1):upper()
+		.. name:sub(2):lower() --lleva a "Boton"lua
+	modulename=modulename:gsub("%:","%_")
+	bobot.debugprint("adding global", name, d, modulename)
 	env[modulename]=d
 end
 
