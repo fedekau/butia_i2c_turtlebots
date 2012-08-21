@@ -77,6 +77,11 @@ local function read_devices_list()
 			devices[#devices+1]=d
 			d.name=regname
 			bobot.debugprint("=====module ",d.module," name",regname)
+
+			if not d.handler then
+				d:open(1,1)
+				bobot.debugprint("opened", d.handler)
+			end
 		end
 		bfound = true
 	end
@@ -88,6 +93,9 @@ end
 -------------------------------------------
 --export stuff
 local env = {}
+for k,v in pairs(_G) do env[k]=v end
+--for k,v in pairs(env) do print ('ENV', k, v) end
+
 local bobot_devices
 
 env.util = {}
@@ -110,9 +118,6 @@ for i, d in ipairs(devices) do
 	env[modulename]=d
 	env.devices[modulename]=d
 end
-
-for k,v in pairs(_G) do env[k]=v end
---for k,v in pairs(env) do print ('ENV', k, v) end
 
 if myscriptname then
 	local myscript

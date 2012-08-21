@@ -7,8 +7,8 @@ local butialo=require "butialo"
 
 local adevices = {}
 
-for _, d in ipairs(butialo.devices) do
-	adevices[#adevices+1] = d.name
+for n, d in pairs(butialo.devices) do
+	adevices[#adevices+1] = n
 end
 
 table.sort(adevices)
