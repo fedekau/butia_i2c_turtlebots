@@ -18,7 +18,7 @@ function comms_chotox.init(baseboards)
 	local bb = {idBoard=1, comms=comms_chotox}
 	local devices={}
 	local is_hotplug= {button=true, led=true, grey=true, distanc=true}
-	for i, name in ipairs({"button", "grey", "distanc","temp","butia"}) do
+	for i, name in ipairs({"button", "grey", "distanc","butia"}) do
 		local dd={name=name, module=name, baseboard=bb, handler=i}
 		dd.open = function() return true end
 		dd.close = function() end
