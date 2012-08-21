@@ -76,7 +76,7 @@ local function read_devices_list()
 			devices[regname]=d
 			devices[#devices+1]=d
 			d.name=regname
-			bobot.debugprint("=====module ",d.module," name",regname)
+			bobot.debugprint("=====module ",d.module," name",regname, " handler", d.handler)
 
 			if not d.handler then
 				d:open(1,1)
@@ -115,7 +115,8 @@ for i, d in ipairs(devices) do
 		.. name:sub(2):lower() --lleva a "Boton"lua
 	modulename=modulename:gsub("%:","%_")
 	bobot.debugprint("adding global", name, d, modulename)
-	env[modulename]=d
+	env[modulename]={}
+	for fn, fdef in pairs(d.api or {}) do env[modulename][fn] = fdef.call end
 	env.devices[modulename]=d
 end
 
