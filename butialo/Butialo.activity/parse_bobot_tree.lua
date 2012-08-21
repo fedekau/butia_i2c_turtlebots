@@ -7,14 +7,14 @@ local butialo=require "butialo"
 
 local adevices = {}
 
-for _, d in ipairs(devices) do
+for _, d in ipairs(butialo.devices) do
 	adevices[#adevices+1] = d.name
 end
 
 table.sort(adevices)
 
 for _, module in ipairs(adevices) do
-	device = devices[module]
+	device = butialo.devices[module]
 	--print('///', device)
 	--for k,v in pairs(device) do print ('***', k, v) end
 	if device.api then 

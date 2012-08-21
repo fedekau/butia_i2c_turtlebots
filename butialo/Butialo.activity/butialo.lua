@@ -1,7 +1,5 @@
 package.path=package.path..";bobot/?.lua;lib/?.lua"
 
-
-
 local stricter=require "stricter"
 local bobot = require("bobot")
 local array=require("array")
@@ -99,18 +97,18 @@ env.util.new_array = array.new_array
 
 env.events = eventlib
 read_devices_list()
-env.devices = devices
-for i, d in ipairs(env.devices) do
-
+env.devices = {}
+for i, d in ipairs(devices) do
 --print ("----------------", i, d, d.name)
 	local name=d.name
 
-	local d=env.devices[name]
+	local d=devices[name]
 	local modulename = name:sub(1, 1):upper()
 		.. name:sub(2):lower() --lleva a "Boton"lua
 	modulename=modulename:gsub("%:","%_")
 	bobot.debugprint("adding global", name, d, modulename)
 	env[modulename]=d
+	env.devices[modulename]=d
 end
 
 for k,v in pairs(_G) do env[k]=v end
