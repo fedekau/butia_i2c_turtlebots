@@ -1,3 +1,13 @@
+VERSION 15
+/CallModule return a int ever
+-remove unused openModule function from butiaAPI
+/butia_support folder to support
++new functions added to move set the mode of the motors
++new functions on ax12 module exported to API
+/fix path of support in call subprocess
+-remove temp from chotox
++adding getPosition to the bobot driver
+
 VERSION 14
 /Fix two equal sensors in contigous port
 /Refresh the palette when battery changes too
