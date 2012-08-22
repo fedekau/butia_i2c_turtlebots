@@ -27,13 +27,11 @@ from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tautils import convert
 
-sys.path.insert(0, os.path.abspath('./plugins/followme/lib'))
-
 try:
     import pygame
     import pygame.camera as pycam
 except ImportError:
-    pass
+    print 'Error in import Pygame. This plugin require Pygame 1.9'
 
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
 _logger = logging.getLogger('turtleart-activity followme plugin')
