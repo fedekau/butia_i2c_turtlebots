@@ -78,7 +78,7 @@ local function read_devices_list()
 			d.name=regname
 			bobot.debugprint("=====module ",d.module," name",regname, " handler", d.handler)
 
-			if not d.handler then
+			if not d.handler and d.name ~= 'pnp' then
 				d:open(1,1)
 				bobot.debugprint("opened", d.handler)
 			end
