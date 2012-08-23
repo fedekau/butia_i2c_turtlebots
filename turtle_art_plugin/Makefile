@@ -151,6 +151,7 @@ mktmpfolder:
 	rm -rf tmp
 	cp -rL mainline tmp
 	rm -rf tmp/.git
+	rm -f tmp/.gitignore
 	# lets patch the activity.info and add some icons (TurtleArt => TurtleArtButia)
 	cp -rLf stagin/* tmp/
 
@@ -180,7 +181,7 @@ xo: apply_hard_plugins
 	rm -rf tmp/plugins/nxt_plugin/.git
 	rm -f tmp/plugins/nxt_plugin/.gitignore
 	# ok, let's make this .xo
-	(cd tmp && python setup.py fix_manifest)
+	(cd tmp && python setup.py build)
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
 	#$(MAKE) clean_tmp
@@ -193,7 +194,7 @@ install: xo
 fakeinstall: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
 	mkdir -p ~/Activities
-	# fix localization and index (fix_manifest deprecated: use build instead)
+	# fix localization and index
 	(cd tmp && python setup.py build)
 	(cd tmp && python setup.py dev)
 
