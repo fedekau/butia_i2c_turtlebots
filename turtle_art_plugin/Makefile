@@ -73,7 +73,7 @@ nxtGIT:
 	# NXT GIT
 	(cd nxt_plugin && git fetch)
 	(cd nxt_plugin && git clean -xdf)
-	(cd nxt_plugin && git checkout 6a9ad13a94248764889aac0f85b2962c350c2422)
+	(cd nxt_plugin && git checkout c938c7003f01a29cbc6291ad618dfde10c1ed92c)
 
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
