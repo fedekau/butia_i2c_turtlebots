@@ -7,6 +7,7 @@ VERSION 15
 /fix path of support in call subprocess
 -remove temp from chotox
 +adding getPosition to the bobot driver
+/fix multiple sensor read in nxt plugin
 
 VERSION 14
 /Fix two equal sensors in contigous port
