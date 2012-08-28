@@ -556,7 +556,7 @@ class Butia(Plugin):
 
     def forwardDistance(self, dist):
         #FIXME 8.29 para que velocidad? Vel = Dist / Tiempo => Tiempo = Dist / Vel
-        tiempo = dist / 8.29
+        tiempo = abs(dist) / 8.29
         self.set_vels(self.actualSpeed, self.actualSpeed)
         time.sleep(tiempo)
         self.set_vels(0, 0)
@@ -569,7 +569,7 @@ class Butia(Plugin):
 
     def backwardDistance(self, dist):
         #FIXME cambiar el 8.29 por valor que dependa de velocidad
-        tiempo = dist / 8.29
+        tiempo = abs(dist) / 8.29
         self.set_vels(-self.actualSpeed, -self.actualSpeed)
         time.sleep(tiempo)
         self.tw.canvas.setpen(True)
