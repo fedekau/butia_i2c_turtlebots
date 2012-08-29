@@ -58,6 +58,7 @@ modules_help['distance'] = _("returns the distance from the object in front of t
 modules_help['tilt'] = _("returns 0 or 1 depending on the sensor inclination")
 modules_help['magneticinduction'] = _("returns 1 when the sensors detects a magnetic field, 0 otherwise")
 modules_help['vibration'] = _("switches from 0 to 1, the frequency depends on the vibration")
+modules_help['resistance'] = _("returns the value of the resistance")
 
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
@@ -83,6 +84,7 @@ modules_name_from_device_id_2['distance'] = 'distanc'
 modules_name_from_device_id_2['tilt'] = 'tilt'
 modules_name_from_device_id_2['magneticinduction'] = 'magnet'
 modules_name_from_device_id_2['vibration'] = 'vibra'
+modules_name_from_device_id_2['resistance'] = 'resist'
 
 device_id_from_module_name_1 = {} 
 device_id_from_module_name_1['led'] = 'led'
@@ -105,6 +107,7 @@ device_id_from_module_name_2['distanc'] = 'distance'
 device_id_from_module_name_2['tilt'] = 'tilt'
 device_id_from_module_name_2['magnet'] = 'magneticinduction'
 device_id_from_module_name_2['vibra'] = 'vibration'
+device_id_from_module_name_2['resist'] = 'resistance'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -116,8 +119,9 @@ label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['tilt'] = _('tilt')
 label_name_from_device_id['magneticinduction'] = _('magnetic induction')
 label_name_from_device_id['vibration'] = _('vibration')
+label_name_from_device_id['resistance'] = _('resistance')
 
-refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led' ]
+refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led', 'resistance' ]
 
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
               'backwardDistance', 'turnXdegree', 'LCDdisplayButia', 'batterychargeButia'] 
@@ -286,13 +290,13 @@ class Butia(Plugin):
         primitive_dictionary['tiltButia'] = self.tiltButia
         primitive_dictionary['magneticinductionButia'] = self.magneticinductionButia
         primitive_dictionary['vibrationButia'] = self.vibrationButia
-
+        primitive_dictionary['resistanceButia'] = self.resistanceButia
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'tilt', 'magneticinduction', 'vibration']]
+                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'tilt', 'magneticinduction', 'vibration', 'resistance']]
                  ]:
 
             (blockstyle , listofmodules) = i
@@ -650,6 +654,12 @@ class Butia(Plugin):
     def vibrationButia(self, sensorid=''):
         if self.butia:
             return self.butia.getVibration(sensorid)
+        else:
+            return ERROR_SENSOR_READ
+
+    def resistanceButia(self, sensorid=''):
+        if self.butia:
+            return self.butia.getResistance(sensorid)
         else:
             return ERROR_SENSOR_READ
 

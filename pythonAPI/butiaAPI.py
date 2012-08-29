@@ -274,6 +274,13 @@ class robot:
         else:
             return self.callModule('vibra:' + str(number), 'getValue')
 
+    # return the value of the resistance sensor
+    def getResistance(self, number=''):
+        if self.ver == BUTIA_1:
+            return self.callModule('resist' + str(number), 'getValue') #TODO implement
+        else:
+            return self.callModule('resist:' + str(number), 'getValue')
+
     # return the value of the tilt sensor
     def getTilt(self, number=''):
         if self.ver == BUTIA_1:
