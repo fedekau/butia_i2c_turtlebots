@@ -46,8 +46,9 @@ class robot:
         self.port = port
         self.client = None
         self.fclient = None
-        self.ver = ERROR_SENSOR_READ
+        self.ver = BUTIA_1
         self.reconnect()
+        self.getVersion()
 
        
     def doCommand(self, msg):
@@ -221,8 +222,10 @@ class robot:
 
     # returns the firmware version 
     def getVersion(self):
-        self.ver = self.callModule('butia', 'read_ver')
-        return self.ver
+        ver = self.callModule('butia', 'read_ver')
+        if not(ver == ERROR_SENSOR_READ):
+            self.ver = ver
+        return ver
     
     # set de motor idMotor on determinate angle
     def setPosition(self, idMotor = 0, angle = 0):
