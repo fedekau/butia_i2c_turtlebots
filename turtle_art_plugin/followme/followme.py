@@ -26,7 +26,7 @@ from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tautils import convert
-
+pycam = None
 try:
     import pygame
     import pygame.camera as pycam
@@ -51,10 +51,11 @@ class Followme(Plugin):
         self.cam = None
         self.mask = None
         self.connected = None
-        self.cam_present = True
+        self.lcamaras = []
         pygame.init()
-        pycam.init()
-        self.get_camera('RGB')
+        if pycam:
+            pycam.init()
+            self.get_camera('RGB')
 
     def get_camera(self, mode):
         tamanioc = (320, 240)
@@ -76,6 +77,7 @@ class Followme(Plugin):
                 self.capture_aux = pygame.surface.Surface(tamanioc)
             except:
                 print _('Error on initialization of the camera')
+            self.cam_present = True
         else:
             print _('No cameras was found')
 
