@@ -94,20 +94,25 @@ api.get_position.call = function(id)
 api.set_speed = {}
 api.set_speed.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="speed", rtype="number", min=-1, max=684}}
 api.set_speed.returns = {} --no return
-api.set_speed.call = function(value)
-	if mode=='joint' then
+api.set_speed.call = function(id, speed)
+	--if mode=='joint' then
 		-- 0 .. 684 deg/sec
-		local vel=math.floor(value * 1.496)
-		local lowb, highb = get2bytes_unsigned(vel)
-		local ret = device:send(idb,0x20,string.char(lowb,highb))
+		local vel=math.floor(speed * 1.496)
+		local lowb = math.floor(vel/ 256)
+		local highb = vel % 256
+	
+		
+		--local lowb, highb = get2bytes_unsigned(vel)
+		local ret = device:send(id,0x20,string.char(lowb,highb))
+		print ("ret= ",ret, " lowb= ", lowb, " highb= ", highb)
 		if ret then return ret:byte() end
-	else --mode=='wheel'
+	--else --mode=='wheel'
 		-- -1 ..  +1 max torque
-		local vel=math.floor(value * 1023)
-		local lowb, highb = get2bytes_signed(vel)
-		local ret = device:send(idb,0x20,string.char(lowb,highb))
-		if ret then return ret:byte() end
-	end
+		--local vel=math.floor(speed * 1023)
+		--local lowb, highb = get2bytes_signed(vel)
+		--local ret = device:send(id,0x20,string.char(lowb,highb))
+		--if ret then return ret:byte() end
+	--end
 end
 
 
