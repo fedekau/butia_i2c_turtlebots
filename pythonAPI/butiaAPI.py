@@ -193,6 +193,13 @@ class robot:
         else:
             return self.callModule('ax', 'joint_mode', msg)
 
+	def set_speed(self, idMotor = '0', speed = '0'):
+		msg = idMotor + ' ' + speed 
+        if self.ver == BUTIA_1:
+            return self.callModule('ax', 'set_speed', msg) ##TODO implement
+        else:
+            return self.callModule('ax', 'set_speed', msg)
+
     def set_position(self, idMotor = '0', pos = '0'):
         msg = idMotor + ' ' + pos
         if self.ver == BUTIA_1:
