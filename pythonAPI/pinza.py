@@ -26,31 +26,38 @@ closeDer = 879
 
 openIzq = 980
 closeIzq = 74
-cerrado = False
 
 posDer = openDer
 posIzq = openIzq
-
+posActDer = openDer
+posActIzq = openIzq
 #inicio abierto
 butiabot.set_position(PINZA_DER, str(posDer))
 butiabot.set_position(PINZA_IZQ, str(posIzq))
 time.sleep(1)
 
-while butiabot.get_position(PINZA_IZQ) > closeDer or butiabot.get_position(PINZA_DER) < closeDer:
+while posActDer < closeDer or  posActIzq > closeIzq:
 	posDer += inc
 	posIzq += -inc
 	butiabot.set_position(PINZA_DER, str(posDer))
 	butiabot.set_position(PINZA_IZQ, str(posIzq))
+
 	time.sleep(float(vel))
-		
 
+	#print "dif= ", )
+	if abs(posActDer-butiabot.get_position(PINZA_DER)) < 5:
+		butiabot.set_position(PINZA_DER, str(posActDer-500))
 
+	posActDer = butiabot.get_position(PINZA_DER)
+	posActIzq = butiabot.get_position(PINZA_IZQ)
 
-
-
+	#print "posActDer= ", posActDer
 
 	
-
+	#if abs(posActDer - butiabot.get_position(PINZA_DER))
+	
+	
+		
 """	#open and close motion
 	butiabot.set_position(PINZA_DER, str(openDer))
 	butiabot.set_position(PINZA_IZQ, str(openIzq))
