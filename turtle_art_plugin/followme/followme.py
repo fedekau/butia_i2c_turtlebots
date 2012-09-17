@@ -43,6 +43,7 @@ class Followme(Plugin):
         self.parent = parent
         self.cam_present = False
         self.cam_on = False
+        self.tamanioc = (320, 240)
         self.colorc = (255, 255, 255)
         self.threshold = (25, 25, 25)
         self.pixels_min = 10
@@ -58,28 +59,27 @@ class Followme(Plugin):
             self.get_camera('RGB')
 
     def get_camera(self, mode):
-        tamanioc = (320, 240)
         self.stop_camera()
         self.lcamaras = pygame.camera.list_cameras()
         if self.lcamaras:
-            self.cam = pygame.camera.Camera(self.lcamaras[0], tamanioc, mode)
-            tamanioc = self.cam.get_size()
-            if not (tamanioc == (320, 240)):
-                self.cam = pygame.camera.Camera(self.lcamaras[0], (352, 288), mode)
+            self.cam = pygame.camera.Camera(self.lcamaras[0], self.tamanioc, mode)
             try:
-                #self.cam.set_controls(brightness = 129)
-                self.cam.set_controls(True, False)
-                #self.cam.start()
-                res = self.cam.get_controls()
-                self.flip = res[0]
-                tamanioc = self.cam.get_size()
-                self.capture = pygame.surface.Surface(tamanioc)
-                self.capture_aux = pygame.surface.Surface(tamanioc)
+                self.cam.start()
+                self.set_camera_flags()
+                self.tamanioc = self.cam.get_size()
+                self.cam.stop()
+                self.capture = pygame.surface.Surface(self.tamanioc)
+                self.capture_aux = pygame.surface.Surface(self.tamanioc)
             except:
                 print _('Error on initialization of the camera')
             self.cam_present = True
         else:
             print _('No cameras was found')
+
+    def set_camera_flags(self):
+        self.cam.set_controls(True, False, 100)
+        res = self.cam.get_controls()
+        self.flip = res[0]
 
     def stop_camera(self):
         if (self.cam_present and self.cam_on):
@@ -93,6 +93,7 @@ class Followme(Plugin):
         if (self.cam_present and not(self.cam_on)):
             try:
                 self.cam.start()
+                self.set_camera_flags()
                 self.cam_on = True
             except:
                 print _('Error in start camera')
@@ -424,7 +425,8 @@ class Followme(Plugin):
                     elif event.type == 3:
                         self.run = False
                 self.capture = self.cam.get_image(self.capture)
-                self.capture = pygame.transform.flip(self.capture, True, False)
+                if not(self.flip):
+                    self.capture = pygame.transform.flip(self.capture, True, False)
                 self.screen.blit(self.capture, (0,0))
                 rect = pygame.draw.rect(self.screen, (255,0,0), (100,100,50,50), 4)
                 self.colorc = pygame.transform.average_color(self.capture, rect)
@@ -444,7 +446,7 @@ class Followme(Plugin):
             if self.flip:
                 res = centroid[0]
             else:
-                res = 320 - centroid[0]
+                res = self.tamanioc[0] - centroid[0]
         return res
 
     def prim_yposition(self):
@@ -454,7 +456,7 @@ class Followme(Plugin):
         self.connected = mask.connected_component()
         if (self.connected.count() > self.pixels):
             centroid = self.mask.centroid()
-            res = 240 - centroid[1]
+            res = self.tamanioc[1] - centroid[1]
         return res
 
     def prim_pixels(self):
