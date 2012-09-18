@@ -4,7 +4,7 @@ local RD_VERSION=string.char(0x00)
 local GET_VALUE=string.char(0x01)
 local string_byte=string.byte
 
--- description: lets us know grey module's version
+-- description: lets us know light module's version
 api={}
 api.getVersion = {}
 api.getVersion.parameters = {} -- no input parameters
@@ -17,14 +17,14 @@ api.getVersion.call = function ()
     return raw_val
 end
 
--- description: lets us know grey sensor's current value
+-- description: lets us know light sensor's current value
 -- input: empty
--- output: grey sensor's current value.
+-- output: light sensor's current value.
 api.getValue = {}
 api.getValue.parameters = {} -- no input parameters
 api.getValue.returns = {[1]={rname="par1", rtype="int"}} 
 api.getValue.call = function ()
-	device:send(GET_VALUE) -- operation code 1 = get grey level
+	device:send(GET_VALUE) -- operation code 1 = get light level
 	local sen_anl_response = device:read(3) -- operation code and data
 	if not sen_anl_response or #sen_anl_response~=3	then return -1 end
     local raw_val = (string_byte(sen_anl_response, 2) or 0) + (string_byte(sen_anl_response, 3) or 0)* 256

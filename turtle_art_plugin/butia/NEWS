@@ -1,3 +1,92 @@
+VERSION 15
+/CallModule return a int ever
+-remove unused openModule function from butiaAPI
+/butia_support folder to support
++new functions added to move set the mode of the motors
++new functions on ax12 module exported to API
+/fix path of support in call subprocess
+-remove temp from chotox
++adding getPosition to the bobot driver
+/fix multiple sensor read in nxt plugin
+
+VERSION 14
+/Fix two equal sensors in contigous port
+/Refresh the palette when battery changes too
+/Update translation
+/Fix chotox code
+/Simplify battery colors: grey, orange and red
+/Fix locale problem when use in Gnome
+/Fix colored blocks at start
+
+VERSION 13
+/fix an identation in butiaAPI
++added driver for light sensor
+/uses TA 152+
+
+VERSION 12
++Compatibilidad con Butiá 1.0 and 2.0
+/Se usa TurtleBlocks 149.1+
+
+VERSION 11
+/Se traduce a inglés la butiaAPI
+/Actualización de Butia plugin para Inglés
+/Se unifican los métodos de refrescar
+/Actualización de estilo de los iconos de plugins
+/Se arregla la función get_volt
+/Más de verificación robusto para cámara en FollowMe
+/Se arregla un error menor de captura en el FollowMe
+-Se elimina el viejo permissions.info
+/Se usa el método de regeneración de Butia en el plug-in
+-Varias limpiezas de código
+/Utiliza special_colors en lugar de BOX_COLORS
++Se arregla el bug que usaba el 100% de CPU en Lua
++Añadir los bloques followme para establecer el modo de color de la cámara
+-Se quita "goto and return background" para setear la bandera de refresco
+/Se utiliza TurtleBlocks 149.1
+
+VERSION 10
+I Uses this Turtle commit a0ef174... Push many PO files from Pootle
++FollowMe guarda N calibraciones
+/La tortuga oculta los bloques al ejecutar run
+/Se mejora la tortuga en su ejecución desde Gnome
+
+VERSION 9
++se mejora el tiempo al salir
++se agrega que desde Gnome pregunte por guardar y cierre los plugins
++varias limpiezas en el plugin Sumtia
++FollowMe solo prende la cámara cuando usa X, e Y
++se elimina carpeta .git en el plugin NxT
++se agrega Listi en bobot
++se elimina refresh butia innecesario en el thread (se incrementa la velocidad de ejecución)
++se mejora el refresh de cada bloque eliminando llamadas innecesarias
++se arregla el bloque LED
++se usa TutleBlocks 138+ 
+
+VERSION 8
++Se limpia el plugin de Sumtia
++Se ajusta el plugin Sumtia a PEP8
++Utiliza el nuevo plugin de NXT
++Se limpia el plugin de Butia
++Se arregla el tipo de carga_de_bateria
++Se valida cuando el objeto Butia no se creó
++Se utiliza blk.refresh en lugar de blk.set_color()
++Se corrige error en el comando INIT
++Se mejora el tiempo de detección de que el robot se desconectó
++Se agrega bobot_launch a un thread
++Se mejora el tiempo que tarda la actividad en abrir.
++Se utiliza la versión de TurtleArt 138+
+
+VERSION 7
++Se extienden las funcionalidades agregando los plugin para: Lego WeDo, 
+NxT. Además de tener los usuales: Butiá, FollowMe y Sumtia.
++Se cambia el nombre de TurtleArt Butiá a: TurtleBots.
++Plugin Butiá: se agrega thread que refresca el estado del robot con 
+los sensores que tiene en cada momento, además de muchas otras mejoras.
++Plugin FollowMe: se agrega posibilidad de setear el umbral con un 
+bloque.
++Plugin NxT: se agregan validaciones y chequeos internos.
++Plugin WeDo: se corrige un problema en el nombre de un bloque.
+
 VERSION 6
 / update i10n-es
 + fix redraw function at start

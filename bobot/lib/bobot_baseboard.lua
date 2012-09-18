@@ -2,6 +2,8 @@
 
 --module(..., package.seeall);
 
+local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
+
 local bobot_device = require("bobot_device")
 local bobot = require("bobot")
 
@@ -22,7 +24,7 @@ local GET_USER_MODULE_LINE_PACKET_SIZE = 0x05
 local CLOSEALL_BASE_BOARD_COMMAND = string.char(0x07) 
 local CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE = 5
 local TIMEOUT = 250 --ms
-local MAX_RETRY = 20
+local MAX_RETRY = 5
 
 local BaseBoard = {}
 
@@ -35,17 +37,19 @@ local function run_shell (s)
 	return l
 end
 
-local drivers = {}
+openable = {}
+hotplug = {}
+
 local function parse_drivers()
-	local driver_files=run_shell("sh -c 'ls drivers/*.lua 2> /dev/null'")
+	local driver_files=run_shell("sh -c 'ls "..my_path.."../drivers/*.lua 2> /dev/null'")
 	for filename in driver_files:gmatch('drivers%/(%S+)%.lua') do
 		--print ("Driver openable", filename)
-		drivers[filename] = 'openable'
+		openable[filename] = true
 	end
-	driver_files=run_shell("sh -c 'ls drivers/hotplug/*.lua 2> /dev/null'")
+	driver_files=run_shell("sh -c 'ls "..my_path.."../drivers/hotplug/*.lua 2> /dev/null'")
 	for filename in driver_files:gmatch('drivers%/hotplug%/(%S+)%.lua') do
 		--print ("Driver hotplug", filename)
-		drivers[filename] = 'hotplug'
+		hotplug[filename] = true
 	end
 end
 parse_drivers()
@@ -71,7 +75,7 @@ local function load_modules(bb)
 			retry = retry+1
 		end
 		if not modulename then return nil end
-		if drivers[modulename]=='openable' then
+		if openable[modulename] then
 			bb.modules[i]=modulename
 			local d = bobot_device:new({
 				module=modulename,
@@ -84,7 +88,7 @@ local function load_modules(bb)
 			bb.devices[#bb.devices+1]=d
 			
 			bb.modules[modulename]=d
-		elseif drivers[modulename]=='hotplug' then
+		elseif hotplug[modulename] then
 			bb.modules[i]=modulename
 			bb.modules[modulename]=true
 			bb.hotplug = true -- bb has a hotplug module
@@ -98,15 +102,13 @@ end
 local function load_module_handlers(bb)
 	local retry = 0
 	
-	if bb.comms.type=='serial' then return end
-	
 	local n_module_handlers=bb:get_handler_size()
 	while n_module_handlers == nil and retry < MAX_RETRY do
 		n_module_handlers=bb:get_handler_size()
 		bobot.debugprint("u4b:the module handler list size returned a nil value, trying to recover...")
 		retry = retry+1
 	end
-	if not n_module_handlers then return nil end
+	if (not n_module_handlers) or (n_module_handlers > 32) then return nil end
 	retry=0
 	bobot.debugprint ("Reading moduleshandlers:", n_module_handlers)
 	for i=1, n_module_handlers do
@@ -130,7 +132,7 @@ local function load_module_handlers(bb)
 					module=modulename,
 					--name=name, 
 					baseboard=bb,
-					hotplug=(drivers[modulename]=='hotplug'),
+					hotplug=(hotplug[modulename]),
 					in_endpoint=0x01, out_endpoint=0x01,
 				}) -- in_endpoint=0x01, out_endpoint=0x01})
 				if d then 

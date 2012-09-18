@@ -18,14 +18,14 @@ end
 
 raw_val = send("LIST")
 socket.sleep(1)
-_, pos = string.find(raw_val, "distanc:")
+_, pos = string.find(raw_val, "light:")
 port = string.sub(raw_val,pos+1,pos+1)  -- get port number
 
 if pos then
     while true do
-	    print (send("CALL distanc:"..port.." getValue"))
+	    print (send("CALL light:"..port.." getValue"))
 	    socket.sleep(0.01)
     end
 else
-     print("err::No dist connected.")
+     print("err::No light connected.")
 end

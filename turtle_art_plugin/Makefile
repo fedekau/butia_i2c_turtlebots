@@ -7,7 +7,7 @@
 # in others words => writen by butia TEAM!
 
 
-TURTLEARTVERSION=v138
+TURTLEARTVERSION=v154
 
 CWD=$(cwd)
 
@@ -59,22 +59,21 @@ walterGIT:
 	# erase any untraced file
 	(cd mainline && git clean -xdf)
 	# goto origin/master
-	(cd mainline && git checkout origin/master)
-
+	#(cd mainline && git checkout origin/master)
 	# a especific version of Turtle
-	#(cd mainline && git checkout $(TURTLEARTVERSION))
+	(cd mainline && git checkout fc5e8672c10f6d25e15b6a90e33865e8ab93802d)
 
 wedoGIT:
 	# wedo GIT
 	(cd WeDoMore && git fetch)
 	(cd WeDoMore && git clean -xdf)
-	(cd WeDoMore && git checkout origin/master)
+	(cd WeDoMore && git checkout ad0baf7fff7db9488d2995845f4e351048f02c91)
 
 nxtGIT:
 	# NXT GIT
 	(cd nxt_plugin && git fetch)
 	(cd nxt_plugin && git clean -xdf)
-	(cd nxt_plugin && git checkout origin/master)
+	(cd nxt_plugin && git checkout b256dce36af3b2dff8a2e91a6ba67e75f04daafc)
 
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
@@ -152,6 +151,7 @@ mktmpfolder:
 	rm -rf tmp
 	cp -rL mainline tmp
 	rm -rf tmp/.git
+	rm -f tmp/.gitignore
 	# lets patch the activity.info and add some icons (TurtleArt => TurtleArtButia)
 	cp -rLf stagin/* tmp/
 
@@ -169,7 +169,7 @@ apply_hard_plugins: apply_localization butiaXO
 	cp -rLf wedo_plugin/ tmp/plugins/
 
 apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
-	# let's make symlinks, it lets you, edit and try, lot more ease!
+	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia tmp/plugins/butia
 	ln -s `pwd`/sumtia tmp/plugins/sumtia
 	ln -s `pwd`/followme tmp/plugins/followme
@@ -181,7 +181,7 @@ xo: apply_hard_plugins
 	rm -rf tmp/plugins/nxt_plugin/.git
 	rm -f tmp/plugins/nxt_plugin/.gitignore
 	# ok, let's make this .xo
-	(cd tmp && python setup.py fix_manifest)
+	(cd tmp && python setup.py build)
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
 	#$(MAKE) clean_tmp
@@ -195,7 +195,7 @@ fakeinstall: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
 	mkdir -p ~/Activities
 	# fix localization and index
-	(cd tmp && python setup.py fix_manifest)
+	(cd tmp && python setup.py build)
 	(cd tmp && python setup.py dev)
 
 

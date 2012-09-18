@@ -24,16 +24,14 @@ from gettext import gettext as _
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary, logoerror
-from TurtleArt.taconstants import BOX_COLORS
+from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tautils import convert
-
-sys.path.insert(0, os.path.abspath('./plugins/followme/lib'))
-
+pycam = None
 try:
     import pygame
     import pygame.camera as pycam
 except ImportError:
-    pass
+    print 'Error in import Pygame. This plugin require Pygame 1.9'
 
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
 _logger = logging.getLogger('turtleart-activity followme plugin')
@@ -50,31 +48,86 @@ class Followme(Plugin):
         self.pixels_min = 10
         self.pixels = 0
         self.calibrations = {}
-        try:
-            pygame.init()
+        self.cam = None
+        self.mask = None
+        self.connected = None
+        self.lcamaras = []
+        pygame.init()
+        if pycam:
             pycam.init()
-            self.lcameras = pycam.list_cameras()
-            if self.lcameras:
-                self.cam = pycam.Camera(self.lcameras[0], (320,240), 'RGB')
-                self.capture = pygame.surface.Surface((320,240))
-                self.mask = None
-                self.connected = None
-                self.cam_present = True
-            else:
-                print _('The camera was not found.')
-        except:
-            print _('Error on the initialization of the camera.')
+            self.get_camera('RGB')
+
+    def get_camera(self, mode):
+        tamanioc = (320, 240)
+        self.stop_camera()
+        self.lcamaras = pygame.camera.list_cameras()
+        if self.lcamaras:
+            self.cam = pygame.camera.Camera(self.lcamaras[0], tamanioc, mode)
+            tamanioc = self.cam.get_size()
+            if not (tamanioc == (320, 240)):
+                self.cam = pygame.camera.Camera(self.lcamaras[0], (352, 288), mode)
+            try:
+                #self.cam.set_controls(brightness = 129)
+                self.cam.set_controls(True, False)
+                #self.cam.start()
+                res = self.cam.get_controls()
+                self.flip = res[0]
+                tamanioc = self.cam.get_size()
+                self.capture = pygame.surface.Surface(tamanioc)
+                self.capture_aux = pygame.surface.Surface(tamanioc)
+            except:
+                print _('Error on initialization of the camera')
+            self.cam_present = True
+        else:
+            print _('No cameras was found')
+
+    def stop_camera(self):
+        if (self.cam_present and self.cam_on):
+            try:
+                self.cam.stop()
+                self.cam_on = False
+            except:
+                print _('Error in stop camera')
+
+    def start_camera(self):
+        if (self.cam_present and not(self.cam_on)):
+            try:
+                self.cam.start()
+                self.cam_on = True
+            except:
+                print _('Error in start camera')
+
+    def get_mask(self):
+        if self.cam_on:
+            try:
+                self.capture = self.cam.get_image(self.capture)
+                pygame.transform.threshold(self.capture_aux, self.capture, self.colorc, 
+                            (self.threshold[0],self.threshold[1], self.threshold[2]), (0,0,0), 2)
+                self.mask = pygame.mask.from_threshold(self.capture_aux, self.colorc, self.threshold)
+            except:
+                print _('Error in get mask')
+        return self.mask
+
 
     def dynamicLoadBlockColors(self):
         if not(self.cam_present):
-            BOX_COLORS['followRGB'] = COLOR_NOTPRESENT
-            BOX_COLORS['follow'] = COLOR_NOTPRESENT
-            BOX_COLORS['threshold'] = COLOR_NOTPRESENT
-            BOX_COLORS['pixels_min'] = COLOR_NOTPRESENT
-            BOX_COLORS['calibrate'] = COLOR_NOTPRESENT
-            BOX_COLORS['xposition'] = COLOR_NOTPRESENT
-            BOX_COLORS['yposition'] = COLOR_NOTPRESENT
-            BOX_COLORS['pixels'] = COLOR_NOTPRESENT
+            special_block_colors['followRGB'] = COLOR_NOTPRESENT
+            special_block_colors['threshold'] = COLOR_NOTPRESENT
+            special_block_colors['savecalibration1'] = COLOR_NOTPRESENT
+            special_block_colors['savecalibration2'] = COLOR_NOTPRESENT
+            special_block_colors['savecalibrationN'] = COLOR_NOTPRESENT
+            special_block_colors['calibration1'] = COLOR_NOTPRESENT
+            special_block_colors['calibration2'] = COLOR_NOTPRESENT
+            special_block_colors['calibrationN'] = COLOR_NOTPRESENT
+            special_block_colors['xposition'] = COLOR_NOTPRESENT
+            special_block_colors['yposition'] = COLOR_NOTPRESENT
+            special_block_colors['pixels'] = COLOR_NOTPRESENT
+            special_block_colors['follow'] = COLOR_NOTPRESENT
+            special_block_colors['pixels_min'] = COLOR_NOTPRESENT
+            special_block_colors['camera_mode'] = COLOR_NOTPRESENT
+            special_block_colors['mode_rgb'] = COLOR_NOTPRESENT
+            special_block_colors['mode_yuv'] = COLOR_NOTPRESENT
+            special_block_colors['mode_hsv'] = COLOR_NOTPRESENT
 
     def setup(self):
 
@@ -216,27 +269,79 @@ class Followme(Plugin):
         self.parent.lc.def_prim('pixels_min', 1, lambda self, x:
                         primitive_dictionary['pixels_min'](x))
 
+        primitive_dictionary['camera_mode'] = self.prim_camera_mode
+        palette.add_block('camera_mode',
+                        style='basic-style-1arg',
+                        label=_('camera mode'),
+                        default='RGB',
+                        help_string=_('set the color mode of the camera: RGB; YUV or HSV'),
+                        prim_name='camera_mode')
+        self.parent.lc.def_prim('camera_mode', 1, lambda self, x:
+                        primitive_dictionary['camera_mode'](x))
+
+        primitive_dictionary['mode_rgb'] = self.prim_mode_rgb
+        palette.add_block('mode_rgb',
+                        style='box-style',
+                        label=_('RGB'),
+                        help_string=_('set the color mode of the camera to RGB'),
+                        value_block=True,
+                        prim_name='mode_rgb')
+        self.parent.lc.def_prim('mode_rgb', 0, lambda self:
+                        primitive_dictionary['mode_rgb']())
+
+        primitive_dictionary['mode_yuv'] = self.prim_mode_yuv
+        palette.add_block('mode_yuv',
+                        style='box-style',
+                        label=_('YUV'),
+                        help_string=_('set the color mode of the camera to YUV'),
+                        value_block=True,
+                        prim_name='mode_yuv')
+        self.parent.lc.def_prim('mode_yuv', 0, lambda self:
+                        primitive_dictionary['mode_yuv']())
+
+        primitive_dictionary['mode_hsv'] = self.prim_mode_hsv
+        palette.add_block('mode_hsv',
+                        style='box-style',
+                        label=_('HSV'),
+                        help_string=_('set the color mode of the camera to HSV'),
+                        value_block=True,
+                        prim_name='mode_hsv')
+        self.parent.lc.def_prim('mode_hsv', 0, lambda self:
+                        primitive_dictionary['mode_hsv']())
+
 
     def stop(self):
-        if (self.cam_present and self.cam_on):
-            self.cam.stop()
-            self.cam_on = False
+        self.stop_camera()
 
     def quit(self):
-        if (self.cam_present and self.cam_on):
-            self.cam.stop()
-            self.cam_on = False
+        self.stop_camera()
             
     def clear(self):
         pass
 
+    def prim_camera_mode(self, mode):
+        m = 'RGB'
+        try:
+            m = str(mode)
+        except:
+            pass
+        m = m.upper()
+        if (m == 'RGB') or (m == 'YUV') or (m == 'HSV'):
+            self.get_camera(m)
+                
+    def prim_mode_rgb(self):
+        return 'RGB'
+
+    def prim_mode_yuv(self):
+        return 'YUV'
+
+    def prim_mode_hsv(self):
+        return 'HSV'
+
     def prim_followRGB(self, R, G, B):
-        if type(R) == float:
-            R = int(R)
-        if type(G) == float:
-            G = int(G)
-        if type(B) == float:
-            B = int(B)
+        R = int(R)
+        G = int(G)
+        B = int(B)
 
         if (R < 0) or (R > 255):
             R = 255
@@ -244,6 +349,7 @@ class Followme(Plugin):
             G = 255
         if (B < 0) or (B > 255):
             B = 255
+
         self.colorc = (R, G, B)
 
     def prim_follow(self, x):
@@ -280,12 +386,9 @@ class Followme(Plugin):
             self.colorc = (255, 255, 255)
             
     def prim_threshold(self, R, G, B):
-        if type(R) == float:
-            R = int(R)
-        if type(G) == float:
-            G = int(G)
-        if type(B) == float:
-            B = int(B)
+        R = int(R)
+        G = int(G)
+        B = int(B)
 
         if (R < 0) or (R > 255):
             R = 25
@@ -293,6 +396,7 @@ class Followme(Plugin):
             G = 25
         if (B < 0) or (B > 255):
             B = 25
+
         self.threshold = (R, G, B)
     
     def prim_pixels_min(self, x):
@@ -304,94 +408,62 @@ class Followme(Plugin):
 
     def calibrate(self):
         self.colorc = (255, 255, 255)
-        if self.cam_present:
-            if not(self.cam_on):
-                try:
-                    self.cam.start()
-                    self.cam_on = True
-                except:
-                    pass
-            if self.cam_on:
-                self.screen = pygame.display.set_mode((1200,900))
-                self.clock = pygame.time.Clock()
-                self.clock.tick(10)
-                self.run = True
-                while self.run:
-                    while gtk.events_pending():
-                        gtk.main_iteration()
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                            self.run = False
-                        # click o tecla
-                        elif event.type == 3:
-                            self.run = False
-                    self.capture = self.cam.get_image(self.capture)
-                    self.capture = pygame.transform.flip(self.capture, True, False)
-                    self.screen.blit(self.capture, (0,0))
-                    rect = pygame.draw.rect(self.screen, (255,0,0), (100,100,50,50), 4)
-                    self.colorc = pygame.transform.average_color(self.capture, rect)
-                    self.screen.fill(self.colorc, (320,240,100,100))
-                    pygame.display.flip()
-                self.screen = pygame.display.quit()
-        
+        self.start_camera()
+        if self.cam_on:
+            self.screen = pygame.display.set_mode((1200,900))
+            self.clock = pygame.time.Clock()
+            self.clock.tick(10)
+            self.run = True
+            while self.run:
+                while gtk.events_pending():
+                    gtk.main_iteration()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.run = False
+                    # click o tecla
+                    elif event.type == 3:
+                        self.run = False
+                self.capture = self.cam.get_image(self.capture)
+                self.capture = pygame.transform.flip(self.capture, True, False)
+                self.screen.blit(self.capture, (0,0))
+                rect = pygame.draw.rect(self.screen, (255,0,0), (100,100,50,50), 4)
+                self.colorc = pygame.transform.average_color(self.capture, rect)
+                self.screen.fill(self.colorc, (320,240,100,100))
+                pygame.display.flip()
+            self.screen = pygame.display.quit()
+    
         return (self.colorc[0], self.colorc[1], self.colorc[2])
 
     def prim_xposition(self):
-        if self.cam_present:
-            if not(self.cam_on):
-                try:
-                    self.cam.start()
-                    self.cam_on = True
-                except:
-                    return (-1)
-            self.capture = self.cam.get_image(self.capture)
-            self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
-                                                self.threshold)
-            self.connected = self.mask.connected_component()
-            if (self.connected.count() > self.pixels):
-                centroid = self.mask.centroid()
-                return (320 - centroid[0])
+        res = -1
+        self.start_camera()
+        mask = self.get_mask()            
+        self.connected = mask.connected_component()
+        if (self.connected.count() > self.pixels):
+            centroid = self.mask.centroid()
+            if self.flip:
+                res = centroid[0]
             else:
-                return (-1)
-        else:
-            return (-1)
+                res = 320 - centroid[0]
+        return res
 
     def prim_yposition(self):
-        if self.cam_present:
-            if not(self.cam_on):
-                try:
-                    self.cam.start()
-                    self.cam_on = True
-                except:
-                    return (-1)
-            self.capture = self.cam.get_image(self.capture)
-            self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
-                                                self.threshold)
-            self.connected = self.mask.connected_component()
-            if (self.connected.count() > self.pixels):
-                centroid = self.mask.centroid()
-                return (240 - centroid[1])
-            else:
-                return (-1)
-        else:
-            return (-1)
+        res = -1
+        self.start_camera()
+        mask = self.get_mask()            
+        self.connected = mask.connected_component()
+        if (self.connected.count() > self.pixels):
+            centroid = self.mask.centroid()
+            res = 240 - centroid[1]
+        return res
 
     def prim_pixels(self):
-        if self.cam_present:
-            if not(self.cam_on):
-                try:
-                    self.cam.start()
-                    self.cam_on = True
-                except:
-                    return (-1)
-            self.capture = self.cam.get_image(self.capture)
-            self.mask = pygame.mask.from_threshold(self.capture, self.colorc,
-                                                self.threshold)
-            self.connected = self.mask.connected_component()
-            return self.connected.count()
-        else:
-            return (-1)
-
+        res = -1
+        self.start_camera()
+        mask = self.get_mask()            
+        self.connected = mask.connected_component()
+        res = self.connected.count()
+        return res
 
     def _prim_savecalibration(self, name, x):
         c = self.calibrate()

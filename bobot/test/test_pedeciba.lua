@@ -15,17 +15,16 @@ local function send(s)
 --	print("ret:", ret)
 	return ret
 end
-
-raw_val = send("LIST")
-socket.sleep(1)
-_, pos = string.find(raw_val, "distanc:")
-port = string.sub(raw_val,pos+1,pos+1)  -- get port number
-
-if pos then
-    while true do
-	    print (send("CALL distanc:"..port.." getValue"))
-	    socket.sleep(0.01)
+sensor = {"button","distanc"}
+for id=1,2 do -- #sensor
+    for i=1,6 do
+        print("Connect a "..sensor[id].." sensor in port "..i)
+        socket.sleep(10)
+        j = 255
+        while j>0 do
+            j=j-1
+            print(send("CALL "..sensor[id]..":"..i.." getValue"))
+            socket.sleep(0.01)
+        end
     end
-else
-     print("err::No dist connected.")
 end

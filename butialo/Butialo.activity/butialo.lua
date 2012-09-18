@@ -1,18 +1,23 @@
 package.path=package.path..";bobot/?.lua;lib/?.lua"
 
-local myscriptname = arg[1]
-
 local stricter=require "stricter"
-local socket=require "socket"
 local bobot = require("bobot")
 local array=require("array")
 local eventlib=require("events")
+local socket=require("socket")
+
+local run_shell = function(s)
+	local f = io.popen(s) -- runs command
+	local l = f:read("*a") -- read output of command
+	f:close()
+	return l
+end
 
 local set_debug
-for i, v in ipairs(arg) do
+for i, v in ipairs(_G.arg) do
 	if v=="DEBUG" then
 		set_debug=true 
-		table.remove(arg, i)
+		table.remove(_G.arg, i)
 		break
 	end
 end
@@ -23,24 +28,29 @@ else
 	bobot.debugprint = function() end
 end
 
+local myscriptname = _G.arg[1]
+
 --close bobot-server, if running
-local host, port = "localhost", 2009
-local bobotserver = socket.connect(host, port)
-if bobotserver then
-	bobot.debugprint("Bobot server found, closing...")
-	bobotserver:settimeout(nil) --blocking
-	bobotserver:send("QUIT\n")
-	bobotserver:settimeout(0.5)
-	local ret, err = bobotserver:receive()
-	if ret then
-		bobot.debugprint("Could not close bobot-server:", ret)		
-	end
-end
+run_shell("sh -n kill_bobot_server.sh &> /dev/null")
 
 bobot.init()
-local baseboards = bobot.baseboards
+--local baseboards = bobot.baseboards
 
-local function get_device_name(devices, n)
+device ={}
+
+local function get_device_name(d)
+
+--print("DEVICENAME", d.module, d.hotplug, d.handler)
+	local board_id, port_id = '', ''
+	if #bobot.baseboards>1 then
+		board_id='@'..d.baseboard.idBoard
+	end
+	if d.hotplug then 
+		port_id = ':'..d.handler
+	end
+	
+	local n=d.module..board_id..port_id
+	
 	if not devices[n] then
 		return n
 	end
@@ -58,56 +68,34 @@ end
 local function read_devices_list()
 	bobot.debugprint("=Listing Devices")
 	local bfound
-	local devices={}
-	for b_name, bb in pairs(baseboards) do
-    		bobot.debugprint("===board ", b_name)
-		for d_name,d in pairs(bb.devices) do
-			local regname = get_device_name(devices, d_name)
+	devices={}
+	for _, bb in ipairs(bobot.baseboards) do
+		bobot.debugprint("===board ", bb.idBoard)
+		for _,d in ipairs(bb.devices) do
+			local regname = get_device_name(d)
 			devices[regname]=d
-    			bobot.debugprint("=====d_name ",d_name," regname ",regname)
+			devices[#devices+1]=d
+			d.name=regname
+			bobot.debugprint("=====module ",d.module," name",regname, " handler", d.handler)
+
+			if not d.handler and d.name ~= 'pnp' then
+				d:open(1,1)
+				bobot.debugprint("opened", d.handler)
+			end
 		end
 		bfound = true
 	end
-	if not bfound then bobot.debugprint ("ls:WARN: No Baseboard found.") end
-	return devices
+	if not bfound then bobot.debugprint("ls:WARN: No Baseboard found.") end
 end
 
-
-local function build_devices()
-	
-	local bobot_devices = read_devices_list()
-
-	local d = {}
-	for modulename, module in pairs(bobot_devices) do
-		local device={}
-		bobot.debugprint ("+++", modulename)
-		if module.api then
-			module:open(1,1) --FIXME
-
-			for fname, f in pairs(module.api) do
-				bobot.debugprint ("---", fname, f.call)
-				device[fname] = f.call
-			end
-
-			--local modulename = string.upper(string.sub(modulename, 1, 1))
-			--.. string.lower(string.sub(modulename, 2)) --lleva a "Boton"
-
-			d[modulename]=device
-			device.name=modulename
-		end
-	end
-
-	--local meta = { __index}
-	--setmetatable(d, meta)
-	--setmetatable(n, meta)
-
-	return d, bobot_devices
-end
 
 
 -------------------------------------------
 --export stuff
 local env = {}
+for k,v in pairs(_G) do env[k]=v end
+--for k,v in pairs(env) do print ('ENV', k, v) end
+
 local bobot_devices
 
 env.util = {}
@@ -116,16 +104,21 @@ env.util.get_time = socket.gettime
 env.util.new_array = array.new_array
 
 env.events = eventlib
-env.devices, bobot_devices = build_devices()
-for n, d in pairs(env.devices) do
-	bobot.debugprint("adding global", n, d)
-	local modulename = string.upper(string.sub(n, 1, 1))
-		.. string.lower(string.sub(n, 2)) --lleva a "Boton"
-	env[modulename]=d
-end
+read_devices_list()
+env.devices = {}
+for i, d in ipairs(devices) do
+--print ("----------------", i, d, d.name)
+	local name=d.name
 
-for k,v in pairs(_G) do env[k]=v end
---for k,v in pairs(env) do print ('ENV', k, v) end
+	local d=devices[name]
+	local modulename = name:sub(1, 1):upper()
+		.. name:sub(2):lower() --lleva a "Boton"lua
+	modulename=modulename:gsub("%:","%_")
+	bobot.debugprint("adding global", name, d, modulename)
+	env[modulename]={}
+	for fn, fdef in pairs(d.api or {}) do env[modulename][fn] = fdef.call end
+	env.devices[modulename]=d
+end
 
 if myscriptname then
 	local myscript

@@ -5,7 +5,7 @@ local bobot = require("bobot")
 
 local my_path = debug.getinfo(1, "S").source:match[[^@?(.*[\/])[^\/]-$]]
 assert(package.loadlib(my_path .. "libluausb.so","luaopen_libusb"))()
-local libusb=libusb; _G.libusb=nil
+local libusb=_G.libusb; _G.libusb=nil
 
 local usb_bulk_write = libusb.bulk_write
 local usb_bulk_read = libusb.bulk_read
@@ -51,6 +51,7 @@ function comms_usb.init(baseboards)
 	--refresh devices and buses
 	libusb.find_busses()
 	libusb.find_devices()
+	local n_boards = 0
 
 	local buses=libusb.get_busses()
 	for dirname, bus in pairs(buses) do 			--iterate buses
@@ -88,10 +89,11 @@ function comms_usb.init(baseboards)
 				--bobot.debugprint("Baseboard:", iSerial)
 
 				baseboards[#baseboards+1]=bb
+				n_boards = n_boards + 1
 			end
 		end
 	end
-	return #baseboards
+	return n_boards 
 end
 
 return comms_usb
