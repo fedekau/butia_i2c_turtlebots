@@ -8,6 +8,7 @@ VERSION 16
 /followme: prevent crash when no pygame is present
 /followme: fix crash with no XO cameras/diferent sugar versions
 /followme: set flag brightness constant
+/uses TurtleArt 158
 
 VERSION 15
 /CallModule return a int ever
