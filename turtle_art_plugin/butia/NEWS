@@ -1,3 +1,14 @@
+VERSION 16
+/fix forward distance for negative arguments
+/change the getVersion system - add initial call in butiaAPI
++add new resistance block
+/use another version of nxt_plugin with pyusb 1.0.0-a3
++adds set_speed function in butiaAPI
++new driver dinamixel
+/followme: prevent crash when no pygame is present
+/followme: fix crash with no XO cameras/diferent sugar versions
+/followme: set flag brightness constant
+
 VERSION 15
 /CallModule return a int ever
 -remove unused openModule function from butiaAPI
