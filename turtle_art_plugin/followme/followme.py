@@ -178,15 +178,14 @@ class Followme(Plugin):
         self.parent.lc.def_prim('calibrationN', 1,
                              lambda self, x: primitive_dictionary['calibration']('calibration', x))
 
-        primitive_dictionary['brightness_f'] = self.prim_brightness
-        palette.add_block('brightness_f',
+        primitive_dictionary['follow'] = self.prim_follow
+        palette.add_block('follow',
                         style='basic-style-1arg',
-                        label=_('brightness'),
-                        default=128,
-                        help_string=_('set the camera brightness as a value between 0 to 255'),
-                        prim_name='brightness_f')
-        self.parent.lc.def_prim('brightness_f', 1, lambda self, x:
-                        primitive_dictionary['brightness_f'](x))
+                        label=_('follow'),
+                        help_string=_('follow a color or calibration'),
+                        prim_name='follow')
+        self.parent.lc.def_prim('follow', 1, lambda self, x:
+                        primitive_dictionary['follow'](x))
 
         primitive_dictionary['xposition'] = self.prim_xposition
         palette.add_block('xposition',
@@ -218,15 +217,15 @@ class Followme(Plugin):
         self.parent.lc.def_prim('pixels', 0, lambda self:
                         primitive_dictionary['pixels']())
 
-        primitive_dictionary['follow'] = self.prim_follow
-        palette.add_block('follow',
+        primitive_dictionary['brightness_f'] = self.prim_brightness
+        palette.add_block('brightness_f',
                         style='basic-style-1arg',
-                        label=_('follow'),
-                        default=0,
-                        help_string=_('follow a color or calibration'),
-                        prim_name='follow')
-        self.parent.lc.def_prim('follow', 1, lambda self, x:
-                        primitive_dictionary['follow'](x))
+                        label=_('brightness'),
+                        default=128,
+                        help_string=_('set the camera brightness as a value between 0 to 255'),
+                        prim_name='brightness_f')
+        self.parent.lc.def_prim('brightness_f', 1, lambda self, x:
+                        primitive_dictionary['brightness_f'](x))
 
         primitive_dictionary['pixels_min'] = self.prim_pixels_min
         palette.add_block('pixels_min',
