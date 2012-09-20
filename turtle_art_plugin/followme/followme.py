@@ -48,6 +48,7 @@ class Followme(Plugin):
         self.threshold = (25, 25, 25)
         self.pixels_min = 10
         self.pixels = 0
+        self.brightness = 128
         self.calibrations = {}
         self.cam = None
         self.mask = None
@@ -77,7 +78,7 @@ class Followme(Plugin):
             print _('No cameras was found')
 
     def set_camera_flags(self):
-        self.cam.set_controls(True, False, 100)
+        self.cam.set_controls(True, False, self.brightness)
         res = self.cam.get_controls()
         self.flip = res[0]
 
@@ -114,12 +115,9 @@ class Followme(Plugin):
         if not(self.cam_present):
             special_block_colors['followRGB'] = COLOR_NOTPRESENT
             special_block_colors['threshold'] = COLOR_NOTPRESENT
-            special_block_colors['savecalibration1'] = COLOR_NOTPRESENT
-            special_block_colors['savecalibration2'] = COLOR_NOTPRESENT
             special_block_colors['savecalibrationN'] = COLOR_NOTPRESENT
-            special_block_colors['calibration1'] = COLOR_NOTPRESENT
-            special_block_colors['calibration2'] = COLOR_NOTPRESENT
             special_block_colors['calibrationN'] = COLOR_NOTPRESENT
+            special_block_colors['brightness_f'] = COLOR_NOTPRESENT
             special_block_colors['xposition'] = COLOR_NOTPRESENT
             special_block_colors['yposition'] = COLOR_NOTPRESENT
             special_block_colors['pixels'] = COLOR_NOTPRESENT
@@ -158,56 +156,16 @@ class Followme(Plugin):
                         primitive_dictionary['threshold'](x, y, z))
 
         primitive_dictionary['savecalibration'] = self._prim_savecalibration
-        palette.add_block('savecalibration1',
-                          style='basic-style',
-                          label=_('save calibration 1'),
-                          prim_name='savecalibration1',
-                          help_string=_('stores a calibration in calibration 1'))
-        self.parent.lc.def_prim('savecalibration1', 0,
-                             lambda self: primitive_dictionary['savecalibration'](
-                'calibration1', None))
-
-        primitive_dictionary['savecalibration'] = self._prim_savecalibration
-        palette.add_block('savecalibration2',
-                          style='basic-style',
-                          label=_('save calibration 2'),
-                          prim_name='savecalibration2',
-                          help_string=_('stores a calibration in calibration 2'))
-        self.parent.lc.def_prim('savecalibration2', 0,
-                             lambda self: primitive_dictionary['savecalibration'](
-                'calibration2', None))
-
-        primitive_dictionary['savecalibration'] = self._prim_savecalibration
         palette.add_block('savecalibrationN',
                           style='basic-style-1arg',
                           label=_('calibration'),
                           prim_name='savecalibrationN',
                           string_or_number=True,
-                          default='3',
+                          default='1',
                           help_string=_('stores a personalized calibration'))
         self.parent.lc.def_prim('savecalibrationN', 1,
                              lambda self, x: primitive_dictionary['savecalibration'](
                 'calibration', x))
-
-        primitive_dictionary['calibration'] = self._prim_calibration
-        palette.add_block('calibration1',
-                        style='box-style',
-                        label=_('calibration 1'),
-                        help_string=_('return calibration 1'),
-                        value_block=True,
-                        prim_name='calibration1')
-        self.parent.lc.def_prim('calibration1', 0, lambda self:
-                        primitive_dictionary['calibration']('calibration1', None))
-
-        primitive_dictionary['calibration'] = self._prim_calibration
-        palette.add_block('calibration2',
-                        style='box-style',
-                        label=_('calibration 2'),
-                        help_string=_('return calibration 2'),
-                        value_block=True,
-                        prim_name='calibration2')
-        self.parent.lc.def_prim('calibration2', 0, lambda self:
-                        primitive_dictionary['calibration']('calibration2', None))
 
         primitive_dictionary['calibration'] = self._prim_calibration
         palette.add_block('calibrationN',
@@ -215,10 +173,20 @@ class Followme(Plugin):
                           label=_('calibration'),
                           prim_name='calibrationN',
                           string_or_number=True,
-                          default=3,
+                          default='1',
                           help_string=_('return a personalized calibration'))
         self.parent.lc.def_prim('calibrationN', 1,
                              lambda self, x: primitive_dictionary['calibration']('calibration', x))
+
+        primitive_dictionary['brightness_f'] = self.prim_brightness
+        palette.add_block('brightness_f',
+                        style='basic-style-1arg',
+                        label=_('brightness'),
+                        default=128,
+                        help_string=_('set the camera brightness as a value between 0 to 255'),
+                        prim_name='brightness_f')
+        self.parent.lc.def_prim('brightness_f', 1, lambda self, x:
+                        primitive_dictionary['brightness_f'](x))
 
         primitive_dictionary['xposition'] = self.prim_xposition
         palette.add_block('xposition',
@@ -385,6 +353,10 @@ class Followme(Plugin):
                 self.colorc = (0, 0, 0)
         else:
             self.colorc = (255, 255, 255)
+
+    def prim_brightness(self, x):
+        self.brightness = int(x)
+        self.set_camera_flags()
             
     def prim_threshold(self, R, G, B):
         R = int(R)
