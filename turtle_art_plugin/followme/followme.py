@@ -67,7 +67,6 @@ class Followme(Plugin):
             try:
                 self.cam.start()
                 self.set_camera_flags()
-                self.tamanioc = self.cam.get_size()
                 self.cam.stop()
                 self.capture = pygame.surface.Surface(self.tamanioc)
                 self.capture_aux = pygame.surface.Surface(self.tamanioc)
@@ -81,6 +80,9 @@ class Followme(Plugin):
         self.cam.set_controls(True, False, self.brightness)
         res = self.cam.get_controls()
         self.flip = res[0]
+        self.tamanioc = self.cam.get_size()
+        self.x_offset = int(self.tamanioc[0] / 2.0 - 5)
+        self.y_offset = int(self.tamanioc[1] / 2.0 - 5)
 
     def stop_camera(self):
         if (self.cam_present and self.cam_on):
@@ -110,6 +112,25 @@ class Followme(Plugin):
                 print _('Error in get mask')
         return self.mask
 
+    def calc_luminance(self):
+        self.start_camera()
+        self.capture = self.cam.get_image(self.capture)
+        if self.cam_on:
+            # Average the 100 pixels in the center of the screen
+            r, g, b = 0, 0, 0
+            for y in range(10):
+                s = self.y_offset + y
+                for x in range(10):
+                    color = self.capture.get_at((self.x_offset + x, s))
+                    r += color[0]
+                    g += color[1]
+                    b += color[2]
+
+            return int((r * 0.3 + g * 0.6 + b * 0.1) / 100)
+
+        else:
+            return -1
+
 
     def dynamicLoadBlockColors(self):
         if not(self.cam_present):
@@ -127,6 +148,7 @@ class Followme(Plugin):
             special_block_colors['mode_rgb'] = COLOR_NOTPRESENT
             special_block_colors['mode_yuv'] = COLOR_NOTPRESENT
             special_block_colors['mode_hsv'] = COLOR_NOTPRESENT
+            special_block_colors['brightness_w'] = COLOR_NOTPRESENT
 
     def setup(self):
 
@@ -277,6 +299,14 @@ class Followme(Plugin):
         self.parent.lc.def_prim('mode_hsv', 0, lambda self:
                         primitive_dictionary['mode_hsv']())
 
+        primitive_dictionary['brightness_w'] = self.calc_luminance
+        palette.add_block('brightness_w',
+                        style='box-style',
+                        label=_('get brightness'),
+                        help_string=_('get the brightness of the ambient'),
+                        prim_name='brightness_w')
+        self.parent.lc.def_prim('brightness_w', 0, lambda self:
+                        primitive_dictionary['brightness_w']())
 
     def stop(self):
         self.stop_camera()
@@ -467,5 +497,4 @@ class Followme(Plugin):
             return (int(t[0]), int(t[1]), int(t[2]))
         except:
             raise logoerror(_('error in string conversion'))
-
 
