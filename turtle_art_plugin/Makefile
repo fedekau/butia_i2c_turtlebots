@@ -153,7 +153,7 @@ mktmpfolder:
 	rm -rf tmp/.git
 	rm -f tmp/.gitignore
 	# lets patch the activity.info and add some icons (TurtleArt => TurtleArtButia)
-	cp -rLf stagin/* tmp/
+	cp -rLf stagin/activity tmp/
 
 apply_localization: mktmpfolder $(PO_FILES)
 	# let's add localization (if is not already in taextras.py)
@@ -186,6 +186,38 @@ xo: apply_hard_plugins
 	cp tmp/dist/*.xo .
 	#$(MAKE) clean_tmp
 
+
+################ Plugins #############
+
+butia_plugin: apply_hard_plugins
+	cp stagin/plugins/butia/plugin.info tmp/plugins
+	(cd tmp/plugins && tar -czvf butia_plugin.tar.gz butia/* plugin.info)
+	rm tmp/plugins/plugin.info
+	mv tmp/plugins/butia_plugin.tar.gz .
+
+followme_plugin: apply_hard_plugins
+	cp stagin/plugins/followme/plugin.info tmp/plugins
+	(cd tmp/plugins && tar -czvf followme_plugin.tar.gz followme/* plugin.info)
+	rm tmp/plugins/plugin.info
+	mv tmp/plugins/followme_plugin.tar.gz .
+
+nxt_plugin: apply_hard_plugins
+	# remove .git from NXT plugin
+	rm -rf tmp/plugins/nxt_plugin/.git
+	rm -f tmp/plugins/nxt_plugin/.gitignore
+	cp stagin/plugins/nxt_plugin/plugin.info tmp/plugins
+	cd tmp/plugins && tar -czvf nxt_plugin.tar.gz nxt_plugin/* plugin.info
+	rm tmp/plugins/plugin.info
+	mv tmp/plugins/nxt_plugin.tar.gz .
+
+wedo_plugin: apply_hard_plugins
+	cp stagin/plugins/wedo_plugin/plugin.info tmp/plugins
+	cd tmp/plugins && tar -czvf wedo_plugin.tar.gz wedo_plugin/* plugin.info
+	rm tmp/plugins/plugin.info
+	mv tmp/plugins/wedo_plugin.tar.gz .
+
+plugins: butia_plugin followme_plugin nxt_plugin wedo_plugin
+
 install: xo
 	sugar-install-bundle *.xo
 	$(MAKE) clean_xo
@@ -207,6 +239,7 @@ clean:
 	$(MAKE) -C ../butiaXO clean
 	$(MAKE) clean_pot
 	$(MAKE) clean_tmp
+	$(MAKE) clean_plugins
 	$(MAKE) clean_xo
 	# this remove only if it's a symlink ; don't remove if installed
 	rm -f ~/Activities/TurtleBots.activity
@@ -219,6 +252,9 @@ clean_pot:
 
 clean_xo:
 	rm -f *.xo
+
+clean_plugins:
+	rm -f *.tar.gz
 
 uninstall:
 	rm -rf ~/Activities/TurtleBots.activity
