@@ -263,4 +263,4 @@ uninstall:
 
 
 # targets that not represent generated files
-.PHONY: all clean clean_tmp clean_pot clean_xo walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help
+.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help butia_plugin followme_plugin nxt_plugin wedo_plugin plugins
