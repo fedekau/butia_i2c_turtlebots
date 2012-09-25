@@ -41,7 +41,6 @@ class Followme(Plugin):
 
     def __init__(self, parent):
         self.parent = parent
-        self.cam_present = False
         self.cam_on = False
         self.tamanioc = (320, 240)
         self.colorc = (255, 255, 255)
@@ -53,6 +52,7 @@ class Followme(Plugin):
         self.cam = None
         self.mask = None
         self.connected = None
+        self.capture = None
         self.lcamaras = []
         pygame.init()
         if pycam:
@@ -61,6 +61,7 @@ class Followme(Plugin):
 
     def get_camera(self, mode):
         self.stop_camera()
+        self.cam_present = False
         self.lcamaras = pygame.camera.list_cameras()
         if self.lcamaras:
             self.cam = pygame.camera.Camera(self.lcamaras[0], self.tamanioc, mode)
@@ -70,9 +71,9 @@ class Followme(Plugin):
                 self.cam.stop()
                 self.capture = pygame.surface.Surface(self.tamanioc)
                 self.capture_aux = pygame.surface.Surface(self.tamanioc)
+                self.cam_present = True
             except:
                 print _('Error on initialization of the camera')
-            self.cam_present = True
         else:
             print _('No cameras was found')
 
@@ -114,8 +115,8 @@ class Followme(Plugin):
 
     def calc_luminance(self):
         self.start_camera()
-        self.capture = self.cam.get_image(self.capture)
         if self.cam_on:
+            self.capture = self.cam.get_image(self.capture)
             # Average the 100 pixels in the center of the screen
             r, g, b = 0, 0, 0
             for y in range(10):
