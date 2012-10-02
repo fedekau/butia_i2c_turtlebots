@@ -5,3 +5,4 @@ exec = sugar-activity ButiaFirmware.ButiaFirmware
 icon = butiafirmware
 activity_version = 1
 show_launcher = yes
+summary = Butia firmware updater
