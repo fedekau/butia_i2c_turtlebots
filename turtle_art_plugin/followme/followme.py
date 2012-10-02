@@ -42,6 +42,7 @@ class Followme(Plugin):
     def __init__(self, parent):
         self.parent = parent
         self.cam_on = False
+        self.cam_present = False
         self.tamanioc = (320, 240)
         self.colorc = (255, 255, 255)
         self.threshold = (25, 25, 25)
