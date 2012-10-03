@@ -50,7 +50,7 @@ class Followme(Plugin):
         self.pixels_min = 10
         self.pixels = 0
         self.brightness = 128
-        self.use_average = False
+        self.use_average = True
         self.calibrations = {}
         self.cam = None
         self.mask = None
@@ -310,8 +310,8 @@ class Followme(Plugin):
         palette.add_block('average_color',
                         style='basic-style-1arg',
                         label=_('average color'),
-                        default=0,
-                        help_string=_('if 0: average color is off when calibrates, for other values is on'),
+                        default=1,
+                        help_string=_('if 0: average color is off when calibrates; for other values is on'),
                         prim_name='average_color')
         self.parent.lc.def_prim('average_color', 1, lambda self, x:
                         primitive_dictionary['average_color'](x))
