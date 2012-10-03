@@ -413,6 +413,8 @@ class Followme(Plugin):
     def calibrate(self):
         self.colorc = (255, 255, 255)
         self.start_camera()
+        x = int((self.tamanioc[0] - 50) / 2.0)
+        y = int((self.tamanioc[1] - 50) / 2.0)
         if self.cam_on:
             self.screen = pygame.display.set_mode((1200,900))
             self.clock = pygame.time.Clock()
@@ -431,7 +433,7 @@ class Followme(Plugin):
                 if not(self.flip):
                     self.capture = pygame.transform.flip(self.capture, True, False)
                 self.screen.blit(self.capture, (0,0))
-                rect = pygame.draw.rect(self.screen, (255,0,0), (100,100,50,50), 4)
+                rect = pygame.draw.rect(self.screen, (255,0,0), (x,y,50,50), 4)
                 self.colorc = pygame.transform.average_color(self.capture, rect)
                 self.screen.fill(self.colorc, (320,240,100,100))
                 pygame.display.flip()
