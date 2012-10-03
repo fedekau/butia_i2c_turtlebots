@@ -332,35 +332,8 @@ class Followme(Plugin):
         return 'HSV'
 
     def prim_follow(self, x):
-        if type(x) == float:
-            x = int(x)
-        elif type(x) == str:
+        if type(x) == str:
             self.colorc = self.str_to_tuple(x)
-        elif type(x) == int:
-            if x == 0:
-                self.colorc = (255, 0, 0)
-            elif x == 10:
-                self.colorc = (255, 128, 0)
-            elif x == 20:
-                self.colorc = (255, 255, 0)
-            elif x == 30:
-                self.colorc = (0, 255, 0)
-            elif x == 40:
-                self.colorc = (0, 255, 128)
-            elif x == 50:
-                self.colorc = (0, 255, 255)
-            elif x == 60:
-                self.colorc = (0, 128, 255)
-            elif x == 70:
-                self.colorc = (0, 0, 255)
-            elif x == 80:
-                self.colorc = (128, 0, 255)
-            elif x == 90:
-                self.colorc = (255, 0, 255)
-            elif x == -9998:
-                self.colorc = (255, 255, 255)
-            elif x == -9999:
-                self.colorc = (0, 0, 0)
         else:
             self.colorc = (255, 255, 255)
 
