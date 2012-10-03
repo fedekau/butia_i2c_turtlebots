@@ -50,6 +50,7 @@ class Followme(Plugin):
         self.pixels_min = 10
         self.pixels = 0
         self.brightness = 128
+        self.use_average = False
         self.calibrations = {}
         self.cam = None
         self.mask = None
@@ -154,6 +155,7 @@ class Followme(Plugin):
             special_block_colors['mode_yuv'] = COLOR_NOTPRESENT
             special_block_colors['mode_hsv'] = COLOR_NOTPRESENT
             special_block_colors['brightness_w'] = COLOR_NOTPRESENT
+            special_block_colors['average_color'] = COLOR_NOTPRESENT
 
     def setup(self):
 
@@ -304,6 +306,16 @@ class Followme(Plugin):
         self.parent.lc.def_prim('brightness_w', 0, lambda self:
                         primitive_dictionary['brightness_w']())
 
+        primitive_dictionary['average_color'] = self.prim_average_color
+        palette.add_block('average_color',
+                        style='basic-style-1arg',
+                        label=_('average color'),
+                        default=0,
+                        help_string=_('if 0: average color is off when calibrates, for other values is on'),
+                        prim_name='average_color')
+        self.parent.lc.def_prim('average_color', 1, lambda self, x:
+                        primitive_dictionary['average_color'](x))
+
     def stop(self):
         self.stop_camera()
 
@@ -390,11 +402,19 @@ class Followme(Plugin):
             x = 1
         self.pixels_min = x
 
+    def prim_average_color(self, x):
+        if x == 0:
+            self.use_average = False
+        else:
+            self.use_average = True
+
     def calibrate(self):
         self.colorc = (255, 255, 255)
         self.start_camera()
         x = int((self.tamanioc[0] - 50) / 2.0)
         y = int((self.tamanioc[1] - 50) / 2.0)
+        x_m = int(self.tamanioc[0] / 2.0)
+        y_m = int(self.tamanioc[1] / 2.0)
         if self.cam_on:
             self.screen = pygame.display.set_mode((1200,900))
             self.clock = pygame.time.Clock()
@@ -414,7 +434,10 @@ class Followme(Plugin):
                     self.capture = pygame.transform.flip(self.capture, True, False)
                 self.screen.blit(self.capture, (0,0))
                 rect = pygame.draw.rect(self.screen, (255,0,0), (x,y,50,50), 4)
-                self.colorc = pygame.transform.average_color(self.capture, rect)
+                if self.use_average:
+                    self.colorc = pygame.transform.average_color(self.capture, rect)
+                else:
+                    self.colorc = self.capture.get_at((x_m, y_m))
                 self.screen.fill(self.colorc, (320,240,100,100))
                 pygame.display.flip()
             self.screen = pygame.display.quit()
