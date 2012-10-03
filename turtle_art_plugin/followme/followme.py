@@ -438,7 +438,7 @@ class Followme(Plugin):
                     self.colorc = pygame.transform.average_color(self.capture, rect)
                 else:
                     self.colorc = self.capture.get_at((x_m, y_m))
-                self.screen.fill(self.colorc, (320,240,100,100))
+                self.screen.fill(self.colorc, (self.tamanioc[0],self.tamanioc[1],100,100))
                 pygame.display.flip()
             self.screen = pygame.display.quit()
     
