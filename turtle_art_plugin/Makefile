@@ -7,7 +7,7 @@
 # in others words => writen by butia TEAM!
 
 
-TURTLEARTVERSION=v158
+TURTLEARTVERSION=v160
 
 CWD=$(cwd)
 
@@ -61,7 +61,7 @@ walterGIT:
 	# goto origin/master
 	#(cd mainline && git checkout origin/master)
 	# a especific version of Turtle
-	(cd mainline && git checkout f198b69ec946c77dc50a72bab6e74cc03af33ff0)
+	(cd mainline && git checkout bfba0c8a8b0550e4ed328aff3632043ef5f3619a)
 
 wedoGIT:
 	# wedo GIT
