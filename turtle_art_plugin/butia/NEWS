@@ -1,3 +1,20 @@
+VERSION 17
+/followme: remove redundant save calibration - add brightness block
+/followme: change order of the blocks
+/followme: centre red square in calibrate
+/followme: only follow calibrates or tuple string
+/followme: remove constant number for variable in size of cam
+/followme: uses average color for default in followme
+-followme: remove unused followRGB block
++followme: add get brightness block
++followme: uses -1 to enable auto-brightness of the camera
++followme: rename threshold block when camera mode changes
++followme: add average color selector
++update activity.info to new sugar summary
++add info for plugins
++use new nxt_plugin with two sensors fixed
+/uses new TA > 160
+
 VERSION 16
 /fix forward distance for negative arguments
 /change the getVersion system - add initial call in butiaAPI
