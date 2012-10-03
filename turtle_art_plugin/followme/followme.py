@@ -31,7 +31,7 @@ try:
     import pygame
     import pygame.camera as pycam
 except ImportError:
-    print 'Error in import Pygame. This plugin require Pygame 1.9'
+    print _('Error importing Pygame. This plugin require Pygame 1.9')
 
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
 _logger = logging.getLogger('turtleart-activity followme plugin')
@@ -79,7 +79,10 @@ class Followme(Plugin):
             print _('No cameras was found')
 
     def set_camera_flags(self):
-        self.cam.set_controls(True, False, self.brightness)
+        if (self.brightness == -1):
+            self.cam.set_controls(True, False)
+        else:
+            self.cam.set_controls(True, False, self.brightness)
         res = self.cam.get_controls()
         self.flip = res[0]
         self.tamanioc = self.cam.get_size()
@@ -246,7 +249,7 @@ class Followme(Plugin):
                         style='basic-style-1arg',
                         label=_('brightness'),
                         default=128,
-                        help_string=_('set the camera brightness as a value between 0 to 255'),
+                        help_string=_('set the camera brightness as a value between 0 to 255. Use -1 to enable the auto-brightness'),
                         prim_name='brightness_f')
         self.parent.lc.def_prim('brightness_f', 1, lambda self, x:
                         primitive_dictionary['brightness_f'](x))
