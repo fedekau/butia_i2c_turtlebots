@@ -139,7 +139,6 @@ class Followme(Plugin):
 
     def dynamicLoadBlockColors(self):
         if not(self.cam_present):
-            special_block_colors['followRGB'] = COLOR_NOTPRESENT
             special_block_colors['threshold'] = COLOR_NOTPRESENT
             special_block_colors['savecalibrationN'] = COLOR_NOTPRESENT
             special_block_colors['calibrationN'] = COLOR_NOTPRESENT
@@ -162,15 +161,6 @@ class Followme(Plugin):
         palette = make_palette('FollowMe', colors=["#00FF00","#008000"],
                                 help_string=_('FollowMe'))
 
-        primitive_dictionary['followRGB'] = self.prim_followRGB
-        palette.add_block('followRGB',
-                        style='basic-style-3arg',
-                        label=[(_('follow') + '  ' + _('G')), _('R'), _('B')],
-                        default=[255, 255, 255],
-                        help_string=_('follow a RGB color'),
-                        prim_name='followRGB')
-        self.parent.lc.def_prim('followRGB', 3, lambda self, x, y, z:
-                        primitive_dictionary['followRGB'](x, y, z))
 
         primitive_dictionary['threshold'] = self.prim_threshold
         palette.add_block('threshold',
@@ -340,20 +330,6 @@ class Followme(Plugin):
 
     def prim_mode_hsv(self):
         return 'HSV'
-
-    def prim_followRGB(self, R, G, B):
-        R = int(R)
-        G = int(G)
-        B = int(B)
-
-        if (R < 0) or (R > 255):
-            R = 255
-        if (G < 0) or (G > 255):
-            G = 255
-        if (B < 0) or (B > 255):
-            B = 255
-
-        self.colorc = (R, G, B)
 
     def prim_follow(self, x):
         if type(x) == float:
