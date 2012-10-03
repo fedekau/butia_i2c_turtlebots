@@ -26,6 +26,7 @@ from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tautils import convert
+from TurtleArt.tawindow import block_names
 pycam = None
 try:
     import pygame
@@ -321,6 +322,33 @@ class Followme(Plugin):
         m = m.upper()
         if (m == 'RGB') or (m == 'YUV') or (m == 'HSV'):
             self.get_camera(m)
+
+            if (m == 'RGB'):
+                label_0 = _('threshold') + '  ' + _('G')
+                label_1 = _('R')
+                label_2 = _('B')
+            elif (m == 'YUV'):
+                label_0 = _('threshold') + '  ' + _('U')
+                label_1 = _('Y')
+                label_2 = _('V')
+            elif (m == 'HSV'):
+                label_0 = _('threshold') + '  ' + _('S')
+                label_1 = _('H')
+                label_2 = _('V')
+
+            #repaints program area blocks (proto) and palette blocks (block)
+            for blk in self.parent.block_list.list:
+                #NOTE: blocks types: proto, block, trash, deleted
+                if blk.type in ['proto', 'block']:
+                    if (blk.name == 'threshold'):
+                        blk.spr.set_label(label_0, 0)
+                        blk.spr.set_label(label_1, 1)
+                        blk.spr.set_label(label_2, 2)
+                        block_names[blk.name][0] = label_0
+                        block_names[blk.name][1] = label_1
+                        block_names[blk.name][2] = label_2
+                        blk.refresh()
+
                 
     def prim_mode_rgb(self):
         return 'RGB'
