@@ -126,7 +126,7 @@ label_name_from_device_id['resistance2'] = _('resistance')
 refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led', 'resistance2' ]
 
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
-              'backwardDistance', 'turnXdegree', 'LCDdisplayButia', 'batterychargeButia'] 
+              'backwardDistance', 'turnXdegree', 'batterychargeButia'] 
 
 class Butia(Plugin):
     actualSpeed = 600
@@ -270,16 +270,6 @@ class Butia(Plugin):
                      help_string=_('stop the Butia robot'))
         self.tw.lc.def_prim('stopButia', 0, lambda self: primitive_dictionary['stopButia']())
         special_block_colors['stopButia'] = COLOR_STATIC[:]
-
-        primitive_dictionary['LCDdisplayButia'] = self.LCDdisplayButia
-        palette.add_block('LCDdisplayButia',
-                     style='basic-style-1arg',
-                     label=_('display Butia'),
-                     default=[_('Hello World    Butia            ')],   
-                     prim_name='LCDdisplayButia',
-                     help_string=_('print text in Butia robot 32-character ASCII display'))
-        self.tw.lc.def_prim('LCDdisplayButia', 1, lambda self, x: primitive_dictionary['LCDdisplayButia'](x))
-        special_block_colors['LCDdisplayButia'] = COLOR_STATIC[:]
 
 
         #add every function in the code 
@@ -680,12 +670,6 @@ class Butia(Plugin):
     def magneticinductionButia(self, sensorid=''):
         if self.butia:
             return self.butia.getMagneticInduction(sensorid)
-        else:
-            return ERROR_SENSOR_READ
-
-    def LCDdisplayButia(self, text='________________________________'):
-        if self.butia:
-            self.butia.writeLCD(text)
         else:
             return ERROR_SENSOR_READ
 
