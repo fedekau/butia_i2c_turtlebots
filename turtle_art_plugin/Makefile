@@ -73,7 +73,7 @@ nxtGIT:
 	# NXT GIT
 	(cd nxt_plugin && git fetch)
 	(cd nxt_plugin && git clean -xdf)
-	(cd nxt_plugin && git checkout f11e57ef1b3bbb7716c856d95889635f1350fdd8)
+	(cd nxt_plugin && git checkout 3e95be6f23b465c932d10ec590ea04f8d0e9ed7e)
 
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
@@ -182,6 +182,7 @@ xo: apply_hard_plugins
 	rm -f tmp/plugins/nxt_plugin/.gitignore
 	# ok, let's make this .xo
 	(cd tmp && python setup.py build)
+	#dist_xo no work in the tmp folder
 	(cd tmp && python setup.py dist_xo)
 	cp tmp/dist/*.xo .
 	#$(MAKE) clean_tmp
