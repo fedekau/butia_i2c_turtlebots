@@ -67,7 +67,7 @@ wedoGIT:
 	# wedo GIT
 	(cd WeDoMore && git fetch)
 	(cd WeDoMore && git clean -xdf)
-	(cd WeDoMore && git checkout ad0baf7fff7db9488d2995845f4e351048f02c91)
+	(cd WeDoMore && git checkout 4498f1fae7bdfcebe1041732abb83d948cef9b9f)
 
 nxtGIT:
 	# NXT GIT
