@@ -57,7 +57,9 @@ class Followme(Plugin):
         self.connected = None
         self.capture = None
         self.lcamaras = []
-        pygame.init()
+        #Remove because generates that speak 
+        #no works (pygame.mixer get the sound control)
+        #pygame.init()
         if pycam:
             pycam.init()
             self.get_camera('RGB')
