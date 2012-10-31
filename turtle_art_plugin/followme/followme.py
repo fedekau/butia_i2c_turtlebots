@@ -163,16 +163,6 @@ class Followme(Plugin):
         self.parent.lc.def_prim('followmerefresh', 0, lambda self :
                         primitive_dictionary['followmerefresh']())
 
-        primitive_dictionary['threshold'] = self.prim_threshold
-        palette.add_block('threshold',
-                        style='basic-style-3arg',
-                        label=[(_('threshold') + '  ' + _('G')), _('R'), _('B')],
-                        default=[25, 25, 25],
-                        help_string=_('set a threshold for a RGB color'),
-                        prim_name='threshold')
-        self.parent.lc.def_prim('threshold', 3, lambda self, x, y, z:
-                        primitive_dictionary['threshold'](x, y, z))
-
         primitive_dictionary['savecalibration'] = self._prim_savecalibration
         palette.add_block('savecalibrationN',
                           style='basic-style-1arg',
@@ -205,6 +195,65 @@ class Followme(Plugin):
         self.parent.lc.def_prim('follow', 1, lambda self, x:
                         primitive_dictionary['follow'](x))
 
+        primitive_dictionary['brightness_f'] = self.prim_brightness
+        palette.add_block('brightness_f',
+                        style='basic-style-1arg',
+                        label=_('brightness'),
+                        default=128,
+                        help_string=_('set the camera brightness as a value between 0 to 255. Use -1 to enable the auto-brightness'),
+                        prim_name='brightness_f')
+        self.parent.lc.def_prim('brightness_f', 1, lambda self, x:
+                        primitive_dictionary['brightness_f'](x))
+
+        primitive_dictionary['pixels_min'] = self.prim_pixels_min
+        palette.add_block('pixels_min',
+                        style='basic-style-1arg',
+                        label=_('minimum pixels'),
+                        default=10,
+                        help_string=_('set the minimal number of pixels to follow'),
+                        prim_name='pixels_min')
+        self.parent.lc.def_prim('pixels_min', 1, lambda self, x:
+                        primitive_dictionary['pixels_min'](x))
+
+        primitive_dictionary['threshold'] = self.prim_threshold
+        palette.add_block('threshold',
+                        style='basic-style-3arg',
+                        label=[(_('threshold') + '  ' + _('G')), _('R'), _('B')],
+                        default=[25, 25, 25],
+                        help_string=_('set a threshold for a RGB color'),
+                        prim_name='threshold')
+        self.parent.lc.def_prim('threshold', 3, lambda self, x, y, z:
+                        primitive_dictionary['threshold'](x, y, z))
+
+        primitive_dictionary['camera_mode'] = self.prim_camera_mode
+        palette.add_block('camera_mode',
+                        style='basic-style-1arg',
+                        label=_('camera mode'),
+                        default='RGB',
+                        help_string=_('set the color mode of the camera: RGB; YUV or HSV'),
+                        prim_name='camera_mode')
+        self.parent.lc.def_prim('camera_mode', 1, lambda self, x:
+                        primitive_dictionary['camera_mode'](x))
+
+        primitive_dictionary['brightness_w'] = self.calc_luminance
+        palette.add_block('brightness_w',
+                        style='box-style',
+                        label=_('get brightness'),
+                        help_string=_('get the brightness of the ambient'),
+                        prim_name='brightness_w')
+        self.parent.lc.def_prim('brightness_w', 0, lambda self:
+                        primitive_dictionary['brightness_w']())
+
+        primitive_dictionary['average_color'] = self.prim_average_color
+        palette.add_block('average_color',
+                        style='basic-style-1arg',
+                        label=_('average color'),
+                        default=1,
+                        help_string=_('if 0: average color is off when calibrates; for other values is on'),
+                        prim_name='average_color')
+        self.parent.lc.def_prim('average_color', 1, lambda self, x:
+                        primitive_dictionary['average_color'](x))
+
         primitive_dictionary['xposition'] = self.prim_xposition
         palette.add_block('xposition',
                         style='box-style',
@@ -235,36 +284,6 @@ class Followme(Plugin):
         self.parent.lc.def_prim('pixels', 0, lambda self:
                         primitive_dictionary['pixels']())
 
-        primitive_dictionary['brightness_f'] = self.prim_brightness
-        palette.add_block('brightness_f',
-                        style='basic-style-1arg',
-                        label=_('brightness'),
-                        default=128,
-                        help_string=_('set the camera brightness as a value between 0 to 255. Use -1 to enable the auto-brightness'),
-                        prim_name='brightness_f')
-        self.parent.lc.def_prim('brightness_f', 1, lambda self, x:
-                        primitive_dictionary['brightness_f'](x))
-
-        primitive_dictionary['pixels_min'] = self.prim_pixels_min
-        palette.add_block('pixels_min',
-                        style='basic-style-1arg',
-                        label=_('minimum pixels'),
-                        default=10,
-                        help_string=_('set the minimal number of pixels to follow'),
-                        prim_name='pixels_min')
-        self.parent.lc.def_prim('pixels_min', 1, lambda self, x:
-                        primitive_dictionary['pixels_min'](x))
-
-        primitive_dictionary['camera_mode'] = self.prim_camera_mode
-        palette.add_block('camera_mode',
-                        style='basic-style-1arg',
-                        label=_('camera mode'),
-                        default='RGB',
-                        help_string=_('set the color mode of the camera: RGB; YUV or HSV'),
-                        prim_name='camera_mode')
-        self.parent.lc.def_prim('camera_mode', 1, lambda self, x:
-                        primitive_dictionary['camera_mode'](x))
-
         primitive_dictionary['mode_rgb'] = self.prim_mode_rgb
         palette.add_block('mode_rgb',
                         style='box-style',
@@ -294,25 +313,6 @@ class Followme(Plugin):
                         prim_name='mode_hsv')
         self.parent.lc.def_prim('mode_hsv', 0, lambda self:
                         primitive_dictionary['mode_hsv']())
-
-        primitive_dictionary['brightness_w'] = self.calc_luminance
-        palette.add_block('brightness_w',
-                        style='box-style',
-                        label=_('get brightness'),
-                        help_string=_('get the brightness of the ambient'),
-                        prim_name='brightness_w')
-        self.parent.lc.def_prim('brightness_w', 0, lambda self:
-                        primitive_dictionary['brightness_w']())
-
-        primitive_dictionary['average_color'] = self.prim_average_color
-        palette.add_block('average_color',
-                        style='basic-style-1arg',
-                        label=_('average color'),
-                        default=1,
-                        help_string=_('if 0: average color is off when calibrates; for other values is on'),
-                        prim_name='average_color')
-        self.parent.lc.def_prim('average_color', 1, lambda self, x:
-                        primitive_dictionary['average_color'](x))
 
     def stop(self):
         self.stop_camera()
