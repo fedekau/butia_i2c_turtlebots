@@ -27,10 +27,10 @@ from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tautils import convert
 from TurtleArt.tawindow import block_names
-pycam = None
+
 try:
     import pygame
-    import pygame.camera as pycam
+    import pygame.camera
 except ImportError:
     print _('Error importing Pygame. This plugin require Pygame 1.9')
 
@@ -44,6 +44,7 @@ class Followme(Plugin):
         self.parent = parent
         self.cam_on = False
         self.cam_present = False
+        self.cam_init = False
         self.tamanioc = (320, 240)
         self.colorc = (255, 255, 255)
         self.threshold = (25, 25, 25)
@@ -52,17 +53,16 @@ class Followme(Plugin):
         self.brightness = 128
         self.use_average = True
         self.calibrations = {}
+        self.mode = 'RGB'
         self.cam = None
         self.mask = None
         self.connected = None
         self.capture = None
         self.lcamaras = []
-        #Remove because generates that speak 
-        #no works (pygame.mixer get the sound control)
-        #pygame.init()
-        if pycam:
-            pycam.init()
-            self.get_camera('RGB')
+        
+    def camera_init(self):
+        pygame.camera.init()
+        self.get_camera(self.mode)
 
     def get_camera(self, mode):
         self.stop_camera()
@@ -77,6 +77,7 @@ class Followme(Plugin):
                 self.capture = pygame.surface.Surface(self.tamanioc)
                 self.capture_aux = pygame.surface.Surface(self.tamanioc)
                 self.cam_present = True
+                self.cam_init = True
             except:
                 print _('Error on initialization of the camera')
         else:
@@ -102,6 +103,9 @@ class Followme(Plugin):
                 print _('Error in stop camera')
 
     def start_camera(self):
+        if not(self.cam_init):
+            self.camera_init()
+
         if (self.cam_present and not(self.cam_on)):
             try:
                 self.cam.start()
@@ -331,21 +335,23 @@ class Followme(Plugin):
         m = 'RGB'
         try:
             m = str(mode)
+            m = m.upper()
         except:
             pass
-        m = m.upper()
+        
         if (m == 'RGB') or (m == 'YUV') or (m == 'HSV'):
-            self.get_camera(m)
+            self.mode = m
+            self.get_camera(self.mode)
 
-            if (m == 'RGB'):
+            if (self.mode == 'RGB'):
                 label_0 = _('threshold') + '  ' + _('G')
                 label_1 = _('R')
                 label_2 = _('B')
-            elif (m == 'YUV'):
+            elif (self.mode == 'YUV'):
                 label_0 = _('threshold') + '  ' + _('U')
                 label_1 = _('Y')
                 label_2 = _('V')
-            elif (m == 'HSV'):
+            elif (self.mode == 'HSV'):
                 label_0 = _('threshold') + '  ' + _('S')
                 label_1 = _('H')
                 label_2 = _('V')
