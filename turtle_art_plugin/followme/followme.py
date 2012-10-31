@@ -23,6 +23,9 @@ import logging
 from gettext import gettext as _
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
+from TurtleArt.tapalette import palette_name_to_index
+from TurtleArt.tapalette import special_block_colors
+from TurtleArt.tapalette import palette_blocks
 from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tautils import convert
@@ -34,6 +37,7 @@ try:
 except ImportError:
     print _('Error importing Pygame. This plugin require Pygame 1.9')
 
+COLOR_PRESENT = ["#00FF00","#008000"]
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
 _logger = logging.getLogger('turtleart-activity followme plugin')
 
@@ -105,6 +109,7 @@ class Followme(Plugin):
     def start_camera(self):
         if not(self.cam_init):
             self.camera_init()
+            self.change_color_blocks()
 
         if (self.cam_present and not(self.cam_on)):
             try:
@@ -144,30 +149,9 @@ class Followme(Plugin):
         else:
             return -1
 
-
-    def dynamicLoadBlockColors(self):
-        if not(self.cam_present):
-            special_block_colors['threshold'] = COLOR_NOTPRESENT
-            special_block_colors['savecalibrationN'] = COLOR_NOTPRESENT
-            special_block_colors['calibrationN'] = COLOR_NOTPRESENT
-            special_block_colors['brightness_f'] = COLOR_NOTPRESENT
-            special_block_colors['xposition'] = COLOR_NOTPRESENT
-            special_block_colors['yposition'] = COLOR_NOTPRESENT
-            special_block_colors['pixels'] = COLOR_NOTPRESENT
-            special_block_colors['follow'] = COLOR_NOTPRESENT
-            special_block_colors['pixels_min'] = COLOR_NOTPRESENT
-            special_block_colors['camera_mode'] = COLOR_NOTPRESENT
-            special_block_colors['mode_rgb'] = COLOR_NOTPRESENT
-            special_block_colors['mode_yuv'] = COLOR_NOTPRESENT
-            special_block_colors['mode_hsv'] = COLOR_NOTPRESENT
-            special_block_colors['brightness_w'] = COLOR_NOTPRESENT
-            special_block_colors['average_color'] = COLOR_NOTPRESENT
-
     def setup(self):
 
-        self.dynamicLoadBlockColors()
-
-        palette = make_palette('FollowMe', colors=["#00FF00","#008000"],
+        palette = make_palette('FollowMe', colors=COLOR_NOTPRESENT,
                                 help_string=_('FollowMe'))
 
 
@@ -368,6 +352,18 @@ class Followme(Plugin):
                         block_names[blk.name][1] = label_1
                         block_names[blk.name][2] = label_2
                         blk.refresh()
+
+    def change_color_blocks(self):
+        followme_blocks = palette_blocks[palette_name_to_index('FollowMe')]
+        for block in self.parent.block_list.list:
+            if block.type in ['proto', 'block']:
+                if block.name in followme_blocks:
+                    if self.cam_present:
+                        special_block_colors[block.name] = COLOR_PRESENT[:]
+                    else:
+                        special_block_colors[block.name] = COLOR_NOTPRESENT[:]
+                    block.refresh()
+        self.parent.show_toolbar_palette(palette_name_to_index('FollowMe'), regenerate=True, show=False)
 
                 
     def prim_mode_rgb(self):
