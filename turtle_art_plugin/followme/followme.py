@@ -201,7 +201,7 @@ class Followme(Plugin):
                         style='basic-style-1arg',
                         label=_('brightness'),
                         default=128,
-                        help_string=_('set the camera brightness as a value between 0 to 255. Use -1 to enable the auto-brightness'),
+                        help_string=_('set the camera brightness as a value between 0 to 255.'),
                         prim_name='brightness_f')
         self.parent.lc.def_prim('brightness_f', 1, lambda self, x:
                         primitive_dictionary['brightness_f'](x))
