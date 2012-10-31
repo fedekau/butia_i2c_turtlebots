@@ -219,7 +219,7 @@ class Followme(Plugin):
         primitive_dictionary['threshold'] = self.prim_threshold
         palette.add_block('threshold',
                         style='basic-style-3arg',
-                        label=[(_('threshold') + '  ' + _('G')), _('R'), _('B')],
+                        label=[(_('threshold') + '  ' + 'G'), 'R', 'B'],
                         default=[25, 25, 25],
                         help_string=_('set a threshold for a RGB color'),
                         prim_name='threshold')
@@ -341,17 +341,17 @@ class Followme(Plugin):
             self.get_camera(self.mode)
 
             if (self.mode == 'RGB'):
-                label_0 = _('threshold') + '  ' + _('G')
-                label_1 = _('R')
-                label_2 = _('B')
+                label_0 = _('threshold') + '  ' + 'G'
+                label_1 = 'R'
+                label_2 = 'B'
             elif (self.mode == 'YUV'):
-                label_0 = _('threshold') + '  ' + _('U')
-                label_1 = _('Y')
-                label_2 = _('V')
+                label_0 = _('threshold') + '  ' + 'U'
+                label_1 = 'Y'
+                label_2 = 'V'
             elif (self.mode == 'HSV'):
-                label_0 = _('threshold') + '  ' + _('S')
-                label_1 = _('H')
-                label_2 = _('V')
+                label_0 = _('threshold') + '  ' + 'S'
+                label_1 = 'H'
+                label_2 = 'V'
 
             #repaints program area blocks (proto) and palette blocks (block)
             for blk in self.parent.block_list.list:
