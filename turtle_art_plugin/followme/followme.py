@@ -107,10 +107,9 @@ class Followme(Plugin):
                 print _('Error in stop camera')
 
     def start_camera(self):
-        if not(self.cam_init):
+        if not(self.cam_init and self.cam_present):
             self.camera_init()
             self.change_color_blocks()
-
         if (self.cam_present and not(self.cam_on)):
             try:
                 self.cam.start()
