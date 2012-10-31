@@ -162,6 +162,7 @@ class Followme(Plugin):
                      help_string=_('Search for a connected cameras.'))
         self.parent.lc.def_prim('followmerefresh', 0, lambda self :
                         primitive_dictionary['followmerefresh']())
+        special_block_colors['followmerefresh'] = COLOR_PRESENT[:]
 
         primitive_dictionary['savecalibration'] = self._prim_savecalibration
         palette.add_block('savecalibrationN',
@@ -370,7 +371,7 @@ class Followme(Plugin):
         for block in self.parent.block_list.list:
             if block.type in ['proto', 'block']:
                 if block.name in followme_blocks:
-                    if self.cam_present:
+                    if self.cam_present or (block.name == 'followmerefresh'):
                         special_block_colors[block.name] = COLOR_PRESENT[:]
                     else:
                         special_block_colors[block.name] = COLOR_NOTPRESENT[:]
