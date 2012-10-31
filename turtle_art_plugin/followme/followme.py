@@ -154,6 +154,15 @@ class Followme(Plugin):
                                 help_string=_('FollowMe'))
 
 
+        primitive_dictionary['followmerefresh'] = self._prim_followmerefresh
+        palette.add_block('followmerefresh',
+                     style='basic-style',
+                     label=_('refresh FollowMe'),
+                     prim_name='followmerefresh',
+                     help_string=_('Search for a connected cameras.'))
+        self.parent.lc.def_prim('followmerefresh', 0, lambda self :
+                        primitive_dictionary['followmerefresh']())
+
         primitive_dictionary['threshold'] = self.prim_threshold
         palette.add_block('threshold',
                         style='basic-style-3arg',
@@ -313,6 +322,10 @@ class Followme(Plugin):
             
     def clear(self):
         pass
+
+    def _prim_followmerefresh(self):
+        self.camera_init()
+        self.change_color_blocks()
 
     def prim_camera_mode(self, mode):
         m = 'RGB'
