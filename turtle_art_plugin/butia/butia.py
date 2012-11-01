@@ -29,7 +29,7 @@ import commands
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import make_palette
-from TurtleArt.talogo import primitive_dictionary
+from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.tautils import debug_output
 from TurtleArt.tawindow import block_names
 
@@ -44,8 +44,9 @@ MAX_SENSOR_PER_TYPE = 4
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 WHEELBASE = 28.00
-
 BUTIA_1 = 20
+
+ERROR_SPEED = _('The speed must be a value between 0 and 1023')
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
@@ -129,9 +130,10 @@ static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia',
               'backwardDistance', 'turnXdegree', 'batterychargeButia'] 
 
 class Butia(Plugin):
-    actualSpeed = 600
+    
     def __init__(self, parent):
         self.tw = parent
+        self.actualSpeed = [600, 600]
         self.butia = None
         self.pollthread = None
         self.pollrun = True
@@ -188,12 +190,12 @@ class Butia(Plugin):
 
         primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',
-                     style='basic-style-1arg',
-                     label=_('speed Butia'),
+                     style='basic-style-2arg',
+                     label=[_('speed Butia'), _('left'), _('right')],
                      prim_name='speedButia',
-                     default=[600],
-                     help_string=_('set the speed of the Butia motors as a value between 0 and 1023, passed by an argument'))
-        self.tw.lc.def_prim('speedButia', 1, lambda self, x: primitive_dictionary['speedButia'](x))
+                     default=[600, 600],
+                     help_string=_('set the speed of the Butia motors'))
+        self.tw.lc.def_prim('speedButia', 2, lambda self, x, y: primitive_dictionary['speedButia'](x, y))
         special_block_colors['speedButia'] = COLOR_STATIC[:]
         
         primitive_dictionary['forwardButia'] = self.forwardButia
@@ -546,14 +548,14 @@ class Butia(Plugin):
             self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
     def forwardButia(self):
-        self.set_vels(self.actualSpeed, self.actualSpeed)
+        self.set_vels(self.actualSpeed[0], self.actualSpeed[1])
         #self.tw.canvas.setpen(True)
         #self.tw.canvas.forward(100)
 
     def forwardDistance(self, dist):
         #FIXME 8.29 para que velocidad? Vel = Dist / Tiempo => Tiempo = Dist / Vel
         tiempo = abs(dist) / 8.29
-        self.set_vels(self.actualSpeed, self.actualSpeed)
+        self.set_vels(self.actualSpeed[0], self.actualSpeed[1])
         time.sleep(tiempo)
         self.set_vels(0, 0)
         #FIXME ir avanzando de a poquito en la espera de tiempo y no todo de golpe al final
@@ -561,30 +563,30 @@ class Butia(Plugin):
         self.tw.canvas.forward(dist)
 
     def backwardButia(self):
-        self.set_vels(-self.actualSpeed, -self.actualSpeed)
+        self.set_vels(-self.actualSpeed[0], -self.actualSpeed[1])
 
     def backwardDistance(self, dist):
         #FIXME cambiar el 8.29 por valor que dependa de velocidad
         tiempo = abs(dist) / 8.29
-        self.set_vels(-self.actualSpeed, -self.actualSpeed)
+        self.set_vels(-self.actualSpeed[0], -self.actualSpeed[1])
         time.sleep(tiempo)
         self.tw.canvas.setpen(True)
         self.tw.canvas.forward(-dist)
         self.set_vels(0, 0)
 
     def leftButia(self):
-        self.set_vels(self.actualSpeed, -self.actualSpeed)
+        self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
 
     def rightButia(self):
-        self.set_vels(-self.actualSpeed, self.actualSpeed)
+        self.set_vels(-self.actualSpeed[0], self.actualSpeed[1])
 
     def turnXdegree(self, degrees):
         #FIXME cambiar el 8.29 por valor que dependa de velocidad
         tiempo = (degrees * WHEELBASE * 3.14) / (360 * 8.29)
         if degrees > 0:
-            self.set_vels(-self.actualSpeed, self.actualSpeed)
+            self.set_vels(-self.actualSpeed[0], self.actualSpeed[1])
         else:
-            self.set_vels(self.actualSpeed, -self.actualSpeed)
+            self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
         time.sleep(abs(tiempo))
         self.tw.canvas.setpen(True)
         self.tw.canvas.arc(degrees, 0)
@@ -679,12 +681,12 @@ class Butia(Plugin):
         else:
             return ERROR_SENSOR_READ
     
-    def speedButia(self, speed):
-        if speed < 0:
-            speed = -speed
-        if speed > MAX_SPEED:
-            speed = MAX_SPEED
-        self.actualSpeed = speed
+    def speedButia(self, left, right):
+        if (left < 0) or (left > MAX_SPEED):
+            raise logoerror(ERROR_SPEED)
+        if (right < 0) or (right > MAX_SPEED):
+            raise logoerror(ERROR_SPEED)
+        self.actualSpeed = [left, right]
 
     def bobot_launch(self):
         """
