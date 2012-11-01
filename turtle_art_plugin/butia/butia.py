@@ -46,7 +46,7 @@ COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to 
 WHEELBASE = 28.00
 BUTIA_1 = 20
 
-ERROR_SPEED = _('The speed must be a value between 0 and 1023')
+ERROR_SPEED = _('the speed must be a value between 0 and 1023')
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
