@@ -26,16 +26,16 @@ msgid "Error on initialization of the camera"
 msgstr "Error en la inicialización de la cámara"
 
 #: followme/followme.py:88
-msgid "No cameras was found"
-msgstr "No se encontraron cámaras"
+msgid "No camera was found"
+msgstr "No se encontró cámara"
 
 #: followme/followme.py:107
-msgid "Error in stop camera"
-msgstr "Error en detener cámara"
+msgid "Error stopping camera"
+msgstr "Error deteniendo cámara"
 
 #: followme/followme.py:119
-msgid "Error in start camera"
-msgstr "Error en empezar cámara"
+msgid "Error starting camera"
+msgstr "Error iniciando camera"
 
 #: followme/followme.py:129
 msgid "Error in get mask"
