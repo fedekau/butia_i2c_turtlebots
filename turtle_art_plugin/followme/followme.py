@@ -85,7 +85,7 @@ class Followme(Plugin):
             except:
                 print _('Error on initialization of the camera')
         else:
-            print _('No cameras was found')
+            print _('No camera was found')
 
     def set_camera_flags(self):
         if (self.brightness == -1):
@@ -104,7 +104,7 @@ class Followme(Plugin):
                 self.cam.stop()
                 self.cam_on = False
             except:
-                print _('Error in stop camera')
+                print _('Error stopping camera')
 
     def start_camera(self):
         if not(self.cam_init and self.cam_present):
@@ -116,7 +116,7 @@ class Followme(Plugin):
                 self.set_camera_flags()
                 self.cam_on = True
             except:
-                print _('Error in start camera')
+                print _('Error starting camera')
 
     def get_mask(self):
         if self.cam_on:
