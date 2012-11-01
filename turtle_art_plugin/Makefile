@@ -73,18 +73,18 @@ nxtGIT:
 	# NXT GIT
 	(cd nxt_plugin && git fetch)
 	(cd nxt_plugin && git clean -xdf)
-	(cd nxt_plugin && git checkout bb6f5d19a75db6cc391f8ea6ca2d4d1e59539281)
+	(cd nxt_plugin && git checkout d953f5bd4aa33b64e04daa5d093969a734b0d279)
 
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
 
-POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot 
+POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot nxt_plugin/po/nxt_plugin.pot
 POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
 
 POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
-              followme/po/FollowMe.notraslated.pot
+              followme/po/FollowMe.notraslated.pot nxt_plugin/po/nxt_plugin.notraslated.pot
 
-PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po
+PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po nxt_plugin/po/es.po
 
 
 ## Generate pot of plugins
@@ -108,6 +108,12 @@ followme/po/FollowMe.pot: followme/followme.py
 	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
 	xgettext $(POT_PROP) $< -o $@
 
+nxt_plugin/po/nxt_plugin.pot: nxt_plugin/nxt_plugin.py
+	echo msgid \"\" > $@
+	echo msgstr \"\" >> $@
+	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
+	xgettext $(POT_PROP) $< -o $@
+
 
 ## Generate a pot of MSGID that ARE NOT ALREADY translated in mainline (Walter GIT)
 genpot_notraslated: $(POT_NT_FILES)
@@ -119,6 +125,9 @@ sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
 followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
+	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+
+nxt_plugin/po/nxt_plugin.notraslated.pot: nxt_plugin/po/nxt_plugin.pot
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
 
@@ -134,14 +143,15 @@ sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
 followme/po/es.po: followme/po/FollowMe.notraslated.pot
 	msgmerge --update --no-fuzzy-matching  $@ $<
 
+nxt_plugin/po/es.po: nxt_plugin/po/nxt_plugin.notraslated.pot
+	msgmerge --update --no-fuzzy-matching  $@ $<
+
 
 ################ Support for lua (bobot-server) #############
 
 butiaXO:
 	# I want butiaXO folder be OK! (needed by plugin)
 	make -C ../butiaXO
-
-
 
 
 ################ Construction...
@@ -160,6 +170,7 @@ apply_localization: mktmpfolder $(PO_FILES)
 	msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
+	msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
 
 apply_hard_plugins: apply_localization butiaXO
 	cp -rLf butia tmp/plugins/
