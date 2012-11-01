@@ -50,8 +50,8 @@ msgid "refresh FollowMe"
 msgstr "resfrescar FollowMe"
 
 #: followme/followme.py:162
-msgid "Search for a connected cameras."
-msgstr "Busca cámaras conectadas."
+msgid "Search for a connected camera."
+msgstr "Busca una cámara conectada."
 
 #: followme/followme.py:170 followme/followme.py:182
 msgid "calibration"

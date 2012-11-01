@@ -159,7 +159,7 @@ class Followme(Plugin):
                      style='basic-style',
                      label=_('refresh FollowMe'),
                      prim_name='followmerefresh',
-                     help_string=_('Search for a connected cameras.'))
+                     help_string=_('Search for a connected camera.'))
         self.parent.lc.def_prim('followmerefresh', 0, lambda self :
                         primitive_dictionary['followmerefresh']())
         special_block_colors['followmerefresh'] = COLOR_PRESENT[:]
