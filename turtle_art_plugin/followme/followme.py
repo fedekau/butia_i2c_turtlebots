@@ -171,7 +171,7 @@ class Followme(Plugin):
                           prim_name='savecalibrationN',
                           string_or_number=True,
                           default='1',
-                          help_string=_('stores a personalized calibration'))
+                          help_string=_('store a personalized calibration'))
         self.parent.lc.def_prim('savecalibrationN', 1,
                              lambda self, x: primitive_dictionary['savecalibration'](
                 'calibration', x))
@@ -240,7 +240,7 @@ class Followme(Plugin):
         palette.add_block('brightness_w',
                         style='box-style',
                         label=_('get brightness'),
-                        help_string=_('get the brightness of the ambient'),
+                        help_string=_('get the brightness of the ambient light'),
                         prim_name='brightness_w')
         self.parent.lc.def_prim('brightness_w', 0, lambda self:
                         primitive_dictionary['brightness_w']())
@@ -250,7 +250,7 @@ class Followme(Plugin):
                         style='basic-style-1arg',
                         label=_('average color'),
                         default=1,
-                        help_string=_('if 0: average color is off when calibrates; for other values is on'),
+                        help_string=_('if set to 0 then color averaging is off during calibration; for other values it is on'),
                         prim_name='average_color')
         self.parent.lc.def_prim('average_color', 1, lambda self, x:
                         primitive_dictionary['average_color'](x))

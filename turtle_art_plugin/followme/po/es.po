@@ -58,7 +58,7 @@ msgid "calibration"
 msgstr "calibración"
 
 #: followme/followme.py:174
-msgid "stores a personalized calibration"
+msgid "store a personalized calibration"
 msgstr "guarda una calibración personalizada"
 
 #: followme/followme.py:186
@@ -111,15 +111,15 @@ msgid "get brightness"
 msgstr "obtener brillo"
 
 #: followme/followme.py:243
-msgid "get the brightness of the ambient"
-msgstr "obtener el brillo del ambiente"
+msgid "get the brightness of the ambient light"
+msgstr "obtiene el brillo de la luz en el ambiente"
 
 #: followme/followme.py:251
 msgid "average color"
 msgstr "color promedio"
 
 #: followme/followme.py:253
-msgid "if 0: average color is off when calibrates; for other values is on"
+msgid "if set to 0 then color averaging is off during calibration; for other values it is on"
 msgstr "si es 0: el color promedio se apaga cuando se calibra; para otros valores está encendido"
 
 #: followme/followme.py:261
