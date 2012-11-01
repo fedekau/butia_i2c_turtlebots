@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-24 19:11-0300\n"
+"POT-Creation-Date: 2012-11-01 13:37-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,7 +45,7 @@ msgstr "devuelve la temperatura en el ambiente como un número entre 0 y 255"
 msgid ""
 "returns the distance from the object in front of the sensor as a number "
 "between 0 and 255"
-msgstr
+msgstr ""
 "devuelve la distancia del objeto en frente al sensor como un número entre 0 "
 "y 255"
 
@@ -61,144 +61,140 @@ msgstr "devuelve 1 cuando el sensor detecta un campo magnético, 0 en otro caso"
 msgid "switches from 0 to 1, the frequency depends on the vibration"
 msgstr "oscila entre 0 y 1 dependiendo de la vibración"
 
-#: butia.py:110
+#: butia.py:61
+msgid "returns the value of the resistance"
+msgstr "devuelve el valor de resistencia"
+
+#: butia.py:115
 msgid "LED"
 msgstr "LED"
 
-#: butia.py:111
+#: butia.py:116
 msgid "button"
 msgstr "botón"
 
-#: butia.py:112
+#: butia.py:117
 msgid "grayscale"
 msgstr "escala de gris"
 
-#: butia.py:113
+#: butia.py:118
 msgid "ambient light"
 msgstr "luz ambiente"
 
-#: butia.py:114
+#: butia.py:119
 msgid "temperature"
 msgstr "temperatura"
 
-#: butia.py:115
+#: butia.py:120
 msgid "distance"
 msgstr "distancia"
 
-#: butia.py:116
+#: butia.py:121
 msgid "tilt"
 msgstr "inclinación"
 
-#: butia.py:117
+#: butia.py:122
 msgid "magnetic induction"
 msgstr "campo magnético"
 
-#: butia.py:118
+#: butia.py:123
 msgid "vibration"
 msgstr "vibración"
 
-#: butia.py:153
+#: butia.py:124
+msgid "resistance"
+msgstr "resistencia"
+
+#: butia.py:159
 msgid "Butia Robot"
 msgstr "Robot Butiá"
 
-#: butia.py:160
+#: butia.py:174
 msgid "refresh Butia"
 msgstr "refrescar Butiá"
 
-#: butia.py:162
+#: butia.py:176
 msgid "refresh the state of the Butia palette and blocks"
 msgstr "actualiza el estado de la paleta y de los bloques Butiá"
 
-#: butia.py:169
+#: butia.py:183
 msgid "battery charge Butia"
 msgstr "carga de batería Butiá"
 
-#: butia.py:171
+#: butia.py:185
 msgid "returns the battery charge as a number between 0 and 255"
 msgstr "devuelve la carga de la batería del robot como un número entre 0 y 255"
 
-#: butia.py:178
+#: butia.py:192
 msgid "speed Butia"
 msgstr "velocidad Butiá"
 
-#: butia.py:181
+#: butia.py:195
 msgid ""
 "set the speed of the Butia motors as a value between 0 and 1023, passed by "
 "an argument"
-msgstr 
+msgstr ""
 "setea la velocidad de los motores del Butiá como un valor entre 0 y 1023 "
 "pasado como argumento"
 
-#: butia.py:188 butia.py:197
+#: butia.py:202 butia.py:211
 msgid "forward Butia"
 msgstr "adelante Butiá"
 
-#: butia.py:190
+#: butia.py:204
 msgid "move the Butia robot forward"
 msgstr "mueve el robot Butiá hacia adelante"
 
-#: butia.py:200
+#: butia.py:214
 msgid "move the Butia robot forward a predefined distance"
-msgstr "mueve el robot Butiá hacia adelante una distancia predefinida"
+msgstr "mueve el robot Butiá hacia adelante una distancia preestablecida"
 
-#: butia.py:207
+#: butia.py:221
 msgid "left Butia"
 msgstr "izquierda Butiá"
 
-#: butia.py:209
+#: butia.py:223
 msgid "turn the Butia robot at left"
 msgstr "gira el robot Butiá hacia la izquierda"
 
-#: butia.py:216 butia.py:225
+#: butia.py:230 butia.py:239
 msgid "backward Butia"
 msgstr "atrás Butiá"
 
-#: butia.py:218
+#: butia.py:232
 msgid "move the Butia robot backward"
 msgstr "mueve el robot Butiá hacia atrás"
 
-#: butia.py:228
+#: butia.py:242
 msgid "move the Butia robot backward a predefined distance"
-msgstr "mueve el robot Butiá hacia atrás una distancia predefinida"
+msgstr "mueve el robot Butiá hacia atrás una distancia preestablecida"
 
-#: butia.py:235
+#: butia.py:249
 msgid "right Butia"
 msgstr "derecha Butiá"
 
-#: butia.py:237
+#: butia.py:251
 msgid "turn the Butia robot at right"
 msgstr "gira el robot Butiá hacia la derecha"
 
-#: butia.py:244
+#: butia.py:258
 msgid "turn Butia"
 msgstr "girar Butiá"
 
-#: butia.py:247
+#: butia.py:261
 msgid "turn the Butia robot x degrees"
 msgstr "gira el robot Butiá x grados"
 
-#: butia.py:254
+#: butia.py:268
 msgid "stop Butia"
 msgstr "detener Butiá"
 
-#: butia.py:256
+#: butia.py:270
 msgid "stop the Butia robot"
 msgstr "detiene al robot Butiá"
 
-#: butia.py:263
-msgid "display Butia"
-msgstr "pantalla Butiá"
-
-#: butia.py:264
-msgid "Hello World    Butia            "
-msgstr "Hola Mundo                 Butia"
-
-#: butia.py:266
-msgid "print text in Butia robot 32-character ASCII display"
-msgstr "imprime texto en la pantalla de 32 caracteres ASCII del Butiá"
-
-#: butia.py:296 butia.py:304 butia.py:318 butia.py:327 butia.py:452
-#: butia.py:458
+#: butia.py:300 butia.py:308 butia.py:322 butia.py:331 butia.py:456
+#: butia.py:462
 msgid "Butia"
 msgstr "Butiá"
 
