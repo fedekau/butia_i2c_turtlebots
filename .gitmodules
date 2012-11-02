@@ -7,3 +7,6 @@
 [submodule "turtle_art_plugin/WeDoMore"]
 	path = turtle_art_plugin/WeDoMore
 	url = git://github.com/itdaniher/WeDoMore.git
+[submodule "turtle_art_plugin/turtle-extras"]
+	path = turtle_art_plugin/turtle-extras
+	url = git://git.sugarlabs.org/turtleart-extras/turtleart-extras.git
