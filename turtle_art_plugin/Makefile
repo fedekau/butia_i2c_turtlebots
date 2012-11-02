@@ -166,6 +166,7 @@ mktmpfolder:
 	cp -rL mainline tmp
 	rm -rf tmp/.git
 	rm -f tmp/.gitignore
+	cp turtle-extras/taextras.py tmp
 	# lets patch the activity.info and add some icons (TurtleArt => TurtleArtButia)
 	cp -rLf stagin/activity tmp/
 
@@ -175,6 +176,7 @@ apply_localization: mktmpfolder $(PO_FILES)
 	msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
+	msgcat turtle-extras/po/es.po tmp/po/es.po -o tmp/po/es.po
 
 apply_hard_plugins: apply_localization butiaXO
 	cp -rLf butia tmp/plugins/
