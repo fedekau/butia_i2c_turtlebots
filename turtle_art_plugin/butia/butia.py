@@ -126,8 +126,7 @@ label_name_from_device_id['resistance2'] = _('resistance')
 
 refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led', 'resistance2' ]
 
-static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'forwardDistance', 
-              'backwardDistance', 'turnXdegree', 'batterychargeButia'] 
+static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia']
 
 class Butia(Plugin):
     
@@ -190,12 +189,12 @@ class Butia(Plugin):
 
         primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',
-                     style='basic-style-2arg',
-                     label=[_('speed Butia'), _('left'), _('right')],
+                     style='basic-style-1arg',
+                     label=[_('speed Butia')],
                      prim_name='speedButia',
-                     default=[600, 600],
+                     default=[600],
                      help_string=_('set the speed of the Butia motors'))
-        self.tw.lc.def_prim('speedButia', 2, lambda self, x, y: primitive_dictionary['speedButia'](x, y))
+        self.tw.lc.def_prim('speedButia', 1, lambda self, x: primitive_dictionary['speedButia'](x))
         special_block_colors['speedButia'] = COLOR_STATIC[:]
         
         primitive_dictionary['forwardButia'] = self.forwardButia
@@ -206,16 +205,6 @@ class Butia(Plugin):
                      help_string=_('move the Butia robot forward'))
         self.tw.lc.def_prim('forwardButia', 0, lambda self: primitive_dictionary['forwardButia']())
         special_block_colors['forwardButia'] = COLOR_STATIC[:]
-
-        primitive_dictionary['forwardDistance'] = self.forwardDistance
-        palette.add_block('forwardDistance',
-                     style='basic-style-1arg',
-                     label=_('forward Butia'),
-                     default=[5],  
-                     prim_name='forwardDistance',
-                     help_string=_('move the Butia robot forward a predefined distance'))
-        self.tw.lc.def_prim('forwardDistance', 1, lambda self, x: primitive_dictionary['forwardDistance'](x))
-        special_block_colors['forwardDistance'] = COLOR_STATIC[:]
 
         primitive_dictionary['leftButia'] = self.leftButia
         palette.add_block('leftButia',
@@ -235,16 +224,6 @@ class Butia(Plugin):
         self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
         special_block_colors['backwardButia'] = COLOR_STATIC[:]
 
-        primitive_dictionary['backwardDistance'] = self.backwardDistance
-        palette.add_block('backwardDistance',
-                     style='basic-style-1arg',
-                     label=_('backward Butia'),
-                     default=[5],  
-                     prim_name='backwardDistance',
-                     help_string=_('move the Butia robot backward a predefined distance'))
-        self.tw.lc.def_prim('backwardDistance', 1, lambda self, x: primitive_dictionary['backwardDistance'](x))
-        special_block_colors['backwardDistance'] = COLOR_STATIC[:]
-
         primitive_dictionary['rightButia'] = self.rightButia
         palette.add_block('rightButia',
                      style='basic-style',
@@ -253,16 +232,6 @@ class Butia(Plugin):
                      help_string=_('turn the Butia robot at right'))
         self.tw.lc.def_prim('rightButia', 0, lambda self: primitive_dictionary['rightButia']())
         special_block_colors['rightButia'] = COLOR_STATIC[:]
-
-        primitive_dictionary['turnXdegree'] = self.turnXdegree
-        palette.add_block('turnXdegree',
-                     style='basic-style-1arg',
-                     label=_('turn Butia'),
-                     default=[45],  
-                     prim_name='turnXdegree',
-                     help_string=_('turn the Butia robot x degrees'))
-        self.tw.lc.def_prim('turnXdegree', 1, lambda self, x: primitive_dictionary['turnXdegree'](x))
-        special_block_colors['turnXdegree'] = COLOR_STATIC[:]
 
         primitive_dictionary['stopButia'] = self.stopButia
         palette.add_block('stopButia',
@@ -552,45 +521,14 @@ class Butia(Plugin):
         #self.tw.canvas.setpen(True)
         #self.tw.canvas.forward(100)
 
-    def forwardDistance(self, dist):
-        #FIXME 8.29 para que velocidad? Vel = Dist / Tiempo => Tiempo = Dist / Vel
-        tiempo = abs(dist) / 8.29
-        self.set_vels(self.actualSpeed[0], self.actualSpeed[1])
-        time.sleep(tiempo)
-        self.set_vels(0, 0)
-        #FIXME ir avanzando de a poquito en la espera de tiempo y no todo de golpe al final
-        self.tw.canvas.setpen(True)
-        self.tw.canvas.forward(dist)
-
     def backwardButia(self):
         self.set_vels(-self.actualSpeed[0], -self.actualSpeed[1])
-
-    def backwardDistance(self, dist):
-        #FIXME cambiar el 8.29 por valor que dependa de velocidad
-        tiempo = abs(dist) / 8.29
-        self.set_vels(-self.actualSpeed[0], -self.actualSpeed[1])
-        time.sleep(tiempo)
-        self.tw.canvas.setpen(True)
-        self.tw.canvas.forward(-dist)
-        self.set_vels(0, 0)
 
     def leftButia(self):
         self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
 
     def rightButia(self):
         self.set_vels(-self.actualSpeed[0], self.actualSpeed[1])
-
-    def turnXdegree(self, degrees):
-        #FIXME cambiar el 8.29 por valor que dependa de velocidad
-        tiempo = (degrees * WHEELBASE * 3.14) / (360 * 8.29)
-        if degrees > 0:
-            self.set_vels(-self.actualSpeed[0], self.actualSpeed[1])
-        else:
-            self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
-        time.sleep(abs(tiempo))
-        self.tw.canvas.setpen(True)
-        self.tw.canvas.arc(degrees, 0)
-        self.set_vels(0, 0)
 
     def stopButia(self):
         self.set_vels(0, 0)
@@ -681,12 +619,10 @@ class Butia(Plugin):
         else:
             return ERROR_SENSOR_READ
     
-    def speedButia(self, left, right):
-        if (left < 0) or (left > MAX_SPEED):
+    def speedButia(self, speed):
+        if (speed < 0) or (speed > MAX_SPEED):
             raise logoerror(ERROR_SPEED)
-        if (right < 0) or (right > MAX_SPEED):
-            raise logoerror(ERROR_SPEED)
-        self.actualSpeed = [left, right]
+        self.actualSpeed = [speed, speed]
 
     def bobot_launch(self):
         """
