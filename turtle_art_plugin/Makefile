@@ -54,18 +54,14 @@ first:
 
 walterGIT:
 	# walter GIT
-	# make sure we have the last changes of the git
 	(cd mainline && git fetch)
-	# erase any untraced file
 	(cd mainline && git clean -xdf)
-	# goto origin/master
-	#(cd mainline && git checkout origin/master)
 	# a especific version of Turtle
-	(cd mainline && git checkout ba21564d1b26276d628414f2509e144dd23b750c)
+	(cd mainline && git checkout 1fbfdc65e1f0e93e2ad46ca104699da6714a9f4b)
 	# Extras with plugins translations
 	(cd turtle-extras && git fetch)
 	(cd turtle-extras && git clean -xdf)
-	(cd turtle-extras && git checkout origin/master)
+	(cd turtle-extras && git checkout d30481ea5a390930fad2574ba9c3a3ccee71d58a)
 
 wedoGIT:
 	# wedo GIT
