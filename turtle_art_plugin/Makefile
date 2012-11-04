@@ -163,7 +163,7 @@ mktmpfolder:
 	rm -rf tmp/.git
 	rm -f tmp/.gitignore
 	cp turtle-extras/taextras.py tmp
-	# lets patch the activity.info and add some icons (TurtleArt => TurtleArtButia)
+	# lets patch the activity.info and add some icons (TurtleArt => TurtleBots)
 	cp -rLf stagin/activity tmp/
 
 apply_localization: mktmpfolder $(PO_FILES)
