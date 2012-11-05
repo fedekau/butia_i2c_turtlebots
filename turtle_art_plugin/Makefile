@@ -61,7 +61,7 @@ walterGIT:
 	# Extras with plugins translations
 	(cd turtle-extras && git fetch)
 	(cd turtle-extras && git clean -xdf)
-	(cd turtle-extras && git checkout d30481ea5a390930fad2574ba9c3a3ccee71d58a)
+	(cd turtle-extras && git checkout b7b6730551d049b4b413d565e71fa5e185e3b7ba)
 
 wedoGIT:
 	# wedo GIT
@@ -166,9 +166,9 @@ mktmpfolder:
 	# lets patch the activity.info and add some icons (TurtleArt => TurtleBots)
 	cp -rLf stagin/activity tmp/
 
-apply_localization: mktmpfolder $(PO_FILES)
+apply_localization: mktmpfolder $(PO_FILES) merge.py
 	# let's add localization (if is not already in taextras.py)
-	msgcat turtle-extras/po/es.po tmp/po/es.po -o tmp/po/es.po
+	./merge.py
 	msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
