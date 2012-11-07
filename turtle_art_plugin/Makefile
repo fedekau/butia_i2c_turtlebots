@@ -47,7 +47,7 @@ help:
 ############# Obtain the mainline of TurtleArt (Walter) at a specific version
 
 first:
-	(cd .. && git submodule update --init)
+	(cd .. && git submodule update --init --merge)
 
 walterGIT: first
 	# walter GIT
