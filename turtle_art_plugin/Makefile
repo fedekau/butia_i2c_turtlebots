@@ -47,29 +47,26 @@ help:
 ############# Obtain the mainline of TurtleArt (Walter) at a specific version
 
 first:
-	# init and update the submodules (only works if you are in the root of git)
-	(cd .. && git submodule init)
-	# This don't work if local changes, commit local change before
-	(cd .. && git submodule update)
+	(cd .. && git submodule update --init)
 
-walterGIT:
+walterGIT: first
 	# walter GIT
 	(cd mainline && git fetch)
 	(cd mainline && git clean -xdf)
 	# a especific version of Turtle
-	(cd mainline && git checkout 1fbfdc65e1f0e93e2ad46ca104699da6714a9f4b)
+	(cd mainline && git checkout ba5879b5995b6859d0de2246d710bd24684d2b11)
 	# Extras with plugins translations
 	(cd turtle-extras && git fetch)
 	(cd turtle-extras && git clean -xdf)
 	(cd turtle-extras && git checkout a3e920ab4bf3f47ee7bee8b45deef743f61fa649)
 
-wedoGIT:
+wedoGIT: first
 	# wedo GIT
 	(cd WeDoMore && git fetch)
 	(cd WeDoMore && git clean -xdf)
 	(cd WeDoMore && git checkout 67e4233bc4944253ca75de204c158bd36cafd997)
 
-nxtGIT:
+nxtGIT: first
 	# NXT GIT
 	(cd nxt_plugin && git fetch)
 	(cd nxt_plugin && git clean -xdf)
@@ -78,11 +75,11 @@ nxtGIT:
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
 
-POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot nxt_plugin/po/nxt_plugin.pot
+POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
 POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
 
 POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
-              followme/po/FollowMe.notraslated.pot nxt_plugin/po/nxt_plugin.notraslated.pot
+              followme/po/FollowMe.notraslated.pot
 
 PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po nxt_plugin/po/es.po
 
@@ -108,12 +105,6 @@ followme/po/FollowMe.pot: followme/followme.py
 	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
 	xgettext $(POT_PROP) $< -o $@
 
-nxt_plugin/po/nxt_plugin.pot: nxt_plugin/nxt_plugin.py
-	echo msgid \"\" > $@
-	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-	xgettext $(POT_PROP) $< -o $@
-
 
 ## Generate a pot of MSGID that ARE NOT ALREADY translated in mainline (Walter GIT)
 genpot_notraslated: $(POT_NT_FILES)
@@ -127,9 +118,6 @@ sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
 followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
 	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
 
-nxt_plugin/po/nxt_plugin.notraslated.pot: nxt_plugin/po/nxt_plugin.pot
-	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-
 
 ## update de es.po files of plugins using the pot of not already translated
 updatepo: $(PO_FILES)
@@ -141,9 +129,6 @@ sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
 	msgmerge --update --no-fuzzy-matching  $@ $<
 
 followme/po/es.po: followme/po/FollowMe.notraslated.pot
-	msgmerge --update --no-fuzzy-matching  $@ $<
-
-nxt_plugin/po/es.po: nxt_plugin/po/nxt_plugin.notraslated.pot
 	msgmerge --update --no-fuzzy-matching  $@ $<
 
 
