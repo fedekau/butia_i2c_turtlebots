@@ -23,35 +23,31 @@ msgstr "TurtleBots"
 
 #: butia.py:49
 msgid "the speed must be a value between 0 and 1023"
-msgstr ""
+msgstr "la velocidad debe ser un valor entre 0 y 1023"
 
 #: butia.py:53
 msgid "adjust LED intensity between 0 and 255"
 msgstr "ajusta la intensidad del LED entre 0 y 255"
 
 #: butia.py:54
-msgid "returns the object gray level as a number between 0 and 1023"
-msgstr "devuelve el nivel de gris del objeto como un número entre 0 y 1023"
+msgid "returns the object gray level"
+msgstr "devuelve el nivel de gris del objeto"
 
 #: butia.py:55
 msgid "returns 1 when the button is press and 0 otherwise"
 msgstr "devuelve 1 cuando el botón está presionado y 0 en otro caso"
 
 #: butia.py:56
-msgid "returns the ambient light level as a number between 0 and 1023"
-msgstr "devuelve el nivel de luz en el ambiente como un número entre 0 y 1023"
+msgid "returns the ambient light level"
+msgstr "devuelve el nivel de luz en el ambiente"
 
 #: butia.py:57
-msgid "returns the ambient temperature as a number between 0 and 255"
-msgstr "devuelve la temperatura en el ambiente como un número entre 0 y 255"
+msgid "returns the ambient temperature"
+msgstr "devuelve la temperatura en el ambiente"
 
 #: butia.py:58
-msgid ""
-"returns the distance from the object in front of the sensor as a number "
-"between 0 and 255"
-msgstr ""
-"devuelve la distancia del objeto en frente al sensor como un número entre 0 "
-"y 255"
+msgid "returns the distance from the object in front of the sensor"
+msgstr "devuelve la distancia del objeto en frente al sensor"
 
 #: butia.py:59
 msgid "returns 0 or 1 depending on the sensor inclination"
