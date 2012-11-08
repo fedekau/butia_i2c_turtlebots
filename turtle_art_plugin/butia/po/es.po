@@ -30,8 +30,8 @@ msgid "adjust LED intensity between 0 and 255"
 msgstr "ajusta la intensidad del LED entre 0 y 255"
 
 #: butia.py:54
-msgid "returns the object gray level"
-msgstr "devuelve el nivel de gris del objeto"
+msgid "returns the gray level"
+msgstr "devuelve el nivel de gris"
 
 #: butia.py:55
 msgid "returns 1 when the button is press and 0 otherwise"
@@ -146,8 +146,8 @@ msgid "right"
 msgstr "derecha"
 
 #: butia.py:206
-msgid "moves the Butia at specify speed motors"
-msgstr "mueve el Butiá a la velocidad especificada"
+msgid "moves the Butia motors at the specified speed"
+msgstr "mueve los motores del Butiá a la velocidad especificada"
 
 #: butia.py:213
 msgid "stop Butia"

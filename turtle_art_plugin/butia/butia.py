@@ -51,7 +51,7 @@ ERROR_SPEED = _('the speed must be a value between 0 and 1023')
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
 modules_help['led'] = _("adjust LED intensity between 0 and 255")
-modules_help['grayscale'] = _("returns the object gray level")
+modules_help['grayscale'] = _("returns the gray level")
 modules_help['button'] = _("returns 1 when the button is press and 0 otherwise")
 modules_help['ambientlight'] = _("returns the ambient light level")
 modules_help['temperature'] = _("returns the ambient temperature")
@@ -203,7 +203,7 @@ class Butia(Plugin):
                      label=[_('move Butia'), _('left'), _('right')],
                      prim_name='moveButia',
                      default=[600, 600],
-                     help_string=_('moves the Butia at specify speed motors'))
+                     help_string=_('moves the Butia motors at the specified speed'))
         self.tw.lc.def_prim('moveButia', 2, lambda self, x, y: primitive_dictionary['moveButia'](x, y))
         special_block_colors['moveButia'] = COLOR_STATIC[:]
 
