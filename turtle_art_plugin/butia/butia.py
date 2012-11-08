@@ -207,6 +207,15 @@ class Butia(Plugin):
         self.tw.lc.def_prim('moveButia', 2, lambda self, x, y: primitive_dictionary['moveButia'](x, y))
         special_block_colors['moveButia'] = COLOR_STATIC[:]
 
+        primitive_dictionary['stopButia'] = self.stopButia
+        palette.add_block('stopButia',
+                     style='basic-style',
+                     label=_('stop Butia'),
+                     prim_name='stopButia',
+                     help_string=_('stop the Butia robot'))
+        self.tw.lc.def_prim('stopButia', 0, lambda self: primitive_dictionary['stopButia']())
+        special_block_colors['stopButia'] = COLOR_STATIC[:]
+
         primitive_dictionary['forwardButia'] = self.forwardButia
         palette.add_block('forwardButia',
                      style='basic-style',
@@ -225,15 +234,6 @@ class Butia(Plugin):
         self.tw.lc.def_prim('leftButia', 0, lambda self: primitive_dictionary['leftButia']())
         special_block_colors['leftButia'] = COLOR_STATIC[:]
         
-        primitive_dictionary['backwardButia'] = self.backwardButia
-        palette.add_block('backwardButia',
-                     style='basic-style',
-                     label=_('backward Butia'),
-                     prim_name='backwardButia',
-                     help_string=_('move the Butia robot backward'))
-        self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
-        special_block_colors['backwardButia'] = COLOR_STATIC[:]
-
         primitive_dictionary['rightButia'] = self.rightButia
         palette.add_block('rightButia',
                      style='basic-style',
@@ -243,14 +243,14 @@ class Butia(Plugin):
         self.tw.lc.def_prim('rightButia', 0, lambda self: primitive_dictionary['rightButia']())
         special_block_colors['rightButia'] = COLOR_STATIC[:]
 
-        primitive_dictionary['stopButia'] = self.stopButia
-        palette.add_block('stopButia',
+        primitive_dictionary['backwardButia'] = self.backwardButia
+        palette.add_block('backwardButia',
                      style='basic-style',
-                     label=_('stop Butia'),
-                     prim_name='stopButia',
-                     help_string=_('stop the Butia robot'))
-        self.tw.lc.def_prim('stopButia', 0, lambda self: primitive_dictionary['stopButia']())
-        special_block_colors['stopButia'] = COLOR_STATIC[:]
+                     label=_('backward Butia'),
+                     prim_name='backwardButia',
+                     help_string=_('move the Butia robot backward'))
+        self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
+        special_block_colors['backwardButia'] = COLOR_STATIC[:]
 
 
         #add every function in the code 
