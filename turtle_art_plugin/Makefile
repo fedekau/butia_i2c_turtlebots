@@ -54,7 +54,7 @@ walterGIT: first
 	(cd mainline && git fetch)
 	(cd mainline && git clean -xdf)
 	# a especific version of Turtle
-	(cd mainline && git checkout ba5879b5995b6859d0de2246d710bd24684d2b11)
+	(cd mainline && git checkout 0a40f760a56c4caa5bfc68172c335a46b20bd992)
 	# Extras with plugins translations
 	(cd turtle-extras && git fetch)
 	(cd turtle-extras && git clean -xdf)

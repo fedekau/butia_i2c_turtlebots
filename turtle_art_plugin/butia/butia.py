@@ -126,7 +126,7 @@ label_name_from_device_id['resistance2'] = _('resistance')
 
 refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led', 'resistance2' ]
 
-static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia']
+static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 
 class Butia(Plugin):
     
@@ -197,6 +197,16 @@ class Butia(Plugin):
         self.tw.lc.def_prim('speedButia', 1, lambda self, x: primitive_dictionary['speedButia'](x))
         special_block_colors['speedButia'] = COLOR_STATIC[:]
         
+        primitive_dictionary['moveButia'] = self.moveButia
+        palette.add_block('moveButia',
+                     style='basic-style-2arg',
+                     label=[_('move Butia'), _('left'), _('right')],
+                     prim_name='moveButia',
+                     default=[600, 600],
+                     help_string=_('moves the Butia at specify speed motors'))
+        self.tw.lc.def_prim('moveButia', 2, lambda self, x, y: primitive_dictionary['moveButia'](x, y))
+        special_block_colors['moveButia'] = COLOR_STATIC[:]
+
         primitive_dictionary['forwardButia'] = self.forwardButia
         palette.add_block('forwardButia',
                      style='basic-style',
@@ -515,6 +525,9 @@ class Butia(Plugin):
             sentRight = "1"
         if self.butia:
             self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
+
+    def moveButia(self, left, right):
+        self.set_vels(left, right)
 
     def forwardButia(self):
         self.set_vels(self.actualSpeed[0], self.actualSpeed[1])
