@@ -54,11 +54,11 @@ walterGIT: first
 	(cd mainline && git fetch)
 	(cd mainline && git clean -xdf)
 	# a especific version of Turtle
-	(cd mainline && git checkout 0a40f760a56c4caa5bfc68172c335a46b20bd992)
+	(cd mainline && git checkout 4feae65e6fdd83f5ef3a395e6cd2f535ca6c1653)
 	# Extras with plugins translations
 	(cd turtle-extras && git fetch)
 	(cd turtle-extras && git clean -xdf)
-	(cd turtle-extras && git checkout a3e920ab4bf3f47ee7bee8b45deef743f61fa649)
+	(cd turtle-extras && git checkout 8e1c5325b6607ae2eb1af8e4ed282a239671bf73)
 
 wedoGIT: first
 	# wedo GIT
