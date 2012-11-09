@@ -157,7 +157,7 @@ class Butia(Plugin):
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
 
-        palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'), init_on_start=True)
+        palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'))
 
         if self.butia:
             self.battery_value = self.butia.getBatteryCharge()
