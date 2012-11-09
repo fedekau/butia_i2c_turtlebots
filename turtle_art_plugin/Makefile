@@ -58,7 +58,7 @@ walterGIT: first
 	# Extras with plugins translations
 	(cd turtle-extras && git fetch)
 	(cd turtle-extras && git clean -xdf)
-	(cd turtle-extras && git checkout 8e1c5325b6607ae2eb1af8e4ed282a239671bf73)
+	(cd turtle-extras && git checkout 45f7918bf4d45787c3808375edc8f7379c657006)
 
 wedoGIT: first
 	# wedo GIT
