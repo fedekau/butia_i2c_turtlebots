@@ -54,11 +54,11 @@ walterGIT: first
 	(cd mainline && git fetch)
 	(cd mainline && git clean -xdf)
 	# a especific version of Turtle
-	(cd mainline && git checkout 0a40f760a56c4caa5bfc68172c335a46b20bd992)
+	(cd mainline && git checkout 4feae65e6fdd83f5ef3a395e6cd2f535ca6c1653)
 	# Extras with plugins translations
 	(cd turtle-extras && git fetch)
 	(cd turtle-extras && git clean -xdf)
-	(cd turtle-extras && git checkout a3e920ab4bf3f47ee7bee8b45deef743f61fa649)
+	(cd turtle-extras && git checkout 45f7918bf4d45787c3808375edc8f7379c657006)
 
 wedoGIT: first
 	# wedo GIT
@@ -70,7 +70,7 @@ nxtGIT: first
 	# NXT GIT
 	(cd nxt_plugin && git fetch)
 	(cd nxt_plugin && git clean -xdf)
-	(cd nxt_plugin && git checkout d953f5bd4aa33b64e04daa5d093969a734b0d279)
+	(cd nxt_plugin && git checkout a0c2ed0f2681a218a435dfa178cd69dafabb3e8c)
 
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
