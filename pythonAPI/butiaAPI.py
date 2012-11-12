@@ -313,21 +313,22 @@ class robot:
     # return the value of the magnetic induction sensor
     def getMagneticInduction(self, number=''):
         if self.ver == BUTIA_1:
-            return self.callModule('magnet' + self.aux + str(number), 'getValue')
+            return self.callModule('magnet' + str(number), 'getValue')
         else:
-            return self.callModule('magnet:' + self.aux + str(number), 'getValue')
+            return self.callModule('magnet:' + str(number), 'getValue')
 
     # set the led intensity
     def setLed(self, nivel = 255, number= ''):
         if self.ver == BUTIA_1:
-            return self.callModule('led' + self.aux + str(number), 'setLight', str(math.trunc(nivel)))
+            return self.callModule('led' + str(number), 'setLight', str(math.trunc(nivel)))
         else:
-            return self.callModule('led:' + self.aux + str(number), 'setLight', str(math.trunc(nivel)))
+            return self.callModule('led:' + str(number), 'setLight', str(math.trunc(nivel)))
 
-    # FIXME: check the lenght of text?
-    # write a text in LCD display
-    def writeLCD(self, text):
-        text = str(text)
-        text = text.replace(' ', '_')
-        self.callModule('display', 'escribir' , text)
+    def setHacks(self, pin1, pin2, pin3, pin4, number= ''):
+        msg = pin1 + ' ' + pin2 + ' ' + pin3 + ' ' + pin4
+        if self.ver == BUTIA_1:
+            return self.callModule('hackp' + str(number), 'set4pinValues', str(msg)) #TODO implement
+        else:
+            return self.callModule('hackp:' + str(number), 'set4pinValues', str(msg))
+
 

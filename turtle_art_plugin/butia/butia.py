@@ -47,6 +47,8 @@ WHEELBASE = 28.00
 BUTIA_1 = 20
 
 ERROR_SPEED = _('the speed must be a value between 0 and 1023')
+ERROR_PIN_NUMBER = _('the pin must be 1, 2, 3 or 4')
+ERROR_PIN_VALUE = _('the value must be 0 or 1')
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
@@ -145,6 +147,7 @@ class Butia(Plugin):
         self.battery_value = ERROR_SENSOR_READ
         self.old_battery_value = ERROR_SENSOR_READ
         self.version = BUTIA_1
+        self.hack_pins = ['0', '0', '0', '0']
         self.bobot = None
         self.butia = None
         self.match_list = []
@@ -257,6 +260,16 @@ class Butia(Plugin):
                      help_string=_('move the Butia robot backward'))
         self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
         special_block_colors['backwardButia'] = COLOR_STATIC[:]
+
+        primitive_dictionary['setpinButia'] = self.setpinButia
+        palette.add_block('setpinButia',
+                     style='basic-style-2arg',
+                     label=[_('set hack pin Butia'), _('pin'), _('value')],
+                     prim_name='setpinButia',
+                     #default=[None, None],
+                     help_string=_('set a hack pin to 0 or 1'))
+        self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
+        special_block_colors['setpinButia'] = COLOR_STATIC[:]
 
 
         #add every function in the code 
@@ -649,6 +662,20 @@ class Butia(Plugin):
         if (speed < 0) or (speed > MAX_SPEED):
             raise logoerror(ERROR_SPEED)
         self.actualSpeed = [speed, speed]
+
+    def setpinButia(self, pin, value, sensorid=''):
+        if self.butia:
+            pin = int(pin - 1)
+            if (pin < 0) or (pin > 3):
+                raise logoerror(ERROR_PIN_NUMBER)
+            else:
+                if (pin < 0) or (pin > 1):
+                    raise logoerror(ERROR_PIN_VALUE)
+                else:
+                    self.hack_pins[pin] = str(value)
+                    self.butia.setHacks(self.hack_pins[0], self.hack_pins[1], self.hack_pins[2], self.hack_pins[3], sensorid)
+        else:
+            return ERROR_SENSOR_READ
 
     def bobot_launch(self):
         """
