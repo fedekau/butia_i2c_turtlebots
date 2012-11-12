@@ -60,6 +60,7 @@ modules_help['tilt'] = _("returns 0 or 1 depending on the sensor inclination")
 modules_help['magneticinduction'] = _("returns 1 when the sensors detects a magnetic field, 0 otherwise")
 modules_help['vibration'] = _("switches from 0 to 1, the frequency depends on the vibration")
 modules_help['resistanceB'] = _("returns the value of the resistance")
+modules_help['voltajeB'] = _("returns the value of the voltaje")
 
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
@@ -74,7 +75,8 @@ modules_name_from_device_id_1['distance'] = 'dist'
 modules_name_from_device_id_1['tilt'] = 'tilt'
 modules_name_from_device_id_1['magneticinduction'] = 'magnet'
 modules_name_from_device_id_1['vibration'] = 'vibra'
-modules_name_from_device_id_1['resistanceB'] = 'resist'
+modules_name_from_device_id_1['resistanceB'] = 'res'
+modules_name_from_device_id_1['voltajeB'] = 'volt'
 
 modules_name_from_device_id_2 = {} 
 modules_name_from_device_id_2['led'] = 'led'
@@ -86,7 +88,8 @@ modules_name_from_device_id_2['distance'] = 'distanc'
 modules_name_from_device_id_2['tilt'] = 'tilt'
 modules_name_from_device_id_2['magneticinduction'] = 'magnet'
 modules_name_from_device_id_2['vibration'] = 'vibra'
-modules_name_from_device_id_2['resistanceB'] = 'resist'
+modules_name_from_device_id_2['resistanceB'] = 'res'
+modules_name_from_device_id_2['voltajeB'] = 'volt'
 
 device_id_from_module_name_1 = {} 
 device_id_from_module_name_1['led'] = 'led'
@@ -98,7 +101,8 @@ device_id_from_module_name_1['dist'] = 'distance'
 device_id_from_module_name_1['tilt'] = 'tilt'
 device_id_from_module_name_1['magnet'] = 'magneticinduction'
 device_id_from_module_name_1['vibra'] = 'vibration'
-device_id_from_module_name_1['resist'] = 'resistance'
+device_id_from_module_name_1['res'] = 'resistance'
+device_id_from_module_name_1['volt'] = 'voltaje'
 
 device_id_from_module_name_2 = {} 
 device_id_from_module_name_2['led'] = 'led'
@@ -110,7 +114,8 @@ device_id_from_module_name_2['distanc'] = 'distance'
 device_id_from_module_name_2['tilt'] = 'tilt'
 device_id_from_module_name_2['magnet'] = 'magneticinduction'
 device_id_from_module_name_2['vibra'] = 'vibration'
-device_id_from_module_name_2['resist'] = 'resistance'
+device_id_from_module_name_2['res'] = 'resistance'
+device_id_from_module_name_2['volt'] = 'voltaje'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -123,8 +128,9 @@ label_name_from_device_id['tilt'] = _('tilt')
 label_name_from_device_id['magneticinduction'] = _('magnetic induction')
 label_name_from_device_id['vibration'] = _('vibration')
 label_name_from_device_id['resistanceB'] = _('resistance')
+label_name_from_device_id['voltajeB'] = _('voltaje')
 
-refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led', 'resistanceB' ]
+refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led', 'resistanceB', 'voltajeB']
 
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 
@@ -264,12 +270,13 @@ class Butia(Plugin):
         primitive_dictionary['magneticinductionButia'] = self.magneticinductionButia
         primitive_dictionary['vibrationButia'] = self.vibrationButia
         primitive_dictionary['resistanceBButia'] = self.resistanceB
+        primitive_dictionary['voltajeBButia'] = self.voltajeB
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'tilt', 'magneticinduction', 'vibration', 'resistanceB']]
+                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'tilt', 'magneticinduction', 'vibration', 'resistanceB', 'voltajeB']]
                  ]:
 
             (blockstyle , listofmodules) = i
@@ -605,6 +612,12 @@ class Butia(Plugin):
     def resistanceB(self, sensorid=''):
         if self.butia:
             return self.butia.getResistance(sensorid)
+        else:
+            return ERROR_SENSOR_READ
+
+    def voltajeB(self, sensorid=''):
+        if self.butia:
+            return self.butia.getVoltaje(sensorid)
         else:
             return ERROR_SENSOR_READ
 
