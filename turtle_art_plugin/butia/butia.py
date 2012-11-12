@@ -669,7 +669,7 @@ class Butia(Plugin):
             if (pin < 0) or (pin > 3):
                 raise logoerror(ERROR_PIN_NUMBER)
             else:
-                if (pin < 0) or (pin > 1):
+                if (value < 0) or (value > 1):
                     raise logoerror(ERROR_PIN_VALUE)
                 else:
                     self.hack_pins[pin] = str(value)
