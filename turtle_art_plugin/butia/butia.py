@@ -44,7 +44,6 @@ MAX_SENSOR_PER_TYPE = 4
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 WHEELBASE = 28.00
-BUTIA_1 = 20
 
 ERROR_SPEED = _('the speed must be a value between 0 and 1023')
 ERROR_PIN_NUMBER = _('the pin must be 1, 2, 3 or 4')
@@ -67,57 +66,27 @@ modules_help['voltajeB'] = _("returns the value of the voltaje")
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 
-modules_name_from_device_id_1 = {} 
-modules_name_from_device_id_1['led'] = 'led'
-modules_name_from_device_id_1['button'] = 'boton'
-modules_name_from_device_id_1['grayscale'] = 'grises'
-modules_name_from_device_id_1['ambientlight'] = 'luz'
-modules_name_from_device_id_1['temperature'] = 'temp'
-modules_name_from_device_id_1['distance'] = 'dist'
-modules_name_from_device_id_1['tilt'] = 'tilt'
-modules_name_from_device_id_1['magneticinduction'] = 'magnet'
-modules_name_from_device_id_1['vibration'] = 'vibra'
-modules_name_from_device_id_1['resistanceB'] = 'res'
-modules_name_from_device_id_1['voltajeB'] = 'volt'
 
-modules_name_from_device_id_2 = {} 
-modules_name_from_device_id_2['led'] = 'led'
-modules_name_from_device_id_2['button'] = 'button'
-modules_name_from_device_id_2['grayscale'] = 'grey'
-modules_name_from_device_id_2['ambientlight'] = 'light'
-modules_name_from_device_id_2['temperature'] = 'temp'
-modules_name_from_device_id_2['distance'] = 'distanc'
-modules_name_from_device_id_2['tilt'] = 'tilt'
-modules_name_from_device_id_2['magneticinduction'] = 'magnet'
-modules_name_from_device_id_2['vibration'] = 'vibra'
-modules_name_from_device_id_2['resistanceB'] = 'res'
-modules_name_from_device_id_2['voltajeB'] = 'volt'
 
-device_id_from_module_name_1 = {} 
-device_id_from_module_name_1['led'] = 'led'
-device_id_from_module_name_1['boton'] = 'button'
-device_id_from_module_name_1['grises'] = 'grayscale'
-device_id_from_module_name_1['luz'] = 'ambientlight'
-device_id_from_module_name_1['temp'] = 'temperature'
-device_id_from_module_name_1['dist'] = 'distance'
-device_id_from_module_name_1['tilt'] = 'tilt'
-device_id_from_module_name_1['magnet'] = 'magneticinduction'
-device_id_from_module_name_1['vibra'] = 'vibration'
-device_id_from_module_name_1['res'] = 'resistance'
-device_id_from_module_name_1['volt'] = 'voltaje'
+modules_name_from_device_id = {} 
+modules_name_from_device_id['led'] = 'led'
+modules_name_from_device_id['button'] = 'button'
+modules_name_from_device_id['grayscale'] = 'grey'
+modules_name_from_device_id['ambientlight'] = 'light'
+modules_name_from_device_id['temperature'] = 'temp'
+modules_name_from_device_id['distance'] = 'distanc'
+modules_name_from_device_id['resistanceB'] = 'res'
+modules_name_from_device_id['voltajeB'] = 'volt'
 
-device_id_from_module_name_2 = {} 
-device_id_from_module_name_2['led'] = 'led'
-device_id_from_module_name_2['button'] = 'button'
-device_id_from_module_name_2['grey'] = 'grayscale'
-device_id_from_module_name_2['light'] = 'ambientlight'
-device_id_from_module_name_2['temp'] = 'temperature'
-device_id_from_module_name_2['distanc'] = 'distance'
-device_id_from_module_name_2['tilt'] = 'tilt'
-device_id_from_module_name_2['magnet'] = 'magneticinduction'
-device_id_from_module_name_2['vibra'] = 'vibration'
-device_id_from_module_name_2['res'] = 'resistance'
-device_id_from_module_name_2['volt'] = 'voltaje'
+device_id_from_module_name = {} 
+device_id_from_module_name['led'] = 'led'
+device_id_from_module_name['button'] = 'button'
+device_id_from_module_name['grey'] = 'grayscale'
+device_id_from_module_name['light'] = 'ambientlight'
+device_id_from_module_name['temp'] = 'temperature'
+device_id_from_module_name['distanc'] = 'distance'
+device_id_from_module_name['res'] = 'resistance'
+device_id_from_module_name['volt'] = 'voltaje'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -126,13 +95,10 @@ label_name_from_device_id['grayscale'] = _('grayscale')
 label_name_from_device_id['ambientlight'] = _('ambient light')
 label_name_from_device_id['temperature'] = _('temperature')
 label_name_from_device_id['distance'] = _('distance')
-label_name_from_device_id['tilt'] = _('tilt')
-label_name_from_device_id['magneticinduction'] = _('magnetic induction')
-label_name_from_device_id['vibration'] = _('vibration')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltajeB'] = _('voltaje')
 
-refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'tilt', 'magneticinduction', 'vibration', 'led', 'resistanceB', 'voltajeB']
+refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltajeB']
 
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 
@@ -146,7 +112,6 @@ class Butia(Plugin):
         self.pollrun = True
         self.battery_value = ERROR_SENSOR_READ
         self.old_battery_value = ERROR_SENSOR_READ
-        self.version = BUTIA_1
         self.hack_pins = ['0', '0', '0', '0']
         self.bobot = None
         self.butia = None
@@ -279,9 +244,6 @@ class Butia(Plugin):
         primitive_dictionary['buttonButia'] = self.buttonButia
         primitive_dictionary['temperatureButia'] = self.temperatureButia
         primitive_dictionary['distanceButia'] = self.distanceButia
-        primitive_dictionary['tiltButia'] = self.tiltButia
-        primitive_dictionary['magneticinductionButia'] = self.magneticinductionButia
-        primitive_dictionary['vibrationButia'] = self.vibrationButia
         primitive_dictionary['resistanceBButia'] = self.resistanceB
         primitive_dictionary['voltajeBButia'] = self.voltajeB
 
@@ -289,7 +251,7 @@ class Butia(Plugin):
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'tilt', 'magneticinduction', 'vibration', 'resistanceB', 'voltajeB']]
+                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'resistanceB', 'voltajeB']]
                  ]:
 
             (blockstyle , listofmodules) = i
@@ -356,7 +318,7 @@ class Butia(Plugin):
         for e in l:
             try:
                 module, port = e.split(':')
-                if module in device_id_from_module_name_2:
+                if module in device_id_from_module_name:
                     r.append((port, module))
             except:
                 pass
@@ -386,46 +348,13 @@ class Butia(Plugin):
         COLOR_STATIC = self.staticBlocksColor(self.battery_value)
         COLOR_BATTERY = self.batteryColor(self.battery_value)
 
-        if self.version == BUTIA_1:
-            self.refresh_palette_1(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
-        else:
-            self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
+        self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
 
         try:
             index = palette_name_to_index('butia')
             self.tw.regenerate_palette(index)
         except:
             pass
-
-
-    def refresh_palette_1(self, COLOR_STATIC, COLOR_BATTERY, change_statics_blocks):
-
-        #repaints program area blocks (proto) and palette blocks (block)
-        for blk in self.tw.block_list.list:
-            #NOTE: blocks types: proto, block, trash, deleted
-            if blk.type in ['proto', 'block']:
-                if (blk.name in static_block_list):
-                    if (change_statics_blocks):
-                        if (blk.name == 'batterychargeButia'):
-                            special_block_colors[blk.name] = COLOR_BATTERY[:]
-                        else:
-                            special_block_colors[blk.name] = COLOR_STATIC[:]
-                        blk.refresh()
-                else:
-                    blk_name, blk_index = self.block_2_index_and_name(blk.name)
-                    if (blk_name in refreshable_block_list):
-                        module_name = modules_name_from_device_id_1[blk_name] + blk_index
-                        if module_name in self.set_changed_device_module:
-                            if module_name not in self.list_connected_device_module:
-                                if blk_index !='' :
-                                    if blk.type == 'proto': # only make invisible the block in the palette not in the program area
-                                        blk.set_visibility(False)
-                                special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
-                            else:
-                                if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
-                                    blk.set_visibility(True)
-                                special_block_colors[blk.name] = COLOR_PRESENT[:]
-                            blk.refresh()
 
 
     def refresh_palette_2(self, COLOR_STATIC, COLOR_BATTERY, change_statics_blocks):
@@ -447,7 +376,7 @@ class Butia(Plugin):
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
                     if (blk_name in refreshable_block_list):
-                        module = modules_name_from_device_id_2[blk_name]
+                        module = modules_name_from_device_id[blk_name]
                         s = module + blk_index
                         if not(s in self.match_dict):
                             if blk_index !='' :
@@ -484,9 +413,6 @@ class Butia(Plugin):
         if self.butia:
             self.list_connected_device_module = self.butia.get_modules_list()
             self.battery_value = self.butia.getBatteryCharge()
-            ver = self.butia.getVersion()
-            if not(ver == ERROR_SENSOR_READ):
-                self.version = ver
         else:
             self.list_connected_device_module = []
             self.battery_value = ERROR_SENSOR_READ
@@ -616,12 +542,6 @@ class Butia(Plugin):
         else:
             return ERROR_SENSOR_READ
 
-    def vibrationButia(self, sensorid=''):
-        if self.butia:
-            return self.butia.getVibration(sensorid)
-        else:
-            return ERROR_SENSOR_READ
-
     def resistanceB(self, sensorid=''):
         if self.butia:
             return self.butia.getResistance(sensorid)
@@ -634,23 +554,12 @@ class Butia(Plugin):
         else:
             return ERROR_SENSOR_READ
 
-    def tiltButia(self, sensorid=''):
-        if self.butia:
-            return self.butia.getTilt(sensorid)
-        else:
-            return ERROR_SENSOR_READ
-
     def capacitivetouchButia(self, sensorid=''):
         if self.butia:
             return self.butia.getCapacitive(sensorid)
         else:
             return ERROR_SENSOR_READ
 
-    def magneticinductionButia(self, sensorid=''):
-        if self.butia:
-            return self.butia.getMagneticInduction(sensorid)
-        else:
-            return ERROR_SENSOR_READ
 
     def ledButia(self, level, sensorid=''):
         if self.butia:
