@@ -106,6 +106,8 @@ class Butia(Plugin):
     
     def __init__(self, parent):
         self.tw = parent
+        # Enable extra palette
+        self.extra_palette = True
         self.actualSpeed = [600, 600]
         self.butia = None
         self.pollthread = None
@@ -132,6 +134,8 @@ class Butia(Plugin):
         """ Setup is called once, when the Turtle Window is created. """
 
         palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'))
+        if self.extra_palette:
+            palette2 = make_palette('butia-extra', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot extra blocks'))
 
         if self.butia:
             self.battery_value = self.butia.getBatteryCharge()
@@ -226,15 +230,16 @@ class Butia(Plugin):
         self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
         special_block_colors['backwardButia'] = COLOR_STATIC[:]
 
-        primitive_dictionary['setpinButia'] = self.setpinButia
-        palette.add_block('setpinButia',
-                     style='basic-style-2arg',
-                     label=[_('set hack pin Butia'), _('pin'), _('value')],
-                     prim_name='setpinButia',
-                     #default=[None, None],
-                     help_string=_('set a hack pin to 0 or 1'))
-        self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
-        special_block_colors['setpinButia'] = COLOR_STATIC[:]
+        if self.extra_palette:
+            primitive_dictionary['setpinButia'] = self.setpinButia
+            palette2.add_block('setpinButia',
+                         style='basic-style-2arg',
+                         label=[_('set hack pin Butia'), _('pin'), _('value')],
+                         prim_name='setpinButia',
+                         #default=[None, None],
+                         help_string=_('set a hack pin to 0 or 1'))
+            self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
+            special_block_colors['setpinButia'] = COLOR_STATIC[:]
 
 
         #add every function in the code 
@@ -265,13 +270,21 @@ class Butia(Plugin):
 
                     module = j + str(k)
                     block_name = module + 'Butia'
-
-                    palette.add_block(block_name, 
-                                     style=blockstyle,
-                                     label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
-                                     prim_name= block_name,
-                                     help_string=_(modules_help[j]),
-                                     hidden=isHidden)
+                    
+                    if self.extra_palette and ((j == 'resistanceB') or (j == 'voltajeB')):
+                        palette2.add_block(block_name, 
+                                 style=blockstyle,
+                                 label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
+                                 prim_name= block_name,
+                                 help_string=_(modules_help[j]),
+                                 hidden=isHidden)
+                    else:
+                        palette.add_block(block_name, 
+                                 style=blockstyle,
+                                 label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
+                                 prim_name= block_name,
+                                 help_string=_(modules_help[j]),
+                                 hidden=isHidden)
 
                     if blockstyle == 'basic-style-1arg':
                         self.tw.lc.def_prim(block_name, 1, lambda self, x, y=k, z=j: primitive_dictionary[z + 'Butia'](x,y))
@@ -334,6 +347,9 @@ class Butia(Plugin):
         try:
             index = palette_name_to_index('butia')
             self.tw.regenerate_palette(index)
+            if self.extra_palette:
+                index = palette_name_to_index('butia-extra')
+                self.tw.regenerate_palette(index)
         except:
             pass
 
