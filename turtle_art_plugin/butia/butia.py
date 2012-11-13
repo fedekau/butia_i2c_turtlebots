@@ -65,9 +65,6 @@ modules_help['voltajeB'] = _("returns the value of the voltaje")
 
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
-
-
-
 modules_name_from_device_id = {} 
 modules_name_from_device_id['led'] = 'led'
 modules_name_from_device_id['button'] = 'button'
@@ -271,13 +268,14 @@ class Butia(Plugin):
                     module = j + str(k)
                     block_name = module + 'Butia'
                     
-                    if self.extra_palette and ((j == 'resistanceB') or (j == 'voltajeB')):
-                        palette2.add_block(block_name, 
-                                 style=blockstyle,
-                                 label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
-                                 prim_name= block_name,
-                                 help_string=_(modules_help[j]),
-                                 hidden=isHidden)
+                    if (j == 'resistanceB') or (j == 'voltajeB'):
+                        if self.extra_palette:
+                            palette2.add_block(block_name, 
+                                     style=blockstyle,
+                                     label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
+                                     prim_name= block_name,
+                                     help_string=_(modules_help[j]),
+                                     hidden=isHidden)
                     else:
                         palette.add_block(block_name, 
                                  style=blockstyle,
