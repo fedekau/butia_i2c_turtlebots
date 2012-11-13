@@ -256,45 +256,26 @@ class Butia(Plugin):
 
             (blockstyle , listofmodules) = i
             for j in listofmodules:
-                block_name = j + 'Butia'
-                if blockstyle == 'basic-style-1arg':
-                    palette.add_block(block_name,
-                    style=blockstyle,
-                    label=(label_name_from_device_id[j] + ' ' + _('Butia')),
-                    prim_name= block_name,
-                    default=[255],
-                    help_string=_(modules_help[j])),
-                    self.tw.lc.def_prim(block_name, 1, lambda self, x,y=j: primitive_dictionary[y + 'Butia'](x))
-                else:
-                    palette.add_block(block_name,
-                    style=blockstyle,
-                    label=(label_name_from_device_id[j] + ' ' + _('Butia')),
-                    prim_name= block_name,
-                    help_string=_(modules_help[j])),
-                    self.tw.lc.def_prim(block_name, 0, lambda self, y=j: primitive_dictionary[y + 'Butia']())
+                for m in range(0, MAX_SENSOR_PER_TYPE):
+                    isHidden = True
+                    k = m
+                    if (m == 0):
+                        isHidden = False
+                        k = ''
 
-                special_block_colors[block_name] = COLOR_NOTPRESENT[:]
-
-                for k in range(1,MAX_SENSOR_PER_TYPE):
                     module = j + str(k)
                     block_name = module + 'Butia'
-                    isHidden = True
-                    if blockstyle == 'basic-style-1arg':
-                        palette.add_block(block_name, 
+
+                    palette.add_block(block_name, 
                                      style=blockstyle,
-                                     label=( label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
+                                     label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
                                      prim_name= block_name,
                                      help_string=_(modules_help[j]),
-                                     default=[255],
-                                     hidden=isHidden )
+                                     hidden=isHidden)
+
+                    if blockstyle == 'basic-style-1arg':
                         self.tw.lc.def_prim(block_name, 1, lambda self, x, y=k, z=j: primitive_dictionary[z + 'Butia'](x,y))
                     else:
-                        palette.add_block(block_name,   
-                                     style=blockstyle,
-                                     label=(label_name_from_device_id[j] + str(k) + ' ' + _('Butia')),
-                                     prim_name= block_name,
-                                     help_string=_(modules_help[j]),
-                                     hidden=isHidden )
                         self.tw.lc.def_prim(block_name, 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
 
                     special_block_colors[block_name] = COLOR_NOTPRESENT[:]
