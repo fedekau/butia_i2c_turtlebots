@@ -1,11 +1,21 @@
 # Makefile for butia
 #
-# This program is free to be used or modified
-# at your ouwn risk
+# Copyright (C) 2008 Guillermo Reisch (greisch@fing.edu.uy)
+# Copyright (C) 2010 Andres Aguirre (aaguirre@fing.edu.uy)
 #
-# writen by Guillermo Reisch (greisch@fing.edu.uy) and andrew (aaguirre@fing.edu.uy)
-# in others words => writen by butia TEAM!
-
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 
 TURTLEARTVERSION=v166
 
