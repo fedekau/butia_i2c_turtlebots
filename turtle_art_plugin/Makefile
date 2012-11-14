@@ -3,6 +3,10 @@
 # Copyright (C) 2008 Guillermo Reisch (greisch@fing.edu.uy)
 # Copyright (C) 2010 Andres Aguirre (aaguirre@fing.edu.uy)
 #
+# Butia is a free open plataform for robotics projects
+# http://www.fing.edu.uy/inco/proyectos/butia
+# Universidad de la República del Uruguay
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -26,6 +30,10 @@ WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 CWD = $(cwd)
 SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
+INSTALL = install
+INSTALL_PROGRAM = $(INSTALL)
+INSTALL_DATA = ${INSTALL} -m 644
+
 
 
 all: help
