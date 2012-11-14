@@ -17,7 +17,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-TURTLEARTVERSION=v166
+TURTLEBLOCKS_VERSION = 3d80bec755ef4c807197592949602d24f774cd8d
+EXTRAS_VERSION = b97744c7153c67206e983b18d24962c6bc4929c1
+NXT_VERSION = a0c2ed0f2681a218a435dfa178cd69dafabb3e8c
+WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
+
 
 CWD = $(cwd)
 SHELL = /bin/sh
@@ -50,7 +54,8 @@ help:
 	@echo "              of Walter, so use that traslations.                "
 	@echo "                                                                 "
 	@echo " The follow parameters are optional:                             "
-	@echo "    TURTLEARTVERSION=[version or commit] (default $(TURTLEARTVERSION))"
+	@echo "    TURTLEBLOCKS_VERSION=[version or commit]                     "
+	@echo "                         (default $(TURTLEBLOCKS_VERSION))       "
 	@echo "                                                                 "
 	@echo "           For more info contact \"butia@fing.edu.uy\"           "
 	@echo "   wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki   "
@@ -58,34 +63,48 @@ help:
 
 
 
-############# Obtain the mainline of TurtleArt (Walter) at a specific version
+############# init of submodules #################
 
 first:
 	(cd .. && git submodule update --init --merge)
 
-walterGIT: first
-	# walter GIT
-	(cd mainline && git fetch)
-	(cd mainline && git clean -xdf)
-	# a especific version of Turtle
-	(cd mainline && git checkout 3d80bec755ef4c807197592949602d24f774cd8d)
-	# Extras with plugins translations
-	(cd turtle-extras && git fetch)
-	(cd turtle-extras && git clean -xdf)
-	(cd turtle-extras && git checkout b97744c7153c67206e983b18d24962c6bc4929c1)
+############# initialization of "especific" submodules ###############
 
-wedoGIT: first
-	# wedo GIT
-	(cd WeDoMore && git fetch)
-	(cd WeDoMore && git clean -xdf)
-	(cd WeDoMore && git checkout 67e4233bc4944253ca75de204c158bd36cafd997)
+mainline/.git:
+	$(MAKE) first
 
-nxtGIT: first
-	# NXT GIT
-	(cd nxt_plugin && git fetch)
-	(cd nxt_plugin && git clean -xdf)
-	(cd nxt_plugin && git checkout a0c2ed0f2681a218a435dfa178cd69dafabb3e8c)
+WeDoMore/.git:
+	$(MAKE) first
 
+turtle-extras/.git:
+	$(MAKE) first
+
+nxt_plugin/.git:
+	$(MAKE) first
+
+############# checkout a version of submodule ##################
+SUBMODULE = mainline
+SUBMODULEVER = master
+
+checkoutsm:
+	(cd $(SUBMODULE) && git clean -xdf)
+	(cd $(SUBMODULE) && git fetch)
+	(cd $(SUBMODULE) && git checkout $(SUBMODULEVER))
+
+
+############# checkout a especific version of submodules ##############
+
+walterGIT: mainline/.git
+	$(MAKE) SUBMODULE=mainline SUBMODULEVER=$(TURTLEBLOCKS_VERSION) checkoutsm
+
+extrasGIT: turtle-extras/.git
+	$(MAKE) SUBMODULE=turtle-extras SUBMODULEVER=$(EXTRAS_VERSION) checkoutsm
+
+wedoGIT: WeDoMore/.git
+	$(MAKE) SUBMODULE=WeDoMore SUBMODULEVER=$(WEDO_VERSION) checkoutsm
+
+nxtGIT: nxt_plugin/.git
+	$(MAKE) SUBMODULE=nxt_plugin SUBMODULEVER=$(NXT_VERSION) checkoutsm
 
 ########### POT GENERATION AND TRASLATION THINKS ###########
 
