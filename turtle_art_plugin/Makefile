@@ -88,8 +88,7 @@ SUBMODULEVER = master
 
 checkoutsm:
 	(cd $(SUBMODULE) && git clean -xdf)
-	(cd $(SUBMODULE) && git fetch)
-	(cd $(SUBMODULE) && git checkout $(SUBMODULEVER))
+	(cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; checkout $(SUBMODULEVER) ; fi )
 
 
 ############# checkout a especific version of submodules ##############
