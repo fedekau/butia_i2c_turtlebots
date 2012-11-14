@@ -38,8 +38,8 @@ help:
 	@echo "    first: Execute this command to init the submodules only the  "
 	@echo "          first time after clone                                 "
 	@echo "    xo : Generate the XO distribuible package                    "
-	@echo "    fakeinstall: compile all necessary for TurtleArtButia        "
-	@echo "                 and make a fake install using a symlink         "
+	@echo "    dev: compile all necessary for TurtleArtButia                "
+	@echo "                 and make a developed sugar install              "
 	@echo "                 this allow to work and easy change the code     "
 	@echo "    install: install activity                                    "
 	@echo "    uninstall: unistall activity                                 "
@@ -182,19 +182,21 @@ mktmpfolder:
 	cp -rL mainline tmp
 	rm -rf tmp/.git
 	rm -f tmp/.gitignore
-	cp turtle-extras/taextras.py tmp
-	# lets patch the activity.info and add some icons (TurtleArt => TurtleBots)
+	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity tmp/
 
-apply_localization: mktmpfolder turtle-extras/merge.py
+apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
 	(cd turtle-extras && ./merge.py turtlebots)
+	cp turtle-extras/taextras.py tmp
+	# fix localization (compile .po)
+	(cd tmp && python setup.py build)
 	#msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	#msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	#msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
 	#msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
 
-apply_hard_plugins: apply_localization butiaXO
+apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
 	cp -rLf butia tmp/plugins/
 	cp -rLf sumtia tmp/plugins/
 	cp -rLf followme/ tmp/plugins/
@@ -252,16 +254,17 @@ wedo_plugin: apply_hard_plugins
 
 plugins: butia_plugin followme_plugin nxt_plugin wedo_plugin
 
-install: xo
+
+# TODO!!!!! Aply debian policies!!!
+install_activity: xo
 	sugar-install-bundle *.xo
 	$(MAKE) clean_xo
 
+install: apply_hard_plugins
 
-fakeinstall: apply_sym_plugins
+dev: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
 	mkdir -p ~/Activities
-	# fix localization and index
-	(cd tmp && python setup.py build)
 	(cd tmp && python setup.py dev)
 
 
@@ -298,4 +301,4 @@ uninstall:
 .SUFFIXES: .c .o .py .pyc .po .pot
 
 # targets that not represent generated files
-.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins first walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help butia_plugin followme_plugin nxt_plugin wedo_plugin plugins
+.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins first walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help butia_plugin followme_plugin nxt_plugin wedo_plugin plugins dev
