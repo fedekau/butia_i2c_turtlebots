@@ -18,14 +18,14 @@ end
 
 raw_val = send("LIST")
 socket.sleep(1)
-_, pos = string.find(raw_val, "voltage:")
+_, pos = string.find(raw_val, "volt:")
 port = string.sub(raw_val,pos+1,pos+1)  -- get port number
 
 if pos then
     while true do
-	    print (send("CALL voltage:"..port.." getValue"))
+	    print (send("CALL volt:"..port.." getValue"))
 	    socket.sleep(0.03)
     end
 else
-     print("err::No voltage connected.")
+     print("err::No volt connected.")
 end
