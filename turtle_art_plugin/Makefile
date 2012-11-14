@@ -9,8 +9,12 @@
 
 TURTLEARTVERSION=v166
 
-CWD=$(cwd)
+CWD = $(cwd)
+SHELL = /bin/sh
+# check work in "sh" instad of bash, make it more portable!!!
 
+.SUFFIXES:
+.SUFFIXES: .c .o .py .pyc .po .pot
 
 all: help
 
