@@ -1,0 +1,14 @@
+this file explain how to install tortubots
+
+this will be usefull
+    make
+    make install
+
+you can change the "prefix" (by default "/usr/local")
+or any other vartiables of instalation
+for example to intall in /home/myhome type this
+    make
+    make prefix=/home/myhome install
+
+//TODO beter instalation help!
+

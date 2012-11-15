@@ -34,6 +34,38 @@ INSTALL = install
 INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = ${INSTALL} -m 644
 
+prefix = /usr/local
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+sbindir = $(exec_prefix)/sbin
+libexecdir = $(exec_prefix)/libexec
+datarootdir = $(prefix)/share
+datadir = $(datarootdir)
+sysconfdir = $(prefix)/etc
+sharedstatedir = $(prefix)/com
+localstatedir = $(prefix)/var
+includedir = $(prefix)/include
+oldincludedir = $(prefix)/include
+docdir = $(datarootdir)/doc/tortubots
+infodir = $(datarootdir)/info
+libdir = $(exec_prefix)/lib
+localedir = $(datarootdir)/locale
+mandir = $(datarootdir)/man
+man1dir = $(mandir)/man1
+man2dir = $(mandir)/man2 # etc... etc...
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 all: help
