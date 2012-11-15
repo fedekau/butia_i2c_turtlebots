@@ -19,7 +19,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
 
 TURTLEBLOCKS_VERSION = 3d80bec755ef4c807197592949602d24f774cd8d
 EXTRAS_VERSION = bf7c5b26f24205548e28b95572305d7df43e4f62
@@ -34,45 +34,52 @@ INSTALL = install
 INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = ${INSTALL} -m 644
 
+prefix = /usr/local
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+sbindir = $(exec_prefix)/sbin
+libexecdir = $(exec_prefix)/libexec
+datarootdir = $(prefix)/share
+datadir = $(datarootdir)
+sysconfdir = $(prefix)/etc
+sharedstatedir = $(prefix)/com
+localstatedir = $(prefix)/var
+includedir = $(prefix)/include
+oldincludedir = $(prefix)/include
+docdir = $(datarootdir)/doc/tortubots
+infodir = $(datarootdir)/info
+libdir = $(exec_prefix)/lib
+localedir = $(datarootdir)/locale
+mandir = $(datarootdir)/man
+man1dir = $(mandir)/man1
+man2dir = $(mandir)/man2 # etc... etc...
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 all: help
 
 
 help:
-	@echo 
-	@echo " This is a Makefile for compile/construct TurtleArtButia.        "
-	@echo " The follow objetives are defined:                               "
-	@echo "    first: Execute this command to init the submodules only the  "
-	@echo "          first time after clone                                 "
-	@echo "    xo : Generate the XO distribuible package                    "
-	@echo "    dev: compile all necessary for TurtleArtButia                "
-	@echo "                 and make a developed sugar install              "
-	@echo "                 this allow to work and easy change the code     "
-	@echo "    install: install activity                                    "
-	@echo "    uninstall: unistall activity                                 "
-	@echo "    clean: clean all compiled/generated files                    "
-	@echo "    genpot: generate pot of plugings                             "
-	@echo "    genpot_notraslated: generate pot the plugings that are       "
-	@echo "                        not already traslated in taextras.py     "
-	@echo "    updatepo: using notraslated.pot update the es.po of plugin's "
-	@echo "              the other traslations all already set in mainline  "
-	@echo "              of Walter, so use that traslations.                "
-	@echo "                                                                 "
-	@echo " The follow parameters are optional:                             "
-	@echo "    TURTLEBLOCKS_VERSION=[version or commit]                     "
-	@echo "                         (default $(TURTLEBLOCKS_VERSION))       "
-	@echo "                                                                 "
-	@echo "           For more info contact \"butia@fing.edu.uy\"           "
-	@echo "   wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki   "
-	@echo "                                                                 "    
-
-
+	if [ -e /usr/bin/less ] ; then less INSTALL ; fi
+	# if the user not have less command...
+	cat INSTALL
 
 ############# init of submodules #################
 
 first:
-	(cd .. && git submodule update --init --merge)
+	(cd .. && git submodule update --init)
 
 ############# initialization of "especific" submodules ###############
 
