@@ -19,7 +19,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
 
 TURTLEBLOCKS_VERSION = 3d80bec755ef4c807197592949602d24f774cd8d
 EXTRAS_VERSION = b97744c7153c67206e983b18d24962c6bc4929c1
@@ -79,7 +79,7 @@ help:
 ############# init of submodules #################
 
 first:
-	(cd .. && git submodule update --init --merge)
+	(cd .. && git submodule update --init)
 
 ############# initialization of "especific" submodules ###############
 
