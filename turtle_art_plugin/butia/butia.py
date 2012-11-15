@@ -593,7 +593,7 @@ class Butia(Plugin):
         else:
             try:
                 debug_output('creating Bobot')
-                self.bobot = subprocess.Popen(['./lua', 'bobot-server.lua'], cwd='./plugins/butia/support')
+                self.bobot = subprocess.Popen(['./lua', 'bobot-server.lua', 'usb'], cwd='./plugins/butia/support')
             except:
                 debug_output('ERROR creating Bobot')
 
