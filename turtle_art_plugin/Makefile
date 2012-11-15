@@ -72,34 +72,9 @@ all: help
 
 
 help:
-	@echo 
-	@echo " This is a Makefile for compile/construct TurtleArtButia.        "
-	@echo " The follow objetives are defined:                               "
-	@echo "    first: Execute this command to init the submodules only the  "
-	@echo "          first time after clone                                 "
-	@echo "    xo : Generate the XO distribuible package                    "
-	@echo "    dev: compile all necessary for TurtleArtButia                "
-	@echo "                 and make a developed sugar install              "
-	@echo "                 this allow to work and easy change the code     "
-	@echo "    install: install activity                                    "
-	@echo "    uninstall: unistall activity                                 "
-	@echo "    clean: clean all compiled/generated files                    "
-	@echo "    genpot: generate pot of plugings                             "
-	@echo "    genpot_notraslated: generate pot the plugings that are       "
-	@echo "                        not already traslated in taextras.py     "
-	@echo "    updatepo: using notraslated.pot update the es.po of plugin's "
-	@echo "              the other traslations all already set in mainline  "
-	@echo "              of Walter, so use that traslations.                "
-	@echo "                                                                 "
-	@echo " The follow parameters are optional:                             "
-	@echo "    TURTLEBLOCKS_VERSION=[version or commit]                     "
-	@echo "                         (default $(TURTLEBLOCKS_VERSION))       "
-	@echo "                                                                 "
-	@echo "           For more info contact \"butia@fing.edu.uy\"           "
-	@echo "   wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki   "
-	@echo "                                                                 "    
-
-
+	if [ -e /usr/bin/less ] ; then less INSTALL ; fi
+	# if the user not have less command...
+	cat INSTALL
 
 ############# init of submodules #################
 
