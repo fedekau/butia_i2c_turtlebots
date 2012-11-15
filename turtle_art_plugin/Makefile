@@ -211,13 +211,17 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
 	cp -rLf nxt_plugin/ tmp/plugins/
 	cp -rLf wedo_plugin/ tmp/plugins/
 
-apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
+pattern_detection_compile:
+	make -C pattern_detection/library
+
+apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia tmp/plugins/butia
 	ln -s `pwd`/sumtia tmp/plugins/sumtia
 	ln -s `pwd`/followme tmp/plugins/followme
 	ln -s `pwd`/nxt_plugin tmp/plugins/nxt_plugin
 	ln -s `pwd`/wedo_plugin tmp/plugins/wedo_plugin
+	ln -s `pwd`/pattern_detection tmp/plugins/pattern_detection
 
 xo: apply_hard_plugins
 	# remove .git from NXT plugin
@@ -309,4 +313,4 @@ uninstall:
 .SUFFIXES: .c .o .py .pyc .po .pot
 
 # targets that not represent generated files
-.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins first walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help butia_plugin followme_plugin nxt_plugin wedo_plugin plugins dev
+.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins first walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help butia_plugin followme_plugin nxt_plugin wedo_plugin plugins dev pattern_detection_compile
