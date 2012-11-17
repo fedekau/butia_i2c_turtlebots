@@ -21,6 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#versions to checkout before build
 TURTLEBLOCKS_VERSION = 3d80bec755ef4c807197592949602d24f774cd8d
 EXTRAS_VERSION = bf7c5b26f24205548e28b95572305d7df43e4f62
 NXT_VERSION = a0c2ed0f2681a218a435dfa178cd69dafabb3e8c
@@ -33,6 +34,7 @@ SHELL = /bin/sh
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = ${INSTALL} -m 644
+LESS = less
 
 prefix = /usr/local
 exec_prefix = $(prefix)
@@ -72,7 +74,7 @@ all: help
 
 
 help:
-	if [ -e /usr/bin/less ] ; then less INSTALL ; fi
+	if [ -e /usr/bin/less ] ; then $(LESS) INSTALL ; fi
 	# if the user not have less command...
 	cat INSTALL
 
@@ -271,11 +273,15 @@ plugins: butia_plugin followme_plugin nxt_plugin wedo_plugin
 
 
 # TODO!!!!! Aply debian policies!!!
-install_activity: xo
+install-activity: xo
 	sugar-install-bundle *.xo
 	$(MAKE) clean_xo
 
 install: apply_hard_plugins
+
+install-strip: install
+	#strip $(DESTDIR) file...
+
 
 dev: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
@@ -296,16 +302,16 @@ clean:
 	# this remove only if it's a symlink ; don't remove if installed
 	rm -f ~/Activities/TurtleBots.activity
 
-clean_tmp:
+clean-tmp:
 	rm -rf tmp
 
 ####clean_pot:
 ####	rm -f $(POT_FILES) $(POT_NT_FILES)
 
-clean_xo:
+clean-xo:
 	rm -f *.xo
 
-clean_plugins:
+clean-plugins:
 	rm -f *.tar.gz
 
 uninstall:
@@ -316,4 +322,10 @@ uninstall:
 .SUFFIXES: .c .o .py .pyc .po .pot
 
 # targets that not represent generated files
-.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins first walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help butia_plugin followme_plugin nxt_plugin wedo_plugin plugins dev
+.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins \
+ first walterGIT extrasGIT wedoGIT nxtGIT \
+ butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins \
+ genpot genpot_notraslated updatepo xo \
+ install install-strip uninstall help \
+ butia_plugin followme_plugin nxt_plugin wedo_plugin plugins \
+ dev
