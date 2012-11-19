@@ -242,19 +242,19 @@ xo: apply_hard_plugins
 
 ################ Plugins #############
 
-butia_plugin: apply_hard_plugins
+plugin-butia: apply_hard_plugins
 	cp stagin/plugins/butia/plugin.info tmp/plugins
 	(cd tmp/plugins && tar -czvf butia_plugin.tar.gz butia/* plugin.info)
 	rm tmp/plugins/plugin.info
 	mv tmp/plugins/butia_plugin.tar.gz .
 
-followme_plugin: apply_hard_plugins
+plugin-followme: apply_hard_plugins
 	cp stagin/plugins/followme/plugin.info tmp/plugins
 	(cd tmp/plugins && tar -czvf followme_plugin.tar.gz followme/* plugin.info)
 	rm tmp/plugins/plugin.info
 	mv tmp/plugins/followme_plugin.tar.gz .
 
-nxt_plugin: apply_hard_plugins
+plugin-nxt: apply_hard_plugins
 	# remove .git from NXT plugin
 	rm -rf tmp/plugins/nxt_plugin/.git
 	rm -f tmp/plugins/nxt_plugin/.gitignore
@@ -263,14 +263,17 @@ nxt_plugin: apply_hard_plugins
 	rm tmp/plugins/plugin.info
 	mv tmp/plugins/nxt_plugin.tar.gz .
 
-wedo_plugin: apply_hard_plugins
+plugin-wedo: apply_hard_plugins
 	cp stagin/plugins/wedo_plugin/plugin.info tmp/plugins
 	cd tmp/plugins && tar -czvf wedo_plugin.tar.gz wedo_plugin/* plugin.info
 	rm tmp/plugins/plugin.info
 	mv tmp/plugins/wedo_plugin.tar.gz .
 
-plugins: butia_plugin followme_plugin nxt_plugin wedo_plugin
+plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo
 
+plugin-all: plugins
+
+############### Install procedures #################
 
 # TODO!!!!! Aply debian policies!!!
 install-activity: xo
@@ -293,20 +296,13 @@ dev: apply_sym_plugins
 ####### CLEAN STUFF ######
 
 
-clean:
+clean: clean-tmp clean-plugins clean-xo
 	$(MAKE) -C ../butiaXO clean
-	#$(MAKE) clean_pot
-	$(MAKE) clean_tmp
-	$(MAKE) clean_plugins
-	$(MAKE) clean_xo
 	# this remove only if it's a symlink ; don't remove if installed
 	rm -f ~/Activities/TurtleBots.activity
 
 clean-tmp:
 	rm -rf tmp
-
-####clean_pot:
-####	rm -f $(POT_FILES) $(POT_NT_FILES)
 
 clean-xo:
 	rm -f *.xo
@@ -322,10 +318,11 @@ uninstall:
 .SUFFIXES: .c .o .py .pyc .po .pot
 
 # targets that not represent generated files
-.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins \
+.PHONY: all help \
+ clean clean-tmp clean-xo clean-plugins \
  first walterGIT extrasGIT wedoGIT nxtGIT \
  butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins \
  genpot genpot_notraslated updatepo xo \
- install install-strip uninstall help \
- butia_plugin followme_plugin nxt_plugin wedo_plugin plugins \
+ install install-strip uninstall \
+ plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
  dev
