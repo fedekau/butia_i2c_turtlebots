@@ -11,26 +11,53 @@ from jarabe.model import bundleregistry
 import sys,os
 import shutil 
 
-import xml.etree.ElementTree as ET
-
-plugin_name = 'pattern'
-plugin_folder = 'pattern_detection'
-
-turtlepath = bundleregistry.get_registry().get_bundle('org.laptop.TurtleArtButia').get_path() 
-sys.path.insert(0, turtlepath + '/plugins/'+plugin_folder+'/library')
+import pygtk
+from warnings import catch_warnings
+pygtk.require("2.0")
+import gtk
+import gobject
 
 
-import multiPatternDetectionAPI as detectionAPI     
+from pysvg.structure import *
+from pysvg.core import *
+from pysvg.text import *
+from pysvg import parser
+from Config import *
+
+#plugin_name = 'pattern'
+#plugin_folder = 'pattern_detection'
+
+#turtlepath = bundleregistry.get_registry().get_bundle('org.laptop.TurtleArtButia').get_path()
+try:
+	conf = Config("./properties.conf")
+	sys.path.insert(0,conf.get_plugin_library_path())
+	if conf.is_plugin_installed(): 
+		import multiPatternDetectionAPI as detectionAPI  
+except Exception as inst:
+#	md = gtk.MessageDialog(None, 
+#	gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, 
+#	gtk.BUTTONS_CLOSE, _("Atención, problemas al abrir el archivo de configuración:")+ str(e))
+#	md.run()
+#	md.destroy()
+	print _("ActivityWindows - Error inesperado:")
+	print type(inst)     # la instancia de excepción
+	print inst.args      # argumentos guardados en .args
+	print inst           # __str__ permite imprimir args directamente
+	#gtk.main_quit()
+	raise inst
+
+   
 
 class ActivityWindows:
 	detection = None
+	conf = None
 	
 	def __init__(self, runaslib=True):
 		# Load Glade XML
 		self.xml = gtk.glade.XML("NewPatternsActivity.glade")
 		# get Library
 		self.detection = detectionAPI.detection()
-		
+		self.conf = Config("./properties.conf")
 		# Get Window
 		self.w = self.xml.get_widget('window1')
 		self.on_load_translate()
@@ -49,14 +76,19 @@ class ActivityWindows:
 	def on_load_translate(self):
 		#TAB 1
  		label = self.xml.get_widget('lblStep1')
-  		label.set_label(_("Obtener Patt"))		
+  		label.set_label(_("Marcas del Sistema"))		
 		
-		txtVew = self.xml.get_widget('txtSteps')
-		self.on_load_txt_steps(txtVew)
+		treeMarcas = self.xml.get_widget('treeMarcas')
+		self.add_lista_marcas(treeMarcas)
+
+		btn = self.xml.get_widget('btnBorrar')
+ 		btn.set_label(_("Eliminar marca"))
+ 		btn.connect('clicked', self.on_btn_delete)
+		btn.hide()
 		
 		#TAB 2
 		label = self.xml.get_widget('lblStep2')
- 		label.set_text(_("Agregar Marca"))
+ 		label.set_text(_("Agregar Marcas"))
  		
 		label = self.xml.get_widget('label5')
  		label.set_text(_("Identificador (sin espacios)"))
@@ -85,15 +117,148 @@ class ActivityWindows:
   		btn = self.xml.get_widget('btn_clean')
  		btn.set_label(_("Limpiar Icono"))
  		btn.connect('clicked', self.clean_icon)
+ 		btn.hide()
  		
  		txtInp = self.xml.get_widget('txtSize')		
  		txtInp.set_text('160')
+ 		
+ 		lnk = self.xml.get_widget('lnkWiki')		
+ 		lnk.set_label(_('¿Como obtener los archivos .patt?'))
+ 		lnk.set_uri(_("http://www.fing.edu.uy/inco/proyectos/butia/mediawiki/index.php/Butia_reconocimiento_marcas"))
+ 		
 		#TAB 3
-		label = self.xml.get_widget('lblStep3')
- 		label.set_text(_("Quitar Marca"))
- 		view = self.xml.get_widget('iconview1')
-	 	self._on_load_icons(view)
-	 	
+		#label = self.xml.get_widget('lblStep3')
+ 		#label.set_text(_("Quitar Marca"))
+ 		#view = self.xml.get_widget('iconview1')
+	 	#self._on_load_icons(view)
+	model_TV = None
+	col_TV = None
+	def add_lista_marcas(self,treeView): 
+		if self.model_TV is not None:
+			self.model_TV.clear()
+			
+		
+		
+		lista = None
+	  	lista = gtk.ListStore(str)
+	  	marcas = self.detection.arMultiGetIdsMarker().split(';')
+	  	for m in marcas:
+	  		 lista.append([m])
+	  		 
+	  	self.model_TV = lista	
+	  	treeView.set_model(self.model_TV)
+	  
+	  	#First column's cell
+	  	cell = gtk.CellRendererText()
+	  	if self.col_TV is None: 
+		  	self.col_TV = gtk.TreeViewColumn(_("Marcas actuales"))
+		  	self.col_TV.pack_start(cell, True)
+		  	self.col_TV.set_attributes(cell,text=0, foreground=2, background=3)
+		  	treeView.append_column(self.col_TV)
+		  	
+	  	treeselection = treeView.get_selection()
+	  	treeselection.set_mode(gtk.SELECTION_SINGLE)
+	  	treeselection.set_select_function(self.on_select_list,self.model_TV, True)
+	  	
+	  	#treeView.set_cursor(data[0])
+	
+	
+	
+	def on_select_list(self, selection, model, path, is_selected, user_data):			
+				iter = model.get_iter(path)
+				directorio =  model.get_value(iter, 0)
+
+				actBot = None
+				actBot = bundleregistry.get_registry().get_bundle('org.laptop.TurtleArtButia')
+				fname = actBot.get_path() + "/plugins/pattern_detection/images/"+directorio+"off.svg"
+				if  not os.path.exists(fname):
+					fname = "./images/noicon.svg"
+		 		image = self.xml.get_widget('imgIcono')
+		 		pixbuf = gtk.gdk.pixbuf_new_from_file(fname)
+				scaled_buf = pixbuf.scale_simple(140,140,gtk.gdk.INTERP_BILINEAR)
+				image.set_from_pixbuf(scaled_buf)
+				image.show()
+				btn = self.xml.get_widget('btnBorrar')
+				btn.show()
+				return True
+	
+	def on_btn_delete(self, *args):
+		treeMarcas = self.xml.get_widget('treeMarcas')
+		entry1, entry2 = treeMarcas.get_selection().get_selected()
+		entry = entry1.get_value(entry2, 0)
+		md = gtk.MessageDialog(None, 
+	 	gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, 
+	 	gtk.BUTTONS_YES_NO, _("Atención, Estas seguro que deseas eliminar la marca: ") + entry)
+	 	response = md.run()
+	 	md.destroy()
+	 	if response == gtk.RESPONSE_NO:
+	 		return	
+	 	#Elimino la marca de object_data
+	 	if not self.delete_from_object_data(entry):
+	 		return
+		
+		#Elimino el patt
+		datapath =  self.conf.get_plugin_data_path()  #os.path.abspath(turtlepath + '/plugins/'+plugin_folder+'/library/multiPatternDetection/Data')
+		file = entry.lower() + ".patt" 
+		os.remove(datapath+"/"+file)
+		
+		#Elimino los svg si tiene
+		imageFolder = self.conf.get_plugin_image_path() #os.path.abspath(turtlepath + '/plugins/'+plugin_folder+'/images')
+		if os.path.exists(imageFolder + "/" + entry + "off.svg"):
+	 		os.remove(imageFolder + "/" + entry + "off.svg")
+	 		os.remove(imageFolder + "/" + entry + "small.svg")
+	 		
+ 		self.tree_refresh()
+	
+	def delete_from_object_data(self,idMarca):
+		lines = []
+	 	datapath =  self.conf.get_plugin_data_path() 
+	 	f= open(datapath + "/object_data", "r")
+	 	lines = f.readlines()
+	 	f.close()
+	 	iMarca=0
+	 	#idMarca =entry	 	 
+	 	try:
+		    iMarca= lines.index(idMarca+"\n")
+		    print iMarca
+		    try:
+		    	try:
+		        	i= lines.index("#the number of patterns to be recognized don't modify this line/ Cantidad de marcas a ser detectadas no modificar esta linea\n")
+		        except:
+				   md = gtk.MessageDialog(None, 
+				   gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, 
+				   gtk.BUTTONS_CLOSE, _("Atención, problemas al abrir el archivo de marcas es posible que haya sido modificado y no puede ser leido"))
+				   md.run()
+				   md.destroy()
+				   return False
+		        #modifico la cantidad de marcas 
+		        cant = int(lines[i+1]) - 1 
+		        lines[i+1]=str(cant)+"\n"
+		        # quito desde la linea del comentario
+		        # hasta el salto de linea de separacion con la siguiente marca
+		        del lines[iMarca-2:iMarca+4]
+		
+		        #escribo el archivo
+		        f = open(datapath + "/object_data", "w")
+		        f.writelines(lines)
+		        f.close()
+		    except:
+		       md = gtk.MessageDialog(None, 
+			   gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, 
+			   gtk.BUTTONS_CLOSE, _("Atención, problemas al abrir el archivo de marcas"))
+		       md.run()
+		       md.destroy()
+		       return False
+		except:
+		   md = gtk.MessageDialog(None, 
+		   gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, 
+		   gtk.BUTTONS_CLOSE, _("Atención, problemas al abrir el archivo de marcas"))
+		   md.run()
+		   md.destroy()
+		   return False
+		  
+		return True
+	  	
 	def on_btn_accept(self, *args):
 		
 		idMark =  None
@@ -137,10 +302,7 @@ class ActivityWindows:
 		#Pongo en mayusculas la primer letra
 		idMark = idMark.capitalize()
 		
-		#chequeco que si existe el id, se quiera sobreescribir
-		
-		
-		
+		#chequeco que si existe el id, se quiera sobreescribir		
 		marcas = self.detection.arMultiGetIdsMarker()
 		
 		if idMark in marcas:
@@ -150,11 +312,14 @@ class ActivityWindows:
 		 	response = md.run()
 		 	md.destroy()
 		 	if response == gtk.RESPONSE_NO:
-		 		return	
+		 		return
+		 	else:#tengo que eliminar la marca del object_data
+		 		self.delete_from_object_data(idMark)
+		 			
 		# modifico el object_data
 		lines = []
 		try:
-			datapath = os.path.abspath(turtlepath + '/plugins/'+plugin_folder+'/library/multiPatternDetection/Data')
+			datapath = datapath =  self.conf.get_plugin_data_path() #os.path.abspath(turtlepath + '/plugins/'+plugin_folder+'/library/multiPatternDetection/Data')
 			f= open(datapath + "/object_data", "r") 
 			lines = f.readlines()
 			f.close()
@@ -168,7 +333,7 @@ class ActivityWindows:
 		i=0
 		try:
 			
-			i= lines.index("#the number of patterns to be recognized / Cantidad de marcas a ser detectadas (leidos de este mismo archivo en forma secuencial)\n") 
+			i= lines.index("#the number of patterns to be recognized don't modify this line/ Cantidad de marcas a ser detectadas no modificar esta linea\n")  
 		   	cant = int(lines[i+1]) + 1 
 			
 		   	lines[i+1]=str(cant)+"\n"
@@ -201,11 +366,6 @@ class ActivityWindows:
 		txtIco = None
 		txtIco = self.xml.get_widget('txtIcon').get_text()		  
 		if not (txtIco == ''):
-			md = gtk.MessageDialog(None, 
-								gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, 
-			gtk.BUTTONS_CLOSE, _("entro") + txtIco )
-			md.run()
-		   	md.destroy()
 			self.copy_Icons(txtIco, idMark)
 		md = gtk.MessageDialog(None, 
 		gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, 
@@ -216,12 +376,15 @@ class ActivityWindows:
 
 	def clean_all (self):
 		self.clean_icon("")
-		self.xml.get_widget('txtSize').set_text('')
+		self.xml.get_widget('txtSize').set_text('160')
  		self.xml.get_widget('txtID').set_text('')
  		self.xml.get_widget('txtPatt').set_text('') 		
- 		
- 		
- 			
+ 		self.tree_refresh()
+ 	
+ 	def tree_refresh(self):	
+ 		treeMarcas = self.xml.get_widget('treeMarcas')
+		self.add_lista_marcas(treeMarcas)
+		 			
 	def on_btn_accept_test(self, *args):
 		idMark = "PP"
 		txtIco = None
@@ -229,32 +392,25 @@ class ActivityWindows:
 		self.copy_Icons(txtIco, idMark)		
 	
 			  
- 	def copy_Icons(self,iconOrig,idMark):
- 		
- 		imageFolder =  os.path.abspath(turtlepath + '/plugins/'+plugin_folder+'/images')
- 		shutil.copy(iconOrig, imageFolder + "/" + idMark + "off.svg")
- 		#self.resize_icons(imageFolder + "/" + idMark + "off.svg",70) 			
- 		shutil.copy(iconOrig, imageFolder + "/" + idMark + "small.svg")
- 		#self.resize_icons(imageFolder + "/" + idMark + "small.svg",40)
+ 	def copy_Icons(self,iconOrig,idMark): 		
+ 		imageFolder =  self.conf.get_plugin_image_path() #os.path.abspath(turtlepath + '/plugins/'+plugin_folder+'/images')
+ 		self.make_icons(iconOrig, 70,  imageFolder + "/" + idMark + "off.svg")
+ 		self.make_icons(iconOrig, 40,  imageFolder + "/" + idMark + "small.svg")
  		 	
- 	def resize_icons(self,iconToResize,size):
- 		f =open(iconToResize,'rb')
- 		tree = ET.parse(f)
- 		f.close()
- 		root = tree.getroot()
- 		root.set('width','70')
- 		root.set('height','70')
- 		print ET.tostring(root)
- 		#tree.write(iconToResize, 'UTF-8')
+ 	def make_icons(self,iconSRC,size,iconDest):
+  		original = parser.parse(iconSRC)
+		#print  original.get_height()
+		#print  original.get_width()
+		fw = size / float(original.get_width())
+		fh = size / float(original.get_height())		
+		original.set_width(size)
+		original.set_height(size)
+		original.set_transform("translate(0, 0) scale(" + str(fw)+"," + str(fh)+")")
+		original.save(iconDest)
+		#dest=svg(width=str(size)+"px", height=str(size)+"px") 
+		#dest.addElement(original)
+		#dest.save(iconDest)
  			
-# 		fo = file(iconToResize, 'w')
-# 		surface = cairo.SVGSurface (fo, size, size)
-# 		ctx = cairo.Context (surface)
-# 		ctx.scale (size/1.0, size/1.0)
-# 		svg = rsvg.Handle(file=iconToResize)
-# 		svg.render_cairo(ctx)
-# 		surface.finish() 		
-# 			
 	def _on_load_icons(self,view):
 		model = gtk.ListStore(str, gtk.gdk.Pixbuf)
 		view.set_model(model)
@@ -262,12 +418,13 @@ class ActivityWindows:
 		view.set_pixbuf_column(1)
 		view.set_columns(4)
 		#obtengo la direccion del tortubots
-		actBot = None
-		actBot = bundleregistry.get_registry().get_bundle('org.laptop.TurtleArtButia')
+		#actBot = None
+		#actBot = bundleregistry.get_registry().get_bundle('org.laptop.TurtleArtButia')
 #        if actBot is not None:
-		files = os.listdir(actBot.get_path() + "/plugins/pattern_detection/images")
+		imgFolder = self.conf.get_plugin_image_path()
+		files = os.listdir(imgFolder)
 		for image in files:
-			pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(actBot.get_path()+"/plugins/pattern_detection/images/%s" %image, 72, 72) 
+			pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(imgFolder+"/%s" %image, 72, 72) 
 			model.append([image, pixbuf])
 			model.append([image, pixbuf])
 		view.set_selection_mode(gtk.SELECTION_SINGLE)
@@ -286,18 +443,7 @@ class ActivityWindows:
 		self.current_frame = gtk.Frame('General')  
 		self.content_box.pack_end(self.current_frame, fill=True, expand=True)
 		self.show_all()
-		
- 		
- 	def on_load_txt_steps(self,txtVew):
- 		buffer = "    1-" + _("Luego de generados los archivos para imprimir, se deberán generar los archivos de patrones.") +"\n"
- 		buffer+= "    2-" +_("Ir a la siguiente dirección web: ")+"\n"
- 		buffer+= "      " +_("http://www.fing.edu.uy/inco/proyectos/butia/mediawiki/index.php/Generador_de_patrones_para_plugin_Reconocimento_de_marcas ")+"\n"
- 		buffer+= "    3-" +_("Seleccionar el origen de donde se generará el patrón. Seleccionar Camera Mode. ")+"\n"
- 		buffer+= "    4-" +_("Seleccionar tamaño de patrón, por ejemplo, si el patrón (incluyendo el recuadro negro) mide 16x16 cm, seleccionar 16x16")+"\n"
- 		buffer+= "    5-" +_("Seleccionar porcentaje del recuadro que representa el patrón. Por ejemplo, si todo el recuadro mide 16cm y el borde negro mide 2cm, el patrón mide 12x12cm, por lo tanto 75%.")+"\n"
- 		buffer+= "    6-" +_("Una vez que se vea un recuadro rojo alrededor de la marca con el rectángulo negro, presionar el botón Get Pattern. Aparecerá un recuadro con los patrones reconocidos, navegar con el botón next al deseado y presionar Save current. Darle un nombre al archivo en minúsculas, con la extensión .patt, por ejemplo mimarca.patt")+"\n"
- 		buffer+= "    " +_("Ahora puedes pasar a la siguiente pestaña")+"\n"
- 		txtVew.get_buffer().set_text(buffer)
+	
  	
  	def clean_icon(self, *args):
  		txtFileName = self.xml.get_widget('txtIcon') 
