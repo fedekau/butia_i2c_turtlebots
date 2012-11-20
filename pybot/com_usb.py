@@ -43,14 +43,22 @@ class usb_device():
 
     def read(self, endpoint, length, timeout = 0):
         if self.handle:
-            return self.handle.bulkRead(endpoint, length, timeout)
+            try:
+                return self.handle.bulkRead(endpoint, length, timeout)
+            except:
+                print 'Exception in read usb'
+                return -1
         else:
             print 'Empty handler'
             return -1
  
     def write(self, endpoint, data, timeout = 0):
         if self.handle:
-            return self.handle.bulkWrite(endpoint, data, timeout)
+            try:
+                return self.handle.bulkWrite(endpoint, data, timeout)
+            except:
+                print 'Exception in write usb'
+                return -1
         else:
             print 'Empty handler'
             return -1
