@@ -11,16 +11,17 @@ import com_usb
 from baseboard import Baseboard
 from device import Device
 
+PATH_DRIVERS = 'drivers'
 
 
 class USB4Butia():
 
     def __init__(self):
         self.listi = []
-        self.default = ['admin', 'pnp', 'motors']
-        self.hotplug = ['button', 'distanc', 'grey', 'light', 'volt', 'res']
-        self.openables = ['gpio', 'lback', 'butia', 'hackp']
-        self.drivers_loaded = []
+        self.default = ['admin', 'pnp']
+        self.hotplug = ['button', 'distanc', 'grey', 'light', 'volt', 'res', 'port']
+        self.openables = ['motors', 'gpio', 'lback', 'butia', 'hackp']
+        self.drivers_loaded = {}
         self.inited_n = {}
         self.inited_d = {}
 
@@ -28,41 +29,33 @@ class USB4Butia():
         self.bb = Baseboard(device)
         self.handle = self.bb.open_device()
 
-        self.get_modules_and_handlers()
+        self.get_modules_list()
 
     def get_modules_list(self):
         modules = []
         if self.handle:
             if self.listi == []:
                 self.get_listi()
-            s = self.bb.get_handler_size()
-            for m in self.listi:
-                if not(m in self.hotplug) and not(m == 'port'):
-                    modules.append(m)
 
+            s = self.bb.get_handler_size()
+            self.inited_n = {}
+            self.inited_d = {}
             for m in range(1, s + 1):
                 module_type = self.bb.get_handler_type(m)
                 module_name = self.listi[module_type]
                 modules.append(module_name + ':' +  str(m))
-        return modules
 
-    def get_modules_and_handlers(self):
-        if self.handle:
-            self.inited_n = {}
-            if self.listi == []:
-                self.get_listi()
-            s = self.bb.get_handler_size()
+                if not(module_name == 'port'):
+                    self.inited_n[m] = module_name
+                    self.inited_d[m] = Device(self.bb, module_name, m)
+
+
+            values = self.inited_n.values()
             for m in self.listi:
-                if not(m in self.hotplug) and not(m == 'port') and not(m == 'admin'):
-                    print m + ':255'
+                if not(m in values) and not(m in self.hotplug):
+                    modules.append(m)
 
-            for m in range(0, s + 1):
-                module_type = self.bb.get_handler_type(m)
-                module_name = self.listi[module_type]
-                print module_name + ':' +  str(m)
-                self.inited_n[m] = module_name
-                self.inited_d[m] = Device(self.bb, module_name, m)
-            
+        return modules
 
     def get_listi(self):
         self.listi = []
@@ -75,7 +68,7 @@ class USB4Butia():
 
     def get_driver_candidates(self):
         candidates = []
-        tmp = os.listdir('drivers')
+        tmp = os.listdir(PATH_DRIVERS)
         tmp.sort()
         for d in tmp:
             if d.endswith('.py') and not (d == 'function.py'):
@@ -88,7 +81,7 @@ class USB4Butia():
         can = self.get_driver_candidates()
         if driver in can:
             print 'Loading driver %s...' % driver
-            r_path = os.path.join('drivers', driver + '.py')
+            r_path = os.path.join(PATH_DRIVERS, driver + '.py')
             abs_path = os.path.abspath(r_path)
             f = None
             try:
@@ -96,7 +89,7 @@ class USB4Butia():
             except:
                 print 'Cannot load %s' % driver
             if f and hasattr(f, 'FUNCTIONS'):
-                self.drivers_loaded.append(driver)
+                self.drivers_loaded[driver] = f.FUNCTIONS
                 for d in self.inited_d.values():
                     if d.name == driver:
                         d.add_functions(f.FUNCTIONS)
@@ -104,40 +97,50 @@ class USB4Butia():
                 print 'Driver not have FUNCTIONS'
         else:
             print 'driver not found' 
-                    
+
+
+    def call_aux(self, modulename, number, function):
+        if self.inited_n.has_key(number) and (self.inited_d[number].name == modulename):
+            device = self.inited_d[number]
+            if not(device.has_function(function)):
+                f = self.drivers_loaded[modulename]
+                device.add_functions(f)
+            if device.has_function(function):
+                return device.call_function(function)
+            else:
+                print 'Missing function %s', function
+        else:
+            return -1
 
     def callModule(self, modulename, number, function):
+
         if self.handle:
-            if modulename in self.inited_n.values():
-                if number == None:
-                    number = self.get_handler_from_module(modulename)
-                if not(modulename in self.drivers_loaded):
-                    self.get_driver(modulename)
-                if self.inited_n.has_key(number):
-                    device = self.inited_d[number]
-                    if device.has_function(function):
-                        return device.call_function(function)
-                    else:
-                        print 'Missing function %s' % function
-                else:
-                    print 'missing handler'
-            else:
-                dev = Device(self.bb, modulename, None)
-                h = dev.module_open()
-                dev.handler = h
-                self.inited_n[h] = modulename
-                self.inited_d[h] = dev
+
+            if not(modulename in self.drivers_loaded):
                 self.get_driver(modulename)
-                if modulename in self.drivers_loaded:
-                    return dev.call_function(function)
-        return -1
-        
-    def get_handler_from_module(self, module):
-        count = 0
-        for i in self.inited_n.values():
-            if i == module:
-                return count
-            count = count + 1
+
+                return self.call_aux(modulename, number, function)
+
+            else:
+                modules = self.get_modules_list()
+                if modulename in self.openables:
+                    if not(modulename in modules):
+                        dev = Device(self.bb, modulename, None)
+                        h = dev.module_open()
+                        dev.handler = h
+                        self.inited_n[h] = modulename
+                        self.inited_d[h] = dev
+                        f = self.drivers_loaded[modulename]
+                        dev.add_functions(f)
+                    else:
+                        print 'openable ya abierto'
+
+                
+                return self.call_aux(modulename, number, function)
+        else:
+            return -1
+
+       
 
     def reconnect(self):
         pass
@@ -171,14 +174,11 @@ class USB4Butia():
         return self.callModule('butia', None, 'get_volt')
 
     def getVersion(self):
-        return self.callModule('butia', 'read_ver')
+        return self.callModule('butia', None, 'read_ver')
 
     def getButton(self, number=''):
         return self.callModule('button', number, 'getValue')
     
-    def getButton(self, number=''):
-        return self.callModule('button', number, 'getValue')
-
     def getAmbientLight(self, number=''):
         return self.callModule('light', number, 'getValue')
 
