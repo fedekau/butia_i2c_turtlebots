@@ -35,17 +35,20 @@ class USB4Butia():
         self.get_modules_and_handlers()
 
     def get_modules_list(self):
+        modules = []
         if self.listi == []:
             self.get_listi()
         s = self.bb.get_handler_size()
         for m in self.listi:
             if not(m in self.hotplug) and not(m == 'port'):
-                print m
+                modules.append(m)
 
         for m in range(1, s + 1):
             module_type = self.bb.get_handler_type(m)
             module_name = self.listi[module_type]
-            print module_name + ':' +  str(m)
+            #print module_name + ':' +  str(m)
+            modules.append(module_name + ':' +  str(m))
+        return modules
 
     def get_modules_and_handlers(self):
         self.inited_n = {}
@@ -78,7 +81,7 @@ class USB4Butia():
         tmp.sort()
         for d in tmp:
             if d.endswith('.py') and not (d == 'function.py'):
-                name = d.strip('.py')
+                name = d.replace('.py', '')
                 candidates.append(name)
         return candidates
         
@@ -99,8 +102,6 @@ class USB4Butia():
                 for d in self.inited_d.values():
                     if d.name == driver:
                         d.add_functions(f.FUNCTIONS)
-                #device = self.inited_d[self.listi.index(driver)]
-                #device.functions = f.FUNCTIONS
             else:
                 print 'Driver not have FUNCTIONS'
         else:
@@ -121,9 +122,60 @@ class USB4Butia():
                 print 'missing handler'
         
 
+    def reconnect(self):
+        pass
+
+    def refresh(self):
+        pass
+
+    def close(self):
+        pass
+
+    def closeService(self):
+        pass
+
+    def isPresent(self, module_name):
+        module_list = self.get_modules_list()
+        return (module_name in module_list)
+
+    def loopBack(self, data):
+        pass
+
+    def set2MotorSpeed(self, leftSense = '0', leftSpeed = '0', rightSense = '0', rightSpeed = '0'):
+        msg = leftSense + ' ' + leftSpeed + ' ' + rightSense + ' ' + rightSpeed
+        return self.callModule('motors', 'setvel2mtr', msg)
+     
+    def setMotorSpeed(self, idMotor = '0', sense = '0', speed = '0'):
+        msg = idMotor + ' ' + sense + ' ' + speed
+        return self.callModule('motors', 'setvelmtr', msg)
+
+     
+    def getBatteryCharge(self):
+        return self.callModule('butia', None, 'get_volt')
+
+    def getVersion(self):
+        return self.callModule('butia', 'read_ver')
+
+    def getButton(self, number=''):
+        return self.callModule('button', number, 'getValue')
+    
     def getButton(self, number=''):
         return self.callModule('button', number, 'getValue')
 
+    def getAmbientLight(self, number=''):
+        return self.callModule('light', number, 'getValue')
+
+    def getDistance(self, number=''):
+        return self.callModule('distanc', number, 'getValue')
+
+    def getGrayScale(self, number=''):
+        return self.callModule('grey', number, 'getValue')
+
+    def getResistance(self, number=''):
+        return self.callModule('res', number, 'getValue')
+
+    def getVoltaje(self, number=''):
+        return self.callModule('volt', number, 'getValue')
 
 
 
