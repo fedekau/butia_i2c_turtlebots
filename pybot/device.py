@@ -22,15 +22,20 @@ TIMEOUT = 250
 
 class Device():
 
-    def __init__(self, baseboard, name, hotplug, functions = None):
+    def __init__(self, baseboard, name, handler, functions = None):
         self.baseboard = baseboard
         self.name = name
-        self.hotplug = hotplug
+        self.handler = handler
         self.functions = functions
 
-    def module_send(self, handler, data):
+    def add_functions(self, func_list):
+        self.functions = {}
+        for f in func_list:
+            self.functions[f['name']] = f
+
+    def module_send(self, data):
         
-        user_module_handler_send_command = handler * 8
+        user_module_handler_send_command = self.handler * 8
         send_packet_length = 0x04
 
         w = []
@@ -38,17 +43,13 @@ class Device():
         w.append(send_packet_length)
         w.append(NULL_BYTE)
         w.append(data)
-        print w
         size = self.baseboard.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
     def module_read(self, lenght):
-
         raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, READ_HEADER_SIZE  + lenght, TIMEOUT)
-        print raw
         l = []
-        for i in range(READ_HEADER_SIZE, READ_HEADER_SIZE + lenght):
+        for i in range(READ_HEADER_SIZE + 1, READ_HEADER_SIZE + lenght):
             l.append(raw[i])
-
         return l
 
     def module_open(self):
@@ -73,6 +74,18 @@ class Device():
         raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         return raw
+
+    def has_function(self, func):
+        return self.functions.has_key(func)
+
+    def call_function(self, func):
+        f = self.functions[func]
+        self.module_send(f['call'])
+        raw = self.module_read(f['read'])
+        if len(raw) == 1:
+            return raw[0]
+        elif len(raw) == 2:
+            return raw[0] + raw[1] * 256
 
     def to_ord(self, string):
         s = []
