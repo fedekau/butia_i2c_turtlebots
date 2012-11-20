@@ -76,7 +76,10 @@ class Device():
         return raw
 
     def has_function(self, func):
-        return self.functions.has_key(func)
+        if not(self.functions == None):
+            return self.functions.has_key(func)
+        else:
+            return False
 
     def call_function(self, func):
         f = self.functions[func]
