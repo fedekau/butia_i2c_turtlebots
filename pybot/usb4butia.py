@@ -24,6 +24,7 @@ GET_HANDLER_TYPE_COMMAND = 0x0B
 ADMIN_HANDLER_SEND_COMMAND = 0x00
 CLOSEALL_BASE_BOARD_COMMAND = 0x07
 SWITCH_TO_BOOT_BASE_BOARD_COMMAND = 0x09
+RESET_BASE_BOARD_COMMAND = 0xFF
 
 ADMIN_MODULE_IN_ENDPOINT = 0x01
 ADMIN_MODULE_OUT_ENDPOINT = 0x81
@@ -160,6 +161,28 @@ class USB4butia():
         size = self.write(w, TIMEOUT)
         # nothing to return
 
+    def reset(self):
+        w = []
+        w.append(ADMIN_HANDLER_SEND_COMMAND)
+        w.append(DEFAULT_PACKET_SIZE)
+        w.append(NULL_BYTE)
+        w.append(RESET_BASE_BOARD_COMMAND)
+
+        size = self.write(w, TIMEOUT)
+
+    def force_close_all(self):
+        w = []
+        w.append(ADMIN_HANDLER_SEND_COMMAND)
+        w.append(DEFAULT_PACKET_SIZE)
+        w.append(NULL_BYTE)
+        w.append(CLOSEALL_BASE_BOARD_COMMAND)
+
+        size = self.write(w, TIMEOUT)
+
+        raw = self.read(CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE, TIMEOUT)
+
+        return raw[4]
+
     def get_modules_list(self):
         if self.listi == []:
             self.get_listi()
@@ -198,12 +221,15 @@ class USB4butia():
 
         size = self.write(w, TIMEOUT)
 
-        #raw = self.read(GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+    def module_read(self, lenght):
 
-        #return raw[4]
+        raw = self.read(READ_HEADER_SIZE  + lenght, TIMEOUT)
 
-    def module_read():
-        pass
+        l = []
+        for i in range(READ_HEADER_SIZE, READ_HEADER_SIZE + lenght):
+            l.append(raw[i])
+
+        return l
 
     def module_open(self, module):
         w = []
@@ -216,17 +242,12 @@ class USB4butia():
         OPEN_RESPONSE_PACKET_SIZE = 5
         CLOSE_RESPONSE_PACKET_SIZE = 2
 
-        # usb4all expect null terminated names
         module_name = self.to_ord(module)
         
         open_packet_length = HEADER_PACKET_SIZE + len(module_name) 
-        print open_packet_length, len(module_name)
+
         module_in_endpoint  = 0x01
         module_out_endpoint = 0x01
-
-        """handler_packet = ADMIN_HANDLER_SEND_COMMAND .. open_packet_length .. NULL_BYTE
-        admin_packet = OPEN_COMMAND .. module_in_endpoint .. module_out_endpoint .. module_name	
-        open_packet  = handler_packet .. admin_packet"""
 
         w.append(ADMIN_HANDLER_SEND_COMMAND)
         w.append(open_packet_length)
@@ -235,9 +256,7 @@ class USB4butia():
         w.append(module_in_endpoint)
         w.append(module_out_endpoint)
         w = w + module_name
-        #w.append(module_name)
 
-        print w
         size = self.write(w, TIMEOUT)
 
         raw = self.read(OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
@@ -249,6 +268,7 @@ class USB4butia():
         for l in string:
             s.append(ord(l))
 
+        # usb4all expect null terminated names
         s.append(0)
         
         return s
