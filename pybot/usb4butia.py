@@ -39,23 +39,28 @@ MAX_RETRY = 5
 
 #################################################
 
+
+
 class USB4butia():
 
     def __init__(self, dev):
         self.device = dev
         self.handle = None
+        self.listi = []
+        self.hotplug = ['button', 'distanc', 'grey', 'light', 'volt', 'res']
         
     def open_device(self):
         if not self.device:
             print "Unable to find device!"
             return None
-        try:
-            self.handle = self.device.open()
-            self.handle.setConfiguration(USB4ALL_CONFIGURATION)
-            self.handle.claimInterface(USB4ALL_INTERFACE)
-        except usb.USBError, err:
-            print err
-            self.handle = None
+        if self.handle == None:
+            try:
+                self.handle = self.device.open()
+                self.handle.setConfiguration(USB4ALL_CONFIGURATION)
+                self.handle.claimInterface(USB4ALL_INTERFACE)
+            except usb.USBError, err:
+                print err
+                self.handle = None
         return self.handle
 
     def close_device(self):
@@ -100,6 +105,8 @@ class USB4butia():
         w.append(NULL_BYTE)
         w.append(GET_USER_MODULE_LINE_COMMAND)
         w.append(index)
+        if index < 0:
+            return 'Error'
         size = self.write(w, TIMEOUT)
 
         raw = self.read(GET_LINE_RESPONSE_PACKET_SIZE, TIMEOUT)
@@ -150,18 +157,64 @@ class USB4butia():
         # nothing to return
 
     def get_modules_list(self):
+        if self.listi == []:
+            self.get_listi()
         s = self.get_handler_size()
-        
-        for m in range(s):
-            print self.get_handler_type(m)
+        for m in self.listi:
+            if not(m in self.hotplug) and not(m == 'port'):
+                print m
+
+        for m in range(1, s):
+            module_type = self.get_handler_type(m)
+            module_name = self.listi[module_type]
+            print module_name + ':' +  str(m)
 
 
     def get_listi(self):
+        self.listi = []
         s = self.get_user_modules_size()
         for m in range(s):
             name = self.get_user_module_line(m)
             t = self.get_handler_type(m)
-            print name, t
+            self.listi.append(name)
+            print name  #, t
+
+
+    def module_open(self, module):
+        w = []
+
+        # usb4all expect null terminated names
+        """w.append(module + NULL_BYTE) 
+        open_packet_length = HEADER_PACKET_SIZE + string_len(module_name))
+
+        module_in_endpoint  = string_char(self.in_endpoint)
+        module_out_endpoint = string_char(self.out_endpoint)
+
+        handler_packet = ADMIN_HANDLER_SEND_COMMAND .. open_packet_length .. NULL_BYTE
+        admin_packet = OPEN_COMMAND .. module_in_endpoint .. module_out_endpoint .. module_name
+        open_packet  = handler_packet .. admin_packet
+
+        size = self.write(open_packet, TIMEOUT)"""
+
+    def module_send(self, handler, data):
+        
+        user_module_handler_send_command = handler * 8
+        send_packet_length = 0x04
+
+        w = []
+        w.append(user_module_handler_send_command)
+        w.append(send_packet_length)
+        w.append(NULL_BYTE)
+        w.append(data)
+
+        size = self.write(w, TIMEOUT)
+
+        #raw = self.read(GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+
+        #return raw[4]
+
+    def module_read():
+        pass
         
 
 def find():
@@ -170,20 +223,6 @@ def find():
         for dev in bus.devices:
             if dev.idVendor == USB4ALL_VENDOR and dev.idProduct == USB4ALL_PRODUCT:
                 return USB4butia(dev)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
