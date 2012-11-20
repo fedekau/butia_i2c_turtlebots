@@ -110,7 +110,7 @@ class Pattern_detection(Plugin):
    
    def start(self):
      ''' Initialize the camera if there is a camera block in use '''   
-     if (len(self._parent.block_list.get_similar_blocks('block',['isPresent'])) > 0):
+     if (len(self._parent.block_list.get_similar_blocks('block',['isPresent','getMarkerTrigDist'])) > 0):
          #hay elementos de la paleta en la pantalla
          if not(self.isInit) :
            self.detection.init()
