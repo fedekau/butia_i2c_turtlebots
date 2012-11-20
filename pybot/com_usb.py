@@ -13,6 +13,7 @@ USB4ALL_INTERFACE     = 0
 
 READ_HEADER_SIZE      = 3
 
+ERROR = -1
 
 class usb_device():
 
@@ -35,7 +36,8 @@ class usb_device():
 
     def close_device(self):
         try:
-            self.handle.releaseInterface()
+            if self.handle:
+                self.handle.releaseInterface()
         except Exception, err:
             print err
         self.handle = None
@@ -47,10 +49,10 @@ class usb_device():
                 return self.handle.bulkRead(endpoint, length, timeout)
             except:
                 print 'Exception in read usb'
-                return -1
+                return ERROR
         else:
             print 'Empty handler'
-            return -1
+            return ERROR
  
     def write(self, endpoint, data, timeout = 0):
         if self.handle:
@@ -58,20 +60,24 @@ class usb_device():
                 return self.handle.bulkWrite(endpoint, data, timeout)
             except:
                 print 'Exception in write usb'
-                return -1
+                return ERROR
         else:
             print 'Empty handler'
-            return -1
+            return ERROR
 
     def get_info(self):
         if self.handle:
-            names = self.handle.getString(1, 255)
-            copy = self.handle.getString(2, 255)
-            sn = self.handle.getString(3, 255)
-            return [names, copy, sn]
+            try:
+                names = self.handle.getString(1, 255)
+                copy = self.handle.getString(2, 255)
+                sn = self.handle.getString(3, 255)
+                return [names, copy, sn]
+            except:
+                print 'Exception in write usb'
+                return ERROR
         else:
             print 'Empty handler'
-            return -1
+            return ERROR
 
 def find():
     for bus in usb.busses():

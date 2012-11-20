@@ -13,14 +13,16 @@ from device import Device
 
 PATH_DRIVERS = 'plugins/butia/pybot/drivers'
 
+ERROR = -1
 
 class USB4Butia():
 
     def __init__(self):
-        self.listi = []
+        
         self.default = ['admin', 'pnp']
         self.hotplug = ['button', 'distanc', 'grey', 'light', 'volt', 'res', 'port']
         self.openables = ['motors', 'gpio', 'lback', 'butia', 'hackp']
+        self.listi = []
         self.openables_loaded = []
         self.drivers_loaded = {}
         self.inited_n = {}
@@ -29,7 +31,6 @@ class USB4Butia():
         device = com_usb.find()
         self.bb = Baseboard(device)
         self.handle = self.bb.open_device()
-
         self.get_modules_list()
 
     def get_modules_list(self):
@@ -138,6 +139,8 @@ class USB4Butia():
                         number = h
                     else:
                         number = self.search_handler(mods, modulename)
+                    if number == ERROR:
+                        return ERROR
                     return self.call_aux(modulename, number, function, params)
                 else:
                     print 'no open and no openable'
@@ -168,10 +171,21 @@ class USB4Butia():
         pass
 
     def refresh(self):
-        pass
+        info = self.bb.get_info()
+        if info == ERROR:
+            self.bb.close_device()
+            device = com_usb.find()
+            self.bb = Baseboard(device)
+            self.handle = self.bb.open_device()
+            self.listi = []
+            self.openables_loaded = []
+            self.drivers_loaded = {}
+            self.inited_n = {}
+            self.inited_d = {}
+            self.get_modules_list()
 
     def close(self):
-        pass
+        self.bb.close_device()
 
     def closeService(self):
         pass
