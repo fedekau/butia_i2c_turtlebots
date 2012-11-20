@@ -1,4 +1,7 @@
 
+import usb
+
+
 # Constantes
 
 USB4ALL_VENDOR        = 0x04d8
@@ -63,14 +66,52 @@ class USB4butia():
         self.device = None
 
     def read(self, length, timeout = 0):
-        return self.handle.bulkRead(ADMIN_MODULE_IN_ENDPOINT, length, timeout)
+        return self.handle.bulkRead(ADMIN_MODULE_OUT_ENDPOINT, length, timeout)
  
     def write(self, buffer, timeout = 0):
-        return self.handle.bulkWrite(ADMIN_MODULE_OUT_ENDPOINT, buffer, timeout)
+        return self.handle.bulkWrite(ADMIN_MODULE_IN_ENDPOINT, buffer, timeout)
+
+    def get_info(self):
+        names = self.handle.getString(1, 255)
+        copy = self.handle.getString(2, 255)
+        sn = self.handle.getString(3, 255)
+        return [names, copy, sn]
+
+    #returns number of modules present on baseboard
+    def get_user_modules_size(self):
+        w = []
+        w.append(ADMIN_HANDLER_SEND_COMMAND)
+        w.append(DEFAULT_PACKET_SIZE)
+        w.append(NULL_BYTE)
+        w.append(GET_USER_MODULES_SIZE_COMMAND)
+        size = self.write(w, TIMEOUT)
+
+        raw = self.read(GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
+        # send message equal read message ?
+        comand = raw[0:3]
+        print 'send', w
+        print 'reci', comand
+        print comand == w
 
 
+        modules = raw[4]
+        return modules
 
-def find_usb4butia():
+    def get_user_module_line(self, index):
+        w = []
+        w.append(ADMIN_HANDLER_SEND_COMMAND)
+        w.append(GET_USER_MODULE_LINE_PACKET_SIZE)
+        w.append(NULL_BYTE)
+        w.append(GET_USER_MODULE_LINE_COMMAND)
+        w.append(index)
+        size = self.write(w, TIMEOUT)
+
+        raw = self.read(GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
+
+        return raw
+
+
+def find():
     # Get busses
     for bus in usb.busses():
         for dev in bus.devices:
