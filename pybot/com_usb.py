@@ -20,17 +20,20 @@ class usb_device():
     def __init__(self, dev):
         self.device = dev
         self.handle = None
+        self.debug = True
 
     def open_device(self):
         if not self.device:
-            print "Unable to find device!"
+            if self.debug:
+                print "Unable to find device!"
             return None
         try:
             self.handle = self.device.open()
             self.handle.setConfiguration(USB4ALL_CONFIGURATION)
             self.handle.claimInterface(USB4ALL_INTERFACE)
         except usb.USBError, err:
-            print err
+            if self.debug:
+                print err
             self.handle = None
         return self.handle
 
@@ -39,7 +42,8 @@ class usb_device():
             if self.handle:
                 self.handle.releaseInterface()
         except Exception, err:
-            print err
+            if self.debug:
+                print err
         self.handle = None
         self.device = None
 
@@ -48,10 +52,12 @@ class usb_device():
             try:
                 return self.handle.bulkRead(endpoint, length, timeout)
             except:
-                print 'Exception in read usb'
+                if self.debug:
+                    print 'Exception in read usb'
                 return ERROR
         else:
-            print 'Empty handler'
+            if self.debug:
+                print 'Empty handler'
             return ERROR
  
     def write(self, endpoint, data, timeout = 0):
@@ -59,10 +65,12 @@ class usb_device():
             try:
                 return self.handle.bulkWrite(endpoint, data, timeout)
             except:
-                print 'Exception in write usb'
+                if self.debug:
+                    print 'Exception in write usb'
                 return ERROR
         else:
-            print 'Empty handler'
+            if self.debug:
+                print 'Empty handler'
             return ERROR
 
     def get_info(self):
@@ -73,10 +81,12 @@ class usb_device():
                 sn = self.handle.getString(3, 255)
                 return [names, copy, sn]
             except:
-                print 'Exception in write usb'
+                if self.debug:
+                    print 'Exception in write usb'
                 return ERROR
         else:
-            print 'Empty handler'
+            if self.debug:
+                print 'Empty handler'
             return ERROR
 
 def find():

@@ -46,13 +46,15 @@ class Baseboard(usb_device):
         size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
-            print 'Error get_user_modules_size write'
+            if self.debug:
+                print 'Error get_user_modules_size write'
             return ERROR
 
         raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
-            print 'Error get_user_modules_size read'
+            if self.debug:
+                print 'Error get_user_modules_size read'
             return ERROR
 
         return raw[4]
@@ -60,7 +62,8 @@ class Baseboard(usb_device):
     def get_user_module_line(self, index):
         
         if index < 0:
-            print 'Error index'
+            if self.debug:
+                print 'Error index get_user_module_line'
             return ERROR
 
         w = []
@@ -72,13 +75,15 @@ class Baseboard(usb_device):
         size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
-            print 'Error get_user_module_line write'
+            if self.debug:
+                print 'Error get_user_module_line write'
             return ERROR
 
         raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_LINE_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
-            print 'Error get_user_module_line read'
+            if self.debug:
+                print 'Error get_user_module_line read'
             return ERROR
 
         c = raw[4:len(raw)]
@@ -98,13 +103,15 @@ class Baseboard(usb_device):
         size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
-            print 'Error get_handler_size write'
+            if self.debug:
+                print 'Error get_handler_size write'
             return ERROR
 
         raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
-            print 'Error get_handler_size read'
+            if self.debug:
+                print 'Error get_handler_size read'
             return ERROR
 
         return raw[4]
@@ -119,13 +126,15 @@ class Baseboard(usb_device):
         size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
-            print 'Error get_handler_type write'
+            if self.debug:
+                print 'Error get_handler_type write'
             return ERROR
 
         raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
-            print 'Error get_handler_type read'
+            if self.debug:
+                print 'Error get_handler_type read'
             return ERROR
 
         return raw[4]
@@ -139,7 +148,8 @@ class Baseboard(usb_device):
         size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
-            print 'Error switch_to_bootloader write'
+            if self.debug:
+                print 'Error switch_to_bootloader write'
             return ERROR
 
     def reset(self):
@@ -151,7 +161,8 @@ class Baseboard(usb_device):
         size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
-            print 'Error reset write'
+            if self.debug:
+                print 'Error reset write'
             return ERROR
 
     def force_close_all(self):
@@ -163,13 +174,15 @@ class Baseboard(usb_device):
         size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
-            print 'Error force_close_all write'
+            if self.debug:
+                print 'Error force_close_all write'
             return ERROR
 
         raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
-            print 'Error force_close_all read'
+            if self.debug:
+                print 'Error force_close_all read'
             return ERROR
 
         return raw[4]
