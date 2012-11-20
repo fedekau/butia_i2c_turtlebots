@@ -110,9 +110,11 @@ class USB4Butia():
                     
 
     def callModule(self, modulename, number, function):
-        if not(modulename in self.drivers_loaded):
-            self.get_driver(modulename)
-        if modulename in self.drivers_loaded:
+        if modulename in self.inited_n.values():
+            if number == None:
+                number = self.get_handler_from_module(modulename)
+            if not(modulename in self.drivers_loaded):
+                self.get_driver(modulename)
             if self.inited_n.has_key(number):
                 device = self.inited_d[number]
                 if device.has_function(function):
@@ -121,7 +123,22 @@ class USB4Butia():
                     print 'Missing function %s' % function
             else:
                 print 'missing handler'
+        else:
+            dev = Device(self.bb, modulename, None)
+            h = dev.module_open()
+            dev.handler = h
+            self.inited_n[h] = modulename
+            self.inited_d[h] = dev
+            self.get_driver(modulename)
+            if modulename in self.drivers_loaded:
+                return dev.call_function(function)
         
+    def get_handler_from_module(self, module):
+        count = 0
+        for i in self.inited_n.values():
+            if i == module:
+                return count
+            count = count + 1
 
     def reconnect(self):
         pass
@@ -152,7 +169,6 @@ class USB4Butia():
 
      
     def getBatteryCharge(self):
-        return -1
         return self.callModule('butia', None, 'get_volt')
 
     def getVersion(self):
