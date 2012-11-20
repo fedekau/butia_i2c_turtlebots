@@ -11,6 +11,7 @@ HEADER_PACKET_SIZE = 0x06
 
 ADMIN_MODULE_IN_ENDPOINT = 0x01
 ADMIN_MODULE_OUT_ENDPOINT = 0x81
+ADMIN_HANDLER_SEND_COMMAND = 0x00
 
 OPEN_RESPONSE_PACKET_SIZE = 5
 CLOSE_RESPONSE_PACKET_SIZE = 2
@@ -73,7 +74,7 @@ class Device():
 
         raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
 
-        return raw
+        return raw[4]
 
     def has_function(self, func):
         if not(self.functions == None):
