@@ -58,13 +58,13 @@ class Pattern_detection(Plugin):
       
       primitive_dictionary['isPresent'] = self._isPresent
       palette.add_block('isPresent',
-                          style='number-style-1arg',
+                          style='boolean-1arg-block-style',
                           label=_('Viendo Señal'),
                           prim_name='isPresent',
                           help_string= _('Devuelve True si la señal esta en el campo visual de la camara'))
       self._parent.lc.def_prim('isPresent', 1,
                              lambda self, x: primitive_dictionary['isPresent'](x))
-      
+      '''
       primitive_dictionary['stopCam'] = self._stop_cam
       palette.add_block('stopCam',
                           style='basic-style',
@@ -73,7 +73,7 @@ class Pattern_detection(Plugin):
                           help_string= _('Apaga la camara'))
       self._parent.lc.def_prim('stopCam', 0, lambda self :
             primitive_dictionary['stopCam']())
-  
+      '''
       
       primitive_dictionary['getMarkerTrigDist'] = self._getMarkerTrigDist
       palette.add_block('getMarkerTrigDist',
