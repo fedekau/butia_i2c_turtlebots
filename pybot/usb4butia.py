@@ -5,6 +5,7 @@
 #
 
 import os
+import sys
 import imp
 import com_usb
 from baseboard import Baseboard
@@ -115,7 +116,7 @@ class USB4Butia():
             if self.inited_n.has_key(number):
                 device = self.inited_d[number]
                 if device.has_function(function):
-                    print device.call_function(function)
+                    return device.call_function(function)
                 else:
                     print 'Missing function %s' % function
             else:
@@ -151,6 +152,7 @@ class USB4Butia():
 
      
     def getBatteryCharge(self):
+        return -1
         return self.callModule('butia', None, 'get_volt')
 
     def getVersion(self):
