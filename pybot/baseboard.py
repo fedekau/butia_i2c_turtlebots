@@ -4,6 +4,7 @@
 # baseboard abstraction for USB4butia
 #
 
+import com_usb
 from com_usb import usb_device
 
 NULL_BYTE = 0x00
@@ -31,7 +32,7 @@ MAX_RETRY = 5
 
 
 
-class baseboard(usb_device):
+class Baseboard(usb_device):
 
     def __init__(self, dev):
         usb_device.__init__(self, dev)
@@ -42,9 +43,9 @@ class baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(GET_USER_MODULES_SIZE_COMMAND)
-        size = self.write(w, TIMEOUT)
+        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
-        raw = self.read(GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
+        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
 
         modules = raw[4]
 
@@ -60,9 +61,9 @@ class baseboard(usb_device):
         w.append(NULL_BYTE)
         w.append(GET_USER_MODULE_LINE_COMMAND)
         w.append(index)
-        size = self.write(w, TIMEOUT)
+        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
-        raw = self.read(GET_LINE_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_LINE_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         c = raw[4:len(raw)]
         t = ''
@@ -78,9 +79,9 @@ class baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(GET_HANDLER_SIZE_COMMAND)
-        size = self.write(w, TIMEOUT)
+        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
-        raw = self.read(GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         return raw[4]
 
@@ -91,9 +92,9 @@ class baseboard(usb_device):
         w.append(NULL_BYTE)
         w.append(GET_HANDLER_TYPE_COMMAND)
         w.append(index)
-        size = self.write(w, TIMEOUT)
+        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
-        raw = self.read(GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         return raw[4]
 
@@ -103,7 +104,7 @@ class baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(SWITCH_TO_BOOT_BASE_BOARD_COMMAND)
-        size = self.write(w, TIMEOUT)
+        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
     def reset(self):
         w = []
@@ -111,7 +112,7 @@ class baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(RESET_BASE_BOARD_COMMAND)
-        size = self.write(w, TIMEOUT)
+        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
     def force_close_all(self):
         w = []
@@ -119,9 +120,9 @@ class baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(CLOSEALL_BASE_BOARD_COMMAND)
-        size = self.write(w, TIMEOUT)
+        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
-        raw = self.read(CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         return raw[4]
 

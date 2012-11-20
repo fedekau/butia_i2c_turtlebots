@@ -5,7 +5,6 @@
 #
 
 import usb
-import baseboard
 
 USB4ALL_VENDOR        = 0x04d8
 USB4ALL_PRODUCT       = 0x000c
@@ -42,11 +41,11 @@ class usb_device():
         self.handle = None
         self.device = None
 
-    def read(self, length, timeout = 0):
-        return self.handle.bulkRead(ADMIN_MODULE_OUT_ENDPOINT, length, timeout)
+    def read(self, endpoint, length, timeout = 0):
+        return self.handle.bulkRead(endpoint, length, timeout)
  
-    def write(self, buffer, timeout = 0):
-        return self.handle.bulkWrite(ADMIN_MODULE_IN_ENDPOINT, buffer, timeout)
+    def write(self, endpoint, data, timeout = 0):
+        return self.handle.bulkWrite(endpoint, data, timeout)
 
     def get_info(self):
         names = self.handle.getString(1, 255)
@@ -59,5 +58,5 @@ def find():
     for bus in usb.busses():
         for dev in bus.devices:
             if dev.idVendor == USB4ALL_VENDOR and dev.idProduct == USB4ALL_PRODUCT:
-                return baseboard(dev)
+                return dev
 
