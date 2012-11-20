@@ -22,15 +22,19 @@ class USB4Butia():
         self.default = ['admin', 'pnp']
         self.hotplug = ['button', 'distanc', 'grey', 'light', 'volt', 'res', 'port']
         self.openables = ['motors', 'gpio', 'lback', 'butia', 'hackp']
-        self.listi = []
+        #self.listi = []
         self.openables_loaded = []
         self.drivers_loaded = {}
         self.inited_n = {}
         self.inited_d = {}
 
+        self.find_butias()
+
+    def find_butias(self):
         device = com_usb.find()
         self.bb = Baseboard(device)
         self.handle = self.bb.open_device()
+        self.listi = []
         self.get_modules_list()
 
     def get_modules_list(self):
@@ -174,14 +178,11 @@ class USB4Butia():
         info = self.bb.get_info()
         if info == ERROR:
             self.bb.close_device()
-            device = com_usb.find()
-            self.bb = Baseboard(device)
-            self.handle = self.bb.open_device()
-            self.listi = []
+            self.find_butias()
+            
             self.openables_loaded = []
             self.drivers_loaded = {}
-            self.inited_n = {}
-            self.inited_d = {}
+            
             self.get_modules_list()
 
     def close(self):
