@@ -21,6 +21,7 @@ class USB4Butia():
         self.default = ['admin', 'pnp']
         self.hotplug = ['button', 'distanc', 'grey', 'light', 'volt', 'res', 'port']
         self.openables = ['motors', 'gpio', 'lback', 'butia', 'hackp']
+        self.openables_loaded = []
         self.drivers_loaded = {}
         self.inited_n = {}
         self.inited_d = {}
@@ -99,32 +100,34 @@ class USB4Butia():
             print 'driver not found' 
 
 
-    def call_aux(self, modulename, number, function):
-        if self.inited_n.has_key(number) and (self.inited_d[number].name == modulename):
-            device = self.inited_d[number]
-            if not(device.has_function(function)):
-                f = self.drivers_loaded[modulename]
-                device.add_functions(f)
-            if device.has_function(function):
-                return device.call_function(function)
-            else:
-                print 'Missing function %s', function
+    def call_aux(self, modulename, number, function, params):
+        
+        device = self.inited_d[number]
+        if not(device.has_function(function)):
+            f = self.drivers_loaded[modulename]
+            device.add_functions(f)
+        if device.has_function(function):
+            return device.call_function(function, params)
         else:
-            return -1
+            print 'Missing function %s', function
 
-    def callModule(self, modulename, number, function):
+
+    def callModule(self, modulename, number, function, params = []):
 
         if self.handle:
 
             if not(modulename in self.drivers_loaded):
                 self.get_driver(modulename)
 
-                return self.call_aux(modulename, number, function)
+            if self.inited_n.has_key(number) and (self.inited_d[number].name == modulename):
+
+                return self.call_aux(modulename, number, function, params)
 
             else:
-                modules = self.get_modules_list()
+                mods = self.get_modules_list()
                 if modulename in self.openables:
-                    if not(modulename in modules):
+                    if not(modulename in self.openables_loaded):
+                        self.openables_loaded.append(modulename)
                         dev = Device(self.bb, modulename, None)
                         h = dev.module_open()
                         dev.handler = h
@@ -132,15 +135,34 @@ class USB4Butia():
                         self.inited_d[h] = dev
                         f = self.drivers_loaded[modulename]
                         dev.add_functions(f)
+                        number = h
                     else:
-                        print 'openable ya abierto'
-
+                        number = self.search_handler(mods, modulename)
+                    return self.call_aux(modulename, number, function, params)
+                else:
+                    print 'no open and no openable'
+                    return -1
                 
-                return self.call_aux(modulename, number, function)
         else:
             return -1
 
-       
+    def search_handler(self, l, module):
+        ll = self.list_2_module_and_port(l)
+        for e in ll:
+            if e[1] == module:
+                return int(e[0])
+        return -1
+
+    def list_2_module_and_port(self, l):
+        r = []
+        for e in l:
+            try:
+                module, port = e.split(':')
+                if module in self.openables:
+                    r.append((port, module))
+            except:
+                pass
+        return r
 
     def reconnect(self):
         pass
@@ -162,12 +184,12 @@ class USB4Butia():
         pass
 
     def set2MotorSpeed(self, leftSense = '0', leftSpeed = '0', rightSense = '0', rightSpeed = '0'):
-        msg = leftSense + ' ' + leftSpeed + ' ' + rightSense + ' ' + rightSpeed
-        return self.callModule('motors', 'setvel2mtr', msg)
+        msg = [leftSense, int(leftSpeed / 256.0), leftSpeed % 256, rightSense, int(rightSpeed / 256.0) , rightSpeed % 256]
+        return self.callModule('motors', None, 'setvel2mtr', msg)
      
     def setMotorSpeed(self, idMotor = '0', sense = '0', speed = '0'):
         msg = idMotor + ' ' + sense + ' ' + speed
-        return self.callModule('motors', 'setvelmtr', msg)
+        return self.callModule('motors', None, 'setvelmtr', msg)
 
      
     def getBatteryCharge(self):
