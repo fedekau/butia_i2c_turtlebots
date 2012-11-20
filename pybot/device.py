@@ -35,17 +35,25 @@ class Device():
         for f in func_list:
             self.functions[f['name']] = f
 
-    def module_send(self, data):
+    def module_send(self, data, params):
         
         user_module_handler_send_command = self.handler * 8
-        send_packet_length = 0x04
+        l = len(params)
+        send_packet_length = 0x04 + l
 
         w = []
         w.append(user_module_handler_send_command)
         w.append(send_packet_length)
         w.append(NULL_BYTE)
         w.append(data)
+        for p in params:
+            w.append(p)
+
         size = self.baseboard.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+
+        if size == ERROR:
+            print 'Error module_send write'
+            return ERROR
 
     def module_read(self, lenght):
         raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, READ_HEADER_SIZE  + lenght, TIMEOUT)
@@ -87,7 +95,9 @@ class Device():
             print 'Error module_open read'
             return ERROR
 
-        return raw[4]
+        h = raw[4]
+        self.handler = h
+        return h
 
     def has_function(self, func):
         if not(self.functions == None):
@@ -95,12 +105,17 @@ class Device():
         else:
             return False
 
-    def call_function(self, func):
+    def call_function(self, func, params):
         f = self.functions[func]
-        self.module_send(f['call'])
+
+        raw = self.module_send(f['call'], params)
+        if raw == ERROR:
+            return ERROR
+
         raw = self.module_read(f['read'])
-        if raw == -1:
-            return -1
+        if raw == ERROR:
+            return ERROR
+
         elif len(raw) == 1:
             return raw[0]
         elif len(raw) == 2:
