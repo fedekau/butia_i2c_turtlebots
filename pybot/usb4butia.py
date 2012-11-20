@@ -96,19 +96,37 @@ class USB4Butia():
                 print 'Cannot load %s' % driver
             if f and hasattr(f, 'FUNCTIONS'):
                 self.drivers_loaded.append(driver)
-                device = self.inited_d[self.listi.index(driver)]
-                device.functions = f.FUNCTIONS
+                for d in self.inited_d.values():
+                    if d.name == driver:
+                        d.functions = f.FUNCTIONS
+                #device = self.inited_d[self.listi.index(driver)]
+                #device.functions = f.FUNCTIONS
             else:
                 print 'Driver not have FUNCTIONS'
         else:
-            print 'driver not found'   
+            print 'driver not found' 
                     
 
     def callModule(self, modulename, number, function):
-        if not modulename in self.drivers_loaded:
+        if not(modulename in self.drivers_loaded):
             self.get_driver(modulename)
-        if modulename in self.inited_n.values():
-            print 'l'
+        if modulename in self.drivers_loaded:
+            if self.inited_n.has_key(number):
+                device = self.inited_d[number]
+                print device.functions
+                for f in device.functions:
+                    if f.has_key('name'):
+                        if f['name'] == function:
+                            print 'tiene la funcion'
+                            device.module_send(number, f['call'])
+                            device.module_read(f['read'])
+                            break
+                        else:
+                            print 'Missing function %s' % function
+                    else:
+                        print 'Driver %s no have Name entry'
+            else:
+                print 'missing hanler'
         
 
     def getButton(self, number=''):

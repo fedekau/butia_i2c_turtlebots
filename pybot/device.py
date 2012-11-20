@@ -9,9 +9,15 @@ OPEN_COMMAND = 0x00
 CLOSE_COMMAND = 0x01
 HEADER_PACKET_SIZE = 0x06
 
+ADMIN_MODULE_IN_ENDPOINT = 0x01
+ADMIN_MODULE_OUT_ENDPOINT = 0x81
 
 OPEN_RESPONSE_PACKET_SIZE = 5
 CLOSE_RESPONSE_PACKET_SIZE = 2
+
+READ_HEADER_SIZE = 3
+
+TIMEOUT = 250
 
 
 class Device():
@@ -32,13 +38,13 @@ class Device():
         w.append(send_packet_length)
         w.append(NULL_BYTE)
         w.append(data)
-
-        size = self.baseboard.write(w, TIMEOUT)
+        print w
+        size = self.baseboard.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
     def module_read(self, lenght):
 
-        raw = self.baseboard.read(READ_HEADER_SIZE  + lenght, TIMEOUT)
-
+        raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, READ_HEADER_SIZE  + lenght, TIMEOUT)
+        print raw
         l = []
         for i in range(READ_HEADER_SIZE, READ_HEADER_SIZE + lenght):
             l.append(raw[i])
@@ -62,9 +68,9 @@ class Device():
         w.append(module_in_endpoint)
         w.append(module_out_endpoint)
         w = w + module_name
-        size = self.baseboard.write(w, TIMEOUT)
+        size = self.baseboard.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
-        raw = self.baseboard.read(OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         return raw
 
