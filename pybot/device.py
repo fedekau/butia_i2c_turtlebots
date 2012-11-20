@@ -20,6 +20,7 @@ READ_HEADER_SIZE = 3
 
 TIMEOUT = 250
 
+ERROR = -1
 
 class Device():
 
@@ -48,6 +49,10 @@ class Device():
 
     def module_read(self, lenght):
         raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, READ_HEADER_SIZE  + lenght, TIMEOUT)
+        if raw == ERROR:
+            print 'Error module_rad read'
+            return ERROR
+
         l = []
         for i in range(READ_HEADER_SIZE + 1, READ_HEADER_SIZE + lenght):
             l.append(raw[i])
@@ -72,7 +77,15 @@ class Device():
         w = w + module_name
         size = self.baseboard.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
+        if size == ERROR:
+            print 'Error module_open write'
+            return ERROR
+
         raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
+
+        if raw == ERROR:
+            print 'Error module_open read'
+            return ERROR
 
         return raw[4]
 
@@ -86,7 +99,9 @@ class Device():
         f = self.functions[func]
         self.module_send(f['call'])
         raw = self.module_read(f['read'])
-        if len(raw) == 1:
+        if raw == -1:
+            return -1
+        elif len(raw) == 1:
             return raw[0]
         elif len(raw) == 2:
             return raw[0] + raw[1] * 256
