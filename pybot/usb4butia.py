@@ -11,11 +11,6 @@ import com_usb
 from baseboard import Baseboard
 from device import Device
 
-# BUTIA
-RD_VERSION = 0x02
-GET_VOLT = 0x03
-
-
 
 
 class USB4Butia():
@@ -48,7 +43,6 @@ class USB4Butia():
             for m in range(1, s + 1):
                 module_type = self.bb.get_handler_type(m)
                 module_name = self.listi[module_type]
-                #print module_name + ':' +  str(m)
                 modules.append(module_name + ':' +  str(m))
         return modules
 
@@ -195,10 +189,16 @@ class USB4Butia():
         return self.callModule('grey', number, 'getValue')
 
     def getResistance(self, number=''):
-        return self.callModule('res', number, 'getValue')
+        vcc = 65535
+        raw = self.callModule('res', number, 'getValue')
+        if not(raw == -1):
+            return raw * 6800 / (vcc - raw)
+        return raw
 
     def getVoltaje(self, number=''):
-        return self.callModule('volt', number, 'getValue')
-
-
+        vcc = 65535
+        raw = self.callModule('volt', number, 'getValue')
+        if not(raw == -1):
+            return raw * 5 / vcc
+        return raw
 
