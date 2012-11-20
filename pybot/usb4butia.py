@@ -8,7 +8,7 @@ import os
 import imp
 import com_usb
 from baseboard import Baseboard
-
+from device import Device
 
 # BUTIA
 RD_VERSION = 0x02
@@ -17,19 +17,22 @@ GET_VOLT = 0x03
 
 
 
-class USB4butia():
+class USB4Butia():
 
     def __init__(self):
         self.listi = []
         self.default = ['admin', 'pnp', 'motors']
         self.hotplug = ['button', 'distanc', 'grey', 'light', 'volt', 'res']
         self.openables = ['gpio', 'lback', 'butia', 'hackp']
-        self.drivers = {}
+        self.drivers_loaded = []
+        self.inited_n = {}
+        self.inited_d = {}
 
         device = com_usb.find()
         self.bb = Baseboard(device)
         handle = self.bb.open_device()
 
+        self.get_modules_and_handlers()
 
     def get_modules_list(self):
         if self.listi == []:
@@ -45,6 +48,7 @@ class USB4butia():
             print module_name + ':' +  str(m)
 
     def get_modules_and_handlers(self):
+        self.inited_n = {}
         if self.listi == []:
             self.get_listi()
         s = self.bb.get_handler_size()
@@ -56,7 +60,9 @@ class USB4butia():
             module_type = self.bb.get_handler_type(m)
             module_name = self.listi[module_type]
             print module_name + ':' +  str(m)
-
+            self.inited_n[m] = module_name
+            self.inited_d[m] = Device(self.bb, module_name, True)
+            
 
     def get_listi(self):
         self.listi = []
@@ -78,28 +84,32 @@ class USB4butia():
         
 
     def get_driver(self, driver):
-        if not(self.drivers.has_key(driver)):
-            can = self.get_driver_candidates()
-            if driver in can:
-                print 'Loading driver %s...' % driver
-                r_path = os.path.join('drivers', driver + '.py')
-                abs_path = os.path.abspath(r_path)
-                f = None
-                try:
-                    f = imp.load_source(driver, abs_path)
-                except:
-                    print 'Cannot load %s' % driver
-                if f and hasattr(f, 'FUNCTIONS'):
-                    self.drivers[driver] = f.FUNCTIONS
-                else:
-                    print 'Driver not have FUNCTIONS'
+        can = self.get_driver_candidates()
+        if driver in can:
+            print 'Loading driver %s...' % driver
+            r_path = os.path.join('drivers', driver + '.py')
+            abs_path = os.path.abspath(r_path)
+            f = None
+            try:
+                f = imp.load_source(driver, abs_path)
+            except:
+                print 'Cannot load %s' % driver
+            if f and hasattr(f, 'FUNCTIONS'):
+                self.drivers_loaded.append(driver)
+                device = self.inited_d[self.listi.index(driver)]
+                device.functions = f.FUNCTIONS
             else:
-                print 'driver not found'   
+                print 'Driver not have FUNCTIONS'
+        else:
+            print 'driver not found'   
                     
 
     def callModule(self, modulename, number, function):
-        pass
-
+        if not modulename in self.drivers_loaded:
+            self.get_driver(modulename)
+        if modulename in self.inited_n.values():
+            print 'l'
+        
 
     def getButton(self, number=''):
         return self.callModule('button', number, 'getValue')

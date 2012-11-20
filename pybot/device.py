@@ -14,12 +14,13 @@ OPEN_RESPONSE_PACKET_SIZE = 5
 CLOSE_RESPONSE_PACKET_SIZE = 2
 
 
-class device():
+class Device():
 
-    def __init__(self, baseboard, name, hotplug):
+    def __init__(self, baseboard, name, hotplug, functions = None):
         self.baseboard = baseboard
         self.name = name
         self.hotplug = hotplug
+        self.functions = functions
 
     def module_send(self, handler, data):
         
