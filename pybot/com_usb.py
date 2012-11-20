@@ -42,17 +42,28 @@ class usb_device():
         self.device = None
 
     def read(self, endpoint, length, timeout = 0):
-        return self.handle.bulkRead(endpoint, length, timeout)
+        if self.handle:
+            return self.handle.bulkRead(endpoint, length, timeout)
+        else:
+            print 'Empty handler'
+            return -1
  
     def write(self, endpoint, data, timeout = 0):
-        return self.handle.bulkWrite(endpoint, data, timeout)
+        if self.handle:
+            return self.handle.bulkWrite(endpoint, data, timeout)
+        else:
+            print 'Empty handler'
+            return -1
 
     def get_info(self):
-        names = self.handle.getString(1, 255)
-        copy = self.handle.getString(2, 255)
-        sn = self.handle.getString(3, 255)
-        return [names, copy, sn]
-
+        if self.handle:
+            names = self.handle.getString(1, 255)
+            copy = self.handle.getString(2, 255)
+            sn = self.handle.getString(3, 255)
+            return [names, copy, sn]
+        else:
+            print 'Empty handler'
+            return -1
 
 def find():
     for bus in usb.busses():
