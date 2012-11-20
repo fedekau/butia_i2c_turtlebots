@@ -23,6 +23,7 @@ GET_HANDLER_SIZE_COMMAND = 0x0A
 GET_HANDLER_TYPE_COMMAND = 0x0B
 ADMIN_HANDLER_SEND_COMMAND = 0x00
 CLOSEALL_BASE_BOARD_COMMAND = 0x07
+SWITCH_TO_BOOT_BASE_BOARD_COMMAND = 0x09
 
 ADMIN_MODULE_IN_ENDPOINT = 0x01
 ADMIN_MODULE_OUT_ENDPOINT = 0x81
@@ -87,14 +88,9 @@ class USB4butia():
         size = self.write(w, TIMEOUT)
 
         raw = self.read(GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
-        # send message equal read message ?
-        comand = raw[0:3]
-        print 'send', w
-        print 'reci', comand
-        print comand == w
-
 
         modules = raw[4]
+
         return modules
 
     def get_user_module_line(self, index):
@@ -106,10 +102,67 @@ class USB4butia():
         w.append(index)
         size = self.write(w, TIMEOUT)
 
-        raw = self.read(GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
+        raw = self.read(GET_LINE_RESPONSE_PACKET_SIZE, TIMEOUT)
 
-        return raw
+        #the name is between a header and a null
+        c = raw[4:len(raw)]
+        t = ''
+        for e in c:
+            if not(e == NULL_BYTE):
+                t = t + chr(e)
 
+        return t
+
+    # LISTI
+    def get_handler_size(self):
+        w = []
+        w.append(ADMIN_HANDLER_SEND_COMMAND)
+        w.append(DEFAULT_PACKET_SIZE)
+        w.append(NULL_BYTE)
+        w.append(GET_HANDLER_SIZE_COMMAND)
+        size = self.write(w, TIMEOUT)
+
+        raw = self.read(GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+
+        return raw[4]
+
+    # LISTI
+    def get_handler_type(self, index):
+        w = []
+        w.append(ADMIN_HANDLER_SEND_COMMAND)
+        w.append(GET_HANDLER_TYPE_PACKET_SIZE)
+        w.append(NULL_BYTE)
+        w.append(GET_HANDLER_TYPE_COMMAND)
+        w.append(index)
+        size = self.write(w, TIMEOUT)
+
+        raw = self.read(GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+
+        return raw[4]
+
+    def switch_to_bootloader(self):
+        w = []
+        w.append(ADMIN_HANDLER_SEND_COMMAND)
+        w.append(DEFAULT_PACKET_SIZE)
+        w.append(NULL_BYTE)
+        w.append(SWITCH_TO_BOOT_BASE_BOARD_COMMAND)
+        size = self.write(w, TIMEOUT)
+        # nothing to return
+
+    def get_modules_list(self):
+        s = self.get_handler_size()
+        
+        for m in range(s):
+            print self.get_handler_type(m)
+
+
+    def get_listi(self):
+        s = self.get_user_modules_size()
+        for m in range(s):
+            name = self.get_user_module_line(m)
+            t = self.get_handler_type(m)
+            print name, t
+        
 
 def find():
     # Get busses
