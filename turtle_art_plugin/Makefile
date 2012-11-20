@@ -70,7 +70,7 @@ man2dir = $(mandir)/man2 # etc... etc...
 
 
 
-all: help
+all: apply_hard_plugins
 
 
 help:
@@ -275,16 +275,30 @@ plugin-all: plugins
 
 ############### Install procedures #################
 
-# TODO!!!!! Aply debian policies!!!
 install-activity: xo
 	sugar-install-bundle *.xo
-	$(MAKE) clean_xo
 
-install: apply_hard_plugins
+install-xo: install-activity
+
+install: all
+	echo "Instalando..."
+	mkdir $(DESTDIR)/usr/share/sugar
+	mkdir $(DESTDIR)/usr/share/sugar/activities
+	$(INSTALL) -r tmp $(DESTDIR)/usr/share/sugar/activities/
+	mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
+	#cp IconosTortuBots.desktop ~/.local/share/applications/ 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
+
+install-permissions:
+	#TODO!
+	#adduser $NOMBRE_USUARIO lego 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
 
 install-strip: install
 	#strip $(DESTDIR) file...
 
+install-rules:
+	addgroup lego
+	mv -f rules/70-lego.rules $(DESTDIR)/etc/udev/rules.d
+	mv -f rules/99-usb4all.rules $(DESTDIR)/etc/udev/rules.d
 
 dev: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
@@ -292,6 +306,29 @@ dev: apply_sym_plugins
 	(cd tmp && python setup.py dev)
 
 
+uninstall-activity:
+	rm -rf ~/Activities/TurtleBots.activity
+
+uninstall-xo: uninstall-activity
+
+uninstall-strip: uninstall
+	#unstrip $(DESTDIR) file... :-P
+
+uninstall:
+	rm -rf ~/Activities/TurtleBots.activity
+	# Eliminamos versiones anteriores.
+	rm -rf ~/Activities/TurtleBots.activity
+	rm -rf $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
+	# Eliminamos versiones anteriores.
+	rm -rf $(DESTDIR)/usr/share/locale/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
+	# Eliminamos versiones anteriores.
+	rm -rf $(DESTDIR)/usr/share/sugar/activities/TurtleArt.activity
+
+uninstall-rules:
+	delgroup lego
+	#adduser $NOMBRE_USUARIO lego 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
+	rm -f $(DESTDIR)/etc/udev/rules.d/70-lego.rules
+	rm -f $(DESTDIR)/etc/udev/rules.d/99-usb4all.rules
 
 ####### CLEAN STUFF ######
 
@@ -310,9 +347,6 @@ clean-xo:
 clean-plugins:
 	rm -f *.tar.gz
 
-uninstall:
-	rm -rf ~/Activities/TurtleBots.activity
-	
 
 .SUFFIXES:
 .SUFFIXES: .c .o .py .pyc .po .pot
