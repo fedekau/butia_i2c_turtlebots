@@ -1,6 +1,6 @@
 
 RD_VERSION = 0x00
-GET_VALUE = 0x01
+SET_VEL_2MTR = 0x01
 
 f1 = {
     'name': 'getVersion',
@@ -10,10 +10,10 @@ f1 = {
 }
 
 f2 = {
-    'name': 'getValue',
-    'call': GET_VALUE,
-    'params': 0,
-    'read': 3
+    'name': 'setvel2mtr',
+    'call': SET_VEL_2MTR,
+    'params': 5,
+    'read': 1
 }
 
 FUNCTIONS = [f1, f2]

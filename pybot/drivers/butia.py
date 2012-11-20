@@ -5,12 +5,14 @@ GET_VOLT = 0x03
 f1 = {
     'name': 'getVersion',
     'call': RD_VERSION,
+    'params': 0,
     'read': 2
 }
 
 f2 = {
     'name': 'get_volt',
     'call': GET_VOLT,
+    'params': 0,
     'read': 2
 }
 
