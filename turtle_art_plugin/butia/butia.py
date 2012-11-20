@@ -19,7 +19,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import butiaAPI
+from pybot import usb4butia
 import time
 import threading
 import re
@@ -116,7 +116,7 @@ class Butia(Plugin):
         self.butia = None
         self.match_list = []
         self.list_connected_device_module = []
-        self.pollthread=threading.Timer(0, self.bobot_launch)
+        self.pollthread = threading.Timer(0, self.pybot_launch)
         self.pollthread.start()
         self.can_refresh = True
         self.regex = re.compile(r"""^		#Start of the string
@@ -433,7 +433,7 @@ class Butia(Plugin):
         """ stop is called when stop button is pressed. """
         self.can_refresh = True
         if self.butia:
-            self.butia.set2MotorSpeed('0', '0', '0', '0')
+            self.butia.set2MotorSpeed(0, 0, 0, 0)
 
     def goto_background(self):
         """ goto_background is called when the activity is sent to the
@@ -457,15 +457,15 @@ class Butia(Plugin):
 
     def set_vels(self, left, right):
         if left > 0:
-            sentLeft = "0"
+            sentLeft = 0
         else:
-            sentLeft = "1"
+            sentLeft = 1
         if right > 0:
-            sentRight = "0"
+            sentRight = 0
         else:
-            sentRight = "1"
+            sentRight = 1
         if self.butia:
-            self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
+            self.butia.set2MotorSpeed(sentLeft, abs(left), sentRight, abs(right))
 
     def moveButia(self, left, right):
         self.set_vels(left, right)
@@ -581,26 +581,9 @@ class Butia(Plugin):
         else:
             return ERROR_SENSOR_READ
 
-    def bobot_launch(self):
-        """
-        launch bobot-server.lua with a lua virtual machine modified to locally
-        resolve library dependences located in the bin directory of tortugarte.
-        And without libreadline and libhistory dependency
-        """
-        output = commands.getoutput('ps -ax | grep lua')
-        if 'bobot-server' in output:
-            debug_output('Bobot is alive!')
-        else:
-            try:
-                debug_output('creating Bobot')
-                self.bobot = subprocess.Popen(['./lua', 'bobot-server.lua', 'usb'], cwd='./plugins/butia/support')
-            except:
-                debug_output('ERROR creating Bobot')
+    def pybot_launch(self):
 
-        # Sure that bobot is running
-        time.sleep(1)
-
-        self.butia = butiaAPI.robot()
+        self.butia = usb4butia.USB4Butia()
 
         self.pollthread=threading.Timer(3, self.bobot_poll)
         self.pollthread.start()

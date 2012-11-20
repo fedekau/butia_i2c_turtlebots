@@ -218,7 +218,7 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
 	cp -rLf nxt_plugin/ tmp/plugins/
 	cp -rLf wedo_plugin/ tmp/plugins/
 
-apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
+apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia tmp/plugins/butia
 	ln -s `pwd`/sumtia tmp/plugins/sumtia
@@ -288,7 +288,7 @@ dev: apply_sym_plugins
 
 
 clean:
-	$(MAKE) -C ../butiaXO clean
+	#$(MAKE) -C ../butiaXO clean
 	#$(MAKE) clean_pot
 	$(MAKE) clean_tmp
 	$(MAKE) clean_plugins

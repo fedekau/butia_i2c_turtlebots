@@ -11,7 +11,7 @@ import com_usb
 from baseboard import Baseboard
 from device import Device
 
-PATH_DRIVERS = 'drivers'
+PATH_DRIVERS = 'plugins/butia/pybot/drivers'
 
 
 class USB4Butia():
