@@ -1,149 +1,106 @@
-from sugar.activity import activity
+
 import logging
 
 import shlex
 import subprocess
 import sys, os
 import time
-import serial
 import gtk
 from gettext import gettext as _
+
+from sugar.activity import activity
+from sugar.graphics.toolbarbox import ToolbarBox
+from sugar.graphics.toolbutton import ToolButton
+from sugar.activity.widgets import ActivityToolbarButton
+from sugar.activity.widgets import StopButton
+from sugar.graphics.toolbarbox import ToolbarButton
 
 class FlashingUSB4all:
     def __init__(self):
         pass
 
     def flash(self):
+        dialog = create_flashing_init()
         proc = subprocess.Popen(shlex.split("./fsusb --force_program usb4butia.hex"))
 
-class FlashingArduino:
-    def __init__(self):
-        pass
-
-    def reboot(self):
-        ser = serial.Serial("/dev/ttyUSB0")
-        ser.setDTR(1)
-        time.sleep(0.5)
-        ser.setDTR(0)
-        ser.close()
-
-    def flash(self):
-        #          m1280        ATmega1280
-        # MCU=m1280
-        # UPLOAD_RATE = 57600
-        # AVRDUDE_PROGRAMMER = stk500v1
-        #
-        #
-        # AVRDUDE_PORT = $(PORT)
-        # AVRDUDE_WRITE_FLASH = -U flash:w:applet/$(TARGET).hex
-        # AVRDUDE_FLAGS = -V -F \
-        # -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER) \
-        # -b $(UPLOAD_RATE)
-        #
-        #$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH)
-        #
-        # avrdude -V -F -p m1280 -P /dev/ttyUSB0 -c stk500v1 -b 57600 -U flash:w:mega.hex
-        proc = subprocess.Popen(shlex.split("./avrdude -C avrdude.conf -V -F -p m1280 -P /dev/ttyUSB0 -c stk500v1 -b 57600 -U flash:w:mega.hex"))
-
 def on_click(event):
-    board = FlashingArduino()
-    board.reboot()
-    board.flash()
-
-
-def on_click2(event):
     board = FlashingUSB4all()
     board.flash()
 
-class ButiaUpdateCore():
-    def killmeHARD(self):
-        # KILLME!!! YES!!!! OHHH!!! YES!!!!
-        #os.system("rm -rf .")
-        os.system("pwd")
-        self.close(self)
 
-    def init_flashing(self):
-        logging.info('Hello World')    
-
-    def flashing_getstate(self):
-        logging.info('Hello World')    
+def create_flashing_init():
+    return None
 
 
-
-# frame alert user about flashing firmware to Butia!
-class AlertContainer(gtk.VBox): 
-    def __init__(self):
-        gtk.VBox.__init__(self)
-        #box11 = gtk.VBox()
-        img = gtk.Image()
-        img.set_from_file("alert.svg")
-        img.show()
-        #box11.add(img)
-        #box11.show()
-        #self.add(box11)
-        self.add(img) 
-
-        box12 = gtk.HBox()
-        button_reject = gtk.Button("UPSI!")
-        button_reject.show()
-        button_accept = gtk.Button("CONTINUAR")
-        button_accept.connect("clicked",on_click)
-        button_accept.show()
-        box12.add(button_reject)
-        box12.add(button_accept)
-        box12.show()
-        self.add(box12)
-        self.show()
-
-
-class ButiaFirmwareUpdateGTK(gtk.Container):
-    def __init__(self, activity):
-        butia
-        gtk.add()
-
-    
- 
 class ButiaFirmware(activity.Activity):
-    #EVETS
-    def on_acceptButton(self, widget, data=None):
-        logging.info('Hello World')
-
-    def on_rejectButton(self, widget, data=None):
-        logging.info('Hello World')
-    
-    def on_reflashButton(self, widget, data=None):
-        logging.info('Hello World')
-
-
 
     def __init__(self, handle):
-        print "running activity init", handle
-        activity.Activity.__init__(self, handle, False)
-        #activity.Activity.__init__(self, handle)
+        activity.Activity.__init__(self, handle)
+
         print "activity running"
+
+        self.build_toolbar()
  
+        self.build_canvas()
+
+    def build_toolbar(self):
         # Creates the Toolbox. It contains the Activity Toolbar, which is the
         # bar that appears on every Sugar window and contains essential
         # functionalities, such as the 'Collaborate' and 'Close' buttons.
-        toolbox = activity.ActivityToolbox(self)
+
+        toolbox = ToolbarBox()
+
+        activity_button = ActivityToolbarButton(self)
+        toolbox.toolbar.insert(activity_button, -1)
+        activity_button.show()
+
+        # Blank space (separator) and Stop button at the end:
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        toolbox.toolbar.insert(separator, -1)
+        separator.show()
+
+        stop_button = StopButton(self)
+        toolbox.toolbar.insert(stop_button, -1)
+        stop_button.show()
+
         self.set_toolbox(toolbox)
-        # toolbox.show()
-        
-        # Creates a new button with the label "Hello World".
-        self.button = gtk.Button("Hello World")
-        
-        # When the button receives the "clicked" signal, it will call the
-        # function hello() passing it None as its argument.  The hello()
-        # function is defined above.
-        #self.button.connect("clicked", self.hello, None)
+        toolbox.show()
 
+        self.show_all()
         
-        # Set the button to be our canvas. The canvas is the main section of
-        # every Sugar Window. It fills all the area below the toolbox.
-        #self.set_canvas(self.button)
-        self.set_canvas(AlertContainer())
+    def build_canvas(self):
+        #The canvas is the main section of every Sugar Window.
+        # It fills all the area below the toolbox.
 
-        # The final step is to display this newly created widget.
-        self.button.show()
-        
+        box = gtk.VBox()
+        img = gtk.Image()
+        img.set_from_file("alert.svg")
+        img.show()
+        box.add(img) 
+
+        box12 = gtk.HBox()
+        button_accept = gtk.Button("CONTINUAR")
+        button_accept.connect("clicked", self.warning_message)
+        button_accept.show()
+        box12.add(button_accept)
+        box12.show()
+        box.add(box12)
+        box.show()
+
+        self.set_canvas(box)
+
+    def warning_message(self, widget):
+        msg = _('This action will flash the USB4Butia board. Are you sure?')
+        dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
+        dialog.set_title(_('Flashing USB4Butia board...'))
+        res = dialog.run()
+        dialog.destroy()
+
+        if res == gtk.RESPONSE_OK:
+            print 'A flashear!!'
+
+        elif res ==  gtk.RESPONSE_CANCEL:
+            pass
 
