@@ -45,6 +45,7 @@ libexecdir = $(exec_prefix)/libexec
 datarootdir = $(prefix)/share
 datadir = $(datarootdir)
 sysconfdir = $(prefix)/etc
+glbconfdir = /etc
 sharedstatedir = $(prefix)/com
 localstatedir = $(prefix)/var
 includedir = $(prefix)/include
@@ -56,9 +57,7 @@ localedir = $(datarootdir)/locale
 mandir = $(datarootdir)/man
 man1dir = $(mandir)/man1
 man2dir = $(mandir)/man2 # etc... etc...
-
-
-
+activitiesdir = $(datadir)/sugar/activities
 
 
 
@@ -197,7 +196,7 @@ butiaXO:
 mktmpfolder:
 	#making folders and copying mainline
 	rm -rf $(BUILDDIR)
-	cp -rL mainline tmp
+	cp -rL mainline $(BUILDDIR)
 	rm -rf $(BUILDDIR)/.git
 	rm -f  $(BUILDDIR)/.gitignore
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
@@ -240,6 +239,11 @@ xo: apply_hard_plugins
 	cp $(BUILDDIR)/dist/*.xo .
 	#$(MAKE) clean_tmp
 
+dev: apply_sym_plugins
+	rm -rf ~/Activities/TurtleBots.activity
+	mkdir -p ~/Activities
+	(cd $(BUILDDIR) && python setup.py dev)
+
 
 ################ Plugins #############
 
@@ -281,38 +285,41 @@ install-activity: xo
 
 install-xo: install-activity
 
-install: all
+install: all install-permissions
 	echo "Instalando..."
-	mkdir $(DESTDIR)/usr/share/sugar
-	mkdir $(DESTDIR)/usr/share/sugar/activities
-	$(INSTALL) -r tmp $(DESTDIR)/usr/share/sugar/activities/
-	mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
+	mkdir -p $(DESTDIR)$(activitiesdir)
+	$(INSTALL) -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
 	#cp IconosTortuBots.desktop ~/.local/share/applications/ 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
 
 install-permissions:
-	#TODO!
-	if [ 'x$(cat /etc/group | grep ^greisch:)' = 'x' ] ; then \
-            echo "not exist lego group" ; exit 1 ; \
+	# This part check for users to add to group LEGO (allowed to use robot)
+	#if not exist /etc/group then exit (nothing todo)
+	if [ ! -e $(DESTDIR)$(glbconfdir)/group ] ; then exit 0 ; fi
+	
+	# check if exist lego group
+	if [ 'x'(cat $(DESTDIR)$(glbconfdir)/group | grep ^lego:) = 'x' ] ; then \
+            $(MAKE) install-rules; \
         fi
+	#echo `cat /etc/passwd | grep "1[0-9]\{3\}" | sed 's/:\[\^:\]\?//'
 	#            echo aaa ; fi
+	#  s/^\([0-9]*\.[0-9]*\)\([^.0-9]\|$\)/\1.0\2/
 	#        then echo no group legecho OK \
 	#                else echo ss fetch ; echo pp \
 	#        fi
 	#adduser $NOMBRE_USUARIO lego 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
 
+
 install-strip: install
 	#strip $(DESTDIR) file...
 
 install-rules:
-	addgroup lego
-	mv -f rules/70-lego.rules $(DESTDIR)/etc/udev/rules.d
-	mv -f rules/99-usb4all.rules $(DESTDIR)/etc/udev/rules.d
+	if [ -e $(DESTDIR)$(glbconfdir)/group ] ; then addgroup --system lego ; fi
+	$(INSTALL_DATA) rules/70-lego.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/99-usb4all.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
 
-dev: apply_sym_plugins
-	rm -rf ~/Activities/TurtleBots.activity
-	mkdir -p ~/Activities
-	(cd tmp && python setup.py dev)
 
+############### UNInstall procedures #################
 
 uninstall-activity:
 	rm -rf ~/Activities/TurtleBots.activity
@@ -322,26 +329,20 @@ uninstall-xo: uninstall-activity
 uninstall-strip: uninstall
 	#unstrip $(DESTDIR) file... :-P
 
-uninstall:
-	rm -rf ~/Activities/TurtleBots.activity
-	# Eliminamos versiones anteriores.
+uninstall: uninstall-rules
 	rm -rf ~/Activities/TurtleBots.activity
 	rm -rf $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
-	# Eliminamos versiones anteriores.
 	rm -rf $(DESTDIR)/usr/share/locale/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
-	# Eliminamos versiones anteriores.
-	rm -rf $(DESTDIR)/usr/share/sugar/activities/TurtleArt.activity
 
 uninstall-rules:
-	delgroup lego
-	#adduser $NOMBRE_USUARIO lego 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
+	delgroup --system lego
 	rm -f $(DESTDIR)/etc/udev/rules.d/70-lego.rules
 	rm -f $(DESTDIR)/etc/udev/rules.d/99-usb4all.rules
 
 ####### CLEAN STUFF ######
 
 
-clean: clean-tmp clean-plugins clean-xo
+clean: clean-tmp clean-plugins clean-xo clean-builddir
 	$(MAKE) -C ../butiaXO clean
 	# this remove only if it's a symlink ; don't remove if installed
 	rm -f ~/Activities/TurtleBots.activity
@@ -368,6 +369,7 @@ clean-plugins:
  first walterGIT extrasGIT wedoGIT nxtGIT \
  butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins \
  genpot genpot_notraslated updatepo xo \
- install install-strip uninstall \
+ install install-strip \
+ uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
  dev
