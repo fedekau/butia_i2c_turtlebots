@@ -15,22 +15,6 @@ from sugar.activity.widgets import ActivityToolbarButton
 from sugar.activity.widgets import StopButton
 from sugar.graphics.toolbarbox import ToolbarButton
 
-class FlashingUSB4all:
-    def __init__(self):
-        pass
-
-    def flash(self):
-        dialog = create_flashing_init()
-        proc = subprocess.Popen(shlex.split("./fsusb --force_program usb4butia.hex"))
-
-def on_click(event):
-    board = FlashingUSB4all()
-    board.flash()
-
-
-def create_flashing_init():
-    return None
-
 
 class ButiaFirmware(activity.Activity):
 
@@ -92,15 +76,56 @@ class ButiaFirmware(activity.Activity):
         self.set_canvas(box)
 
     def warning_message(self, widget):
-        msg = _('This action will flash the USB4Butia board. Are you sure?')
-        dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
+        msg = _('You will upgrade the USB4Butia firmware.\nNot disconnect the board and not close this activity.\nYou want to continue?')
+        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
         dialog.set_title(_('Flashing USB4Butia board...'))
         res = dialog.run()
         dialog.destroy()
 
         if res == gtk.RESPONSE_OK:
             print 'A flashear!!'
+            self.flash()
 
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
 
+    def flash(self):
+        dialog = self.initing()
+        proc = -1
+        try:
+            proc = subprocess.Popen(shlex.split("./fsusb --force_program usb4butia.hex"))
+        except Exception, err:
+            print 'Error in fsusb', err
+
+        # How control the end of fusb flashing?
+        time.sleep(4)
+
+        dialog.destroy()
+
+        if proc == -1:
+            self.unsucess()
+        else:
+            self.sucess()
+
+    def initing(self):
+        msg = _('Flashing...')
+        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
+        dialog.set_title(_('Flashing USB4Butia board...'))
+        # Run es bloqueante
+        #dialog.run()
+        dialog.show()
+        return dialog
+
+    def sucess(self):
+        msg = _('The upgrade ends successfully!')
+        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msg)
+        dialog.set_title(_('Flashing USB4Butia board...'))
+        dialog.run()
+        dialog.destroy()
+
+    def unsucess(self):
+        msg = _('The upgrade fails. Try again.')
+        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msg)
+        dialog.set_title(_('Flashing USB4Butia board...'))
+        dialog.run()
+        dialog.destroy()
