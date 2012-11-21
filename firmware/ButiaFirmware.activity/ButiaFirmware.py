@@ -83,7 +83,6 @@ class ButiaFirmware(activity.Activity):
         dialog.destroy()
 
         if res == gtk.RESPONSE_OK:
-            print 'A flashear!!'
             self.flash()
 
         elif res ==  gtk.RESPONSE_CANCEL:
@@ -95,7 +94,7 @@ class ButiaFirmware(activity.Activity):
         try:
             proc = subprocess.Popen(shlex.split("./fsusb --force_program usb4butia.hex"))
         except Exception, err:
-            print 'Error in fsusb', err
+            print 'Error in fsusb:', err
 
         # How control the end of fusb flashing?
         time.sleep(4)
@@ -103,7 +102,7 @@ class ButiaFirmware(activity.Activity):
         dialog.destroy()
 
         if proc == -1:
-            self.unsucess()
+            self.unsucess(err)
         else:
             self.sucess()
 
@@ -123,8 +122,8 @@ class ButiaFirmware(activity.Activity):
         dialog.run()
         dialog.destroy()
 
-    def unsucess(self):
-        msg = _('The upgrade fails. Try again.')
+    def unsucess(self, err):
+        msg = _('The upgrade fails. Try again.\n%s' % err)
         dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msg)
         dialog.set_title(_('Flashing USB4Butia board...'))
         dialog.run()
