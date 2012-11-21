@@ -1,6 +1,33 @@
-#VERSION 1.0
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Version 1.0
+# This implement API for sumo.uy
+#
+# Copyright (C) 2008 Guillermo Reisch (greisch@fing.edu.uy)
+# Copyright (C) 2010 Andres Aguirre (aaguirre@fing.edu.uy)
+#
+# This is part of "sumo.uy" python API
+# Sumo.uy is a robotics competition by Facultad de Ingenieria
+# Universidad de la República del Uruguay
+# http://www.fing.edu.uy/sumo.uy
+#
+# This file is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This file is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 import socket
-    
+
 class apiSumoUY:
     cliente = None
     

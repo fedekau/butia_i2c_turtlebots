@@ -1,138 +1,188 @@
 # Makefile for butia
 #
-# This program is free to be used or modified
-# at your ouwn risk
+# Copyright (C) 2008 Guillermo Reisch (greisch@fing.edu.uy)
+# Copyright (C) 2010 Andres Aguirre (aaguirre@fing.edu.uy)
 #
-# writen by Guillermo Reisch (greisch@fing.edu.uy) and andrew (aaguirre@fing.edu.uy)
-# in others words => writen by butia TEAM!
+# Butia is a free open plataform for robotics projects
+# http://www.fing.edu.uy/inco/proyectos/butia
+# Universidad de la República del Uruguay
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-TURTLEARTVERSION=v166
+TURTLEBLOCKS_VERSION = 1e74d47a4f233dc72e7c9698b1ab3ed66d4d19fc
+EXTRAS_VERSION = bf7c5b26f24205548e28b95572305d7df43e4f62
+NXT_VERSION = a0c2ed0f2681a218a435dfa178cd69dafabb3e8c
+WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 
-CWD=$(cwd)
+
+CWD = $(cwd)
+SHELL = /bin/sh
+# check work in "sh" instad of bash, make it more portable!!!
+INSTALL = install
+INSTALL_PROGRAM = $(INSTALL)
+INSTALL_DATA = ${INSTALL} -m 644
+
+prefix = /usr/local
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+sbindir = $(exec_prefix)/sbin
+libexecdir = $(exec_prefix)/libexec
+datarootdir = $(prefix)/share
+datadir = $(datarootdir)
+sysconfdir = $(prefix)/etc
+sharedstatedir = $(prefix)/com
+localstatedir = $(prefix)/var
+includedir = $(prefix)/include
+oldincludedir = $(prefix)/include
+docdir = $(datarootdir)/doc/tortubots
+infodir = $(datarootdir)/info
+libdir = $(exec_prefix)/lib
+localedir = $(datarootdir)/locale
+mandir = $(datarootdir)/man
+man1dir = $(mandir)/man1
+man2dir = $(mandir)/man2 # etc... etc...
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 all: help
 
 
 help:
-	@echo 
-	@echo " This is a Makefile for compile/construct TurtleArtButia.        "
-	@echo " The follow objetives are defined:                               "
-	@echo "    first: Execute this command to init the submodules only the  "
-	@echo "          first time after clone                                 "
-	@echo "    xo : Generate the XO distribuible package                    "
-	@echo "    fakeinstall: compile all necessary for TurtleArtButia        "
-	@echo "                 and make a fake install using a symlink         "
-	@echo "                 this allow to work and easy change the code     "
-	@echo "    install: install activity                                    "
-	@echo "    uninstall: unistall activity                                 "
-	@echo "    clean: clean all compiled/generated files                    "
-	@echo "    genpot: generate pot of plugings                             "
-	@echo "    genpot_notraslated: generate pot the plugings that are       "
-	@echo "                        not already traslated in taextras.py     "
-	@echo "    updatepo: using notraslated.pot update the es.po of plugin's "
-	@echo "              the other traslations all already set in mainline  "
-	@echo "              of Walter, so use that traslations.                "
-	@echo "                                                                 "
-	@echo " The follow parameters are optional:                             "
-	@echo "    TURTLEARTVERSION=[version or commit] (default $(TURTLEARTVERSION))"
-	@echo "                                                                 "
-	@echo "           For more info contact \"butia@fing.edu.uy\"           "
-	@echo "   wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki   "
-	@echo "                                                                 "    
+	if [ -e /usr/bin/less ] ; then less INSTALL ; fi
+	# if the user not have less command...
+	cat INSTALL
 
-
-
-############# Obtain the mainline of TurtleArt (Walter) at a specific version
+############# init of submodules #################
 
 first:
-	(cd .. && git submodule update --init --merge)
+	(cd .. && git submodule update --init)
 
-walterGIT: first
-	# walter GIT
-	(cd mainline && git fetch)
-	(cd mainline && git clean -xdf)
-	# a especific version of Turtle
-	(cd mainline && git checkout 3d80bec755ef4c807197592949602d24f774cd8d)
-	# Extras with plugins translations
-	(cd turtle-extras && git fetch)
-	(cd turtle-extras && git clean -xdf)
-	(cd turtle-extras && git checkout b97744c7153c67206e983b18d24962c6bc4929c1)
+############# initialization of "especific" submodules ###############
 
-wedoGIT: first
-	# wedo GIT
-	(cd WeDoMore && git fetch)
-	(cd WeDoMore && git clean -xdf)
-	(cd WeDoMore && git checkout 67e4233bc4944253ca75de204c158bd36cafd997)
+mainline/.git:
+	$(MAKE) first
 
-nxtGIT: first
-	# NXT GIT
-	(cd nxt_plugin && git fetch)
-	(cd nxt_plugin && git clean -xdf)
-	(cd nxt_plugin && git checkout a0c2ed0f2681a218a435dfa178cd69dafabb3e8c)
+WeDoMore/.git:
+	$(MAKE) first
 
+turtle-extras/.git:
+	$(MAKE) first
 
-########### POT GENERATION AND TRASLATION THINKS ###########
+nxt_plugin/.git:
+	$(MAKE) first
 
-POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
-POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
+############# checkout a version of submodule ##################
+SUBMODULE = mainline
+SUBMODULEVER = master
 
-POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
-              followme/po/FollowMe.notraslated.pot
-
-PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po nxt_plugin/po/es.po
+checkoutsm:
+	(cd $(SUBMODULE) && git clean -xdf)
+	(cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi )
 
 
-## Generate pot of plugins
-genpot: $(POT_FILES)
+############# checkout a especific version of submodules ##############
 
-butia/po/Butia.pot: butia/butia.py
-	echo msgid \"\" > $@
-	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-	xgettext $(POT_PROP) $< -o $@
+walterGIT: mainline/.git
+	$(MAKE) SUBMODULE=mainline SUBMODULEVER=$(TURTLEBLOCKS_VERSION) checkoutsm
 
-sumtia/po/Sumtia.pot: sumtia/sumtia.py
-	echo msgid \"\" > $@
-	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-	xgettext $(POT_PROP) $< -o $@
+extrasGIT: turtle-extras/.git
+	$(MAKE) SUBMODULE=turtle-extras SUBMODULEVER=$(EXTRAS_VERSION) checkoutsm
 
-followme/po/FollowMe.pot: followme/followme.py
-	echo msgid \"\" > $@
-	echo msgstr \"\" >> $@
-	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-	xgettext $(POT_PROP) $< -o $@
+wedoGIT: WeDoMore/.git
+	$(MAKE) SUBMODULE=WeDoMore SUBMODULEVER=$(WEDO_VERSION) checkoutsm
+
+nxtGIT: nxt_plugin/.git
+	$(MAKE) SUBMODULE=nxt_plugin SUBMODULEVER=$(NXT_VERSION) checkoutsm
+
+#####################   DEPRECATED!!!!! ##############################
+########### POT GENERATION AND TRASLATION THINKS #####################
+####
+####POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
+####POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
+####
+####POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
+####              followme/po/FollowMe.notraslated.pot
+####
+####PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po nxt_plugin/po/es.po
+####
+####
+###### Generate pot of plugins
+####genpot: $(POT_FILES)
+####
+####butia/po/Butia.pot: butia/butia.py
+####	echo msgid \"\" > $@
+####	echo msgstr \"\" >> $@
+####	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
+####	xgettext $(POT_PROP) $< -o $@
+####
+####sumtia/po/Sumtia.pot: sumtia/sumtia.py
+####	echo msgid \"\" > $@
+####	echo msgstr \"\" >> $@
+####	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
+####	xgettext $(POT_PROP) $< -o $@
+####
+####followme/po/FollowMe.pot: followme/followme.py
+####	echo msgid \"\" > $@
+####	echo msgstr \"\" >> $@
+####	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
+####	xgettext $(POT_PROP) $< -o $@
+####
+####
+###### Generate a pot of MSGID that ARE NOT ALREADY translated in mainline (Walter GIT)
+####genpot_notraslated: $(POT_NT_FILES)
+####
+####butia/po/Butia.notraslated.pot: butia/po/Butia.pot 
+####	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+####
+####sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
+####	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+####
+####followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
+####	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
+####
+####
+###### update de es.po files of plugins using the pot of not already translated
+####updatepo: $(PO_FILES)
+####
+####butia/po/es.po: butia/po/Butia.notraslated.pot
+####	msgmerge --update --no-fuzzy-matching  $@ $<
+####
+####sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
+####	msgmerge --update --no-fuzzy-matching  $@ $<
+####
+####followme/po/es.po: followme/po/FollowMe.notraslated.pot
+####	msgmerge --update --no-fuzzy-matching  $@ $<
+####
+####
+##################### END  DEPRECATED!!!!! ###########################
 
 
-## Generate a pot of MSGID that ARE NOT ALREADY translated in mainline (Walter GIT)
-genpot_notraslated: $(POT_NT_FILES)
 
-butia/po/Butia.notraslated.pot: butia/po/Butia.pot 
-	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-
-sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
-	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-
-followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
-	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-
-
-## update de es.po files of plugins using the pot of not already translated
-updatepo: $(PO_FILES)
-
-butia/po/es.po: butia/po/Butia.notraslated.pot
-	msgmerge --update --no-fuzzy-matching  $@ $<
-
-sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
-	msgmerge --update --no-fuzzy-matching  $@ $<
-
-followme/po/es.po: followme/po/FollowMe.notraslated.pot
-	msgmerge --update --no-fuzzy-matching  $@ $<
-
-
-################ Support for lua (bobot-server) #############
+################ Support for lua (bobot-server) ######################
 
 butiaXO:
 	# I want butiaXO folder be OK! (needed by plugin)
@@ -147,19 +197,21 @@ mktmpfolder:
 	cp -rL mainline tmp
 	rm -rf tmp/.git
 	rm -f tmp/.gitignore
-	cp turtle-extras/taextras.py tmp
-	# lets patch the activity.info and add some icons (TurtleArt => TurtleBots)
+	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity tmp/
 
-apply_localization: mktmpfolder $(PO_FILES) turtle-extras/merge.py
+apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
 	(cd turtle-extras && ./merge.py turtlebots)
-	msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
-	msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
-	msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
-	msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
+	cp turtle-extras/taextras.py tmp
+	# fix localization (compile .po)
+	(cd tmp && python setup.py build)
+	#msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
+	#msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
+	#msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
+	#msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
 
-apply_hard_plugins: apply_localization butiaXO
+apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
 	cp -rLf butia tmp/plugins/
 	cp -rLf sumtia tmp/plugins/
 	cp -rLf followme/ tmp/plugins/
@@ -217,16 +269,17 @@ wedo_plugin: apply_hard_plugins
 
 plugins: butia_plugin followme_plugin nxt_plugin wedo_plugin
 
-install: xo
+
+# TODO!!!!! Aply debian policies!!!
+install_activity: xo
 	sugar-install-bundle *.xo
 	$(MAKE) clean_xo
 
+install: apply_hard_plugins
 
-fakeinstall: apply_sym_plugins
+dev: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
 	mkdir -p ~/Activities
-	# fix localization and index
-	(cd tmp && python setup.py build)
 	(cd tmp && python setup.py dev)
 
 
@@ -236,7 +289,7 @@ fakeinstall: apply_sym_plugins
 
 clean:
 	$(MAKE) -C ../butiaXO clean
-	$(MAKE) clean_pot
+	#$(MAKE) clean_pot
 	$(MAKE) clean_tmp
 	$(MAKE) clean_plugins
 	$(MAKE) clean_xo
@@ -246,8 +299,8 @@ clean:
 clean_tmp:
 	rm -rf tmp
 
-clean_pot:
-	rm -f $(POT_FILES) $(POT_NT_FILES)
+####clean_pot:
+####	rm -f $(POT_FILES) $(POT_NT_FILES)
 
 clean_xo:
 	rm -f *.xo
@@ -259,7 +312,8 @@ uninstall:
 	rm -rf ~/Activities/TurtleBots.activity
 	
 
-
+.SUFFIXES:
+.SUFFIXES: .c .o .py .pyc .po .pot
 
 # targets that not represent generated files
-.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins first walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help butia_plugin followme_plugin nxt_plugin wedo_plugin plugins
+.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins first walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help butia_plugin followme_plugin nxt_plugin wedo_plugin plugins dev
