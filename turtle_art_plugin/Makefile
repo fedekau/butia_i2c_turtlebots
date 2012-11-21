@@ -35,6 +35,7 @@ INSTALL = install
 INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = ${INSTALL} -m 644
 LESS = less
+BUILDDIR = tmp
 
 prefix = /usr/local
 exec_prefix = $(prefix)
@@ -195,79 +196,79 @@ butiaXO:
 
 mktmpfolder:
 	#making folders and copying mainline
-	rm -rf tmp
+	rm -rf $(BUILDDIR)
 	cp -rL mainline tmp
-	rm -rf tmp/.git
-	rm -f tmp/.gitignore
+	rm -rf $(BUILDDIR)/.git
+	rm -f  $(BUILDDIR)/.gitignore
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
-	cp -rLf stagin/activity tmp/
+	cp -rLf stagin/activity $(BUILDDIR)/
 
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
 	(cd turtle-extras && ./merge.py turtlebots)
-	cp turtle-extras/taextras.py tmp
+	cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
-	(cd tmp && python setup.py build)
+	(cd $(BUILDDIR) && python setup.py build)
 	#msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	#msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	#msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
 	#msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
 
 apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
-	cp -rLf butia tmp/plugins/
-	cp -rLf sumtia tmp/plugins/
-	cp -rLf followme/ tmp/plugins/
-	cp -rLf nxt_plugin/ tmp/plugins/
-	cp -rLf wedo_plugin/ tmp/plugins/
+	cp -rLf butia         $(BUILDDIR)/plugins/
+	cp -rLf sumtia        $(BUILDDIR)/plugins/
+	cp -rLf followme/     $(BUILDDIR)/plugins/
+	cp -rLf nxt_plugin/   $(BUILDDIR)/plugins/
+	cp -rLf wedo_plugin/  $(BUILDDIR)/plugins/
 
 apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
 	# let's make symlinks, it lets you, edit and try, more easily!
-	ln -s `pwd`/butia tmp/plugins/butia
-	ln -s `pwd`/sumtia tmp/plugins/sumtia
-	ln -s `pwd`/followme tmp/plugins/followme
-	ln -s `pwd`/nxt_plugin tmp/plugins/nxt_plugin
-	ln -s `pwd`/wedo_plugin tmp/plugins/wedo_plugin
+	ln -s `pwd`/butia         $(BUILDDIR)/plugins/butia
+	ln -s `pwd`/sumtia        $(BUILDDIR)/plugins/sumtia
+	ln -s `pwd`/followme      $(BUILDDIR)/plugins/followme
+	ln -s `pwd`/nxt_plugin    $(BUILDDIR)/plugins/nxt_plugin
+	ln -s `pwd`/wedo_plugin   $(BUILDDIR)/plugins/wedo_plugin
 
 xo: apply_hard_plugins
 	# remove .git from NXT plugin
-	rm -rf tmp/plugins/nxt_plugin/.git
-	rm -f tmp/plugins/nxt_plugin/.gitignore
+	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
+	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 	# ok, let's make this .xo
-	(cd tmp && python setup.py build)
+	(cd $(BUILDDIR) && python setup.py build)
 	#dist_xo no work in the tmp folder
-	(cd tmp && python setup.py dist_xo)
-	cp tmp/dist/*.xo .
+	(cd $(BUILDDIR) && python setup.py dist_xo)
+	cp $(BUILDDIR)/dist/*.xo .
 	#$(MAKE) clean_tmp
 
 
 ################ Plugins #############
 
 plugin-butia: apply_hard_plugins
-	cp stagin/plugins/butia/plugin.info tmp/plugins
-	(cd tmp/plugins && tar -czvf butia_plugin.tar.gz butia/* plugin.info)
-	rm tmp/plugins/plugin.info
-	mv tmp/plugins/butia_plugin.tar.gz .
+	cp stagin/plugins/butia/plugin.info $(BUILDDIR)/plugins
+	(cd $(BUILDDIR)/plugins && tar -czvf butia_plugin.tar.gz butia/* plugin.info)
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/butia_plugin.tar.gz .
 
 plugin-followme: apply_hard_plugins
-	cp stagin/plugins/followme/plugin.info tmp/plugins
-	(cd tmp/plugins && tar -czvf followme_plugin.tar.gz followme/* plugin.info)
-	rm tmp/plugins/plugin.info
-	mv tmp/plugins/followme_plugin.tar.gz .
+	cp stagin/plugins/followme/plugin.info $(BUILDDIR)/plugins
+	(cd $(BUILDDIR)/plugins && tar -czvf followme_plugin.tar.gz followme/* plugin.info)
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/followme_plugin.tar.gz .
 
 plugin-nxt: apply_hard_plugins
 	# remove .git from NXT plugin
-	rm -rf tmp/plugins/nxt_plugin/.git
-	rm -f tmp/plugins/nxt_plugin/.gitignore
-	cp stagin/plugins/nxt_plugin/plugin.info tmp/plugins
-	cd tmp/plugins && tar -czvf nxt_plugin.tar.gz nxt_plugin/* plugin.info
-	rm tmp/plugins/plugin.info
-	mv tmp/plugins/nxt_plugin.tar.gz .
+	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
+	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
+	cp stagin/plugins/nxt_plugin/plugin.info $(BUILDDIR)/plugins
+	cd $(BUILDDIR)/plugins && tar -czvf nxt_plugin.tar.gz nxt_plugin/* plugin.info
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/nxt_plugin.tar.gz .
 
 plugin-wedo: apply_hard_plugins
-	cp stagin/plugins/wedo_plugin/plugin.info tmp/plugins
-	cd tmp/plugins && tar -czvf wedo_plugin.tar.gz wedo_plugin/* plugin.info
-	rm tmp/plugins/plugin.info
-	mv tmp/plugins/wedo_plugin.tar.gz .
+	cp stagin/plugins/wedo_plugin/plugin.info $(BUILDDIR)/plugins
+	cd $(BUILDDIR)/plugins && tar -czvf wedo_plugin.tar.gz wedo_plugin/* plugin.info
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/wedo_plugin.tar.gz .
 
 plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo
 
@@ -290,6 +291,13 @@ install: all
 
 install-permissions:
 	#TODO!
+	if [ 'x$(cat /etc/group | grep ^greisch:)' = 'x' ] ; then \
+            echo "not exist lego group" ; exit 1 ; \
+        fi
+	#            echo aaa ; fi
+	#        then echo no group legecho OK \
+	#                else echo ss fetch ; echo pp \
+	#        fi
 	#adduser $NOMBRE_USUARIO lego 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
 
 install-strip: install
@@ -341,6 +349,9 @@ clean: clean-tmp clean-plugins clean-xo
 clean-tmp:
 	rm -rf tmp
 
+clean-builddir:
+	rm -rf $(BUILDDIR)
+
 clean-xo:
 	rm -f *.xo
 
@@ -353,7 +364,7 @@ clean-plugins:
 
 # targets that not represent generated files
 .PHONY: all help \
- clean clean-tmp clean-xo clean-plugins \
+ clean clean-tmp clean-builddir clean-xo clean-plugins \
  first walterGIT extrasGIT wedoGIT nxtGIT \
  butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins \
  genpot genpot_notraslated updatepo xo \
