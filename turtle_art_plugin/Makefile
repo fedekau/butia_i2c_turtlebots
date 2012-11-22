@@ -36,7 +36,9 @@ INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = ${INSTALL} -m 644
 LESS = less
 BUILDDIR = tmp
+NOGIT = false
 
+#intallation directorys
 prefix = /usr/local
 exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
@@ -102,9 +104,10 @@ SUBMODULE = mainline
 SUBMODULEVER = master
 
 checkoutsm:
-	(cd $(SUBMODULE) && git clean -xdf)
-	(cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi )
-
+	if [ $(NOGIT) = false ] ; then \
+	    (cd $(SUBMODULE) && git clean -xdf) ; \
+	    (cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi ) ; \
+	fi
 
 ############# checkout a especific version of submodules ##############
 
@@ -297,7 +300,7 @@ install-permissions:
 	#if not exist /etc/group then exit (nothing todo)
 	if [ ! -e $(DESTDIR)$(glbconfdir)/group ] ; then exit 0 ; fi
 	
-	# check if exist lego group
+	# check if not exist lego group (create it if not...)
 	if [ 'x'(cat $(DESTDIR)$(glbconfdir)/group | grep ^lego:) = 'x' ] ; then \
             $(MAKE) install-rules; \
         fi
@@ -315,6 +318,7 @@ install-strip: install
 
 install-rules:
 	if [ -e $(DESTDIR)$(glbconfdir)/group ] ; then addgroup --system lego ; fi
+	mkdir -p $(DESTDIR)$(glbconfdir)/udev/rules.d
 	$(INSTALL_DATA) rules/70-lego.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
 	$(INSTALL_DATA) rules/99-usb4all.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
 
@@ -335,7 +339,8 @@ uninstall: uninstall-rules
 	rm -rf $(DESTDIR)/usr/share/locale/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
 
 uninstall-rules:
-	delgroup --system lego
+	# remove group (actuali I dont knock how to remove group winout error if not exist)
+	if (delgroup --system lego) ; then echo group removed... ; fi
 	rm -f $(DESTDIR)/etc/udev/rules.d/70-lego.rules
 	rm -f $(DESTDIR)/etc/udev/rules.d/99-usb4all.rules
 
