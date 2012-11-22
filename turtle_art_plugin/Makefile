@@ -28,7 +28,6 @@ NXT_VERSION = a0c2ed0f2681a218a435dfa178cd69dafabb3e8c
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 
 
-CWD = $(cwd)
 SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
 INSTALL = install
@@ -60,15 +59,6 @@ mandir = $(datarootdir)/man
 man1dir = $(mandir)/man1
 man2dir = $(mandir)/man2 # etc... etc...
 activitiesdir = $(datadir)/sugar/activities
-
-
-
-
-
-
-
-
-
 
 
 
@@ -122,69 +112,6 @@ wedoGIT: WeDoMore/.git
 
 nxtGIT: nxt_plugin/.git
 	$(MAKE) SUBMODULE=nxt_plugin SUBMODULEVER=$(NXT_VERSION) checkoutsm
-
-#####################   DEPRECATED!!!!! ##############################
-########### POT GENERATION AND TRASLATION THINKS #####################
-####
-####POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
-####POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
-####
-####POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
-####              followme/po/FollowMe.notraslated.pot
-####
-####PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po nxt_plugin/po/es.po
-####
-####
-###### Generate pot of plugins
-####genpot: $(POT_FILES)
-####
-####butia/po/Butia.pot: butia/butia.py
-####	echo msgid \"\" > $@
-####	echo msgstr \"\" >> $@
-####	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-####	xgettext $(POT_PROP) $< -o $@
-####
-####sumtia/po/Sumtia.pot: sumtia/sumtia.py
-####	echo msgid \"\" > $@
-####	echo msgstr \"\" >> $@
-####	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-####	xgettext $(POT_PROP) $< -o $@
-####
-####followme/po/FollowMe.pot: followme/followme.py
-####	echo msgid \"\" > $@
-####	echo msgstr \"\" >> $@
-####	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-####	xgettext $(POT_PROP) $< -o $@
-####
-####
-###### Generate a pot of MSGID that ARE NOT ALREADY translated in mainline (Walter GIT)
-####genpot_notraslated: $(POT_NT_FILES)
-####
-####butia/po/Butia.notraslated.pot: butia/po/Butia.pot 
-####	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-####
-####sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
-####	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-####
-####followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
-####	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-####
-####
-###### update de es.po files of plugins using the pot of not already translated
-####updatepo: $(PO_FILES)
-####
-####butia/po/es.po: butia/po/Butia.notraslated.pot
-####	msgmerge --update --no-fuzzy-matching  $@ $<
-####
-####sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
-####	msgmerge --update --no-fuzzy-matching  $@ $<
-####
-####followme/po/es.po: followme/po/FollowMe.notraslated.pot
-####	msgmerge --update --no-fuzzy-matching  $@ $<
-####
-####
-##################### END  DEPRECATED!!!!! ###########################
-
 
 
 ################ Support for lua (bobot-server) ######################
