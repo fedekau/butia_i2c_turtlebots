@@ -21,19 +21,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#versions to checkout before build
 TURTLEBLOCKS_VERSION = 1e74d47a4f233dc72e7c9698b1ab3ed66d4d19fc
 EXTRAS_VERSION = bf7c5b26f24205548e28b95572305d7df43e4f62
 NXT_VERSION = a0c2ed0f2681a218a435dfa178cd69dafabb3e8c
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 
 
-CWD = $(cwd)
 SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = ${INSTALL} -m 644
+LESS = less
+BUILDDIR = tmp
+NOGIT = false
 
+#intallation directorys
 prefix = /usr/local
 exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
@@ -42,6 +46,7 @@ libexecdir = $(exec_prefix)/libexec
 datarootdir = $(prefix)/share
 datadir = $(datarootdir)
 sysconfdir = $(prefix)/etc
+glbconfdir = /etc
 sharedstatedir = $(prefix)/com
 localstatedir = $(prefix)/var
 includedir = $(prefix)/include
@@ -53,26 +58,15 @@ localedir = $(datarootdir)/locale
 mandir = $(datarootdir)/man
 man1dir = $(mandir)/man1
 man2dir = $(mandir)/man2 # etc... etc...
+activitiesdir = $(datadir)/sugar/activities
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-all: help
+all: apply_hard_plugins
 
 
 help:
-	if [ -e /usr/bin/less ] ; then less INSTALL ; fi
+	if [ -e /usr/bin/less ] ; then $(LESS) INSTALL ; fi
 	# if the user not have less command...
 	cat INSTALL
 
@@ -100,9 +94,10 @@ SUBMODULE = mainline
 SUBMODULEVER = master
 
 checkoutsm:
-	(cd $(SUBMODULE) && git clean -xdf)
-	(cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi )
-
+	if [ $(NOGIT) = false ] ; then \
+	    (cd $(SUBMODULE) && git clean -xdf) ; \
+	    (cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi ) ; \
+	fi
 
 ############# checkout a especific version of submodules ##############
 
@@ -118,69 +113,6 @@ wedoGIT: WeDoMore/.git
 nxtGIT: nxt_plugin/.git
 	$(MAKE) SUBMODULE=nxt_plugin SUBMODULEVER=$(NXT_VERSION) checkoutsm
 
-#####################   DEPRECATED!!!!! ##############################
-########### POT GENERATION AND TRASLATION THINKS #####################
-####
-####POT_FILES= butia/po/Butia.pot sumtia/po/Sumtia.pot followme/po/FollowMe.pot
-####POT_PROP= --language=Python --add-comments=TRANS: --keyword=_ --join-existing
-####
-####POT_NT_FILES= butia/po/Butia.notraslated.pot sumtia/po/Sumtia.notraslated.pot \
-####              followme/po/FollowMe.notraslated.pot
-####
-####PO_FILES= butia/po/es.po sumtia/po/es.po followme/po/es.po nxt_plugin/po/es.po
-####
-####
-###### Generate pot of plugins
-####genpot: $(POT_FILES)
-####
-####butia/po/Butia.pot: butia/butia.py
-####	echo msgid \"\" > $@
-####	echo msgstr \"\" >> $@
-####	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-####	xgettext $(POT_PROP) $< -o $@
-####
-####sumtia/po/Sumtia.pot: sumtia/sumtia.py
-####	echo msgid \"\" > $@
-####	echo msgstr \"\" >> $@
-####	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-####	xgettext $(POT_PROP) $< -o $@
-####
-####followme/po/FollowMe.pot: followme/followme.py
-####	echo msgid \"\" > $@
-####	echo msgstr \"\" >> $@
-####	echo \"Content-Type: text/plain\; charset=UTF-8\" >> $@
-####	xgettext $(POT_PROP) $< -o $@
-####
-####
-###### Generate a pot of MSGID that ARE NOT ALREADY translated in mainline (Walter GIT)
-####genpot_notraslated: $(POT_NT_FILES)
-####
-####butia/po/Butia.notraslated.pot: butia/po/Butia.pot 
-####	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-####
-####sumtia/po/Sumtia.notraslated.pot: sumtia/po/Sumtia.pot
-####	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-####
-####followme/po/FollowMe.notraslated.pot: followme/po/FollowMe.pot
-####	msgmerge --no-fuzzy-matching mainline/po/es.po $< | msgattrib --no-obsolete --untranslated > $@
-####
-####
-###### update de es.po files of plugins using the pot of not already translated
-####updatepo: $(PO_FILES)
-####
-####butia/po/es.po: butia/po/Butia.notraslated.pot
-####	msgmerge --update --no-fuzzy-matching  $@ $<
-####
-####sumtia/po/es.po: sumtia/po/Sumtia.notraslated.pot
-####	msgmerge --update --no-fuzzy-matching  $@ $<
-####
-####followme/po/es.po: followme/po/FollowMe.notraslated.pot
-####	msgmerge --update --no-fuzzy-matching  $@ $<
-####
-####
-##################### END  DEPRECATED!!!!! ###########################
-
-
 
 ################ Support for lua (bobot-server) ######################
 
@@ -193,127 +125,183 @@ butiaXO:
 
 mktmpfolder:
 	#making folders and copying mainline
-	rm -rf tmp
-	cp -rL mainline tmp
-	rm -rf tmp/.git
-	rm -f tmp/.gitignore
+	rm -rf $(BUILDDIR)
+	cp -rL mainline $(BUILDDIR)
+	rm -rf $(BUILDDIR)/.git
+	rm -f  $(BUILDDIR)/.gitignore
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
-	cp -rLf stagin/activity tmp/
+	cp -rLf stagin/activity $(BUILDDIR)/
 
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
 	(cd turtle-extras && ./merge.py turtlebots)
-	cp turtle-extras/taextras.py tmp
+	cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
-	(cd tmp && python setup.py build)
+	(cd $(BUILDDIR) && python setup.py build)
 	#msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	#msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
 	#msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
 	#msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
 
 apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
-	cp -rLf butia tmp/plugins/
-	cp -rLf sumtia tmp/plugins/
-	cp -rLf followme/ tmp/plugins/
-	cp -rLf nxt_plugin/ tmp/plugins/
-	cp -rLf wedo_plugin/ tmp/plugins/
+	cp -rLf butia         $(BUILDDIR)/plugins/
+	cp -rLf sumtia        $(BUILDDIR)/plugins/
+	cp -rLf followme/     $(BUILDDIR)/plugins/
+	cp -rLf nxt_plugin/   $(BUILDDIR)/plugins/
+	cp -rLf wedo_plugin/  $(BUILDDIR)/plugins/
 
 apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
 	# let's make symlinks, it lets you, edit and try, more easily!
-	ln -s `pwd`/butia tmp/plugins/butia
-	ln -s `pwd`/sumtia tmp/plugins/sumtia
-	ln -s `pwd`/followme tmp/plugins/followme
-	ln -s `pwd`/nxt_plugin tmp/plugins/nxt_plugin
-	ln -s `pwd`/wedo_plugin tmp/plugins/wedo_plugin
+	ln -s `pwd`/butia         $(BUILDDIR)/plugins/butia
+	ln -s `pwd`/sumtia        $(BUILDDIR)/plugins/sumtia
+	ln -s `pwd`/followme      $(BUILDDIR)/plugins/followme
+	ln -s `pwd`/nxt_plugin    $(BUILDDIR)/plugins/nxt_plugin
+	ln -s `pwd`/wedo_plugin   $(BUILDDIR)/plugins/wedo_plugin
 
 xo: apply_hard_plugins
 	# remove .git from NXT plugin
-	rm -rf tmp/plugins/nxt_plugin/.git
-	rm -f tmp/plugins/nxt_plugin/.gitignore
+	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
+	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 	# ok, let's make this .xo
-	(cd tmp && python setup.py build)
+	(cd $(BUILDDIR) && python setup.py build)
 	#dist_xo no work in the tmp folder
-	(cd tmp && python setup.py dist_xo)
-	cp tmp/dist/*.xo .
+	(cd $(BUILDDIR) && python setup.py dist_xo)
+	cp $(BUILDDIR)/dist/*.xo .
 	#$(MAKE) clean_tmp
-
-
-################ Plugins #############
-
-butia_plugin: apply_hard_plugins
-	cp stagin/plugins/butia/plugin.info tmp/plugins
-	(cd tmp/plugins && tar -czvf butia_plugin.tar.gz butia/* plugin.info)
-	rm tmp/plugins/plugin.info
-	mv tmp/plugins/butia_plugin.tar.gz .
-
-followme_plugin: apply_hard_plugins
-	cp stagin/plugins/followme/plugin.info tmp/plugins
-	(cd tmp/plugins && tar -czvf followme_plugin.tar.gz followme/* plugin.info)
-	rm tmp/plugins/plugin.info
-	mv tmp/plugins/followme_plugin.tar.gz .
-
-nxt_plugin: apply_hard_plugins
-	# remove .git from NXT plugin
-	rm -rf tmp/plugins/nxt_plugin/.git
-	rm -f tmp/plugins/nxt_plugin/.gitignore
-	cp stagin/plugins/nxt_plugin/plugin.info tmp/plugins
-	cd tmp/plugins && tar -czvf nxt_plugin.tar.gz nxt_plugin/* plugin.info
-	rm tmp/plugins/plugin.info
-	mv tmp/plugins/nxt_plugin.tar.gz .
-
-wedo_plugin: apply_hard_plugins
-	cp stagin/plugins/wedo_plugin/plugin.info tmp/plugins
-	cd tmp/plugins && tar -czvf wedo_plugin.tar.gz wedo_plugin/* plugin.info
-	rm tmp/plugins/plugin.info
-	mv tmp/plugins/wedo_plugin.tar.gz .
-
-plugins: butia_plugin followme_plugin nxt_plugin wedo_plugin
-
-
-# TODO!!!!! Aply debian policies!!!
-install_activity: xo
-	sugar-install-bundle *.xo
-	$(MAKE) clean_xo
-
-install: apply_hard_plugins
 
 dev: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
 	mkdir -p ~/Activities
-	(cd tmp && python setup.py dev)
+	(cd $(BUILDDIR) && python setup.py dev)
 
 
+################ Plugins #############
+
+plugin-butia: apply_hard_plugins
+	cp stagin/plugins/butia/plugin.info $(BUILDDIR)/plugins
+	(cd $(BUILDDIR)/plugins && tar -czvf butia_plugin.tar.gz butia/* plugin.info)
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/butia_plugin.tar.gz .
+
+plugin-followme: apply_hard_plugins
+	cp stagin/plugins/followme/plugin.info $(BUILDDIR)/plugins
+	(cd $(BUILDDIR)/plugins && tar -czvf followme_plugin.tar.gz followme/* plugin.info)
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/followme_plugin.tar.gz .
+
+plugin-nxt: apply_hard_plugins
+	# remove .git from NXT plugin
+	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
+	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
+	cp stagin/plugins/nxt_plugin/plugin.info $(BUILDDIR)/plugins
+	cd $(BUILDDIR)/plugins && tar -czvf nxt_plugin.tar.gz nxt_plugin/* plugin.info
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/nxt_plugin.tar.gz .
+
+plugin-wedo: apply_hard_plugins
+	cp stagin/plugins/wedo_plugin/plugin.info $(BUILDDIR)/plugins
+	cd $(BUILDDIR)/plugins && tar -czvf wedo_plugin.tar.gz wedo_plugin/* plugin.info
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/wedo_plugin.tar.gz .
+
+plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo
+
+plugin-all: plugins
+
+############### Install procedures #################
+
+install-activity: xo
+	sugar-install-bundle *.xo
+
+install-xo: install-activity
+
+install: all install-permissions
+	echo "Instalando..."
+	mkdir -p $(DESTDIR)$(activitiesdir)
+	$(INSTALL) -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
+	#cp IconosTortuBots.desktop ~/.local/share/applications/ 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
+
+install-permissions:
+	# This part check for users to add to group LEGO (allowed to use robot)
+	#if not exist /etc/group then exit (nothing todo)
+	if [ ! -e $(DESTDIR)$(glbconfdir)/group ] ; then exit 0 ; fi
+	
+	# check if not exist lego group (create it if not...)
+	if [ 'x'(cat $(DESTDIR)$(glbconfdir)/group | grep ^lego:) = 'x' ] ; then \
+            $(MAKE) install-rules; \
+        fi
+	#echo `cat /etc/passwd | grep "1[0-9]\{3\}" | sed 's/:\[\^:\]\?//'
+	#            echo aaa ; fi
+	#  s/^\([0-9]*\.[0-9]*\)\([^.0-9]\|$\)/\1.0\2/
+	#        then echo no group legecho OK \
+	#                else echo ss fetch ; echo pp \
+	#        fi
+	#adduser $NOMBRE_USUARIO lego 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
+
+
+install-strip: install
+	#strip $(DESTDIR) file...
+
+install-rules:
+	if [ -e $(DESTDIR)$(glbconfdir)/group ] ; then addgroup --system lego ; fi
+	mkdir -p $(DESTDIR)$(glbconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-lego.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/99-usb4all.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
+
+
+############### UNInstall procedures #################
+
+uninstall-activity:
+	rm -rf ~/Activities/TurtleBots.activity
+
+uninstall-xo: uninstall-activity
+
+uninstall-strip: uninstall
+	#unstrip $(DESTDIR) file... :-P
+
+uninstall: uninstall-rules
+	rm -rf ~/Activities/TurtleBots.activity
+	rm -rf $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
+	rm -rf $(DESTDIR)/usr/share/locale/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
+
+uninstall-rules:
+	# remove group (actuali I dont knock how to remove group winout error if not exist)
+	if (delgroup --system lego) ; then echo group removed... ; fi
+	rm -f $(DESTDIR)/etc/udev/rules.d/70-lego.rules
+	rm -f $(DESTDIR)/etc/udev/rules.d/99-usb4all.rules
 
 ####### CLEAN STUFF ######
 
 
-clean:
+clean: clean-tmp clean-plugins clean-xo clean-builddir
 	$(MAKE) -C ../butiaXO clean
-	#$(MAKE) clean_pot
-	$(MAKE) clean_tmp
-	$(MAKE) clean_plugins
-	$(MAKE) clean_xo
 	# this remove only if it's a symlink ; don't remove if installed
 	rm -f ~/Activities/TurtleBots.activity
 
-clean_tmp:
+clean-tmp:
 	rm -rf tmp
 
-####clean_pot:
-####	rm -f $(POT_FILES) $(POT_NT_FILES)
+clean-builddir:
+	rm -rf $(BUILDDIR)
 
-clean_xo:
+clean-xo:
 	rm -f *.xo
 
-clean_plugins:
+clean-plugins:
 	rm -f *.tar.gz
 
-uninstall:
-	rm -rf ~/Activities/TurtleBots.activity
-	
 
 .SUFFIXES:
 .SUFFIXES: .c .o .py .pyc .po .pot
 
 # targets that not represent generated files
-.PHONY: all clean clean_tmp clean_pot clean_xo clean_plugins first walterGIT wedoGIT nxtGIT butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins genpot genpot_notraslated updatepo xo install uninstall help butia_plugin followme_plugin nxt_plugin wedo_plugin plugins dev
+.PHONY: all help \
+ clean clean-tmp clean-builddir clean-xo clean-plugins \
+ first walterGIT extrasGIT wedoGIT nxtGIT \
+ butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins \
+ genpot genpot_notraslated updatepo xo \
+ install install-strip \
+ uninstall uninstall-strip \
+ plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
+ dev
