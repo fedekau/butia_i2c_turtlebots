@@ -22,7 +22,7 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = 3d80bec755ef4c807197592949602d24f774cd8d
+TURTLEBLOCKS_VERSION = 1e74d47a4f233dc72e7c9698b1ab3ed66d4d19fc
 EXTRAS_VERSION = bf7c5b26f24205548e28b95572305d7df43e4f62
 NXT_VERSION = a0c2ed0f2681a218a435dfa178cd69dafabb3e8c
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
@@ -35,7 +35,7 @@ INSTALL_PROGRAM = $(INSTALL)
 INSTALL_DATA = ${INSTALL} -m 644
 LESS = less
 BUILDDIR = tmp
-NOGIT = false
+NOGIT =
 
 #intallation directorys
 prefix = /usr/local
@@ -94,10 +94,10 @@ SUBMODULE = mainline
 SUBMODULEVER = master
 
 checkoutsm:
-	if [ $(NOGIT) = false ] ; then \
-	    (cd $(SUBMODULE) && git clean -xdf) ; \
-	    (cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi ) ; \
-	fi
+ifndef NOGIT
+	(cd $(SUBMODULE) && git clean -xdf ) 
+	(cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi )
+endif
 
 ############# checkout a especific version of submodules ##############
 
@@ -223,21 +223,12 @@ install: all install-permissions
 	#cp IconosTortuBots.desktop ~/.local/share/applications/ 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
 
 install-permissions:
-	# This part check for users to add to group LEGO (allowed to use robot)
-	#if not exist /etc/group then exit (nothing todo)
-	if [ ! -e $(DESTDIR)$(glbconfdir)/group ] ; then exit 0 ; fi
-	
-	# check if not exist lego group (create it if not...)
-	if [ 'x'(cat $(DESTDIR)$(glbconfdir)/group | grep ^lego:) = 'x' ] ; then \
-            $(MAKE) install-rules; \
-        fi
-	#echo `cat /etc/passwd | grep "1[0-9]\{3\}" | sed 's/:\[\^:\]\?//'
-	#            echo aaa ; fi
-	#  s/^\([0-9]*\.[0-9]*\)\([^.0-9]\|$\)/\1.0\2/
-	#        then echo no group legecho OK \
-	#                else echo ss fetch ; echo pp \
-	#        fi
-	#adduser $NOMBRE_USUARIO lego 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
+	if [ -e /etc/group ] ; then \
+          if [ "x`cat /etc/group | grep ^lego:`" = "x" ] ; then \
+              $(MAKE) install-rules ; \
+          fi ; \
+          ./permissions.sh ; \
+        fi ;
 
 
 install-strip: install
