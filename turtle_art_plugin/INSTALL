@@ -2,9 +2,9 @@ This file explain how to install TurtleBots using Makefile
 
 Short way:
     make
-    make install
+    sudo make install
 
-you can change the "prefix" (by default "/usr/local")
+You can change the "prefix" (by default "/usr/local")
 or any other vartiables of instalation
 For example to intall in /home/myhome type this
     make
@@ -13,37 +13,64 @@ For example to intall in /home/myhome type this
 The Makefile meets the GNU standards (or at least most of them)
 sow you can change the default installation variables...
     prefix = /usr/local
-    bindir = /usr/local/bin
-    datarootdir = /usr/local/share
-    datadir = /usr/local/share
-    sysconfdir = /usr/local/etc
-    docdir = /usr/local/share/doc/tortubots
-    infodir = /usr/local/share/info
-    localedir = /usr/local/share/locale
+    bindir = $(prefix)/bin
+    datarootdir = $(prefix)/share
+    datadir = $(datarootdir)
+    sysconfdir = $(prefix)/etc
+    glbconfdir = /etc
+    docdir = $(datarootdir)/doc/turtlebots
+    infodir = $(datarootdir)/info
+    localedir = $(datarootdir)/locale
 
 
-This is a Makefile for compile/construct TurtleArtButia.
 The follow objetives are defined:
-    first: Execute this command to init the submodules only the
-         first time after clone
+    help: Show this. "Yes! you're watching this right now"
+    all : compile all requerid.
     xo : Generate the XO distribuible package
     dev: compile all necessary for TurtleArtButia
                  and make a developed sugar install
                  this allow to work and easy change the code
-    install: install activity
-    uninstall: unistall activity
+    install: install the activity (use $prefix)
+    uninstall: unistall the activity (use $prefix)
     clean: clean all compiled/generated files
-    genpot: generate pot of plugings
-    genpot_notraslated: generate pot the plugings that are
-                        not already traslated in taextras.py
-    updatepo: using notraslated.pot update the es.po of plugin's
-              the other traslations all already set in mainline
-              of Walter, so use that traslations.
 
-The follow parameters are optional:
+
+Makefile suport the follow parameters:
+
     TURTLEBLOCKS_VERSION=[version or commit]
+        This change the default version of turtleblocks to use
+        in the creation of TurtleBots (internaly a git checkout is done)
+    EXTRAS_VERSION=[version or commit]
+        This change the default version of traductions to use
+        in the creation of TurtleBots (internaly a git checkout is done)
+    NXT_VERSION=[version or commit]
+        This change the default version of nxt plugin to use
+        in the creation of TurtleBots (internaly a git checkout is done)
+    WEDO_VERSION=[version or commit]
+        This change the default version of wedo plugin to use
+        in the creation of TurtleBots (internaly a git checkout is done)
+    NOGIT=true
+        if setting "true" then no git checkout is used, turtlebots will
+        be created using the current state of plugins/mainline directorys
 
-           For more info contact "butia@fing.edu.uy"
- wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki
+    SHELL=/bin/sh  (by default)
+    LESS=less      (by default)
+        usefull program internaly used in Makefile
+
+    BUILDDIR = tmp  (by default)
+        This change the directory were turtlebots is compiled
+
+    INSTALL = install  (by default)
+    INSTALL_PROGRAM = $(INSTALL)
+    INSTALL_DATA = ${INSTALL} -m 644
+        This change the program used to intall the TurtleBots
+
+
+For more info contact "butia@fing.edu.uy"
+To submit a bug send a email whit subject: "BUG: $(SIMPLE_DESCRIPTION)"
+to email butia@fing.edu.uy, dont forget to include extender and detailed
+information in the body, sow we can actualy reproduce the bug!
+homepague: http://www.fing.edu.uy/inco/proyectos/butia
+wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki
 
 
