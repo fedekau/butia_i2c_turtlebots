@@ -82,7 +82,7 @@ class usb_device():
                 return [names, copy, sn]
             except:
                 if self.debug:
-                    print 'Exception in write usb'
+                    print 'Exception in get_info'
                 return ERROR
         else:
             if self.debug:
