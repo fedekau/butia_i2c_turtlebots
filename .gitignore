@@ -33,6 +33,7 @@ libs/lua-5.1.4/src/luac
 
 ## temporary folder for TortugArteButia
 turtle_art_plugin/tmp
+turtle_art_plugin/*.tar.gz
 
 
 # Also is posible to ignore all subdirectory or files in that directory
