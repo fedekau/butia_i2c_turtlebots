@@ -112,7 +112,10 @@ class robot:
         try:
             ret = int(ret)
         except:
-            ret = ERROR_SENSOR_READ
+            try:
+                ret = float(ret)
+            except:
+                ret = ERROR_SENSOR_READ
         return ret
 
     # Close bobot service
