@@ -40,7 +40,7 @@ from gettext import gettext as _
 #constants definitions
 ERROR_SENSOR_READ = -1   # default return value in case of error when reading a sensor
 MAX_SPEED = 1023   # max velocity for AX-12 - 10 bits -
-MAX_SENSOR_PER_TYPE = 4
+MAX_SENSOR_PER_TYPE = 5
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 WHEELBASE = 28.00
@@ -258,7 +258,7 @@ class Butia(Plugin):
 
             (blockstyle , listofmodules) = i
             for j in listofmodules:
-                for m in range(0, MAX_SENSOR_PER_TYPE):
+                for m in range(MAX_SENSOR_PER_TYPE):
                     isHidden = True
                     k = m
                     if (m == 0):
