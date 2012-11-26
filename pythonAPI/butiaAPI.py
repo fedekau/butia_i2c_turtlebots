@@ -236,7 +236,7 @@ class robot:
         return self.callModule('res:' + str(number), 'getValue')
 
     # return the value of the resistance sensor
-    def getVoltaje(self, number=''):
+    def getVoltage(self, number=''):
         return self.callModule('volt:' + str(number), 'getValue')
 
     # return the value of the tilt sensor

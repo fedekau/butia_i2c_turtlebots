@@ -61,7 +61,7 @@ modules_help['tilt'] = _("returns 0 or 1 depending on the sensor inclination")
 modules_help['magneticinduction'] = _("returns 1 when the sensors detects a magnetic field, 0 otherwise")
 modules_help['vibration'] = _("switches from 0 to 1, the frequency depends on the vibration")
 modules_help['resistanceB'] = _("returns the value of the resistance")
-modules_help['voltajeB'] = _("returns the value of the voltaje")
+modules_help['voltageB'] = _("returns the value of the voltage")
 
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
@@ -73,7 +73,7 @@ modules_name_from_device_id['ambientlight'] = 'light'
 modules_name_from_device_id['temperature'] = 'temp'
 modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
-modules_name_from_device_id['voltajeB'] = 'volt'
+modules_name_from_device_id['voltageB'] = 'volt'
 
 device_id_from_module_name = {} 
 device_id_from_module_name['led'] = 'led'
@@ -83,7 +83,7 @@ device_id_from_module_name['light'] = 'ambientlight'
 device_id_from_module_name['temp'] = 'temperature'
 device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
-device_id_from_module_name['volt'] = 'voltaje'
+device_id_from_module_name['volt'] = 'voltage'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -93,9 +93,9 @@ label_name_from_device_id['ambientlight'] = _('ambient light')
 label_name_from_device_id['temperature'] = _('temperature')
 label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
-label_name_from_device_id['voltajeB'] = _('voltaje')
+label_name_from_device_id['voltageB'] = _('voltage')
 
-refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltajeB']
+refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB']
 
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 
@@ -246,14 +246,14 @@ class Butia(Plugin):
         primitive_dictionary['buttonButia'] = self.buttonButia
         primitive_dictionary['temperatureButia'] = self.temperatureButia
         primitive_dictionary['distanceButia'] = self.distanceButia
-        primitive_dictionary['resistanceBButia'] = self.resistanceB
-        primitive_dictionary['voltajeBButia'] = self.voltajeB
+        primitive_dictionary['resistanceBButia'] = self.resistanceButia
+        primitive_dictionary['voltageBButia'] = self.voltageButia
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'resistanceB', 'voltajeB']]
+                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'resistanceB', 'voltageB']]
                  ]:
 
             (blockstyle , listofmodules) = i
@@ -268,7 +268,7 @@ class Butia(Plugin):
                     module = j + str(k)
                     block_name = module + 'Butia'
                     
-                    if (j == 'resistanceB') or (j == 'voltajeB'):
+                    if (j == 'resistanceB') or (j == 'voltageB'):
                         if self.extra_palette:
                             palette2.add_block(block_name, 
                                      style=blockstyle,
@@ -537,15 +537,15 @@ class Butia(Plugin):
         else:
             return ERROR_SENSOR_READ
 
-    def resistanceB(self, sensorid=''):
+    def resistanceButia(self, sensorid=''):
         if self.butia:
             return self.butia.getResistance(sensorid)
         else:
             return ERROR_SENSOR_READ
 
-    def voltajeB(self, sensorid=''):
+    def voltageButia(self, sensorid=''):
         if self.butia:
-            return self.butia.getVoltaje(sensorid)
+            return self.butia.getVoltage(sensorid)
         else:
             return ERROR_SENSOR_READ
 
