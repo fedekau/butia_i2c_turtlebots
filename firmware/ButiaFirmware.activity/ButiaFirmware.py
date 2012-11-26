@@ -60,7 +60,7 @@ class ButiaFirmware(activity.Activity):
 
         box = gtk.VBox()
         img = gtk.Image()
-        img.set_from_file("alert.svg")
+        img.set_from_file("activity/fua-icon.svg")
         img.show()
         box.add(img) 
 
