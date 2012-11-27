@@ -130,6 +130,7 @@ mktmpfolder:
 	rm -f  $(BUILDDIR)/.gitignore
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity $(BUILDDIR)/
+	cp -rLf stagin/turtlebots.desktop $(BUILDDIR)/
 
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
@@ -219,6 +220,7 @@ install: all install-permissions
 	echo "Instaling..."
 	mkdir -p $(DESTDIR)$(activitiesdir)
 	cp -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	mkdir -p $(DESTDIR)$(datadir)/applications
 	$(INSTALL_DATA) $(BUILDDIR)/turtlebots.desktop $(DESTDIR)$(datadir)/applications/
 	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
 
@@ -252,10 +254,10 @@ uninstall-strip: uninstall
 
 uninstall:
 	$(MAKE) prefix= uninstall-rules
-	#this should by change to rmdir -p --ignore-fail-on-non-empty
-	rm -rf ~/Activities/TurtleBots.activity
 	rm -rf $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(activitiesdir)
 	rm -f  $(DESTDIR)$(datadir)/applications/turtlebots.desktop
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/applications
 	# not more needed - rm -rf $(DESTDIR)$(localedir)/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
 
 uninstall-permissions:
