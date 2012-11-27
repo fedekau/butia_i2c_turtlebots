@@ -46,7 +46,6 @@ libexecdir = $(exec_prefix)/libexec
 datarootdir = $(prefix)/share
 datadir = $(datarootdir)
 sysconfdir = $(prefix)/etc
-glbconfdir = /etc
 sharedstatedir = $(prefix)/com
 localstatedir = $(prefix)/var
 includedir = $(prefix)/include
@@ -216,17 +215,16 @@ install-activity: xo
 install-xo: install-activity
 
 install: all install-permissions
-	echo "Instalando..."
+	$(MAKE) prefix= install-rules
+	echo "Instaling..."
 	mkdir -p $(DESTDIR)$(activitiesdir)
-	$(INSTALL) -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	cp -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
 	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
 	#cp IconosTortuBots.desktop ~/.local/share/applications/ 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
 
 install-permissions:
-	if [ -e /etc/group ] ; then \
-          if [ "x`cat /etc/group | grep ^lego:`" = "x" ] ; then \
-              $(MAKE) install-rules ; \
-          fi ; \
+	if [ -e $(DESTDIR)/etc/group ] ; then \
+          addgroup --system lego ; \
           ./permissions.sh ; \
         fi ;
 
@@ -235,10 +233,9 @@ install-strip: install
 	#strip $(DESTDIR) file...
 
 install-rules:
-	if [ -e $(DESTDIR)$(glbconfdir)/group ] ; then addgroup --system lego ; fi
-	mkdir -p $(DESTDIR)$(glbconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-lego.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/99-usb4all.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
+	mkdir -p $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-lego.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/99-usb4all.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
 
 
 ############### UNInstall procedures #################
@@ -248,19 +245,28 @@ uninstall-activity:
 
 uninstall-xo: uninstall-activity
 
+uninstall-dev: uninstall-activity
+
 uninstall-strip: uninstall
 	#unstrip $(DESTDIR) file... :-P
 
-uninstall: uninstall-rules
+uninstall:
+	$(MAKE) prefix= uninstall-rules
 	rm -rf ~/Activities/TurtleBots.activity
 	rm -rf $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
 	rm -rf $(DESTDIR)/usr/share/locale/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
 
+uninstall-permissions:
+	if [ -e $(DESTDIR)/etc/group ] ; then \
+          # remove group (actuali I dont knock how to remove group winout error if not exist) \
+          if (delgroup --system lego) ; then echo group removed... ; fi ; \
+        fi ;
+
 uninstall-rules:
-	# remove group (actuali I dont knock how to remove group winout error if not exist)
-	if (delgroup --system lego) ; then echo group removed... ; fi
-	rm -f $(DESTDIR)/etc/udev/rules.d/70-lego.rules
-	rm -f $(DESTDIR)/etc/udev/rules.d/99-usb4all.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/99-usb4all.rules
+	rmdir --ignore-fail-on-non-empty $(DESTDIR)$(sysconfdir)/udev/rules.d
+
 
 ####### CLEAN STUFF ######
 
