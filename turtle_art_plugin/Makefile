@@ -219,8 +219,8 @@ install: all install-permissions
 	echo "Instaling..."
 	mkdir -p $(DESTDIR)$(activitiesdir)
 	cp -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	$(INSTALL_DATA) $(BUILDDIR)/turtlebots.desktop $(DESTDIR)$(datadir)/applications/
 	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
-	#cp IconosTortuBots.desktop ~/.local/share/applications/ 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
 
 install-permissions:
 	if [ -e $(DESTDIR)/etc/group ] ; then \
@@ -255,7 +255,8 @@ uninstall:
 	#this should by change to rmdir -p --ignore-fail-on-non-empty
 	rm -rf ~/Activities/TurtleBots.activity
 	rm -rf $(DESTDIR)$(activitiesdir)/TurtleBots.activity
-	rm -rf $(DESTDIR)$(localedir)/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
+	rm -f  $(DESTDIR)$(datadir)/applications/turtlebots.desktop
+	# not more needed - rm -rf $(DESTDIR)$(localedir)/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
 
 uninstall-permissions:
 	if [ -e $(DESTDIR)/etc/group ] ; then \
