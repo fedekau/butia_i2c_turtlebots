@@ -252,9 +252,10 @@ uninstall-strip: uninstall
 
 uninstall:
 	$(MAKE) prefix= uninstall-rules
+	#this should by change to rmdir -p --ignore-fail-on-non-empty
 	rm -rf ~/Activities/TurtleBots.activity
-	rm -rf $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
-	rm -rf $(DESTDIR)/usr/share/locale/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
+	rm -rf $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	rm -rf $(DESTDIR)$(localedir)/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
 
 uninstall-permissions:
 	if [ -e $(DESTDIR)/etc/group ] ; then \
@@ -265,7 +266,7 @@ uninstall-permissions:
 uninstall-rules:
 	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego.rules
 	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/99-usb4all.rules
-	rmdir --ignore-fail-on-non-empty $(DESTDIR)$(sysconfdir)/udev/rules.d
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(sysconfdir)/udev/rules.d
 
 
 ####### CLEAN STUFF ######
