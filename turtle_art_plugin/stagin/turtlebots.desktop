@@ -1,11 +1,11 @@
 [Desktop Entry]
 Name=TurtleBots
-Name[es]=TortuBots
+Name[es]=TurtleBots
 GenericName=Sugar TurtleBots activity
 GenericName[es]=Actividad Sugar TurtleBots
 TryExec=turtlebots
 Exec=/usr/share/sugar/activities/TurtleBots.activity/turtleblocks.py
-Icon=turtlebots
+Icon=/usr/share/icons/hicolor/scalable/apps/turtlebots.svg
 Type=Application
 Comment=TurtleBlocks with robot plugins: Butia, Lego NxT, WeDo, FollowMe
 Comment[es]=TurtleBlocks con plugins roboticos: Butia, Lego NxT, WeDo, FollowMe

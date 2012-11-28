@@ -222,6 +222,8 @@ install: all install-permissions
 	cp -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
 	mkdir -p $(DESTDIR)$(bindir)
 	$(INSTALL) stagin/turtlebots $(DESTDIR)$(bindir)/
+	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
+	$(INSTALL_DATA) stagin/turtlebots.svg $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/
 	mkdir -p $(DESTDIR)$(datadir)/applications
 	$(INSTALL_DATA) $(BUILDDIR)/turtlebots.desktop $(DESTDIR)$(datadir)/applications/
 	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
@@ -262,6 +264,8 @@ uninstall: uninstall-permissions
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(bindir)
 	rm -f  $(DESTDIR)$(datadir)/applications/turtlebots.desktop
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/applications
+	rm -f $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/turtlebots.svg
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
 	# not more needed - rm -rf $(DESTDIR)$(localedir)/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
 
 uninstall-permissions:
