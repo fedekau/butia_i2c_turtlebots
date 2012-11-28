@@ -32,9 +32,10 @@ SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL)
-INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_DATA = $(INSTALL) -m 644
 LESS = less
 BUILDDIR = tmp
+TMPBUILDDIR = /tmp/build
 NOGIT =
 
 #intallation directorys
@@ -148,6 +149,8 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
 	cp -rLf sumtia        $(BUILDDIR)/plugins/
 	cp -rLf followme/     $(BUILDDIR)/plugins/
 	cp -rLf nxt_plugin/   $(BUILDDIR)/plugins/
+	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
+	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 	cp -rLf wedo_plugin/  $(BUILDDIR)/plugins/
 
 apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
@@ -158,16 +161,14 @@ apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
 	ln -s `pwd`/nxt_plugin    $(BUILDDIR)/plugins/nxt_plugin
 	ln -s `pwd`/wedo_plugin   $(BUILDDIR)/plugins/wedo_plugin
 
-xo: apply_hard_plugins
-	# remove .git from NXT plugin
-	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
-	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
+xo:
+	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
 	# ok, let's make this .xo
-	(cd $(BUILDDIR) && python setup.py build)
+	(cd $(TMPBUILDDIR) && python setup.py build)
 	#dist_xo no work in the tmp folder
-	(cd $(BUILDDIR) && python setup.py dist_xo)
-	cp $(BUILDDIR)/dist/*.xo .
-	#$(MAKE) clean_tmp
+	(cd $(TMPBUILDDIR) && python setup.py dist_xo)
+	cp $(TMPBUILDDIR)/dist/*.xo .
+	$(MAKE) BUILDDIR=$(TMPBUILDDIR) clean-builddir
 
 dev: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
@@ -217,9 +218,10 @@ install-xo: install-activity
 
 install: all install-permissions
 	$(MAKE) prefix= install-rules
-	echo "Instaling..."
 	mkdir -p $(DESTDIR)$(activitiesdir)
 	cp -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	mkdir -p $(DESTDIR)$(bindir)
+	$(INSTALL) stagin/turtlebots $(DESTDIR)$(bindir)/
 	mkdir -p $(DESTDIR)$(datadir)/applications
 	$(INSTALL_DATA) $(BUILDDIR)/turtlebots.desktop $(DESTDIR)$(datadir)/applications/
 	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
@@ -252,10 +254,12 @@ uninstall-dev: uninstall-activity
 uninstall-strip: uninstall
 	#unstrip $(DESTDIR) file... :-P
 
-uninstall:
+uninstall: uninstall-permissions
 	$(MAKE) prefix= uninstall-rules
 	rm -rf $(DESTDIR)$(activitiesdir)/TurtleBots.activity
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(activitiesdir)
+	rm -f $(DESTDIR)$(bindir)/turtlebots
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(bindir)
 	rm -f  $(DESTDIR)$(datadir)/applications/turtlebots.desktop
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/applications
 	# not more needed - rm -rf $(DESTDIR)$(localedir)/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
