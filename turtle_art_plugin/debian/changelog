@@ -1,5 +1,7 @@
-turtlebots (17) unstable; urgency=low
+turtlebots (17-r0) unstable; urgency=low
 
   * Initial Release.
+  * Fix Makefile to use whit debianhelper
+  * NO POST-INSTALL/REMOVE included!
 
  -- Guillermo Reisch <greisch@fing.edu.uy>  Wed, 14 Nov 2012 19:37:02 -0200

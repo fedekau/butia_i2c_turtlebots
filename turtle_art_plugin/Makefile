@@ -39,7 +39,8 @@ TMPBUILDDIR = /tmp/build
 NOGIT =
 
 #intallation directorys
-prefix = /usr/local
+#prefix = /usr/local   ###change to build debian package...###
+prefix = /usr
 exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
 sbindir = $(exec_prefix)/sbin
