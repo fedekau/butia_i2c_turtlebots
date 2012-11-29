@@ -27,16 +27,17 @@ fi
 
 if [ -e /etc/group ] ; then 
     # check if not exist lego group (create it if not...)
-    if [ "x`cat /etc/group | grep ^lego:`" = "x" ] ; then 
-         addgroup --system lego
+    if [ "x`cat /etc/group | grep ^robots:`" = "x" ] ; then 
+         addgroup --system robots
     fi
     lusers=`cat /etc/passwd | grep "1[0-9]\{3\}" | sed "s/:.\+//"`
     echo "##########################################"
     echo "######### INSTALL PERMISSIONS  ###########"
     echo "##########################################"
     echo ""
-    echo "This part set what users are in group lego"
-    echo "the group lego allow users to use the lego brick"
+    echo "This part set what users are in group 'robots'"
+    echo "the group 'robots' allow users to use the robots: lego nxt,"
+    echo "lego wedo and butia"
     echo "this script has detect the follow users in this machine:"
     echo "$lusers"
     echo ""
@@ -49,7 +50,7 @@ if [ -e /etc/group ] ; then
     fi
     echo $lusers
     for i in $lusers ; do
-	adduser $i lego
+	adduser $i robots
     done
 
 fi ;

@@ -22,9 +22,9 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = 1e74d47a4f233dc72e7c9698b1ab3ed66d4d19fc
-EXTRAS_VERSION = bf7c5b26f24205548e28b95572305d7df43e4f62
-NXT_VERSION = a0c2ed0f2681a218a435dfa178cd69dafabb3e8c
+TURTLEBLOCKS_VERSION = 4273124d9a8e1986d9c51dae2ec2fd97254f90a3
+EXTRAS_VERSION = 9f730e429750b9f2522ab148e8aed098e63a9db0
+NXT_VERSION = cf71837b173bb78afb2446f8c3dea2932760dc85
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 
 
@@ -231,7 +231,7 @@ install: all install-permissions
 
 install-permissions:
 	if [ -e $(DESTDIR)/etc/group ] ; then \
-          addgroup --system lego ; \
+          addgroup --system robots ; \
           ./permissions.sh ; \
         fi ;
 
@@ -241,9 +241,9 @@ install-strip: install
 
 install-rules:
 	mkdir -p $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-lego.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-lego-NxT.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
 	$(INSTALL_DATA) rules/99-usb4all.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
-
+	$(INSTALL_DATA) rules/99-lego-WeDo.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
 
 ############### UNInstall procedures #################
 
@@ -272,12 +272,13 @@ uninstall: uninstall-permissions
 uninstall-permissions:
 	if [ -e $(DESTDIR)/etc/group ] ; then \
           # remove group (actuali I dont knock how to remove group winout error if not exist) \
-          if (delgroup --system lego) ; then echo group removed... ; fi ; \
+          if (delgroup --system robots) ; then echo group removed... ; fi ; \
         fi ;
 
 uninstall-rules:
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-NxT.rules
 	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/99-usb4all.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/99-lego-WeDo.rules
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(sysconfdir)/udev/rules.d
 
 

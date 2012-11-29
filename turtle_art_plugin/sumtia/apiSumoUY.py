@@ -1,4 +1,7 @@
-#VERSION 1.0
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Version 1.0
 # This implement API for sumo.uy
 #
 # Copyright (C) 2008 Guillermo Reisch (greisch@fing.edu.uy)
