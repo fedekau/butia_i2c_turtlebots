@@ -230,7 +230,7 @@ install: all install-permissions
 
 install-permissions:
 	if [ -e $(DESTDIR)/etc/group ] ; then \
-          addgroup --system lego ; \
+          addgroup --system robots ; \
           ./permissions.sh ; \
         fi ;
 
@@ -240,9 +240,9 @@ install-strip: install
 
 install-rules:
 	mkdir -p $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-lego.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-lego-NxT.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
 	$(INSTALL_DATA) rules/99-usb4all.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
-
+	$(INSTALL_DATA) rules/99-lego-WeDo.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
 
 ############### UNInstall procedures #################
 
@@ -271,12 +271,13 @@ uninstall: uninstall-permissions
 uninstall-permissions:
 	if [ -e $(DESTDIR)/etc/group ] ; then \
           # remove group (actuali I dont knock how to remove group winout error if not exist) \
-          if (delgroup --system lego) ; then echo group removed... ; fi ; \
+          if (delgroup --system robots) ; then echo group removed... ; fi ; \
         fi ;
 
 uninstall-rules:
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-NxT.rules
 	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/99-usb4all.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/99-lego-WeDo.rules
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(sysconfdir)/udev/rules.d
 
 
