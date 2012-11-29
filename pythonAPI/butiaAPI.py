@@ -227,10 +227,6 @@ class robot:
     def getTemperature(self, number=''):
         return self.callModule('temp:' + str(number), 'getValue')
 
-    # return the value of the vibration sensor
-    def getVibration(self, number=''):
-        return self.callModule('vibra:' + str(number), 'getValue')
-
     # return the value of the resistance sensor
     def getResistance(self, number=''):
         return self.callModule('res:' + str(number), 'getValue')
@@ -239,18 +235,9 @@ class robot:
     def getVoltage(self, number=''):
         return self.callModule('volt:' + str(number), 'getValue')
 
-    # return the value of the tilt sensor
-    def getTilt(self, number=''):
-        return self.callModule('tilt:' + str(number), 'getValue')
-
-    # FIXME: the name of the module and the function...
-    # return the value of the capacitive touch sensor
-    def getCapacitive(self, number=''):
-        return self.callModule('capacitive:' + str(number), 'getValue')
-
-    # return the value of the magnetic induction sensor
-    def getMagneticInduction(self, number=''):
-        return self.callModule('magnet:' + str(number), 'getValue')
+    # gpio
+    def getGpio(self, number=''):
+        return self.callModule('gpio:' + str(number), 'getValue')
 
     # set the led intensity
     def setLed(self, nivel = 255, number= ''):
