@@ -11,6 +11,7 @@ Homepage: http://www.fing.edu.uy/inco/proyectos/butia
 Package: turtlebots
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: python-pygame (>= 1.9.1)
 Conflicts: turtleart (<= 98-1)
 Description: TurtleBlocks with robot plugins: Butia, Lego NxT, WeDo, FollowMe
  TurtleBots is a modifiqued version of TurtleBlocks, that include plugins 
