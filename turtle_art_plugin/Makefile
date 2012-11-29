@@ -241,9 +241,9 @@ install-strip: install
 
 install-rules:
 	mkdir -p $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-lego-NxT.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/99-usb4all.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/99-lego-WeDo.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-lego-nxt.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-usb4all.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-lego-wedo.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
 
 ############### UNInstall procedures #################
 
@@ -276,9 +276,9 @@ uninstall-permissions:
         fi ;
 
 uninstall-rules:
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-NxT.rules
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/99-usb4all.rules
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/99-lego-WeDo.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-nxt.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-usb4all.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-wedo.rules
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(sysconfdir)/udev/rules.d
 
 
