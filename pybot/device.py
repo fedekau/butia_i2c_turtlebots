@@ -29,6 +29,7 @@ class Device():
         self.name = name
         self.handler = handler
         self.functions = functions
+        self.debug = True
 
     def add_functions(self, func_list):
         self.functions = {}
@@ -40,8 +41,9 @@ class Device():
         user_module_handler_send_command = self.handler * 8
         l = len(params)
         if not(l == params_length):
-            print 'Incorrect lenght in params', data, params
-            return ERROR
+            if self.debug:
+                print 'Incorrect lenght in params', data, params
+            raise
 
         send_packet_length = 0x04 + l
 
@@ -56,14 +58,16 @@ class Device():
         size = self.baseboard.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
-            print 'Error module_send write'
-            return ERROR
+            if self.debug:
+                print 'Error module_send write'
+            raise
 
     def module_read(self, lenght):
         raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, READ_HEADER_SIZE  + lenght, TIMEOUT)
         if raw == ERROR:
-            print 'Error module_rad read'
-            return ERROR
+            if self.debug:
+                print 'Error module_rad read'
+            raise
 
         l = []
         for i in range(READ_HEADER_SIZE + 1, READ_HEADER_SIZE + lenght):
@@ -90,14 +94,16 @@ class Device():
         size = self.baseboard.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
-            print 'Error module_open write'
-            return ERROR
+            if self.debug:
+                print 'Error module_open write'
+            raise
 
         raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
-            print 'Error module_open read'
-            return ERROR
+            if self.debug:
+                print 'Error module_open read'
+            raise
 
         h = raw[4]
         self.handler = h
@@ -113,14 +119,10 @@ class Device():
         f = self.functions[func]
 
         raw = self.module_send(f['call'], f['params'], params)
-        if raw == ERROR:
-            return ERROR
 
         raw = self.module_read(f['read'])
-        if raw == ERROR:
-            return ERROR
 
-        elif len(raw) == 1:
+        if len(raw) == 1:
             return raw[0]
         elif len(raw) == 2:
             return raw[0] + raw[1] * 256
