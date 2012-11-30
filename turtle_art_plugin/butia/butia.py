@@ -456,6 +456,8 @@ class Butia(Plugin):
             self.bobot.kill()
 
     def set_vels(self, left, right):
+        left = int(left)
+        right = int(right)
         if left > 0:
             sentLeft = 0
         else:
@@ -567,7 +569,7 @@ class Butia(Plugin):
             raise logoerror(ERROR_SPEED)
         self.actualSpeed = [speed, speed]
 
-    def setpinButia(self, pin, value, sensorid=''):
+    def setpinButia(self, pin, value):
         if self.butia:
             pin = int(pin - 1)
             if (pin < 0) or (pin > 3):
@@ -577,7 +579,7 @@ class Butia(Plugin):
                     raise logoerror(ERROR_PIN_VALUE)
                 else:
                     self.hack_pins[pin] = str(value)
-                    self.butia.setHacks(self.hack_pins[0], self.hack_pins[1], self.hack_pins[2], self.hack_pins[3], sensorid)
+                    self.butia.setHacks(self.hack_pins[0], self.hack_pins[1], self.hack_pins[2], self.hack_pins[3])
         else:
             return ERROR_SENSOR_READ
 
