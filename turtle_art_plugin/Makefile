@@ -22,9 +22,9 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = 5f348434d8a1ab8d0d638e95e484a28085d2eca1
-EXTRAS_VERSION = 814826a53f69e1edbf832e5677bd286beeb94a21
-NXT_VERSION = a0c2ed0f2681a218a435dfa178cd69dafabb3e8c
+TURTLEBLOCKS_VERSION = 4273124d9a8e1986d9c51dae2ec2fd97254f90a3
+EXTRAS_VERSION = 9f730e429750b9f2522ab148e8aed098e63a9db0
+NXT_VERSION = cf71837b173bb78afb2446f8c3dea2932760dc85
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 
 
@@ -32,13 +32,15 @@ SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL)
-INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_DATA = $(INSTALL) -m 644
 LESS = less
 BUILDDIR = tmp
-NOGIT = false
+TMPBUILDDIR = /tmp/build
+NOGIT =
 
 #intallation directorys
-prefix = /usr/local
+#prefix = /usr/local   ###change to build debian package...###
+prefix = /usr
 exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
 sbindir = $(exec_prefix)/sbin
@@ -46,7 +48,6 @@ libexecdir = $(exec_prefix)/libexec
 datarootdir = $(prefix)/share
 datadir = $(datarootdir)
 sysconfdir = $(prefix)/etc
-glbconfdir = /etc
 sharedstatedir = $(prefix)/com
 localstatedir = $(prefix)/var
 includedir = $(prefix)/include
@@ -94,10 +95,10 @@ SUBMODULE = mainline
 SUBMODULEVER = master
 
 checkoutsm:
-	if [ $(NOGIT) = false ] ; then \
-	    (cd $(SUBMODULE) && git clean -xdf) ; \
-	    (cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi ) ; \
-	fi
+ifndef NOGIT
+	(cd $(SUBMODULE) && git clean -xdf ) 
+	(cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi )
+endif
 
 ############# checkout a especific version of submodules ##############
 
@@ -131,6 +132,7 @@ mktmpfolder:
 	rm -f  $(BUILDDIR)/.gitignore
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity $(BUILDDIR)/
+	cp -rLf stagin/turtlebots.desktop $(BUILDDIR)/
 
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
@@ -148,6 +150,8 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
 	cp -rLf sumtia        $(BUILDDIR)/plugins/
 	cp -rLf followme/     $(BUILDDIR)/plugins/
 	cp -rLf nxt_plugin/   $(BUILDDIR)/plugins/
+	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
+	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 	cp -rLf wedo_plugin/  $(BUILDDIR)/plugins/
 
 apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization
@@ -158,16 +162,14 @@ apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization
 	ln -s `pwd`/nxt_plugin    $(BUILDDIR)/plugins/nxt_plugin
 	ln -s `pwd`/wedo_plugin   $(BUILDDIR)/plugins/wedo_plugin
 
-xo: apply_hard_plugins
-	# remove .git from NXT plugin
-	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
-	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
+xo:
+	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
 	# ok, let's make this .xo
-	(cd $(BUILDDIR) && python setup.py build)
+	(cd $(TMPBUILDDIR) && python setup.py build)
 	#dist_xo no work in the tmp folder
-	(cd $(BUILDDIR) && python setup.py dist_xo)
-	cp $(BUILDDIR)/dist/*.xo .
-	#$(MAKE) clean_tmp
+	(cd $(TMPBUILDDIR) && python setup.py dist_xo)
+	cp $(TMPBUILDDIR)/dist/*.xo .
+	$(MAKE) BUILDDIR=$(TMPBUILDDIR) clean-builddir
 
 dev: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
@@ -216,39 +218,32 @@ install-activity: xo
 install-xo: install-activity
 
 install: all install-permissions
-	echo "Instalando..."
+	$(MAKE) prefix= install-rules
 	mkdir -p $(DESTDIR)$(activitiesdir)
-	$(INSTALL) -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	cp -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	mkdir -p $(DESTDIR)$(bindir)
+	$(INSTALL) stagin/turtlebots $(DESTDIR)$(bindir)/
+	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
+	$(INSTALL_DATA) stagin/turtlebots.svg $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/
+	mkdir -p $(DESTDIR)$(datadir)/applications
+	$(INSTALL_DATA) $(BUILDDIR)/turtlebots.desktop $(DESTDIR)$(datadir)/applications/
 	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
-	#cp IconosTortuBots.desktop ~/.local/share/applications/ 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
 
 install-permissions:
-	# This part check for users to add to group LEGO (allowed to use robot)
-	#if not exist /etc/group then exit (nothing todo)
-	if [ ! -e $(DESTDIR)$(glbconfdir)/group ] ; then exit 0 ; fi
-	
-	# check if not exist lego group (create it if not...)
-	if [ 'x'(cat $(DESTDIR)$(glbconfdir)/group | grep ^lego:) = 'x' ] ; then \
-            $(MAKE) install-rules; \
-        fi
-	#echo `cat /etc/passwd | grep "1[0-9]\{3\}" | sed 's/:\[\^:\]\?//'
-	#            echo aaa ; fi
-	#  s/^\([0-9]*\.[0-9]*\)\([^.0-9]\|$\)/\1.0\2/
-	#        then echo no group legecho OK \
-	#                else echo ss fetch ; echo pp \
-	#        fi
-	#adduser $NOMBRE_USUARIO lego 1>>"$ARCHIVO_LOG" 2>>"$ARCHIVO_LOG"
+	if [ -e $(DESTDIR)/etc/group ] ; then \
+          addgroup --system robots ; \
+          ./permissions.sh ; \
+        fi ;
 
 
 install-strip: install
 	#strip $(DESTDIR) file...
 
 install-rules:
-	if [ -e $(DESTDIR)$(glbconfdir)/group ] ; then addgroup --system lego ; fi
-	mkdir -p $(DESTDIR)$(glbconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-lego.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/99-usb4all.rules $(DESTDIR)$(glbconfdir)/udev/rules.d
-
+	mkdir -p $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-lego-nxt.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-usb4all.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	$(INSTALL_DATA) rules/70-lego-wedo.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
 
 ############### UNInstall procedures #################
 
@@ -257,19 +252,35 @@ uninstall-activity:
 
 uninstall-xo: uninstall-activity
 
+uninstall-dev: uninstall-activity
+
 uninstall-strip: uninstall
 	#unstrip $(DESTDIR) file... :-P
 
-uninstall: uninstall-rules
-	rm -rf ~/Activities/TurtleBots.activity
-	rm -rf $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
-	rm -rf $(DESTDIR)/usr/share/locale/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
+uninstall: uninstall-permissions
+	$(MAKE) prefix= uninstall-rules
+	rm -rf $(DESTDIR)$(activitiesdir)/TurtleBots.activity
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(activitiesdir)
+	rm -f $(DESTDIR)$(bindir)/turtlebots
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(bindir)
+	rm -f  $(DESTDIR)$(datadir)/applications/turtlebots.desktop
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/applications
+	rm -f $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/turtlebots.svg
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
+	# not more needed - rm -rf $(DESTDIR)$(localedir)/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
+
+uninstall-permissions:
+	if [ -e $(DESTDIR)/etc/group ] ; then \
+          # remove group (actuali I dont knock how to remove group winout error if not exist) \
+          if (delgroup --system robots) ; then echo group removed... ; fi ; \
+        fi ;
 
 uninstall-rules:
-	# remove group (actuali I dont knock how to remove group winout error if not exist)
-	if (delgroup --system lego) ; then echo group removed... ; fi
-	rm -f $(DESTDIR)/etc/udev/rules.d/70-lego.rules
-	rm -f $(DESTDIR)/etc/udev/rules.d/99-usb4all.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-nxt.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-usb4all.rules
+	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-wedo.rules
+	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(sysconfdir)/udev/rules.d
+
 
 ####### CLEAN STUFF ######
 
