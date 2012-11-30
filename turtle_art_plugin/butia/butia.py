@@ -303,8 +303,7 @@ class Butia(Plugin):
 
     def stop(self):
         self.can_refresh = True
-        if self.butia:
-            self.butia.set2MotorSpeed('0', '0', '0', '0')
+        self.set_vels(0, 0)
 
     def goto_background(self):
         pass
