@@ -12,7 +12,7 @@ f1 = {
 f2 = {
     'name': 'setvel2mtr',
     'call': SET_VEL_2MTR,
-    'params': 5,
+    'params': 6,
     'read': 1
 }
 

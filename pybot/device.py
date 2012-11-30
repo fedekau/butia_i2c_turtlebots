@@ -35,10 +35,14 @@ class Device():
         for f in func_list:
             self.functions[f['name']] = f
 
-    def module_send(self, data, params):
+    def module_send(self, data, params_length, params):
         
         user_module_handler_send_command = self.handler * 8
         l = len(params)
+        if not(l == params_length):
+            print 'Incorrect lenght in params', data, params
+            return ERROR
+
         send_packet_length = 0x04 + l
 
         w = []
@@ -108,7 +112,7 @@ class Device():
     def call_function(self, func, params):
         f = self.functions[func]
 
-        raw = self.module_send(f['call'], params)
+        raw = self.module_send(f['call'], f['params'], params)
         if raw == ERROR:
             return ERROR
 
