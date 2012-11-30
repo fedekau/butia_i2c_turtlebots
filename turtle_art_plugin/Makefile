@@ -140,10 +140,6 @@ apply_localization: walterGIT mktmpfolder extrasGIT
 	cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
-	#msgcat butia/po/es.po tmp/po/es.po -o tmp/po/es.po
-	#msgcat sumtia/po/es.po tmp/po/es.po -o tmp/po/es.po
-	#msgcat followme/po/es.po tmp/po/es.po -o tmp/po/es.po
-	#msgcat nxt_plugin/po/es.po tmp/po/es.po -o tmp/po/es.po
 
 apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
 	cp -rLf butia         $(BUILDDIR)/plugins/
