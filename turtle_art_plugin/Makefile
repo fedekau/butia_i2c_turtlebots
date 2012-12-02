@@ -119,7 +119,7 @@ nxtGIT: nxt_plugin/.git
 
 butiaXO:
 	# I want butiaXO folder be OK! (needed by plugin)
-	make -C ../butiaXO
+	#make -C ../butiaXO
 
 
 ################ Construction...
