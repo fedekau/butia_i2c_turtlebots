@@ -111,9 +111,9 @@ class ButiaFirmware(activity.Activity):
             self.unsucess(proc.returncode)
 
     def initing(self):
-        msg = _('Flashing...')
+        msg = _('Flashing USB4Butia board...')
         dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
-        dialog.set_title(_('Flashing USB4Butia board...'))
+        dialog.set_title(_('Flashing...'))
         # Run es bloqueante
         #dialog.run()
         dialog.show()
