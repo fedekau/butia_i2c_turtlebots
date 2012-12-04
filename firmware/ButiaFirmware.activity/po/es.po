@@ -18,7 +18,7 @@ msgstr ""
 
 #: activity/activity.info:2
 msgid "ButiaFirmware"
-msgstr "Butiá Firmware"
+msgstr "Butia Firmware"
 
 #: ButiaFirmware.py:66
 msgid "CONTINUE"
