@@ -112,7 +112,10 @@ class robot:
         try:
             ret = int(ret)
         except:
-            ret = ERROR_SENSOR_READ
+            try:
+                ret = float(ret)
+            except:
+                ret = ERROR_SENSOR_READ
         return ret
 
     # Close bobot service
@@ -224,37 +227,24 @@ class robot:
     def getTemperature(self, number=''):
         return self.callModule('temp:' + str(number), 'getValue')
 
-    # return the value of the vibration sensor
-    def getVibration(self, number=''):
-        return self.callModule('vibra:' + str(number), 'getValue')
-
     # return the value of the resistance sensor
     def getResistance(self, number=''):
         return self.callModule('res:' + str(number), 'getValue')
 
     # return the value of the resistance sensor
-    def getVoltaje(self, number=''):
+    def getVoltage(self, number=''):
         return self.callModule('volt:' + str(number), 'getValue')
 
-    # return the value of the tilt sensor
-    def getTilt(self, number=''):
-        return self.callModule('tilt:' + str(number), 'getValue')
-
-    # FIXME: the name of the module and the function...
-    # return the value of the capacitive touch sensor
-    def getCapacitive(self, number=''):
-        return self.callModule('capacitive:' + str(number), 'getValue')
-
-    # return the value of the magnetic induction sensor
-    def getMagneticInduction(self, number=''):
-        return self.callModule('magnet:' + str(number), 'getValue')
+    # gpio
+    def getGpio(self, number=''):
+        return self.callModule('gpio:' + str(number), 'getValue')
 
     # set the led intensity
     def setLed(self, nivel = 255, number= ''):
         return self.callModule('led:' + str(number), 'setLight', str(math.trunc(nivel)))
 
-    def setHacks(self, pin1, pin2, pin3, pin4, number= ''):
+    def setHacks(self, pin1, pin2, pin3, pin4):
         msg = pin1 + ' ' + pin2 + ' ' + pin3 + ' ' + pin4
-        return self.callModule('hackp:' + str(number), 'set4pinValues', str(msg))
+        return self.callModule('hackp', 'set4pin', str(msg))
 
 
