@@ -21,8 +21,6 @@ class ButiaFirmware(activity.Activity):
     def __init__(self, handle):
         activity.Activity.__init__(self, handle)
 
-        print "activity running"
-
         self.build_toolbar()
  
         self.build_canvas()
@@ -65,7 +63,7 @@ class ButiaFirmware(activity.Activity):
         box.add(img) 
 
         box12 = gtk.HBox()
-        button_accept = gtk.Button("CONTINUAR")
+        button_accept = gtk.Button(_("CONTINUE"))
         button_accept.connect("clicked", self.warning_message)
         button_accept.show()
         box12.add(button_accept)

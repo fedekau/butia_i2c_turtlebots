@@ -20,7 +20,11 @@ msgstr ""
 msgid "ButiaFirmware"
 msgstr "Butiá Firmware"
 
-#: ButiaFirmware.py:79
+#: ButiaFirmware.py:66
+msgid "CONTINUE"
+msgstr "CONTINUAR"
+
+#: ButiaFirmware.py:77
 msgid ""
 "You will upgrade the USB4Butia firmware.\n"
 "Not disconnect the board and not close this activity.\n"
@@ -30,21 +34,21 @@ msgstr ""
 "No desconecte la placa y no cierre la actividad.\n"
 "¿Deseas continuar?"
 
-#: ButiaFirmware.py:81 ButiaFirmware.py:114 ButiaFirmware.py:125
-#: ButiaFirmware.py:132
+#: ButiaFirmware.py:79 ButiaFirmware.py:112 ButiaFirmware.py:123
+#: ButiaFirmware.py:130
 msgid "Flashing USB4Butia board..."
 msgstr "Flasheando la placa USB4butia..."
 
-#: ButiaFirmware.py:104
+#: ButiaFirmware.py:102
 #, python-format
 msgid "The process takes %s seconds"
 msgstr "El proceso tardó %s segundos"
 
-#: ButiaFirmware.py:116
+#: ButiaFirmware.py:114
 msgid "Flashing..."
 msgstr "Flasheando..."
 
-#: ButiaFirmware.py:123
+#: ButiaFirmware.py:121
 #, python-format
 msgid ""
 "The upgrade ends successfully!\n"
@@ -53,7 +57,7 @@ msgstr ""
 "¡El proceso de actualización terminó exitosamente!\n"
 "El proceso tardó %s segundos"
 
-#: ButiaFirmware.py:130
+#: ButiaFirmware.py:128
 #, python-format
 msgid ""
 "The upgrade fails. Try again.\n"
