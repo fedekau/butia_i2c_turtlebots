@@ -46,7 +46,7 @@ COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to 
 WHEELBASE = 28.00
 
 ERROR_SPEED = _('the speed must be a value between 0 and 1023')
-ERROR_PIN_NUMBER = _('the pin must be 1, 2, 3 or 4')
+ERROR_PIN_NUMBER = _('the pin must be between 1 and 8')
 ERROR_PIN_VALUE = _('the value must be 0 or 1')
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
@@ -100,7 +100,7 @@ label_name_from_device_id['gpio'] = _('gpio')
 
 refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'gpio']
 
-static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia', 'setpinButia']
+static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia', 'setpinButia', 'getpinButia']
 
 class Butia(Plugin):
     
@@ -114,7 +114,6 @@ class Butia(Plugin):
         self.pollrun = True
         self.battery_value = ERROR_SENSOR_READ
         self.old_battery_value = ERROR_SENSOR_READ
-        self.hack_pins = ['0', '0', '0', '0']
         self.bobot = None
         self.butia = None
         self.match_list = []
@@ -234,12 +233,22 @@ class Butia(Plugin):
             primitive_dictionary['setpinButia'] = self.setpinButia
             palette2.add_block('setpinButia',
                          style='basic-style-2arg',
-                         label=[_('set hack pin Butia'), _('pin'), _('value')],
+                         label=[_('write hack pin Butia'), _('pin'), _('value')],
                          prim_name='setpinButia',
                          default=[1, 0],
                          help_string=_('set a hack pin to 0 or 1'))
             self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
             special_block_colors['setpinButia'] = COLOR_STATIC[:]
+
+            primitive_dictionary['getpinButia'] = self.getpinButia
+            palette2.add_block('getpinButia',
+                         style='number-style-1strarg',
+                         label=[_('read hack pin Butia')],
+                         prim_name='getpinButia',
+                         default=1,
+                         help_string=_('read the value of a hack pin'))
+            self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
+            special_block_colors['getpinButia'] = COLOR_STATIC[:]
 
 
         #add every function in the code 
@@ -571,14 +580,24 @@ class Butia(Plugin):
     def setpinButia(self, pin, value):
         if self.butia:
             pin = int(pin - 1)
-            if (pin < 0) or (pin > 3):
+            if (pin < 0) or (pin > 7):
                 raise logoerror(ERROR_PIN_NUMBER)
             else:
                 if (value < 0) or (value > 1):
                     raise logoerror(ERROR_PIN_VALUE)
                 else:
-                    self.hack_pins[pin] = str(value)
-                    self.butia.setHacks(self.hack_pins[0], self.hack_pins[1], self.hack_pins[2], self.hack_pins[3])
+                    self.butia.setHack(pin, value)
+        else:
+            return ERROR_SENSOR_READ
+
+    def getpinButia(self, pin):
+        if self.butia:
+            pin = int(pin)
+            pin = pin - 1
+            if (pin < 0) or (pin > 7):
+                raise logoerror(ERROR_PIN_NUMBER)
+            else:
+                self.butia.getHack(pin)
         else:
             return ERROR_SENSOR_READ
 
