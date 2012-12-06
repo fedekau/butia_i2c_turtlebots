@@ -243,6 +243,11 @@ class robot:
     def setLed(self, nivel = 255, number= ''):
         return self.callModule('led:' + str(number), 'setLight', str(math.trunc(nivel)))
 
+    # Hacks
+    def modeHack(self, pin, mode):
+        msg = str(pin) + ' ' + str(mode)
+        return self.callModule('hackp', 'setMode', msg)
+
     def setHack(self, pin, value):
         msg = str(pin) + ' ' + str(value)
         return self.callModule('hackp', 'write', msg)
