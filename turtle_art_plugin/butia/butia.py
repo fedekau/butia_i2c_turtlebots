@@ -257,6 +257,7 @@ class Butia(Plugin):
                          style='number-style-1strarg',
                          label=[_('read hack pin Butia')],
                          prim_name='getpinButia',
+                         string_or_number=True,
                          default=1,
                          help_string=_('read the value of a hack pin'))
             self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
