@@ -39,8 +39,6 @@ class USB4Butia():
                 self.bb.append(b)
             except:
                 print 'error open baseboard'
-        self.listi = []
-        self.get_modules_list()
 
     def get_modules_list(self):
         modules = []
@@ -222,12 +220,10 @@ class USB4Butia():
     def close(self):
         for b in self.bb:
             try:
-                b.close_device()
+                b.close_baseboard()
             except:
                 print 'error close baseboard'
-
-    def closeService(self):
-        pass
+        self.bb = []
 
     def isPresent(self, module_name):
         module_list = self.get_modules_list()
