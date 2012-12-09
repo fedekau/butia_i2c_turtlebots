@@ -44,45 +44,47 @@ class USB4Butia():
 
     def get_modules_list(self):
         modules = []
-        if self.handle:
-            try:
-                if self.listi == []:
-                    self.get_listi()
 
-                s = self.bb.get_handler_size()
-                self.inited_n = {}
-                self.inited_d = {}
-                for m in range(1, s + 1):
-                    module_type = self.bb.get_handler_type(m)
-                    module_name = self.listi[module_type]
-                    modules.append(module_name + ':' +  str(m))
+        try:
+            if self.listi == []:
+                self.get_listi()
 
-                    if not(module_name == 'port'):
-                        self.inited_n[m] = module_name
-                        self.inited_d[m] = Device(self.bb, module_name, m)
+            s = self.bb.get_handler_size()
+            self.inited_n = {}
+            self.inited_d = {}
+            for m in range(1, s + 1):
+                module_type = self.bb.get_handler_type(m)
+                module_name = self.listi[module_type]
+                modules.append(module_name + ':' +  str(m))
+
+                if not(module_name == 'port'):
+                    self.inited_n[m] = module_name
+                    self.inited_d[m] = Device(self.bb, module_name, m)
 
 
-                values = self.inited_n.values()
-                for m in self.listi:
-                    if not(m in values) and not(m in self.hotplug):
-                        modules.append(m)
-            except Exception, err:
-                print 'error module list', err
+            values = self.inited_n.values()
+            for m in self.listi:
+                if not(m in values) and not(m in self.hotplug):
+                    modules.append(m)
+        except Exception, err:
+            print 'error module list', err
 
         #return modules
         return ['admin:0:0', 'port:1:0', 'button:2:0', 'button:3:0', 'port:4:0', 'grey:5:0', 'port:6:0', 'pnp:7:0', 'button:2:1']
 
-    def get_listi(self):
-        self.listi = []
-        if self.handle:
+    def get_listis(self):
+        self.listis = {}
+        for b in self.bb:
             try:
-                s = self.bb.get_user_modules_size()
+                l = []
+                s = b.get_user_modules_size()
                 for m in range(s):
-                    name = self.bb.get_user_module_line(m)
-                    self.listi.append(name)
+                    name = b.get_user_module_line(m)
+                    l.append(name)
+                self.listis.append(l)
             except:
                 print 'error listi'
-        return self.listi
+        return self.listis
 
     def get_driver_candidates(self):
         candidates = []
