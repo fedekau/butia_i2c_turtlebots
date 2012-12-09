@@ -240,8 +240,8 @@ class robot:
         return self.callModule('gpio:' + str(number), 'getValue')
 
     # set the led intensity
-    def setLed(self, nivel = 255, number= ''):
-        return self.callModule('led:' + str(number), 'setLight', str(math.trunc(nivel)))
+    def setLed(self, on_off, number= ''):
+        return self.callModule('led:' + str(number), 'turn', str(on_off))
 
     # Hacks
     def modeHack(self, pin, mode):

@@ -618,9 +618,9 @@ class Butia(Plugin):
         else:
             return ERROR_SENSOR_READ
 
-    def ledButia(self, level, sensorid=''):
+    def ledButia(self, on_off, sensorid=''):
         if self.butia:
-            self.butia.setLed(level, sensorid)
+            self.butia.setLed(on_off, sensorid)
         else:
             return ERROR_SENSOR_READ
 
