@@ -254,10 +254,10 @@ class Butia(Plugin):
 
             primitive_dictionary['getpinButia'] = self.getpinButia
             palette2.add_block('getpinButia',
-                         style='number-style-1strarg',
+                         style='number-style-1arg',
                          label=[_('read hack pin Butia')],
                          prim_name='getpinButia',
-                         string_or_number=True,
+                         #string_or_number=True,
                          default=1,
                          help_string=_('read the value of a hack pin'))
             self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
