@@ -18,9 +18,9 @@ api.getVersion.call = function ()
     return raw_val
 end
 
--- description: lets us know grey sensor's current value
--- input: empty
--- output: grey sensor's current value.
+-- description: turn led on or off
+-- input: 0 or 1
+-- output: if sucess 1
 api.turn = {}
 api.turn.parameters = {[1]={rname="par1", rtype="int"}} -- no input parameters
 api.turn.returns = {[1]={rname="ret1", rtype="int"}} 
