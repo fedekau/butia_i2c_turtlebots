@@ -87,13 +87,23 @@ class USB4Butia():
         return self.listis
 
     def get_driver_candidates(self):
-        candidates = []
+        candidates = {}
+        # normal drivers
         tmp = os.listdir(PATH_DRIVERS)
         tmp.sort()
         for d in tmp:
-            if d.endswith('.py') and not (d == 'function.py'):
+            if d.endswith('.py'):
                 name = d.replace('.py', '')
-                candidates.append(name)
+                candidates[name] = 0
+        # hotplug drivers
+        path = os.path.join(PATH_DRIVERS, 'hotplug')
+        tmp = os.listdir(path)
+        tmp.sort()
+        for d in tmp:
+            if d.endswith('.py'):
+                name = d.replace('.py', '')
+                candidates[name] = 1
+        #print candidates
         return candidates
         
 
@@ -133,40 +143,38 @@ class USB4Butia():
 
     def callModule(self, modulename, number, function, params = []):
 
-        if self.handle:
-            try:
-                if not(modulename in self.drivers_loaded):
-                    self.get_driver(modulename)
+        try:
+            if not(modulename in self.drivers_loaded):
+                self.get_driver(modulename)
 
-                if self.inited_n.has_key(number) and (self.inited_d[number].name == modulename):
+            if self.inited_n.has_key(number) and (self.inited_d[number].name == modulename):
 
-                    return self.call_aux(modulename, number, function, params)
+                return self.call_aux(modulename, number, function, params)
 
-                else:
-                    mods = self.get_modules_list()
-                    if modulename in self.openables:
-                        if not(modulename in self.openables_loaded):
-                            self.openables_loaded.append(modulename)
-                            dev = Device(self.bb, modulename, None)
-                            h = dev.module_open()
-                            dev.handler = h
-                            self.inited_n[h] = modulename
-                            self.inited_d[h] = dev
-                            f = self.drivers_loaded[modulename]
-                            dev.add_functions(f)
-                            number = h
-                        else:
-                            number = self.search_handler(mods, modulename)
-                        if number == ERROR:
-                            return ERROR
-                        return self.call_aux(modulename, number, function, params)
+            else:
+                mods = self.get_modules_list()
+                if modulename in self.openables:
+                    if not(modulename in self.openables_loaded):
+                        self.openables_loaded.append(modulename)
+                        dev = Device(self.bb, modulename, None)
+                        h = dev.module_open()
+                        dev.handler = h
+                        self.inited_n[h] = modulename
+                        self.inited_d[h] = dev
+                        f = self.drivers_loaded[modulename]
+                        dev.add_functions(f)
+                        number = h
                     else:
-                        print 'no open and no openable'
-                        return -1
-            except Exception, err:
-                print 'error call module', err
+                        number = self.search_handler(mods, modulename)
+                    if number == ERROR:
+                        return ERROR
+                    return self.call_aux(modulename, number, function, params)
+                else:
+                    print 'no open and no openable'
+                    return -1
+        except Exception, err:
+            print 'error call module', err
 
-        return -1
 
     def search_handler(self, l, module):
         ll = self.list_2_module_and_port(l)
