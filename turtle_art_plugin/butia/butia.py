@@ -289,9 +289,9 @@ class Butia(Plugin):
                                  hidden=isHidden)
 
                     if blockstyle == 'basic-style-1arg':
-                        self.tw.lc.def_prim(block_name, 1, lambda self, x, y=k, z=j: primitive_dictionary[z + 'Butia'](x,y))
+                        self.tw.lc.def_prim(block_name, 1, lambda self, w, x=k, y=j, z=0: primitive_dictionary[y + 'Butia'](w, x, z))
                     else:
-                        self.tw.lc.def_prim(block_name, 0, lambda self, y=k , z=j: primitive_dictionary[z + 'Butia'](y))
+                        self.tw.lc.def_prim(block_name, 0, lambda self, x=k, y=j, z=0: primitive_dictionary[y + 'Butia'](x, z))
 
                     special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
@@ -351,29 +351,34 @@ class Butia(Plugin):
         else:
             return ('', 0)
 
+    def complete_dict(self):
+        self.m_d = {}
+        for d in device_id_from_module_name.keys():
+            self.m_d[d] = 0
+
     def list_2_module_and_port(self, l):
         r = []
         for e in l:
             try:
-                module, port = e.split(':')
+                module, port, board = e.split(':')
                 if module in device_id_from_module_name:
-                    r.append((port, module))
+                    r.append((port, module, board))
             except:
                 pass
         return r
 
     def make_match_dict(self, l):
+        self.complete_dict()
         match_list = []
         for t in l:
-            i = 0
-            for index in range(0, int(t[0])):
-                x = (str(index), t[1])
-                if x in l:
-                    i = i + 1
-            if i == 0:
-                match_list.append((t[1], t[0]))
+            module = t[1]
+            n = self.m_d[module]
+            self.m_d[module] = self.m_d[module] + 1
+            if n == 0:
+                match_list.append((module, (t[0], t[2])))
             else:
-                match_list.append((t[1] + str(i), t[0]))
+                match_list.append((module + str(n), (t[0], t[2])))
+
         return dict(match_list)
 
     def change_butia_palette_colors(self, change_statics_blocks):
@@ -419,19 +424,21 @@ class Butia(Plugin):
 
                             label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
                             value = blk_index
+                            board = 0
                             special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
                         else:
                             val = self.match_dict[s]
-                            value = int(val)
-                            label = label_name_from_device_id[blk_name] + ':' + val + ' ' + _('Butia')
+                            value = int(val[0])
+                            board = int(val[1])
+                            label = label_name_from_device_id[blk_name] + ':' + val[0] + ' ' + _('Butia') + ' ' + val[1]
                             if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
                                 blk.set_visibility(True)
                             special_block_colors[blk.name] = COLOR_PRESENT[:]
 
                         if module == 'led':
-                            self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
+                            self.tw.lc.def_prim(blk.name, 1, lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x, z))
                         else:
-                            self.tw.lc.def_prim(blk.name, 0, lambda self, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](y))
+                            self.tw.lc.def_prim(blk.name, 0, lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
 
                         blk.spr.set_label(label)
                         block_names[blk.name][0] = label
@@ -514,55 +521,55 @@ class Butia(Plugin):
         else:
             return ERROR_SENSOR_READ
 
-    def buttonButia(self, sensorid=''):
+    def buttonButia(self, sensorid='', boardid=''):
         if self.butia:
             return self.butia.getButton(sensorid)
         else:
             return ERROR_SENSOR_READ
 
-    def ambientlightButia(self, sensorid=''):
+    def ambientlightButia(self, sensorid='', boardid=''):
         if self.butia:
             return self.butia.getAmbientLight(sensorid)
         else:
             return ERROR_SENSOR_READ
 
-    def distanceButia(self, sensorid=''):
+    def distanceButia(self, sensorid='', boardid=''):
         if self.butia:
             return self.butia.getDistance(sensorid)
         else:
             return ERROR_SENSOR_READ
 
-    def grayscaleButia(self, sensorid=''):
+    def grayscaleButia(self, sensorid='', boardid=''):
         if self.butia:
             return self.butia.getGrayScale(sensorid)
         else:
             return ERROR_SENSOR_READ
         
-    def temperatureButia(self, sensorid=''):
+    def temperatureButia(self, sensorid='', boardid=''):
         if self.butia:
             return self.butia.getTemperature(sensorid)
         else:
             return ERROR_SENSOR_READ
 
-    def resistanceButia(self, sensorid=''):
+    def resistanceButia(self, sensorid='', boardid=''):
         if self.butia:
             return self.butia.getResistance(sensorid)
         else:
             return ERROR_SENSOR_READ
 
-    def voltageButia(self, sensorid=''):
+    def voltageButia(self, sensorid='', boardid=''):
         if self.butia:
             return self.butia.getVoltage(sensorid)
         else:
             return ERROR_SENSOR_READ
 
-    def gpioButia(self, sensorid=''):
+    def gpioButia(self, sensorid='', boardid=''):
         if self.butia:
             return self.butia.getGpio(sensorid)
         else:
             return ERROR_SENSOR_READ
 
-    def ledButia(self, level, sensorid=''):
+    def ledButia(self, level, sensorid='', boardid=''):
         if self.butia:
             self.butia.setLed(level, sensorid)
         else:
