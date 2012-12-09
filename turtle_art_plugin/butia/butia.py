@@ -523,55 +523,55 @@ class Butia(Plugin):
 
     def buttonButia(self, sensorid='', boardid=''):
         if self.butia:
-            return self.butia.getButton(sensorid)
+            return self.butia.getButton(sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
 
     def ambientlightButia(self, sensorid='', boardid=''):
         if self.butia:
-            return self.butia.getAmbientLight(sensorid)
+            return self.butia.getAmbientLight(sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
 
     def distanceButia(self, sensorid='', boardid=''):
         if self.butia:
-            return self.butia.getDistance(sensorid)
+            return self.butia.getDistance(sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
 
     def grayscaleButia(self, sensorid='', boardid=''):
         if self.butia:
-            return self.butia.getGrayScale(sensorid)
+            return self.butia.getGrayScale(sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
         
     def temperatureButia(self, sensorid='', boardid=''):
         if self.butia:
-            return self.butia.getTemperature(sensorid)
+            return self.butia.getTemperature(sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
 
     def resistanceButia(self, sensorid='', boardid=''):
         if self.butia:
-            return self.butia.getResistance(sensorid)
+            return self.butia.getResistance(sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
 
     def voltageButia(self, sensorid='', boardid=''):
         if self.butia:
-            return self.butia.getVoltage(sensorid)
+            return self.butia.getVoltage(sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
 
     def gpioButia(self, sensorid='', boardid=''):
         if self.butia:
-            return self.butia.getGpio(sensorid)
+            return self.butia.getGpio(sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
 
     def ledButia(self, level, sensorid='', boardid=''):
         if self.butia:
-            self.butia.setLed(level, sensorid)
+            self.butia.setLed(level, sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
 
