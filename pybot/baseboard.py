@@ -32,10 +32,20 @@ MAX_RETRY = 5
 
 ERROR = -1
 
-class Baseboard(usb_device):
+class Baseboard():
 
     def __init__(self, dev):
-        usb_device.__init__(self, dev)
+        self.dev = dev
+        self.debug = self.dev.debug
+
+    def open_baseboard(self):
+        self.dev.open_device()
+
+    def close_baseboard(self):
+        self.dev.close_device()
+
+    def get_info(self):
+        return self.dev.get_info()
 
     def get_user_modules_size(self):
         w = []
@@ -43,14 +53,14 @@ class Baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(GET_USER_MODULES_SIZE_COMMAND)
-        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
             if self.debug:
                 print 'Error get_user_modules_size write'
             raise
 
-        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
             if self.debug:
@@ -72,14 +82,14 @@ class Baseboard(usb_device):
         w.append(NULL_BYTE)
         w.append(GET_USER_MODULE_LINE_COMMAND)
         w.append(index)
-        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
             if self.debug:
                 print 'Error get_user_module_line write'
             raise
 
-        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_LINE_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, GET_LINE_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
             if self.debug:
@@ -100,14 +110,14 @@ class Baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(GET_HANDLER_SIZE_COMMAND)
-        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
             if self.debug:
                 print 'Error get_handler_size write'
             raise
 
-        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
             if self.debug:
@@ -123,14 +133,14 @@ class Baseboard(usb_device):
         w.append(NULL_BYTE)
         w.append(GET_HANDLER_TYPE_COMMAND)
         w.append(index)
-        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
             if self.debug:
                 print 'Error get_handler_type write'
             raise
 
-        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
             if self.debug:
@@ -145,7 +155,7 @@ class Baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(SWITCH_TO_BOOT_BASE_BOARD_COMMAND)
-        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
             if self.debug:
@@ -158,7 +168,7 @@ class Baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(RESET_BASE_BOARD_COMMAND)
-        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
             if self.debug:
@@ -171,14 +181,14 @@ class Baseboard(usb_device):
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(CLOSEALL_BASE_BOARD_COMMAND)
-        size = self.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
             if self.debug:
                 print 'Error force_close_all write'
             raise
 
-        raw = self.read(ADMIN_MODULE_OUT_ENDPOINT, CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
             if self.debug:

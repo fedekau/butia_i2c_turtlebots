@@ -73,8 +73,10 @@ class usb_device():
             raise
 
 def find():
+    l = []
     for bus in usb.busses():
         for dev in bus.devices:
             if dev.idVendor == USB4ALL_VENDOR and dev.idProduct == USB4ALL_PRODUCT:
-                return dev
+                l.append(usb_device(dev))
+    return l
 
