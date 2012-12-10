@@ -42,33 +42,36 @@ class USB4Butia():
 
     def get_modules_list(self):
         modules = []
+        self.inited_d = {}
 
-        try:
-            if self.listi == []:
-                self.get_listi()
+        for i, b in enumerate(self.bb):
+            try:
+                self.get_listis()
 
-            s = self.bb.get_handler_size()
-            self.inited_n = {}
-            self.inited_d = {}
-            for m in range(1, s + 1):
-                module_type = self.bb.get_handler_type(m)
-                module_name = self.listi[module_type]
-                modules.append(module_name + ':' +  str(m))
+                s = b.get_handler_size()
+                self.inited_n = {}
+                devices = {}
+                listi = self.listis[b]
+                for m in range(1, s + 1):
+                    module_type = b.get_handler_type(m)
+                    module_name = listi[module_type]
+                    modules.append(module_name + '@' + str(i) + ':' +  str(m))
 
-                if not(module_name == 'port'):
-                    self.inited_n[m] = module_name
-                    self.inited_d[m] = Device(self.bb, module_name, m)
+                    if not(module_name == 'port'):
+                        self.inited_n[m] = module_name
+                        devices[m] = Device(b, module_name, m)
 
+                self.inited_d[b] = devices
 
-            values = self.inited_n.values()
-            for m in self.listi:
-                if not(m in values) and not(m in self.hotplug):
-                    modules.append(m)
-        except Exception, err:
-            print 'error module list', err
+                """values = self.inited_n.values()
+                for m in self.listi:
+                    if not(m in values) and not(m in self.hotplug):
+                        modules.append(m)"""
+            except Exception, err:
+                print 'error module list', err
 
         #return modules
-        return ['admin:0:0', 'port:1:0', 'button:2:0', 'button:3:0', 'port:4:0', 'grey:5:0', 'port:6:0', 'pnp:7:0', 'button:2:1']
+        return ['admin@0:0', 'port@0:1', 'button@0:2', 'button@0:3', 'port@0:4', 'grey@0:5', 'port@0:6', 'pnp@0:7', 'button@1:2']
 
     def get_listis(self):
         self.listis = {}
@@ -79,7 +82,7 @@ class USB4Butia():
                 for m in range(s):
                     name = b.get_user_module_line(m)
                     l.append(name)
-                self.listis.append(l)
+                self.listis[b] = l
             except:
                 print 'error listi'
         return self.listis

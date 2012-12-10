@@ -359,7 +359,8 @@ class Butia(Plugin):
         r = []
         for e in l:
             try:
-                module, port, board = e.split(':')
+                module, b_p = e.split('@')
+                board, port = b_p.split(':')
                 if module in device_id_from_module_name:
                     r.append((port, module, board))
             except:
