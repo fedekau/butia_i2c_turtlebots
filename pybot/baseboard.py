@@ -53,7 +53,7 @@ class Baseboard():
 
     def get_device_handler(self, device):
         for e in self.devices:
-            if self.devices[e] == device:
+            if self.devices[e].name == device:
                 return e
         return ERROR
 
