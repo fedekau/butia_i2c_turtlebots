@@ -22,11 +22,9 @@ class USB4Butia():
         self.openables = []
         self.openables_loaded = {}
         self.drivers_loaded = {}
-        self.drivers_candidates = []
         self.bb = []
 
-        self.get_driver_candidates()
-        self.get_drivers()
+        self.get_all_drivers()
         self.find_butias()
 
     def get_butia_count(self):
@@ -105,7 +103,7 @@ class USB4Butia():
                     print 'error listi'
         return self.listis
 
-    def get_driver_candidates(self):
+    def get_all_drivers(self):
         # normal drivers
         tmp = os.listdir(PATH_DRIVERS)
         tmp.sort()
@@ -113,6 +111,7 @@ class USB4Butia():
             if d.endswith('.py'):
                 name = d.replace('.py', '')
                 self.openables.append(name)
+                self.get_driver(PATH_DRIVERS, name)
         # hotplug drivers
         path = os.path.join(PATH_DRIVERS, 'hotplug')
         tmp = os.listdir(path)
@@ -121,29 +120,23 @@ class USB4Butia():
             if d.endswith('.py'):
                 name = d.replace('.py', '')
                 self.hotplug.append(name)
-        self.drivers_candidates = self.hotplug + self.openables
-        return self.drivers_candidates
+                self.get_driver(path, name)
 
-    def get_drivers(self):
-        for driver in self.drivers_candidates:
+    def get_driver(self, path, driver):
+        if self.debug:
+            print 'Loading driver %s...' % driver
+        abs_path = os.path.abspath(os.path.join(path, driver + '.py'))
+        f = None
+        try:
+            f = imp.load_source(driver, abs_path)
+        except:
             if self.debug:
-                print 'Loading driver %s...' % driver
-            if driver in self.hotplug:
-                r_path = os.path.join(PATH_DRIVERS, 'hotplug' , driver + '.py')
-            else:
-                r_path = os.path.join(PATH_DRIVERS, driver + '.py')
-            abs_path = os.path.abspath(r_path)
-            f = None
-            try:
-                f = imp.load_source(driver, abs_path)
-            except:
-                if self.debug:
-                    print 'Cannot load %s' % driver, abs_path
-            if f and hasattr(f, 'FUNCTIONS'):
-                self.drivers_loaded[driver] = f.FUNCTIONS
-            else:
-                if self.debug:
-                    print 'Driver not have FUNCTIONS'
+                print 'Cannot load %s' % driver, abs_path
+        if f and hasattr(f, 'FUNCTIONS'):
+            self.drivers_loaded[driver] = f.FUNCTIONS
+        else:
+            if self.debug:
+                print 'Driver not have FUNCTIONS'
 
     def callModule(self, modulename, board_number, number, function, params = []):
 
@@ -161,8 +154,7 @@ class USB4Butia():
                         self.openables_loaded[board].append(modulename)
                         dev = Device(board, modulename, None)
                         number = dev.module_open()
-                        f = self.drivers_loaded[modulename]
-                        dev.add_functions(f)
+                        dev.add_functions(self.drivers_loaded[modulename])
                         board.add_device(number, dev)
                     else:
                         number = board.get_device_handler(modulename)
@@ -193,7 +185,6 @@ class USB4Butia():
                 pass
         return r
    
-
     def reconnect(self):
         pass
 
@@ -218,15 +209,13 @@ class USB4Butia():
                     except:
                         pass
 
-        #self.get_modules_list()
-
     def close(self):
         for b in self.bb:
             try:
                 b.close_baseboard()
             except:
                 if self.debug:
-                    print 'error close baseboard'
+                    print 'error in close baseboard'
         self.bb = []
 
     def isPresent(self, module_name):
