@@ -55,7 +55,7 @@ class Device():
         for p in params:
             w.append(p)
 
-        size = self.baseboard.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.baseboard.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
             if self.debug:
@@ -63,7 +63,7 @@ class Device():
             raise
 
     def module_read(self, lenght):
-        raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, READ_HEADER_SIZE  + lenght, TIMEOUT)
+        raw = self.baseboard.dev.read(ADMIN_MODULE_OUT_ENDPOINT, READ_HEADER_SIZE  + lenght, TIMEOUT)
         if raw == ERROR:
             if self.debug:
                 print 'Error module_rad read'
@@ -91,14 +91,14 @@ class Device():
         w.append(module_in_endpoint)
         w.append(module_out_endpoint)
         w = w + module_name
-        size = self.baseboard.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.baseboard.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
 
         if size == ERROR:
             if self.debug:
                 print 'Error module_open write'
             raise
 
-        raw = self.baseboard.read(ADMIN_MODULE_OUT_ENDPOINT, OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.baseboard.dev.read(ADMIN_MODULE_OUT_ENDPOINT, OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
 
         if raw == ERROR:
             if self.debug:
