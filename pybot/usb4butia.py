@@ -29,6 +29,9 @@ class USB4Butia():
         self.get_driver_candidates()
         self.find_butias()
 
+    def get_butia_count(self):
+        return len(self.bb)
+
     def find_butias(self):
         devices = com_usb.find()
         for dev in devices:
@@ -43,6 +46,8 @@ class USB4Butia():
 
     def get_modules_list(self):
         modules = []
+        n_boards = self.get_butia_count()
+
         if self.debug:
             print '=Listing Devices'
 
@@ -60,7 +65,10 @@ class USB4Butia():
                 for m in range(0, s + 1):
                     module_type = b.get_handler_type(m)
                     module_name = listi[module_type]
-                    complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                    if n_boards > 1:
+                        complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                    else:
+                        complete_name = module_name + ':' +  str(m)
                     modules.append(complete_name)
                     if self.debug:
                         print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
@@ -147,7 +155,6 @@ class USB4Butia():
 
 
     def call_aux(self, board, modulename, number, function, params):
-
         device = board.devices[number]
         if not(device.has_function(function)):
             f = self.drivers_loaded[modulename]
@@ -157,7 +164,6 @@ class USB4Butia():
 
     def callModule(self, modulename, board_number, number, function, params = []):
 
-        #if True:
         try:
             if not(modulename in self.drivers_loaded):
                 self.get_driver(modulename)
@@ -169,7 +175,6 @@ class USB4Butia():
                 return self.call_aux(board, modulename, number, function, params)
 
             else:
-                #mods = self.get_modules_list()
                 if modulename in self.openables:
                     if not(modulename in self.openables_loaded[board]):
                         self.openables_loaded[board].append(modulename)
@@ -186,7 +191,7 @@ class USB4Butia():
 
                     if number == ERROR:
                         return ERROR
-                    #print 'numero2', number
+                    
                     return self.call_aux(board, modulename, number, function, params)
                 else:
                     if self.debug:
@@ -194,6 +199,7 @@ class USB4Butia():
                     return -1
         except Exception, err:
             print 'error call module', err
+            return -1
 
 
     def list_2_module_and_port(self, l):
