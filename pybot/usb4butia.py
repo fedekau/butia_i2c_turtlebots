@@ -56,7 +56,7 @@ class USB4Butia():
                 self.get_listis()
                 loaded = []
                 s = b.get_handler_size()
-                #print 'Handlers', s
+
                 if self.debug:
                     print '===board', i
 
@@ -74,7 +74,6 @@ class USB4Butia():
                         print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
 
                     if not(module_name == 'port'):
-                        #print 'module_name', module_name
                         if module_name in self.openables:
                             loaded.append(module_name)
 
@@ -180,11 +179,9 @@ class USB4Butia():
                         self.openables_loaded[board].append(modulename)
                         dev = Device(board, modulename, None)
                         h = dev.module_open()
-                        dev.handler = h
-                 
+                        number = h
                         f = self.drivers_loaded[modulename]
                         dev.add_functions(f)
-                        number = h
                         board.add_device(number, dev)
                     else:
                         number = board.get_device_handler(modulename)
@@ -196,10 +193,10 @@ class USB4Butia():
                 else:
                     if self.debug:
                         print 'no open and no openable'
-                    return -1
+                    return ERROR
         except Exception, err:
             print 'error call module', err
-            return -1
+            return ERROR
 
 
     def list_2_module_and_port(self, l):
@@ -237,7 +234,6 @@ class USB4Butia():
                         b.close_device()
                     except:
                         pass
-                    
 
         #self.get_modules_list()
 
