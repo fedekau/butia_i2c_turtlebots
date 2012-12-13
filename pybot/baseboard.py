@@ -37,6 +37,7 @@ class Baseboard():
     def __init__(self, dev):
         self.dev = dev
         self.debug = self.dev.debug
+        self.devices = {}
 
     def open_baseboard(self):
         self.dev.open_device()
@@ -46,6 +47,15 @@ class Baseboard():
 
     def get_info(self):
         return self.dev.get_info()
+
+    def add_device(self, handler, device):
+        self.devices[handler] = device
+
+    def get_device_handler(self, device):
+        for e in self.devices:
+            if self.devices[e] == device:
+                return e
+        return ERROR
 
     def get_user_modules_size(self):
         w = []
