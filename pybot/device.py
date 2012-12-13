@@ -20,13 +20,13 @@ ERROR = -1
 
 class Device():
 
-    def __init__(self, baseboard, name, handler, functions = {}):
+    def __init__(self, baseboard, name, handler):
         self.baseboard = baseboard
         self.name = name
         self.handler = handler
         if self.handler:
             self.handler_tosend = self.handler * 8
-        self.functions = functions
+        self.functions = {}
         self.debug = True
 
     def add_functions(self, func_list):

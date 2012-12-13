@@ -5,7 +5,6 @@
 #
 
 import os
-import sys
 import imp
 import com_usb
 from baseboard import Baseboard
@@ -27,6 +26,7 @@ class USB4Butia():
         self.bb = []
 
         self.get_driver_candidates()
+        self.get_drivers()
         self.find_butias()
 
     def get_butia_count(self):
@@ -39,6 +39,7 @@ class USB4Butia():
             try:
                 b.open_baseboard()
                 self.bb.append(b)
+                self.openables_loaded[b] = []
             except:
                 if self.debug:
                     print 'error open baseboard'
@@ -60,7 +61,6 @@ class USB4Butia():
                 if self.debug:
                     print '===board', i
 
-                devices = {}
                 listi = self.listis[b]
                 for m in range(0, s + 1):
                     module_type = b.get_handler_type(m)
@@ -78,8 +78,9 @@ class USB4Butia():
                             loaded.append(module_name)
 
                         d = Device(b, module_name, m)
+                        if self.drivers_loaded.has_key(module_name):
+                            d.add_functions(self.drivers_loaded[module_name])
                         b.add_device(m, d)
-                        devices[m] = d
 
                 self.openables_loaded[b] = loaded
        
@@ -122,10 +123,9 @@ class USB4Butia():
                 self.hotplug.append(name)
         self.drivers_candidates = self.hotplug + self.openables
         return self.drivers_candidates
-        
 
-    def get_driver(self, driver):
-        if driver in self.drivers_candidates:
+    def get_drivers(self):
+        for driver in self.drivers_candidates:
             if self.debug:
                 print 'Loading driver %s...' % driver
             if driver in self.hotplug:
@@ -141,37 +141,19 @@ class USB4Butia():
                     print 'Cannot load %s' % driver, abs_path
             if f and hasattr(f, 'FUNCTIONS'):
                 self.drivers_loaded[driver] = f.FUNCTIONS
-                for b in self.bb:
-                    for d in b.devices:
-                        if b.devices[d].name == driver:
-                            b.devices[d].add_functions(f.FUNCTIONS)
             else:
                 if self.debug:
                     print 'Driver not have FUNCTIONS'
-        else:
-            if self.debug:
-                print 'driver not found' 
-
-
-    def call_aux(self, board, modulename, number, function, params):
-        device = board.devices[number]
-        if not(device.has_function(function)):
-            f = self.drivers_loaded[modulename]
-            device.add_functions(f)
-
-        return device.call_function(function, params)
 
     def callModule(self, modulename, board_number, number, function, params = []):
-        
+
         try:
-            if not(modulename in self.drivers_loaded):
-                self.get_driver(modulename)
 
             board = self.bb[board_number]
 
             if board.devices.has_key(number) and (board.devices[number].name == modulename):
 
-                return self.call_aux(board, modulename, number, function, params)
+                return board.devices[number].call_function(function, params)
 
             else:
                 if modulename in self.openables:
@@ -187,12 +169,14 @@ class USB4Butia():
 
                     if number == ERROR:
                         return ERROR
-                    
-                    return self.call_aux(board, modulename, number, function, params)
+
+                    return board.devices[number].call_function(function, params)
+
                 else:
                     if self.debug:
                         print 'no open and no openable'
                     return ERROR
+
         except Exception, err:
             print 'error call module', err
             return ERROR
