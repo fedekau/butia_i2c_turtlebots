@@ -142,9 +142,9 @@ class USB4Butia():
             if f and hasattr(f, 'FUNCTIONS'):
                 self.drivers_loaded[driver] = f.FUNCTIONS
                 for b in self.bb:
-                    for d in b.devices.values():
-                        if d.name == driver:
-                            d.add_functions(f.FUNCTIONS)
+                    for d in b.devices:
+                        if b.devices[d].name == driver:
+                            b.devices[d].add_functions(f.FUNCTIONS)
             else:
                 if self.debug:
                     print 'Driver not have FUNCTIONS'
@@ -162,14 +162,14 @@ class USB4Butia():
         return device.call_function(function, params)
 
     def callModule(self, modulename, board_number, number, function, params = []):
-
+        
         try:
             if not(modulename in self.drivers_loaded):
                 self.get_driver(modulename)
 
             board = self.bb[board_number]
 
-            if not(number == None) and board.devices.has_key(number) and (board.devices[number].name == modulename):
+            if board.devices.has_key(number) and (board.devices[number].name == modulename):
 
                 return self.call_aux(board, modulename, number, function, params)
 
@@ -178,8 +178,7 @@ class USB4Butia():
                     if not(modulename in self.openables_loaded[board]):
                         self.openables_loaded[board].append(modulename)
                         dev = Device(board, modulename, None)
-                        h = dev.module_open()
-                        number = h
+                        number = dev.module_open()
                         f = self.drivers_loaded[modulename]
                         dev.add_functions(f)
                         board.add_device(number, dev)

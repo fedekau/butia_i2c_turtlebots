@@ -24,7 +24,7 @@ ERROR = -1
 
 class Device():
 
-    def __init__(self, baseboard, name, handler, functions = None):
+    def __init__(self, baseboard, name, handler, functions = {}):
         self.baseboard = baseboard
         self.name = name
         self.handler = handler
@@ -32,7 +32,6 @@ class Device():
         self.debug = True
 
     def add_functions(self, func_list):
-        self.functions = {}
         for f in func_list:
             self.functions[f['name']] = f
 
@@ -110,17 +109,13 @@ class Device():
         return h
 
     def has_function(self, func):
-        if not(self.functions == None):
-            return self.functions.has_key(func)
-        else:
-            return False
+        return self.functions.has_key(func)
 
     def call_function(self, func, params):
-        f = self.functions[func]
 
-        raw = self.module_send(f['call'], f['params'], params)
+        raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
 
-        raw = self.module_read(f['read'])
+        raw = self.module_read(self.functions[func]['read'])
 
         if len(raw) == 1:
             return raw[0]
