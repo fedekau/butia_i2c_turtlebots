@@ -11,7 +11,12 @@ USB4ALL_PRODUCT       = 0x000c
 USB4ALL_CONFIGURATION = 1
 USB4ALL_INTERFACE     = 0
 
+ADMIN_MODULE_IN_ENDPOINT = 0x01
+ADMIN_MODULE_OUT_ENDPOINT = 0x81
+
 READ_HEADER_SIZE      = 3
+
+TIMEOUT = 250
 
 ERROR = -1
 
@@ -45,17 +50,17 @@ class usb_device():
         self.handle = None
         self.device = None
 
-    def read(self, endpoint, length, timeout = 0):
+    def read(self, length):
         try:
-            return self.handle.bulkRead(endpoint, length, timeout)
+            return self.handle.bulkRead(ADMIN_MODULE_OUT_ENDPOINT, length, TIMEOUT)
         except:
             if self.debug:
                 print 'Exception in read usb'
             raise
  
-    def write(self, endpoint, data, timeout = 0):
+    def write(self, data):
         try:
-            return self.handle.bulkWrite(endpoint, data, timeout)
+            return self.handle.bulkWrite(ADMIN_MODULE_IN_ENDPOINT, data, TIMEOUT)
         except:
             if self.debug:
                 print 'Exception in write usb'

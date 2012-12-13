@@ -4,9 +4,6 @@
 # baseboard abstraction for USB4butia
 #
 
-import com_usb
-from com_usb import usb_device
-
 NULL_BYTE = 0x00
 DEFAULT_PACKET_SIZE = 0x04
 GET_USER_MODULES_SIZE_COMMAND = 0x05
@@ -27,7 +24,7 @@ GET_LINE_RESPONSE_PACKET_SIZE = 12
 GET_HANDLER_TYPE_PACKET_SIZE = 5
 GET_HANDLER_RESPONSE_PACKET_SIZE = 5
 CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE = 5
-TIMEOUT = 250
+
 MAX_RETRY = 5
 
 ERROR = -1
@@ -63,14 +60,14 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(GET_USER_MODULES_SIZE_COMMAND)
-        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(w)
 
         if size == ERROR:
             if self.debug:
                 print 'Error get_user_modules_size write'
             raise
 
-        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, GET_USER_MODULE_LINE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(GET_USER_MODULE_LINE_PACKET_SIZE)
 
         if raw == ERROR:
             if self.debug:
@@ -92,14 +89,14 @@ class Baseboard():
         w.append(NULL_BYTE)
         w.append(GET_USER_MODULE_LINE_COMMAND)
         w.append(index)
-        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(w)
 
         if size == ERROR:
             if self.debug:
                 print 'Error get_user_module_line write'
             raise
 
-        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, GET_LINE_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(GET_LINE_RESPONSE_PACKET_SIZE)
 
         if raw == ERROR:
             if self.debug:
@@ -120,14 +117,14 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(GET_HANDLER_SIZE_COMMAND)
-        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(w)
 
         if size == ERROR:
             if self.debug:
                 print 'Error get_handler_size write'
             raise
 
-        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
 
         if raw == ERROR:
             if self.debug:
@@ -143,14 +140,14 @@ class Baseboard():
         w.append(NULL_BYTE)
         w.append(GET_HANDLER_TYPE_COMMAND)
         w.append(index)
-        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(w)
 
         if size == ERROR:
             if self.debug:
                 print 'Error get_handler_type write'
             raise
 
-        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, GET_HANDLER_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
 
         if raw == ERROR:
             if self.debug:
@@ -165,7 +162,7 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(SWITCH_TO_BOOT_BASE_BOARD_COMMAND)
-        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(w)
 
         if size == ERROR:
             if self.debug:
@@ -178,7 +175,7 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(RESET_BASE_BOARD_COMMAND)
-        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(w)
 
         if size == ERROR:
             if self.debug:
@@ -191,14 +188,14 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(CLOSEALL_BASE_BOARD_COMMAND)
-        size = self.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.dev.write(w)
 
         if size == ERROR:
             if self.debug:
                 print 'Error force_close_all write'
             raise
 
-        raw = self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.dev.read(CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE)
 
         if raw == ERROR:
             if self.debug:

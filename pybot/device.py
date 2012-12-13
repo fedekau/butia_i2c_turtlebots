@@ -9,16 +9,12 @@ OPEN_COMMAND = 0x00
 CLOSE_COMMAND = 0x01
 HEADER_PACKET_SIZE = 0x06
 
-ADMIN_MODULE_IN_ENDPOINT = 0x01
-ADMIN_MODULE_OUT_ENDPOINT = 0x81
 ADMIN_HANDLER_SEND_COMMAND = 0x00
 
 OPEN_RESPONSE_PACKET_SIZE = 5
 CLOSE_RESPONSE_PACKET_SIZE = 2
 
 READ_HEADER_SIZE = 3
-
-TIMEOUT = 250
 
 ERROR = -1
 
@@ -28,6 +24,8 @@ class Device():
         self.baseboard = baseboard
         self.name = name
         self.handler = handler
+        if self.handler:
+            self.handler_tosend = self.handler * 8
         self.functions = functions
         self.debug = True
 
@@ -37,7 +35,6 @@ class Device():
 
     def module_send(self, data, params_length, params):
         
-        user_module_handler_send_command = self.handler * 8
         l = len(params)
         if not(l == params_length):
             if self.debug:
@@ -47,14 +44,14 @@ class Device():
         send_packet_length = 0x04 + l
 
         w = []
-        w.append(user_module_handler_send_command)
+        w.append(self.handler_tosend)
         w.append(send_packet_length)
         w.append(NULL_BYTE)
         w.append(data)
         for p in params:
             w.append(p)
 
-        size = self.baseboard.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.baseboard.dev.write(w)
 
         if size == ERROR:
             if self.debug:
@@ -62,7 +59,7 @@ class Device():
             raise
 
     def module_read(self, lenght):
-        raw = self.baseboard.dev.read(ADMIN_MODULE_OUT_ENDPOINT, READ_HEADER_SIZE  + lenght, TIMEOUT)
+        raw = self.baseboard.dev.read(READ_HEADER_SIZE + lenght)
         if raw == ERROR:
             if self.debug:
                 print 'Error module_rad read'
@@ -90,14 +87,14 @@ class Device():
         w.append(module_in_endpoint)
         w.append(module_out_endpoint)
         w = w + module_name
-        size = self.baseboard.dev.write(ADMIN_MODULE_IN_ENDPOINT, w, TIMEOUT)
+        size = self.baseboard.dev.write(w)
 
         if size == ERROR:
             if self.debug:
                 print 'Error module_open write'
             raise
 
-        raw = self.baseboard.dev.read(ADMIN_MODULE_OUT_ENDPOINT, OPEN_RESPONSE_PACKET_SIZE, TIMEOUT)
+        raw = self.baseboard.dev.read(OPEN_RESPONSE_PACKET_SIZE)
 
         if raw == ERROR:
             if self.debug:
@@ -106,6 +103,7 @@ class Device():
 
         h = raw[4]
         self.handler = h
+        self.handler_tosend = self.handler * 8
         return h
 
     def has_function(self, func):
