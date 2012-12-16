@@ -100,8 +100,8 @@ label_name_from_device_id['voltageB'] = _('voltage')
 label_name_from_device_id['gpio'] = _('gpio')
 
 refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'gpio']
-
-static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia', 'setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
+static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
+extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
 class Butia(Plugin):
     
@@ -434,12 +434,15 @@ class Butia(Plugin):
                 match_list.append((t[1] + str(i), t[0]))
         return dict(match_list)
 
-    def change_butia_palette_colors(self, change_statics_blocks):
+    def change_butia_palette_colors(self, change_statics_blocks, board_present):
 
         COLOR_STATIC = self.staticBlocksColor(self.battery_value)
         COLOR_BATTERY = self.batteryColor(self.battery_value)
+        COLOR_EXTRAS = COLOR_NOTPRESENT[:]
+        if board_present:
+            COLOR_EXTRAS = COLOR_PRESENT[:]
 
-        self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks)
+        self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, COLOR_EXTRAS, change_statics_blocks)
 
         try:
             index = palette_name_to_index('butia')
@@ -450,7 +453,7 @@ class Butia(Plugin):
         except:
             pass
 
-    def refresh_palette_2(self, COLOR_STATIC, COLOR_BATTERY, change_statics_blocks):
+    def refresh_palette_2(self, COLOR_STATIC, COLOR_BATTERY, COLOR_EXTRAS, change_statics_blocks):
 
         l = self.list_2_module_and_port(self.list_connected_device_module)
         self.match_dict = self.make_match_dict(l)
@@ -465,6 +468,9 @@ class Butia(Plugin):
                         else:
                             special_block_colors[blk.name] = COLOR_STATIC[:]
                         blk.refresh()
+                elif (blk.name in extras_block_list):
+                    special_block_colors[blk.name] = COLOR_EXTRAS[:]
+                    blk.refresh()
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
                     if (blk_name in refreshable_block_list):
@@ -507,6 +513,9 @@ class Butia(Plugin):
         else:
             self.list_connected_device_module = []
             self.battery_value = ERROR_SENSOR_READ
+        board_present = False
+        if not(self.list_connected_device_module == []):
+            board_present = True
 
         set_old_connected_device_module = set(old_list_connected_device_module)
         set_connected_device_module = set(self.list_connected_device_module)
@@ -515,7 +524,7 @@ class Butia(Plugin):
         self.set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
 
         if force_refresh:
-            self.change_butia_palette_colors(True)
+            self.change_butia_palette_colors(True, board_present)
         else:
             change_statics_blocks = False
             if not(self.battery_value == self.old_battery_value):
@@ -523,7 +532,7 @@ class Butia(Plugin):
                 self.old_battery_value = self.battery_value
 
             if not(self.set_changed_device_module == set([])) or change_statics_blocks:
-                self.change_butia_palette_colors(change_statics_blocks)
+                self.change_butia_palette_colors(change_statics_blocks, board_present)
 
     ################################ Movement calls ################################
 
