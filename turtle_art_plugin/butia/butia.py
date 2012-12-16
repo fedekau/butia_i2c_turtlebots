@@ -99,8 +99,8 @@ label_name_from_device_id['voltageB'] = _('voltage')
 label_name_from_device_id['gpio'] = _('gpio')
 
 refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'gpio']
-
-static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia', 'setpinButia']
+static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
+extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
 class Butia(Plugin):
     
@@ -109,12 +109,12 @@ class Butia(Plugin):
         # Enable extra palette
         self.extra_palette = True
         self.actualSpeed = [600, 600]
+        self.hack_states = [1, 1, 1, 1, 1, 1, 1, 1]
         self.butia = None
         self.pollthread = None
         self.pollrun = True
         self.battery_value = ERROR_SENSOR_READ
         self.old_battery_value = ERROR_SENSOR_READ
-        self.hack_pins = ['0', '0', '0', '0']
         self.bobot = None
         self.butia = None
         self.match_list = []
@@ -134,8 +134,6 @@ class Butia(Plugin):
         """ Setup is called once, when the Turtle Window is created. """
 
         palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'), init_on_start=True)
-        if self.extra_palette:
-            palette2 = make_palette('butia-extra', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot extra blocks'), init_on_start=True)
 
         if self.butia:
             self.battery_value = self.butia.getBatteryCharge()
@@ -231,15 +229,73 @@ class Butia(Plugin):
         special_block_colors['backwardButia'] = COLOR_STATIC[:]
 
         if self.extra_palette:
+
+            palette2 = make_palette('butia-extra', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot extra blocks'), init_on_start=True)
+
+            primitive_dictionary['pinmodeButia'] = self.pinmodeButia
+            palette2.add_block('pinmodeButia',
+                      style='basic-style-2arg',
+                      label=[_('hack pin mode'),_('pin'),_('mode')],
+                      help_string=_('Select the pin function (INPUT, OUTPUT).'),
+                      prim_name='pinmodeButia')
+            self.tw.lc.def_prim('pinmodeButia', 2, lambda self, x, y: primitive_dictionary['pinmodeButia'](x, y))
+            special_block_colors['pinmodeButia'] = COLOR_STATIC[:]
+
             primitive_dictionary['setpinButia'] = self.setpinButia
             palette2.add_block('setpinButia',
                          style='basic-style-2arg',
-                         label=[_('set hack pin Butia'), _('pin'), _('value')],
+                         label=[_('write hack pin Butia'), _('pin'), _('value')],
                          prim_name='setpinButia',
                          default=[1, 0],
                          help_string=_('set a hack pin to 0 or 1'))
             self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
             special_block_colors['setpinButia'] = COLOR_STATIC[:]
+
+            primitive_dictionary['getpinButia'] = self.getpinButia
+            palette2.add_block('getpinButia',
+                         style='number-style-1arg',
+                         label=[_('read hack pin Butia')],
+                         prim_name='getpinButia',
+                         default=1,
+                         help_string=_('read the value of a hack pin'))
+            self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
+            special_block_colors['getpinButia'] = COLOR_STATIC[:]
+
+            primitive_dictionary['highButia'] = self.highButia
+            palette2.add_block('highButia',
+                      style='box-style',
+                      label=_('HIGH'),
+                      help_string=_('Set HIGH value for digital port.'),
+                      prim_name='highButia')
+            self.tw.lc.def_prim('highButia', 0, lambda self: primitive_dictionary['highButia']())
+            special_block_colors['highButia'] = COLOR_STATIC[:]
+
+            primitive_dictionary['inputButia'] = self.inputButia
+            palette2.add_block('inputButia',
+                      style='box-style',
+                      label=_('INPUT'),
+                      help_string=_('Configure hack port for digital input.'),
+                      prim_name='inputButia')
+            self.tw.lc.def_prim('inputButia', 0, lambda self: primitive_dictionary['inputButia']())
+            special_block_colors['inputButia'] = COLOR_STATIC[:]
+
+            primitive_dictionary['lowButia'] = self.lowButia
+            palette2.add_block('lowButia',
+                      style='box-style',
+                      label=_('LOW'),
+                      help_string=_('Set LOW value for digital port.'),
+                      prim_name='lowButia')
+            self.tw.lc.def_prim('lowButia', 0, lambda self: primitive_dictionary['lowButia']())
+            special_block_colors['lowButia'] = COLOR_STATIC[:]
+
+            primitive_dictionary['outputButia'] = self.outputButia
+            palette2.add_block('outputButia',
+                      style='box-style',
+                      label=_('OUTPUT'),
+                      help_string=_('Configure hack port for digital output.'),
+                      prim_name='outputButia')
+            self.tw.lc.def_prim('outputButia', 0, lambda self: primitive_dictionary['outputButia']())
+            special_block_colors['outputButia'] = COLOR_STATIC[:]
 
 
         #add every function in the code 
@@ -385,12 +441,15 @@ class Butia(Plugin):
 
         return dict(match_list)
 
-    def change_butia_palette_colors(self, change_statics_blocks, butias):
+    def change_butia_palette_colors(self, change_statics_blocks, board_present):
 
         COLOR_STATIC = self.staticBlocksColor(self.battery_value)
         COLOR_BATTERY = self.batteryColor(self.battery_value)
+        COLOR_EXTRAS = COLOR_NOTPRESENT[:]
+        if board_present:
+            COLOR_EXTRAS = COLOR_PRESENT[:]
 
-        self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, change_statics_blocks, butias)
+        self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, COLOR_EXTRAS, change_statics_blocks)
 
         try:
             index = palette_name_to_index('butia')
@@ -401,7 +460,7 @@ class Butia(Plugin):
         except:
             pass
 
-    def refresh_palette_2(self, COLOR_STATIC, COLOR_BATTERY, change_statics_blocks, butias):
+    def refresh_palette_2(self, COLOR_STATIC, COLOR_BATTERY, COLOR_EXTRAS, change_statics_blocks):
 
         l = self.list_2_module_and_port(self.list_connected_device_module)
         self.match_dict = self.make_match_dict(l)
@@ -416,6 +475,9 @@ class Butia(Plugin):
                         else:
                             special_block_colors[blk.name] = COLOR_STATIC[:]
                         blk.refresh()
+                elif (blk.name in extras_block_list):
+                    special_block_colors[blk.name] = COLOR_EXTRAS[:]
+                    blk.refresh()
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
                     if (blk_name in refreshable_block_list):
@@ -460,11 +522,13 @@ class Butia(Plugin):
         if self.butia:
             self.list_connected_device_module = self.butia.get_modules_list()
             self.battery_value = self.butia.getBatteryCharge()
-            butias = self.butia.get_butia_count()
         else:
             self.list_connected_device_module = []
             self.battery_value = ERROR_SENSOR_READ
-            butias = 0
+
+        board_present = False
+        if not(self.list_connected_device_module == []):
+            board_present = True
 
         set_old_connected_device_module = set(old_list_connected_device_module)
         set_connected_device_module = set(self.list_connected_device_module)
@@ -473,7 +537,7 @@ class Butia(Plugin):
         self.set_changed_device_module = set_new_device_module.union(set_old_device_module) # maybe exists one set operation for this
 
         if force_refresh:
-            self.change_butia_palette_colors(True, butias)
+            self.change_butia_palette_colors(True, board_present)
         else:
             change_statics_blocks = False
             if not(self.battery_value == self.old_battery_value):
@@ -481,7 +545,7 @@ class Butia(Plugin):
                 self.old_battery_value = self.battery_value
 
             if not(self.set_changed_device_module == set([])) or change_statics_blocks:
-                self.change_butia_palette_colors(change_statics_blocks, butias)
+                self.change_butia_palette_colors(change_statics_blocks, board_present)
 
     ################################ Movement calls ################################
 
@@ -578,25 +642,70 @@ class Butia(Plugin):
         else:
             return ERROR_SENSOR_READ
 
-    def ledButia(self, level, sensorid='', boardid=''):
+    def ledButia(self, on_off, sensorid='', boardid=''):
         if self.butia:
-            self.butia.setLed(level, sensorid, boardid)
+            self.butia.setLed(on_off, sensorid, boardid)
         else:
             return ERROR_SENSOR_READ
 
     ################################ Extras ################################
 
-    def setpinButia(self, pin, value):
+    def pinmodeButia(self, pin, mode):
         if self.butia:
-            pin = int(pin - 1)
-            if (pin < 0) or (pin > 3):
+            pin = int(pin)
+            pin = pin - 1
+            if (pin < 0) or (pin > 7):
                 raise logoerror(ERROR_PIN_NUMBER)
             else:
-                if (value < 0) or (value > 1):
-                    raise logoerror(ERROR_PIN_VALUE)
+                if mode == _('INPUT'):
+                    self.hack_states[pin] = 1
+                    self.butia.modeHack(pin, 1)
+                elif mode == _('OUTPUT'):
+                    self.hack_states[pin] = 0
+                    self.butia.modeHack(pin, 0)
                 else:
-                    self.hack_pins[pin] = str(value)
-                    self.butia.setHacks(self.hack_pins[0], self.hack_pins[1], self.hack_pins[2], self.hack_pins[3])
+                    raise logoerror(ERROR_PIN_MODE) 
+
+    def highButia(self):
+        return 1
+
+    def lowButia(self):
+        return 0
+
+    def inputButia(self):
+        return _('INPUT')
+
+    def outputButia(self):
+        return _('OUTPUT')
+
+    def setpinButia(self, pin, value):
+        if self.butia:
+            pin = int(pin)
+            pin = pin - 1
+            if (pin < 0) or (pin > 7):
+                raise logoerror(ERROR_PIN_NUMBER)
+            else:
+                if self.hack_states[pin] == 1:
+                    raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.'))
+                else:
+                    if (value < 0) or (value > 1):
+                        raise logoerror(ERROR_PIN_VALUE)
+                    else:
+                        self.butia.setHack(pin, value)
+        else:
+            return ERROR_SENSOR_READ
+
+    def getpinButia(self, pin):
+        if self.butia:
+            pin = int(pin)
+            pin = pin - 1
+            if (pin < 0) or (pin > 7):
+                raise logoerror(ERROR_PIN_NUMBER)
+            else:
+                if self.hack_states[pin] == 0:
+                    raise logoerror(_('ERROR: The pin %s must be in INPUT mode.'))
+                else:
+                    return self.butia.getHack(pin)
         else:
             return ERROR_SENSOR_READ
 
