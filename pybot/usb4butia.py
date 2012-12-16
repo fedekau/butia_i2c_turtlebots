@@ -262,17 +262,28 @@ class USB4Butia():
             return raw * 6800 / (vcc - raw)
         return raw
 
-    def getVoltaje(self, number, board):
+    def getVoltage(self, number, board):
         vcc = 65535
         raw = self.callModule('volt', board, number, 'getValue')
         if not(raw == -1):
             return raw * 5 / vcc
         return raw
 
+    def setLed(self, on_off, number= '', board):
+        return self.callModule('led:' + str(number), 'turn', str(on_off))
+
     ################################ Extras ################################
 
-    def setHacks(self, h1, h2, h3, h4, board):
-        msg = [h1, h2, h3, h4]
-        return self.callModule('hacks', board, None, 'set4pin', msg)
+    def modeHack(self, pin, mode, board = 0):
+        msg = str(pin) + ' ' + str(mode)
+        return self.callModule('hackp', board, 'setMode', msg)
+
+    def setHack(self, pin, value, board = 0):
+        msg = str(pin) + ' ' + str(value)
+        return self.callModule('hackp', board, 'write', msg)
+
+    def getHack(self, pin, board = 0):
+        pin = str(pin)
+        return self.callModule('hackp', board, 'read', pin)
 
 
