@@ -107,8 +107,6 @@ class Butia(Plugin):
     
     def __init__(self, parent):
         self.tw = parent
-        # Enable extra palette
-        self.extra_palette = True
         self.actualSpeed = [600, 600]
         self.hack_states = [1, 1, 1, 1, 1, 1, 1, 1]
         self.butia = None
@@ -229,76 +227,74 @@ class Butia(Plugin):
         self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
         special_block_colors['backwardButia'] = COLOR_STATIC[:]
 
-        if self.extra_palette:
+        # Extra palette
+        palette2 = make_palette('butia-extra', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot extra blocks'), init_on_start=True)
 
-            palette2 = make_palette('butia-extra', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot extra blocks'), init_on_start=True)
+        primitive_dictionary['pinmodeButia'] = self.pinmodeButia
+        palette2.add_block('pinmodeButia',
+                  style='basic-style-2arg',
+                  label=[_('hack pin mode'),_('pin'),_('mode')],
+                  help_string=_('Select the pin function (INPUT, OUTPUT).'),
+                  default=[1],
+                  prim_name='pinmodeButia')
+        self.tw.lc.def_prim('pinmodeButia', 2, lambda self, x, y: primitive_dictionary['pinmodeButia'](x, y))
+        special_block_colors['pinmodeButia'] = COLOR_STATIC[:]
 
-            primitive_dictionary['pinmodeButia'] = self.pinmodeButia
-            palette2.add_block('pinmodeButia',
-                      style='basic-style-2arg',
-                      label=[_('hack pin mode'),_('pin'),_('mode')],
-                      help_string=_('Select the pin function (INPUT, OUTPUT).'),
-                      default=[1],
-                      prim_name='pinmodeButia')
-            self.tw.lc.def_prim('pinmodeButia', 2, lambda self, x, y: primitive_dictionary['pinmodeButia'](x, y))
-            special_block_colors['pinmodeButia'] = COLOR_STATIC[:]
+        primitive_dictionary['setpinButia'] = self.setpinButia
+        palette2.add_block('setpinButia',
+                     style='basic-style-2arg',
+                     label=[_('write hack pin Butia'), _('pin'), _('value')],
+                     prim_name='setpinButia',
+                     default=[1, 0],
+                     help_string=_('set a hack pin to 0 or 1'))
+        self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
+        special_block_colors['setpinButia'] = COLOR_STATIC[:]
 
-            primitive_dictionary['setpinButia'] = self.setpinButia
-            palette2.add_block('setpinButia',
-                         style='basic-style-2arg',
-                         label=[_('write hack pin Butia'), _('pin'), _('value')],
-                         prim_name='setpinButia',
-                         default=[1, 0],
-                         help_string=_('set a hack pin to 0 or 1'))
-            self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
-            special_block_colors['setpinButia'] = COLOR_STATIC[:]
+        primitive_dictionary['getpinButia'] = self.getpinButia
+        palette2.add_block('getpinButia',
+                     style='number-style-1arg',
+                     label=[_('read hack pin Butia')],
+                     prim_name='getpinButia',
+                     default=1,
+                     help_string=_('read the value of a hack pin'))
+        self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
+        special_block_colors['getpinButia'] = COLOR_STATIC[:]
 
-            primitive_dictionary['getpinButia'] = self.getpinButia
-            palette2.add_block('getpinButia',
-                         style='number-style-1arg',
-                         label=[_('read hack pin Butia')],
-                         prim_name='getpinButia',
-                         #string_or_number=True,
-                         default=1,
-                         help_string=_('read the value of a hack pin'))
-            self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
-            special_block_colors['getpinButia'] = COLOR_STATIC[:]
+        primitive_dictionary['highButia'] = self.highButia
+        palette2.add_block('highButia',
+                  style='box-style',
+                  label=_('HIGH'),
+                  help_string=_('Set HIGH value for digital port.'),
+                  prim_name='highButia')
+        self.tw.lc.def_prim('highButia', 0, lambda self: primitive_dictionary['highButia']())
+        special_block_colors['highButia'] = COLOR_STATIC[:]
 
-            primitive_dictionary['highButia'] = self.highButia
-            palette2.add_block('highButia',
-                      style='box-style',
-                      label=_('HIGH'),
-                      help_string=_('Set HIGH value for digital port.'),
-                      prim_name='highButia')
-            self.tw.lc.def_prim('highButia', 0, lambda self: primitive_dictionary['highButia']())
-            special_block_colors['highButia'] = COLOR_STATIC[:]
+        primitive_dictionary['inputButia'] = self.inputButia
+        palette2.add_block('inputButia',
+                  style='box-style',
+                  label=_('INPUT'),
+                  help_string=_('Configure hack port for digital input.'),
+                  prim_name='inputButia')
+        self.tw.lc.def_prim('inputButia', 0, lambda self: primitive_dictionary['inputButia']())
+        special_block_colors['inputButia'] = COLOR_STATIC[:]
 
-            primitive_dictionary['inputButia'] = self.inputButia
-            palette2.add_block('inputButia',
-                      style='box-style',
-                      label=_('INPUT'),
-                      help_string=_('Configure hack port for digital input.'),
-                      prim_name='inputButia')
-            self.tw.lc.def_prim('inputButia', 0, lambda self: primitive_dictionary['inputButia']())
-            special_block_colors['inputButia'] = COLOR_STATIC[:]
+        primitive_dictionary['lowButia'] = self.lowButia
+        palette2.add_block('lowButia',
+                  style='box-style',
+                  label=_('LOW'),
+                  help_string=_('Set LOW value for digital port.'),
+                  prim_name='lowButia')
+        self.tw.lc.def_prim('lowButia', 0, lambda self: primitive_dictionary['lowButia']())
+        special_block_colors['lowButia'] = COLOR_STATIC[:]
 
-            primitive_dictionary['lowButia'] = self.lowButia
-            palette2.add_block('lowButia',
-                      style='box-style',
-                      label=_('LOW'),
-                      help_string=_('Set LOW value for digital port.'),
-                      prim_name='lowButia')
-            self.tw.lc.def_prim('lowButia', 0, lambda self: primitive_dictionary['lowButia']())
-            special_block_colors['lowButia'] = COLOR_STATIC[:]
-
-            primitive_dictionary['outputButia'] = self.outputButia
-            palette2.add_block('outputButia',
-                      style='box-style',
-                      label=_('OUTPUT'),
-                      help_string=_('Configure hack port for digital output.'),
-                      prim_name='outputButia')
-            self.tw.lc.def_prim('outputButia', 0, lambda self: primitive_dictionary['outputButia']())
-            special_block_colors['outputButia'] = COLOR_STATIC[:]
+        primitive_dictionary['outputButia'] = self.outputButia
+        palette2.add_block('outputButia',
+                  style='box-style',
+                  label=_('OUTPUT'),
+                  help_string=_('Configure hack port for digital output.'),
+                  prim_name='outputButia')
+        self.tw.lc.def_prim('outputButia', 0, lambda self: primitive_dictionary['outputButia']())
+        special_block_colors['outputButia'] = COLOR_STATIC[:]
 
 
         #add every function in the code 
@@ -332,13 +328,12 @@ class Butia(Plugin):
                     block_name = module + 'Butia'
                     
                     if (j == 'resistanceB') or (j == 'voltageB') or (j == 'gpio'):
-                        if self.extra_palette:
-                            palette2.add_block(block_name, 
-                                     style=blockstyle,
-                                     label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
-                                     prim_name= block_name,
-                                     help_string=_(modules_help[j]),
-                                     hidden=isHidden)
+                        palette2.add_block(block_name, 
+                                 style=blockstyle,
+                                 label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
+                                 prim_name= block_name,
+                                 help_string=_(modules_help[j]),
+                                 hidden=isHidden)
                     else:
                         palette.add_block(block_name, 
                                  style=blockstyle,
@@ -448,9 +443,12 @@ class Butia(Plugin):
         try:
             index = palette_name_to_index('butia')
             self.tw.regenerate_palette(index)
-            if self.extra_palette:
-                index = palette_name_to_index('butia-extra')
-                self.tw.regenerate_palette(index)
+        except:
+            pass
+
+        try:
+            index = palette_name_to_index('butia-extra')
+            self.tw.regenerate_palette(index)
         except:
             pass
 
