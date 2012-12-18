@@ -238,6 +238,7 @@ class Butia(Plugin):
                       style='basic-style-2arg',
                       label=[_('hack pin mode'),_('pin'),_('mode')],
                       help_string=_('Select the pin function (INPUT, OUTPUT).'),
+                      default=[1],
                       prim_name='pinmodeButia')
             self.tw.lc.def_prim('pinmodeButia', 2, lambda self, x, y: primitive_dictionary['pinmodeButia'](x, y))
             special_block_colors['pinmodeButia'] = COLOR_STATIC[:]
