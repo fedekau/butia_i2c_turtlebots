@@ -20,17 +20,19 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import os
+import string
 import sys
 
 argv = sys.argv[:]
 
+
+TAPATH = '/usr/share/sugar/activities/TurtleBots.activity'
+
+
 if len(argv) > 1:
     argv = argv[1:]
-    params = ''
-    for arg in argv:
-        params = params + " " + arg
-    os.system("/usr/share/sugar/activities/TurtleBots.activity/turtleblocks.py" + " " + params)
+    params = string.join(argv, ' ')
+    os.system(os.path.join(TAPATH, 'turtleblocks.py') + ' ' + params)
 else:
-    os.system("/usr/share/sugar/activities/TurtleBots.activity/turtleblocks.py")
-
+    os.system(os.path.join(TAPATH, 'turtleblocks.py'))
 
