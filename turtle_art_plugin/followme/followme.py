@@ -367,7 +367,8 @@ class Followme(Plugin):
                         blk.refresh()
 
     def change_color_blocks(self):
-        followme_blocks = palette_blocks[palette_name_to_index('FollowMe')]
+        index = palette_name_to_index('FollowMe')
+        followme_blocks = palette_blocks[index]
         for block in self.parent.block_list.list:
             if block.type in ['proto', 'block']:
                 if block.name in followme_blocks:
@@ -376,8 +377,7 @@ class Followme(Plugin):
                     else:
                         special_block_colors[block.name] = COLOR_NOTPRESENT[:]
                     block.refresh()
-        self.parent.show_toolbar_palette(palette_name_to_index('FollowMe'), regenerate=True, show=False)
-
+        self.parent.show_toolbar_palette(index, regenerate=True, show=False)
                 
     def prim_mode_rgb(self):
         return 'RGB'
