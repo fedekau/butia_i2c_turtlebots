@@ -23,7 +23,7 @@
 
 #versions to checkout before build
 TURTLEBLOCKS_VERSION = f038f28cb92c340b70d38431e3e02feeb3274e37
-EXTRAS_VERSION = 30a8c909f1c2a86a9377f7d5da1d8af342ddc7af
+EXTRAS_VERSION = f212722e1ca3de1bc8a66e8cecb26e625024945e
 NXT_VERSION = 75114957ecefdc920cab0183a50a039ea9f7c4ce
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 
@@ -136,7 +136,7 @@ mktmpfolder:
 
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
-	(cd turtle-extras && ./merge.py turtlebots)
+	(cd turtle-extras && ./merge.py turtlebots $(BUILDDIR))
 	cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
@@ -161,7 +161,7 @@ apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
 	# ok, let's make this .xo
-	(cd $(TMPBUILDDIR) && python setup.py build)
+	#(cd $(TMPBUILDDIR) && python setup.py build)
 	#dist_xo no work in the tmp folder
 	(cd $(TMPBUILDDIR) && python setup.py dist_xo)
 	cp $(TMPBUILDDIR)/dist/*.xo .
