@@ -22,9 +22,9 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = c455878a4c6b1edbea762026c0bcb76466b981cc
-EXTRAS_VERSION = 9f730e429750b9f2522ab148e8aed098e63a9db0
-NXT_VERSION = cf71837b173bb78afb2446f8c3dea2932760dc85
+TURTLEBLOCKS_VERSION = f038f28cb92c340b70d38431e3e02feeb3274e37
+EXTRAS_VERSION = f212722e1ca3de1bc8a66e8cecb26e625024945e
+NXT_VERSION = 75114957ecefdc920cab0183a50a039ea9f7c4ce
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 
 
@@ -136,7 +136,7 @@ mktmpfolder:
 
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
-	(cd turtle-extras && ./merge.py turtlebots)
+	(cd turtle-extras && ./merge.py turtlebots $(BUILDDIR))
 	cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
