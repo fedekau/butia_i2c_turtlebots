@@ -269,7 +269,7 @@ class USB4Butia():
             return raw * 5 / vcc
         return raw
 
-    def setLed(self, on_off, number= '', board):
+    def setLed(self, on_off, number, board):
         return self.callModule('led:' + str(number), 'turn', str(on_off))
 
     ################################ Extras ################################

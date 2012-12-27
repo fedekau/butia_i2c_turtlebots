@@ -135,7 +135,7 @@ class Butia(Plugin):
 
         self.battery_value = self.batterychargeButia()
         COLOR_STATIC = self.staticBlocksColor(self.battery_value)
-        COLOR_BATTERY = self.batteryColor(self.battery_value))
+        COLOR_BATTERY = self.batteryColor(self.battery_value)
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
