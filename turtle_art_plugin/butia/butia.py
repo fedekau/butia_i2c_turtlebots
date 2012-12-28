@@ -434,16 +434,16 @@ class Butia(Plugin):
 
         return dict(match_list)
 
-    def change_butia_palette_colors(self, change_statics_blocks, board_present):
+    def change_butia_palette_colors(self, change_statics_blocks, boards_present):
 
         COLOR_STATIC = self.staticBlocksColor(self.battery_value)
         COLOR_BATTERY = self.batteryColor(self.battery_value)
-        if board_present:
+        if boards_present > 0:
             COLOR_EXTRAS = COLOR_PRESENT[:]
         else:
             COLOR_EXTRAS = COLOR_NOTPRESENT[:]
 
-        self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, COLOR_EXTRAS, change_statics_blocks)
+        self.refresh_palette_2(COLOR_STATIC, COLOR_BATTERY, COLOR_EXTRAS, change_statics_blocks, boards_present)
 
         try:
             index = palette_name_to_index('butia')
@@ -457,7 +457,7 @@ class Butia(Plugin):
         except:
             pass
 
-    def refresh_palette_2(self, COLOR_STATIC, COLOR_BATTERY, COLOR_EXTRAS, change_statics_blocks):
+    def refresh_palette_2(self, COLOR_STATIC, COLOR_BATTERY, COLOR_EXTRAS, change_statics_blocks, boards_present):
 
         l = self.list_2_module_and_port(self.list_connected_device_module)
         self.match_dict = self.make_match_dict(l)
@@ -494,7 +494,7 @@ class Butia(Plugin):
                             value = int(val[0])
                             board = int(val[1])
                             label = label_name_from_device_id[blk_name] + ':' + val[0] + ' ' + _('Butia')
-                            if butias > 1:
+                            if boards_present > 1:
                                 label = label + ' ' + val[1]
 
                             if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
@@ -518,18 +518,15 @@ class Butia(Plugin):
 
         if self.butia:
             self.list_connected_device_module = self.butia.get_modules_list()
+            boards_present = self.butia.get_butia_count()
         else:
             self.list_connected_device_module = []
+            boards_present = 0
 
         self.battery_value = self.batterychargeButia()
-        
-        if not(self.list_connected_device_module == []):
-            board_present = True
-        else:
-            board_present = False
 
         if force_refresh:
-            self.change_butia_palette_colors(True, board_present)
+            self.change_butia_palette_colors(True, boards_present)
         else:
             change_statics_blocks = False
             if not(self.battery_value == self.old_battery_value):
@@ -537,7 +534,7 @@ class Butia(Plugin):
                 self.old_battery_value = self.battery_value
 
             if not(old_list_connected_device_module == self.list_connected_device_module) or change_statics_blocks:
-                self.change_butia_palette_colors(change_statics_blocks, board_present)
+                self.change_butia_palette_colors(change_statics_blocks, boards_present)
 
     ################################ Movement calls ################################
 
