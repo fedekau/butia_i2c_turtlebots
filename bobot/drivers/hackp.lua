@@ -1,10 +1,14 @@
 local device = _G
+local string_byte=string.byte
 local RD_VERSION = string.char(0x00)
-local SET_VALUES = 0x01 -- opcode to set 4pin values
-local SET_PIN0 = 0x02 -- opcode to set individual values
-local SET_PIN1 = 0x03
-local SET_PIN2 = 0x04
-local SET_PIN3 = 0x05
+local WRITE_PORT = 0x06
+local PORT_IN = 0x07
+local PORT_OUT = 0x08
+local READ = 0x03
+local LOW = 0x04
+local HIGH = 0x05
+local IN = 0x01
+local OUT = 0x02
 
 api={}
 api.getVersion = {}
@@ -18,36 +22,85 @@ api.getVersion.call = function ()
     return raw_val
 end
 
-api.set4pin = {}
-api.set4pin.parameters = {[1]={rname="pin1", rtype="int"},[2]={rname="pin2", rtype="int"},[3]={rname="pin3", rtype="int"},[4]={rname="pin4", rtype="int"}} 
-api.set4pin.returns = {[1]={rname="dato", rtype="int"}} -- 0 if no error ocurred, -1 instead
-api.set4pin.call = function (value3, value2, value1, value0)
-    if (value0 == nil) or (value1 == nil) or (value2 == nil) or (value3 == nil) then 
-        return -1
-    end
-    value0, value1, value2, value3 = tonumber(value0), tonumber(value1), tonumber(value2), tonumber(value3)
-    if ((value0 ~= 0) and (value0 ~= 1) or (value1 ~= 0) and (value1 ~= 1) or (value2 ~= 0) and (value2 ~= 1) or (value3 ~= 0) and (value3 ~= 1)) then
-        return -1
-    end
-    local msg = string.char(SET_VALUES,value3,value2,value1,value0)
+api.read = {}
+api.read.parameters = {[1]={rname="pin", rtype="int"}} 
+api.read.returns = {[1]={rname="dato", rtype="int"}} -- value of pin if no error ocurred, -1 instead
+api.read.call = function (pin)
+    if (pin == nil) then return -1 end
+    pin = tonumber(pin)
+    if (pin < 0) or (pin > 7) then return -1 end
+    local msg
+    msg = string.char(READ,pin)
     device:send(msg)
-    local ret = device:read(1)
-    return 0
+    local ret = device:read(2)
+    if ret == nil or #ret~=2 then return -3 end
+    return string.byte(ret,2) or 0
 end
 
-local function setPin (opcode, value)
-    if ((value == nil) or ((value ~= 0) and (value ~= 1))) then
-        return -1
+api.write = {}
+api.write.parameters = {[1]={rname="pin", rtype="int"},[2]={rname="value", rtype="int"}} 
+api.write.returns = {[1]={rname="dato", rtype="int"}} -- 1 if no error ocurred, -1 instead
+api.write.call = function (pin,value)
+    if (value == nil) or (pin == nil) then return -1 end
+    pin, value = tonumber(pin), tonumber(value)
+    if ((value ~= 0) and (value ~= 1)) or (pin < 0) or (pin > 7) then return -1 end
+    local msg
+    if (value == 0) then
+        msg = string.char(LOW,pin)
+    else 
+        msg = string.char(HIGH,pin)
     end
-    local msg = string.char(SET_PIN0,value)
     device:send(msg)
     local ret = device:read(1)
-    return 0
+    return 1
 end
 
-api.setpin0 = {}
-api.setpin0.parameters = {} 
-api.setpin0.returns = {[1]={rname="dato", rtype="int"}} -- 0 if no error ocurred, -1 instead
-api.setpin0.call = function (value)
-    return setPin(SET_PIN0,value)
+api.setMode = {}
+api.setMode.parameters = {[1]={rname="pin", rtype="int"},[2]={rname="mode", rtype="int"}} 
+api.setMode.returns = {[1]={rname="dato", rtype="int"}} -- 1 if no error ocurred, -1 instead
+api.setMode.call = function (pin,mode)
+    if (mode == nil) or (pin == nil) then return -1 end
+    pin, mode = tonumber(pin), tonumber(mode)
+    if ((mode ~= 0) and (mode ~= 1)) or (pin < 0) or (pin > 7) then return -1 end
+    local msg
+    if (mode == 0) then 
+        msg = string.char(OUT,pin)
+    else 
+        msg = string.char(IN,pin)
+    end
+    device:send(msg)
+    local ret = device:read(1)
+    return 1
+end
+
+api.changePortDir = {}
+api.changePortDir.parameters = {[1]={rname="mode", rtype="int"}} 
+api.changePortDir.returns = {[1]={rname="dato", rtype="int"}} -- 1 if no error ocurred, -1 instead
+api.changePortDir.call = function (mode)
+    if (mode == nil) then return -1 end
+    mode = tonumber(mode)
+    if (mode ~= 0) and (mode ~= 1) then return -1 end
+    local msg
+    if (mode == 0) then 
+        msg = string.char(PORT_IN,mode)
+    else 
+        msg = string.char(PORT_OUT,mode)
+    end
+    device:send(msg)
+    local ret = device:read(1)
+    return 1
+end
+
+api.writePort = {}
+api.writePort.parameters = {[1]={rname="value", rtype="int"}} 
+api.writePort.returns = {[1]={rname="dato", rtype="int"}} -- 1 if no error ocurred, -1 instead
+api.writePort.call = function (value)
+    if (value == nil) then return -1 end
+    value = tonumber(value)
+    if (value < 0) or (value > 255) then return -1 end --FIXME control the value
+    local msg
+    msg = string.char(WRITE_PORT,value)
+    device:send(msg)
+    local ret = device:read(1)
+    return 1
 end

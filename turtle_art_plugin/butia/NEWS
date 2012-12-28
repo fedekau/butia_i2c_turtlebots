@@ -1,3 +1,41 @@
+VERSION 18
++more translations
+/use TurtleBlocks v169
++add extra palette for Butia
++add refresh of extra blocks
++add LED driver and function
+/clean drivers folder
+/add get and write to hacks pin of USB4Butia
+/fix dettach argument in hack
+/change rules name and priority
++add gpio
+/reestruct code of butia.py
+/added commits of submodules
+/allow 6 sensors of same type
+/fix return for voltage and resistance
+/new Makefile for TurtleBots
+/only use Bobot with USB and (Butia 2.0)
+-remove compatibility with Butia 1.0
+/add tw flag to prevent refresh with uncomplete load
+/nxt: newest Lego NXT Plugin
+/nxt: uses nxt_plugin that allow text port entries
+/nxt: motor_pos fixed
+/nxt: allow multi-devices control
+/nxt: uses nxt with sensor light and grey
+/nxt: light sensor fix
+/nxt: no search devices at init
++add moveButia block
+-remove deprecated distance blocks - turnXdegree
+/followme: refresh block of followme ever green
+/followme: change followme order of the blocks
+/followme: re-scan for cameras each time
+/followme: no init the camera at begin, only if is used
+/fix problem with speak block
+/new gnome number entry
+/update WeDo plugin
+/fix resistance block conflict with resistance of turtle
+
+
 VERSION 17
 /followme: remove redundant save calibration - add brightness block
 /followme: change order of the blocks
