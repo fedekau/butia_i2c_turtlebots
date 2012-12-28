@@ -155,12 +155,12 @@ pattern_detection_compile:
 
 apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
-	ln -s `pwd`/butia tmp/plugins/butia
-	ln -s `pwd`/sumtia tmp/plugins/sumtia
-	ln -s `pwd`/followme tmp/plugins/followme
-	ln -s `pwd`/nxt_plugin tmp/plugins/nxt_plugin
-	ln -s `pwd`/wedo_plugin tmp/plugins/wedo_plugin
-	ln -s `pwd`/pattern_detection tmp/plugins/pattern_detection
+	ln -s `pwd`/butia             $(BUILDDIR)/plugins/butia
+	ln -s `pwd`/sumtia            $(BUILDDIR)/plugins/sumtia
+	ln -s `pwd`/followme          $(BUILDDIR)/plugins/followme
+	ln -s `pwd`/nxt_plugin        $(BUILDDIR)/plugins/nxt_plugin
+	ln -s `pwd`/wedo_plugin       $(BUILDDIR)/plugins/wedo_plugin
+	ln -s `pwd`/pattern_detection $(BUILDDIR)/plugins/pattern_detection
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
