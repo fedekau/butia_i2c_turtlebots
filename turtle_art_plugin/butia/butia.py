@@ -411,6 +411,18 @@ class Butia(Plugin):
                 pass
         return r
 
+    def set_to_list(self, s):
+        l = list(s)
+        r = []
+        for e in l:
+            try:
+                module, port = e.split(':')
+                if module in device_id_from_module_name:
+                    r.append(module)
+            except:
+                pass
+        return r
+
     def make_match_dict(self, l):
         match_list = []
         for t in l:
@@ -452,6 +464,7 @@ class Butia(Plugin):
 
         l = self.list_2_module_and_port(self.list_connected_device_module)
         self.match_dict = self.make_match_dict(l)
+        
 
         for blk in self.tw.block_list.list:
             #NOTE: blocks types: proto, block, trash, deleted
@@ -470,31 +483,32 @@ class Butia(Plugin):
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
                     if (blk_name in refreshable_block_list):
                         module = modules_name_from_device_id[blk_name]
-                        s = module + blk_index
-                        if not(s in self.match_dict):
-                            if blk_index !='' :
-                                if blk.type == 'proto': # only make invisible the block in the palette not in the program area
-                                    blk.set_visibility(False)
+                        if module in self.modules_changed:
+                            s = module + blk_index
+                            if not(s in self.match_dict):
+                                if blk_index !='' :
+                                    if blk.type == 'proto': # only make invisible the block in the palette not in the program area
+                                        blk.set_visibility(False)
 
-                            label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
-                            value = blk_index
-                            special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
-                        else:
-                            val = self.match_dict[s]
-                            value = int(val)
-                            label = label_name_from_device_id[blk_name] + ':' + val + ' ' + _('Butia')
-                            if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
-                                blk.set_visibility(True)
-                            special_block_colors[blk.name] = COLOR_PRESENT[:]
+                                label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
+                                value = blk_index
+                                special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
+                            else:
+                                val = self.match_dict[s]
+                                value = int(val)
+                                label = label_name_from_device_id[blk_name] + ':' + val + ' ' + _('Butia')
+                                if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
+                                    blk.set_visibility(True)
+                                special_block_colors[blk.name] = COLOR_PRESENT[:]
 
-                        if module == 'led':
-                            self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
-                        else:
-                            self.tw.lc.def_prim(blk.name, 0, lambda self, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](y))
+                            if module == 'led':
+                                self.tw.lc.def_prim(blk.name, 1, lambda self, x, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](x,y))
+                            else:
+                                self.tw.lc.def_prim(blk.name, 0, lambda self, y=value, z=blk_name: primitive_dictionary[z+ 'Butia'](y))
 
-                        blk.spr.set_label(label)
-                        block_names[blk.name][0] = label
-                        blk.refresh()
+                            blk.spr.set_label(label)
+                            block_names[blk.name][0] = label
+                            blk.refresh()
 
     def check_for_device_change(self, force_refresh):
         """ if there exists new devices connected or disconections to the butia IO board, 
@@ -506,6 +520,14 @@ class Butia(Plugin):
             self.list_connected_device_module = self.butia.get_modules_list()
         else:
             self.list_connected_device_module = []
+
+        set_old_connected_device_module = set(old_list_connected_device_module)
+        set_connected_device_module = set(self.list_connected_device_module)
+        set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
+        set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
+        set_changed_device_module = set_new_device_module.union(set_old_device_module)
+
+        self.modules_changed = self.set_to_list(set_changed_device_module)
 
         self.battery_value = self.batterychargeButia()
         
