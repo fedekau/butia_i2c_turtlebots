@@ -454,15 +454,16 @@ class Butia(Plugin):
             #NOTE: blocks types: proto, block, trash, deleted
             if blk.type in ['proto', 'block']:
                 if (blk.name in static_block_list):
-                    if (change_statics_blocks):
+                    if change_statics_blocks:
                         if (blk.name == 'batterychargeButia'):
                             special_block_colors[blk.name] = COLOR_BATTERY[:]
                         else:
                             special_block_colors[blk.name] = COLOR_STATIC[:]
                         blk.refresh()
                 elif (blk.name in extras_block_list):
-                    special_block_colors[blk.name] = COLOR_EXTRAS[:]
-                    blk.refresh()
+                    if change_statics_blocks:
+                        special_block_colors[blk.name] = COLOR_EXTRAS[:]
+                        blk.refresh()
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
                     if (blk_name in refreshable_block_list):
