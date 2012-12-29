@@ -116,6 +116,7 @@ class Butia(Plugin):
         self.bobot = None
         self.butia = None
         self.match_list = []
+        self.modules_changed = []
         self.list_connected_device_module = []
         self.pollthread=threading.Timer(0, self.bobot_launch)
         self.pollthread.start()
@@ -516,13 +517,6 @@ class Butia(Plugin):
         else:
             self.list_connected_device_module = []
 
-        set_old_connected_device_module = set(old_list_connected_device_module)
-        set_connected_device_module = set(self.list_connected_device_module)
-        set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
-        set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
-        set_changed_device_module = set_new_device_module.union(set_old_device_module)
-        self.modules_changed = self.set_to_list(set_changed_device_module)
-
         self.battery_value = self.batterychargeButia()
         
         if not(self.list_connected_device_module == []):
@@ -533,14 +527,22 @@ class Butia(Plugin):
         if force_refresh:
             self.change_butia_palette_colors(True, True, board_present)
         else:
-            if not(self.battery_value == self.old_battery_value):
-                change_statics_blocks = True
-                self.old_battery_value = self.battery_value
-            else:
-                change_statics_blocks = False
+            if not(old_list_connected_device_module == self.list_connected_device_module):
+                set_old_connected_device_module = set(old_list_connected_device_module)
+                set_connected_device_module = set(self.list_connected_device_module)
+                set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
+                set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
+                set_changed_device_module = set_new_device_module.union(set_old_device_module)
+                self.modules_changed = self.set_to_list(set_changed_device_module)
 
-            if not(old_list_connected_device_module == self.list_connected_device_module) or change_statics_blocks:
-                self.change_butia_palette_colors(False, change_statics_blocks, board_present)
+                if not(self.battery_value == self.old_battery_value):
+                    change_statics_blocks = True
+                    self.old_battery_value = self.battery_value
+                else:
+                    change_statics_blocks = False
+
+                if not(self.modules_changed == []) or change_statics_blocks:
+                    self.change_butia_palette_colors(False, change_statics_blocks, board_present)
 
     ################################ Movement calls ################################
 
