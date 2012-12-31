@@ -452,7 +452,7 @@ class Butia(Plugin):
         
         for blk in self.tw.block_list.list:
             #NOTE: blocks types: proto, block, trash, deleted
-            if blk.type in ['proto', 'block']:
+            if (blk.type in ['proto', 'block']) and blk.name.endswith('Butia'):
                 if (blk.name in static_block_list):
                     if change_statics_blocks:
                         if (blk.name == 'batterychargeButia'):
