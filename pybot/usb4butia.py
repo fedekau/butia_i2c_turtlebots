@@ -43,7 +43,7 @@ class USB4Butia():
                     print 'error open baseboard'
         self.get_modules_list()
 
-    def get_modules_list(self):
+    def get_modules_list(self, normal = True):
         modules = []
         n_boards = self.get_butia_count()
 
@@ -67,7 +67,12 @@ class USB4Butia():
                         complete_name = module_name + '@' + str(i) + ':' +  str(m)
                     else:
                         complete_name = module_name + ':' +  str(m)
-                    modules.append(complete_name)
+
+                    if normal:
+                        modules.append(complete_name)
+                    else:
+                        modules.append(str(m), module_name, str(i))
+
                     if self.debug:
                         print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
 
@@ -142,49 +147,42 @@ class USB4Butia():
 
         try:
 
-            board = self.bb[board_number]
+            if board_number < self.get_butia_count():
+                board = self.bb[board_number]
 
-            if board.devices.has_key(number) and (board.devices[number].name == modulename):
-
-                return board.devices[number].call_function(function, params)
-
-            else:
-                if modulename in self.openables:
-                    if not(modulename in self.openables_loaded[board]):
-                        self.openables_loaded[board].append(modulename)
-                        dev = Device(board, modulename, None)
-                        number = dev.module_open()
-                        dev.add_functions(self.drivers_loaded[modulename])
-                        board.add_device(number, dev)
-                    else:
-                        number = board.get_device_handler(modulename)
-
-                    if number == ERROR:
-                        return ERROR
+                if board.devices.has_key(number) and (board.devices[number].name == modulename):
 
                     return board.devices[number].call_function(function, params)
 
                 else:
-                    if self.debug:
-                        print 'no open and no openable'
-                    return ERROR
+                    if modulename in self.openables:
+                        if not(modulename in self.openables_loaded[board]):
+                            self.openables_loaded[board].append(modulename)
+                            dev = Device(board, modulename, None)
+                            number = dev.module_open()
+                            dev.add_functions(self.drivers_loaded[modulename])
+                            board.add_device(number, dev)
+                        else:
+                            number = board.get_device_handler(modulename)
+
+                        if number == ERROR:
+                            return ERROR
+
+                        return board.devices[number].call_function(function, params)
+
+                    else:
+                        if self.debug:
+                            print 'no open and no openable'
+                        return ERROR
+            else:
+                if self.debug:
+                    print 'no board number %s' % board_number
+                return ERROR
 
         except Exception, err:
             print 'error call module', err
             return ERROR
 
-
-    def list_2_module_and_port(self, l):
-        r = []
-        for e in l:
-            try:
-                module, port = e.split(':')
-                if module in self.openables:
-                    r.append((port, module))
-            except:
-                pass
-        return r
-   
     def reconnect(self):
         pass
 

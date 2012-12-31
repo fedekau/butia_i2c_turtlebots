@@ -404,22 +404,6 @@ class Butia(Plugin):
         for d in device_id_from_module_name.keys():
             self.m_d[d] = 0
 
-    def list_2_module_and_port(self, l):
-        r = []
-        for e in l:
-            try:
-                m_b, port = e.split(':')
-                if m_b.count('@') == 0:
-                    module = m_b
-                    board = '0'
-                else:
-                    module, board = m_b.split('@')
-                if module in device_id_from_module_name:
-                    r.append((port, module, board))
-            except:
-                pass
-        return r
-
     def make_match_dict(self, l):
         self.complete_dict()
         match_list = []
@@ -443,8 +427,7 @@ class Butia(Plugin):
         else:
             COLOR_EXTRAS = COLOR_NOTPRESENT[:]
 
-        l = self.list_2_module_and_port(self.list_connected_device_module)
-        self.match_dict = self.make_match_dict(l)
+        self.match_dict = self.make_match_dict(self.list_connected_device_module)
 
         for blk in self.tw.block_list.list:
             #NOTE: blocks types: proto, block, trash, deleted
@@ -513,7 +496,7 @@ class Butia(Plugin):
         old_list_connected_device_module = self.list_connected_device_module[:]
 
         if self.butia:
-            self.list_connected_device_module = self.butia.get_modules_list()
+            self.list_connected_device_module = self.butia.get_modules_list(False)
             boards_present = self.butia.get_butia_count()
         else:
             self.list_connected_device_module = []
