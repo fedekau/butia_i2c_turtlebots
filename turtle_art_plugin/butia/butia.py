@@ -116,6 +116,7 @@ class Butia(Plugin):
         self.bobot = None
         self.butia = None
         self.match_list = []
+        self.modules_changed = []
         self.list_connected_device_module = []
         self.pollthread = threading.Timer(0, self.pybot_launch)
         self.pollthread.start()
@@ -433,49 +434,51 @@ class Butia(Plugin):
             #NOTE: blocks types: proto, block, trash, deleted
             if (blk.type in ['proto', 'block']) and blk.name.endswith('Butia'):
                 if (blk.name in static_block_list):
-                    if (change_statics_blocks):
+                    if change_statics_blocks:
                         if (blk.name == 'batterychargeButia'):
                             special_block_colors[blk.name] = COLOR_BATTERY[:]
                         else:
                             special_block_colors[blk.name] = COLOR_STATIC[:]
                         blk.refresh()
                 elif (blk.name in extras_block_list):
-                    special_block_colors[blk.name] = COLOR_EXTRAS[:]
-                    blk.refresh()
+                    if change_statics_blocks:
+                        special_block_colors[blk.name] = COLOR_EXTRAS[:]
+                        blk.refresh()
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
                     if (blk_name in refreshable_block_list):
                         module = modules_name_from_device_id[blk_name]
-                        s = module + blk_index
-                        if not(s in self.match_dict):
-                            if blk_index !='' :
-                                if blk.type == 'proto': # only make invisible the block in the palette not in the program area
-                                    blk.set_visibility(False)
+                        if (module in self.modules_changed) or force_refresh:
+                            s = module + blk_index
+                            if not(s in self.match_dict):
+                                if blk_index !='' :
+                                    if blk.type == 'proto': # only make invisible the block in the palette not in the program area
+                                        blk.set_visibility(False)
 
-                            label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
-                            value = blk_index
-                            board = 0
-                            special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
-                        else:
-                            val = self.match_dict[s]
-                            value = int(val[0])
-                            board = int(val[1])
-                            label = label_name_from_device_id[blk_name] + ':' + val[0] + ' ' + _('Butia')
-                            if boards_present > 1:
-                                label = label + ' ' + val[1]
+                                label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
+                                value = blk_index
+                                board = 0
+                                special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
+                            else:
+                                val = self.match_dict[s]
+                                value = int(val[0])
+                                board = int(val[1])
+                                label = label_name_from_device_id[blk_name] + ':' + val[0] + ' ' + _('Butia')
+                                if boards_present > 1:
+                                    label = label + ' ' + val[1]
 
-                            if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
-                                blk.set_visibility(True)
-                            special_block_colors[blk.name] = COLOR_PRESENT[:]
+                                if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
+                                    blk.set_visibility(True)
+                                special_block_colors[blk.name] = COLOR_PRESENT[:]
 
-                        if module == 'led':
-                            self.tw.lc.def_prim(blk.name, 1, lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x, z))
-                        else:
-                            self.tw.lc.def_prim(blk.name, 0, lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
+                            if module == 'led':
+                                self.tw.lc.def_prim(blk.name, 1, lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x, z))
+                            else:
+                                self.tw.lc.def_prim(blk.name, 0, lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
 
-                        blk.spr.set_label(label)
-                        block_names[blk.name][0] = label
-                        blk.refresh()
+                            blk.spr.set_label(label)
+                            block_names[blk.name][0] = label
+                            blk.refresh()
 
         try:
             index = palette_name_to_index('butia')
