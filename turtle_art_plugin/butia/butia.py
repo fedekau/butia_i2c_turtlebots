@@ -536,14 +536,14 @@ class Butia(Plugin):
                 set_changed_device_module = set_new_device_module.union(set_old_device_module)
                 self.modules_changed = self.set_to_list(set_changed_device_module)
 
-                if not(self.battery_value == self.old_battery_value):
-                    change_statics_blocks = True
-                    self.old_battery_value = self.battery_value
-                else:
-                    change_statics_blocks = False
+            if not(self.battery_value == self.old_battery_value):
+                change_statics_blocks = True
+                self.old_battery_value = self.battery_value
+            else:
+                change_statics_blocks = False
 
-                if not(self.modules_changed == []) or change_statics_blocks:
-                    self.change_butia_palette_colors(False, change_statics_blocks, board_present)
+            if not(self.modules_changed == []) or change_statics_blocks:
+                self.change_butia_palette_colors(False, change_statics_blocks, board_present)
 
     ################################ Movement calls ################################
 
