@@ -1,3 +1,19 @@
+turtlebots (18-r0) unstable; urgency=low
+
+  * core: +based on TurtleBlocks v168+
+  * core: +More traslations
+  * butia: +add extra palette for Butia
+  * butia: +add LED driver and function
+  * butia: +add moveButia block
+  * butia: -remove deprecated distance blocks - turnXdegree
+  * nxt: /allow multi-devices control
+  * nxt: /uses nxt with sensor light and grey
+  * nxt: /light sensor fix
+  * nxt: -no search devices at init
+  * followme: /refresh block of followme ever green
+
+ -- Guillermo Reisch <greisch@fing.edu.uy>  Sun, 06 Jan 2013 17:41:12 -0200
+
 turtlebots (17-r1) unstable; urgency=low
 
   * Added udev rule for WEDO
