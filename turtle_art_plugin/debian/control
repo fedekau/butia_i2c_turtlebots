@@ -13,12 +13,11 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: python-pygame (>= 1.9.1)
 Conflicts: turtleart (<= 98-1)
-Description: TurtleBlocks with robot plugins: Butia, Lego NxT, WeDo, FollowMe
- TurtleBots is a modifiqued version of TurtleBlocks, that include plugins 
- to manage robots kits, this kits include Butia Robot, Sumbot, Lego NXT
- and Lego WeDo. If you have another kit you are free to make a new plugin
- to suport that kill, and if you want... you can send the code sow we add
- your plugin to TurtleBots! :-)
- TurtleBots is part of "Proyecto Butia" - "Sistema robótico constructivo
- programable de bajo costo para uso educativo" (Robotic system programmable
- low cost construction for educational use)
+Description: TurtleBlocks with plugins for robotics: Butia, NxT, WeDo, FollowMe
+ TurtleBots is a modified version of TurtleBlocks, it includes several plugins 
+ to manage robotic kits such as Butia Robot, Sumbot, Lego NXT and Lego WeDo.
+ If you have another robotic kit feel free to make a new plugin, and if you
+ want you can send us the code so we can add your plugin to TurtleBots! :-)
+ TurtleBots is part of "Proyecto Butiá" - "Sistema robótico constructivo
+ programable de bajo costo para uso educativo" (Programmable, constructive and 
+ low cost robotic kit for educational purpose)
