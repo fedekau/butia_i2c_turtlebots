@@ -7,24 +7,24 @@ turtlebots (18-r0) unstable; urgency=low
   * butia: +add moveButia block
   * butia: -remove deprecated distance blocks - turnXdegree
   * nxt: /allow multi-devices control
-  * nxt: /uses nxt with sensor light and grey
+  * nxt: /uses nxt with light and greyscale sensors
   * nxt: /light sensor fix
-  * nxt: -no search devices at init
-  * followme: /refresh block of followme ever green
-  * butia: /add get and write to hacks pin of USB4Butia
+  * nxt: -no search for devices at init
+  * followme: /refresh followme blocks now always in green
+  * butia: /add get and write functions to hackpins of USB4Butia
   * core: /change rules name and priority
-  * butia: /reestruct code of butia.py
+  * butia: /restructuring butia.py code
   * butia: /allow 6 sensors of same type
-  * butia: /fix return for voltage and resistance
+  * butia: /fix return function for voltage and resistance
   * core: /new Makefile for TurtleBots
-  * butia: /only use Bobot with USB and (Butia 2.0)
+  * butia: /Bobot only support USB for Butia 2.0
   * butia: -remove compatibility with Butia 1.0
   * nxt: /motor_pos fixed
   * nxt: /allow multi-devices control
-  * nxt: /uses nxt with sensor light and grey
+  * nxt: /uses nxt with light and greyscale sensors
   * nxt: /light sensor fix
-  * followme: /re-scan for cameras each time
-  * followme: /no init the camera at begin, only if is used
+  * followme: /re-scan for cameras each time you use a FollowMe block
+  * followme: /no turn on the camera at startup, only if it is used
   * core: /fix problem with speak block
 
  -- Guillermo Reisch <greisch@fing.edu.uy>  Sun, 06 Jan 2013 17:41:12 -0200
@@ -33,8 +33,8 @@ turtlebots (17-r1) unstable; urgency=low
 
   * Added udev rule for WEDO
   * add configuration script to crate group robots
-  * more turtlebots 18 that 17, I dont care, jeje
-  * Added python-pygame as recomended (needed by followme)
+  * more turtlebots 18 that 17, I don't care, jeje
+  * Added python-pygame as recommended (needed by followme)
 
  -- Guillermo Reisch <greisch@fing.edu.uy>  Thu, 29 Nov 2012 17:01:15 -0200
 
