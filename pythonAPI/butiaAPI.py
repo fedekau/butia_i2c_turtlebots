@@ -240,11 +240,21 @@ class robot:
         return self.callModule('gpio:' + str(number), 'getValue')
 
     # set the led intensity
-    def setLed(self, nivel = 255, number= ''):
-        return self.callModule('led:' + str(number), 'setLight', str(math.trunc(nivel)))
+    def setLed(self, on_off, number= ''):
+        return self.callModule('led:' + str(number), 'turn', str(on_off))
 
-    def setHacks(self, pin1, pin2, pin3, pin4):
-        msg = pin1 + ' ' + pin2 + ' ' + pin3 + ' ' + pin4
-        return self.callModule('hackp', 'set4pin', str(msg))
+    # Hacks
+    def modeHack(self, pin, mode):
+        msg = str(pin) + ' ' + str(mode)
+        return self.callModule('hackp', 'setMode', msg)
+
+    def setHack(self, pin, value):
+        msg = str(pin) + ' ' + str(value)
+        return self.callModule('hackp', 'write', msg)
+
+    def getHack(self, pin):
+        pin = str(pin)
+        return self.callModule('hackp', 'read', pin)
+
 
 

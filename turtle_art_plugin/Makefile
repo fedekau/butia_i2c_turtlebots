@@ -160,8 +160,6 @@ apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
-	# ok, let's make this .xo
-	(cd $(TMPBUILDDIR) && python setup.py build)
 	#dist_xo no work in the tmp folder
 	(cd $(TMPBUILDDIR) && python setup.py dist_xo)
 	cp $(TMPBUILDDIR)/dist/*.xo .
@@ -188,9 +186,6 @@ plugin-followme: apply_hard_plugins
 	mv $(BUILDDIR)/plugins/followme_plugin.tar.gz .
 
 plugin-nxt: apply_hard_plugins
-	# remove .git from NXT plugin
-	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
-	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 	cp stagin/plugins/nxt_plugin/plugin.info $(BUILDDIR)/plugins
 	cd $(BUILDDIR)/plugins && tar -czvf nxt_plugin.tar.gz nxt_plugin/* plugin.info
 	rm $(BUILDDIR)/plugins/plugin.info
@@ -310,3 +305,4 @@ clean-plugins:
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
  dev
+

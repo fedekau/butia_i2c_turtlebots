@@ -1,6 +1,6 @@
 [Activity]
-name = ButiaFirmware
-bundle_id = uy.edu.fing.ButiaFirmware
+name = Butia Firmware
+bundle_id = uy.edu.fing.butiafirmware
 exec = sugar-activity ButiaFirmware.ButiaFirmware
 icon = fua-icon
 activity_version = 1

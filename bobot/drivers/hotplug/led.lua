@@ -1,11 +1,11 @@
 local device = _G
 
 local RD_VERSION=string.char(0x00)
-local SET_LED_ON=string.char(0x01)
-local SET_LED_OFF=string.char(0x02)
+local TURN_ON=string.char(0x01)
+local TURN_OFF=string.char(0x02)
 local string_byte=string.byte
 
--- description: lets us know button module's version
+-- description: lets us know grey module's version
 api={}
 api.getVersion = {}
 api.getVersion.parameters = {} -- no input parameters
@@ -18,30 +18,19 @@ api.getVersion.call = function ()
     return raw_val
 end
 
--- description: lets us know button's current status
--- input: empty
--- output: button's current status. Possible status: 1 pressed - 0 not pressed
-api.turnOn = {}
-api.turnOn.parameters = {} -- no input parameters
-api.turnOn.returns = {[1]={rname="state", rtype="int"}}
-api.turnOn.call = function ()
-	device:send(SET_LED_ON) -- operation code 1 = prender led
-	local sen_dig_response = device:read(2) -- 2 bytes to read (opcode, data)
-   	if not sen_dig_response or #sen_dig_response~=2 then return -1 end
-	local raw_val = string_byte(sen_dig_response, 2) or 0 -- keep data
-	return raw_val 
-end
-
--- description: lets us know button's current status
--- input: empty
--- output: button's current status. Possible status: 1 pressed - 0 not pressed
-api.turnOff = {}
-api.turnOff.parameters = {} -- no input parameters
-api.turnOff.returns = {[1]={rname="state", rtype="int"}}
-api.turnOff.call = function ()
-	device:send(SET_LED_OFF) -- operation code 1 = prender led
-	local sen_dig_response = device:read(2) -- 2 bytes to read (opcode, data)
-    if not sen_dig_response or #sen_dig_response~=2 then return -1 end
-	local raw_val = string_byte(sen_dig_response, 2) or 0 -- keep data
-	return raw_val 
+-- description: turn led on or off
+-- input: 0 or 1
+-- output: if sucess 1
+api.turn = {}
+api.turn.parameters = {[1]={rname="par1", rtype="int"}} -- no input parameters
+api.turn.returns = {[1]={rname="ret1", rtype="int"}} 
+api.turn.call = function (value)
+    value = tonumber(value)
+    if value == nil or value ~= 0 and value ~= 1 then return -1 end
+    if value == 0 then
+        device:send(TURN_OFF)
+    else
+        device:send(TURN_ON)
+    end
+	return 1
 end
