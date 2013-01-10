@@ -377,7 +377,7 @@ class Butia(Plugin):
         self.check_for_device_change(True)
 
     def batteryColor(self, battery):
-        if (battery == -1):
+        if (battery == ERROR):
             return COLOR_NOTPRESENT[:]
         elif ((battery < 254) and (battery >= 74)):
             return ["#FFA500","#808080"]
@@ -385,7 +385,7 @@ class Butia(Plugin):
             return ["#FF0000","#808080"]
 
     def staticBlocksColor(self, battery):
-        if (battery == -1) or (battery == 255) or (battery < 74):
+        if (battery == ERROR) or (battery == 255) or (battery < 74):
             return COLOR_NOTPRESENT[:]
         else:
             return COLOR_PRESENT[:]
