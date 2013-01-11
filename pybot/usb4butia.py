@@ -30,7 +30,7 @@ class USB4Butia():
     def get_butia_count(self):
         return len(self.bb)
 
-    def find_butias(self):
+    def find_butias(self, get_modules=True):
         devices = com_usb.find()
         for dev in devices:
             b = Baseboard(dev)
@@ -41,9 +41,10 @@ class USB4Butia():
             except:
                 if self.debug:
                     print 'error open baseboard'
-        self.get_modules_list()
+        if get_modules:
+            self.get_modules_list()
 
-    def get_modules_list(self, normal = True):
+    def get_modules_list(self, normal=True):
         modules = []
         n_boards = self.get_butia_count()
 
@@ -189,7 +190,7 @@ class USB4Butia():
 
     def refresh(self):
         if self.bb == []:
-            self.find_butias()
+            self.find_butias(False)
         else:
             for b in self.bb:
                 info = ERROR
