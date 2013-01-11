@@ -68,15 +68,16 @@ class USB4Butia():
                     else:
                         complete_name = module_name + ':' +  str(m)
 
-                    if normal:
-                        modules.append(complete_name)
-                    else:
-                        modules.append(str(m), module_name, str(i))
-
                     if self.debug:
                         print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
 
                     if not(module_name == 'port'):
+
+                        if normal:
+                            modules.append(complete_name)
+                        else:
+                            modules.append((str(m), module_name, str(i)))
+
                         if module_name in self.openables:
                             loaded.append(module_name)
 

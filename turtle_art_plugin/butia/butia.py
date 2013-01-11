@@ -400,6 +400,14 @@ class Butia(Plugin):
         else:
             return ('', 0)
 
+    def set_to_list(self, s):
+        l = list(s)
+        r = []
+        for e in l:
+            if e[1] in device_id_from_module_name:
+                r.append(e[1])
+        return r
+
     def complete_dict(self):
         self.m_d = {}
         for d in device_id_from_module_name.keys():
@@ -410,12 +418,13 @@ class Butia(Plugin):
         match_list = []
         for t in l:
             module = t[1]
-            n = self.m_d[module]
-            self.m_d[module] = self.m_d[module] + 1
-            if n == 0:
-                match_list.append((module, (t[0], t[2])))
-            else:
-                match_list.append((module + str(n), (t[0], t[2])))
+            if module in device_id_from_module_name:
+                n = self.m_d[module]
+                self.m_d[module] = self.m_d[module] + 1
+                if n == 0:
+                    match_list.append((module, (t[0], t[2])))
+                else:
+                    match_list.append((module + str(n), (t[0], t[2])))
 
         return dict(match_list)
 
