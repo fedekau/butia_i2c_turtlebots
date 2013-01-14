@@ -60,10 +60,9 @@ class USB4Butia():
                 if self.debug:
                     print '===board', i
 
-                listi = self.listis[b]
                 for m in range(0, s + 1):
                     module_type = b.get_handler_type(m)
-                    module_name = listi[module_type]
+                    module_name = self.listis[b][module_type]
                     if n_boards > 1:
                         complete_name = module_name + '@' + str(i) + ':' +  str(m)
                     else:
@@ -154,7 +153,15 @@ class USB4Butia():
 
                 if board.devices.has_key(number) and (board.devices[number].name == modulename):
 
-                    return board.devices[number].call_function(function, params)
+                    module_type = board.get_handler_type(number)
+                    module_name = self.listis[board][module_type]
+
+                    if module_name == modulename:
+                        return board.devices[number].call_function(function, params)
+                    else:
+                        if self.debug:
+                            print 'device changes'
+                        return ERROR
 
                 else:
                     if modulename in self.openables:
