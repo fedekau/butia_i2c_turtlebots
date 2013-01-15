@@ -65,11 +65,11 @@ class Device():
             if self.debug:
                 print 'Error module_rad read'
             raise
-
-        l = []
-        for i in range(READ_HEADER_SIZE + 1, len(raw)):
-            l.append(raw[i])
-        return l
+        
+        if raw[1] == 5:
+            return raw[4]
+        elif raw[1] == 6:
+            return raw[4] + raw[5] * 256
 
     def module_open(self):
         
@@ -114,12 +114,7 @@ class Device():
 
         raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
 
-        raw = self.module_read(self.functions[func]['read'])
-
-        if len(raw) == 1:
-            return raw[0]
-        elif len(raw) == 2:
-            return raw[0] + raw[1] * 256
+        return self.module_read(self.functions[func]['read'])
 
     def to_ord(self, string):
         s = []
