@@ -65,9 +65,12 @@ class Device():
             if self.debug:
                 print 'Error module_rad read'
             raise
-        
+
         if raw[1] == 5:
-            return raw[4]
+            if raw[4] == 255:
+                return -1
+            else:
+                return raw[4]
         elif raw[1] == 6:
             return raw[4] + raw[5] * 256
 
