@@ -526,6 +526,8 @@ class Butia(Plugin):
                 set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
                 set_changed_device_module = set_new_device_module.union(set_old_device_module)
                 self.modules_changed = self.set_to_list(set_changed_device_module)
+            else:
+                self.modules_changed = []
 
             if not(self.battery_value == self.old_battery_value):
                 change_statics_blocks = True
