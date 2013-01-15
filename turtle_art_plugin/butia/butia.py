@@ -112,7 +112,7 @@ class Butia(Plugin):
         self.pollthread = None
         self.pollrun = True
         self.battery_value = ERROR
-        self.old_battery_value = ERROR
+        self.old_battery_color = COLOR_NOTPRESENT[:]
         self.bobot = None
         self.butia = None
         self.match_list = []
@@ -135,8 +135,7 @@ class Butia(Plugin):
         palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'), init_on_start=True)
 
         self.battery_value = self.batterychargeButia()
-        COLOR_STATIC = self.staticBlocksColor(self.battery_value)
-        COLOR_BATTERY = self.batteryColor(self.battery_value)
+        COLOR_STATIC = self.staticBlocksColor()
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
@@ -156,7 +155,7 @@ class Butia(Plugin):
                      prim_name='batterychargeButia',
                      help_string=_('returns the battery charge as a number between 0 and 255'))
         self.tw.lc.def_prim('batterychargeButia', 0, lambda self: primitive_dictionary['batterychargeButia']())
-        special_block_colors['batterychargeButia'] = COLOR_BATTERY[:]
+        special_block_colors['batterychargeButia'] = self.batteryColor()[:]
 
         primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',
@@ -376,16 +375,19 @@ class Butia(Plugin):
             self.butia.refresh()
         self.check_for_device_change(True)
 
-    def batteryColor(self, battery):
-        if (battery == ERROR):
-            return COLOR_NOTPRESENT[:]
-        elif ((battery < 254) and (battery >= 74)):
+    def batteryColor(self):
+        if (self.battery_value == ERROR):
+            if not(self.list_connected_device_module == []):
+                return ["#FF0000","#808080"]
+            else:
+                return COLOR_NOTPRESENT[:]
+        elif ((self.battery_value < 254) and (self.battery_value >= 74)):
             return ["#FFA500","#808080"]
         else:
             return ["#FF0000","#808080"]
 
-    def staticBlocksColor(self, battery):
-        if (battery == ERROR) or (battery == 255) or (battery < 74):
+    def staticBlocksColor(self):
+        if (self.battery_value == ERROR) or (self.battery_value < 74):
             return COLOR_NOTPRESENT[:]
         else:
             return COLOR_PRESENT[:]
@@ -430,8 +432,8 @@ class Butia(Plugin):
 
     def change_butia_palette_colors(self, force_refresh, change_statics_blocks, boards_present):
 
-        COLOR_STATIC = self.staticBlocksColor(self.battery_value)
-        COLOR_BATTERY = self.batteryColor(self.battery_value)
+        COLOR_STATIC = self.staticBlocksColor()
+
         if boards_present:
             COLOR_EXTRAS = COLOR_PRESENT[:]
         else:
@@ -445,7 +447,7 @@ class Butia(Plugin):
                 if (blk.name in static_block_list):
                     if change_statics_blocks:
                         if (blk.name == 'batterychargeButia'):
-                            special_block_colors[blk.name] = COLOR_BATTERY[:]
+                            special_block_colors[blk.name] = self.battery_color[:]
                         else:
                             special_block_colors[blk.name] = COLOR_STATIC[:]
                         blk.refresh()
@@ -515,6 +517,7 @@ class Butia(Plugin):
             boards_present = 0
 
         self.battery_value = self.batterychargeButia()
+        self.battery_color = self.batteryColor()
         
         if force_refresh:
             self.change_butia_palette_colors(True, True, boards_present)
@@ -529,9 +532,9 @@ class Butia(Plugin):
             else:
                 self.modules_changed = []
 
-            if not(self.battery_value == self.old_battery_value):
+            if not(self.battery_color == self.old_battery_color):
                 change_statics_blocks = True
-                self.old_battery_value = self.battery_value
+                self.old_battery_color = self.battery_color
             else:
                 change_statics_blocks = False
 
