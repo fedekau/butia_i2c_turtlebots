@@ -15,6 +15,7 @@ OPEN_RESPONSE_PACKET_SIZE = 5
 CLOSE_RESPONSE_PACKET_SIZE = 2
 
 READ_HEADER_SIZE = 3
+MAX_BYTES = 8
 
 ERROR = -1
 
@@ -59,14 +60,14 @@ class Device():
             raise
 
     def module_read(self, lenght):
-        raw = self.baseboard.dev.read(READ_HEADER_SIZE + lenght)
+        raw = self.baseboard.dev.read(MAX_BYTES)
         if raw == ERROR:
             if self.debug:
                 print 'Error module_rad read'
             raise
 
         l = []
-        for i in range(READ_HEADER_SIZE + 1, READ_HEADER_SIZE + lenght):
+        for i in range(READ_HEADER_SIZE + 1, len(raw)):
             l.append(raw[i])
         return l
 

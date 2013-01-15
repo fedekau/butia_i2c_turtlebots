@@ -153,15 +153,7 @@ class USB4Butia():
 
                 if board.devices.has_key(number) and (board.devices[number].name == modulename):
 
-                    module_type = board.get_handler_type(number)
-                    module_name = self.listis[board][module_type]
-
-                    if module_name == modulename:
-                        return board.devices[number].call_function(function, params)
-                    else:
-                        if self.debug:
-                            print 'device changes'
-                        return ERROR
+                    return board.devices[number].call_function(function, params)
 
                 else:
                     if modulename in self.openables:
