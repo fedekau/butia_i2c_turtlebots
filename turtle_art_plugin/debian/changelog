@@ -1,3 +1,9 @@
+turtlebots (18-r1) unstable; urgency=low
+
+  * Release for MG2 compatibility
+
+ -- Guillermo Reisch <greisch@fing.edu.uy>  Thu, 15 Jan 2013 14:13:47 -0200
+
 turtlebots (18-r0) unstable; urgency=low
 
   * core: +based on TurtleBlocks v168+
