@@ -256,15 +256,6 @@ class Butia(Plugin):
         self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
         special_block_colors['getpinButia'] = COLOR_STATIC[:]
 
-        primitive_dictionary['highButia'] = self.highButia
-        palette2.add_block('highButia',
-                  style='box-style',
-                  label=_('HIGH'),
-                  help_string=_('Set HIGH value for digital port.'),
-                  prim_name='highButia')
-        self.tw.lc.def_prim('highButia', 0, lambda self: primitive_dictionary['highButia']())
-        special_block_colors['highButia'] = COLOR_STATIC[:]
-
         primitive_dictionary['inputButia'] = self.inputButia
         palette2.add_block('inputButia',
                   style='box-style',
@@ -273,6 +264,15 @@ class Butia(Plugin):
                   prim_name='inputButia')
         self.tw.lc.def_prim('inputButia', 0, lambda self: primitive_dictionary['inputButia']())
         special_block_colors['inputButia'] = COLOR_STATIC[:]
+
+        primitive_dictionary['highButia'] = self.highButia
+        palette2.add_block('highButia',
+                  style='box-style',
+                  label=_('HIGH'),
+                  help_string=_('Set HIGH value for digital port.'),
+                  prim_name='highButia')
+        self.tw.lc.def_prim('highButia', 0, lambda self: primitive_dictionary['highButia']())
+        special_block_colors['highButia'] = COLOR_STATIC[:]
 
         primitive_dictionary['lowButia'] = self.lowButia
         palette2.add_block('lowButia',
