@@ -222,7 +222,7 @@ class USB4Butia():
         return (module_name in module_list)
 
     def loopBack(self, data):
-        pass
+        return self.callModule('lback', 0, None, 'send', data)
 
     ################################ Movement calls ################################
 
