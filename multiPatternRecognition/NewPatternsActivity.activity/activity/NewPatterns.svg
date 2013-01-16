@@ -14,8 +14,8 @@
    height="55"
    id="svg2381"
    sodipodi:version="0.32"
-   inkscape:version="0.47 r22583"
-   sodipodi:docname="patternoff.svg"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="NewPatterns.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <metadata
      id="metadata3470">
@@ -44,9 +44,9 @@
      inkscape:zoom="8.4727273"
      inkscape:cx="75.123189"
      inkscape:cy="31.988779"
-     inkscape:window-x="-4"
+     inkscape:window-x="-2"
      inkscape:window-y="-3"
-     inkscape:current-layer="svg2381"
+     inkscape:current-layer="layer3"
      inkscape:window-maximized="1" />
   <defs
      id="defs2383">
@@ -75,19 +75,7 @@
   <g
      inkscape:groupmode="layer"
      id="layer3"
-     inkscape:label="fondo">
-    <g
-       id="g2508"
-       transform="matrix(0.81818182,0,0,0.81818182,-7.9886364,-5.3295456)">
-      <rect
-         style="fill:#282828;fill-opacity:1;fill-rule:nonzero;stroke:none"
-         id="rect3269"
-         y="12.625"
-         x="15.875"
-         height="55"
-         width="55" />
-    </g>
-  </g>
+     inkscape:label="fondo" />
   <path
      inkscape:connector-curvature="0"
      style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.09668123000000001px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
