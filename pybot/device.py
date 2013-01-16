@@ -15,7 +15,7 @@ OPEN_RESPONSE_PACKET_SIZE = 5
 CLOSE_RESPONSE_PACKET_SIZE = 2
 
 READ_HEADER_SIZE = 3
-MAX_BYTES = 8
+MAX_BYTES = 64
 
 ERROR = -1
 
@@ -59,8 +59,11 @@ class Device():
                 print 'Error module_send write'
             raise
 
-    def module_read(self):
-        raw = self.baseboard.dev.read(MAX_BYTES)
+    def module_read(self, lenght = 0):
+        if lenght == 0:
+            raw = self.baseboard.dev.read(MAX_BYTES)
+        else:
+            raw = self.baseboard.dev.read(lenght)
         if raw == ERROR:
             if self.debug:
                 print 'Error module_rad read'
@@ -73,6 +76,32 @@ class Device():
                 return raw[4]
         elif raw[1] == 6:
             return raw[4] + raw[5] * 256
+        else:
+            ret = ''
+            for r in raw[3:]:
+                if not(r == 0):
+                    ret = ret + chr(r)
+            return ret
+
+    def module_send_data(self, data):
+        s = self.to_ord(data)
+        send_packet_length = 0x04 + len(s)
+
+        w = []
+        w.append(self.handler_tosend)
+        w.append(send_packet_length)
+        w.append(NULL_BYTE)
+        for d in s:
+            w.append(d)
+
+        size = self.baseboard.dev.write(w)
+
+        if size == ERROR:
+            if self.debug:
+                print 'Error module_send write'
+            raise
+
+        return self.module_read(3 + len(s))
 
     def module_open(self):
         
@@ -115,9 +144,11 @@ class Device():
 
     def call_function(self, func, params):
 
-        raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
-
-        return self.module_read()
+        if self.functions[func].has_key('call'):
+            raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
+            return self.module_read()
+        else:
+            return self.module_send_data(params)
 
     def to_ord(self, string):
         s = []
