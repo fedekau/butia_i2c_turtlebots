@@ -59,7 +59,7 @@ class Device():
                 print 'Error module_send write'
             raise
 
-    def module_read(self, lenght):
+    def module_read(self):
         raw = self.baseboard.dev.read(MAX_BYTES)
         if raw == ERROR:
             if self.debug:
@@ -117,7 +117,7 @@ class Device():
 
         raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
 
-        return self.module_read(self.functions[func]['read'])
+        return self.module_read()
 
     def to_ord(self, string):
         s = []
