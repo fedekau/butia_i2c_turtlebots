@@ -191,15 +191,9 @@ class USB4Butia():
         if self.bb == []:
             self.find_butias(False)
         else:
-            for b in self.bb:
-                info = ERROR
-                try:
-                    info = b.get_info()
-                except:
-                    if self.debug:
-                        print 'error refresh getinfo'
-
-                if info == ERROR:
+            for i, b in enumerate(self.bb):
+                res = self.loopBack('esta', i)
+                if not(res == 'esta'):
                     self.openables_loaded[b] = []
                     self.openables_loaded.pop(b)
                     self.bb.remove(b)
@@ -221,8 +215,8 @@ class USB4Butia():
         module_list = self.get_modules_list()
         return (module_name in module_list)
 
-    def loopBack(self, data):
-        return self.callModule('lback', 0, None, 'send', data)
+    def loopBack(self, data, board=0):
+        return self.callModule('lback', board, None, 'send', data)
 
     ################################ Movement calls ################################
 
@@ -236,32 +230,32 @@ class USB4Butia():
 
     ################################ Sensors calls ################################
      
-    def getBatteryCharge(self):
-        return self.callModule('butia', 0, None, 'get_volt')
+    def getBatteryCharge(self, board=0):
+        return self.callModule('butia', board, None, 'get_volt')
 
-    def getVersion(self):
-        return self.callModule('butia', 0, None, 'read_ver')
+    def getVersion(self, board=0):
+        return self.callModule('butia', board, None, 'read_ver')
 
-    def getButton(self, number, board):
+    def getButton(self, number, board=0):
         return self.callModule('button', board, number, 'getValue')
     
-    def getAmbientLight(self, number, board):
+    def getAmbientLight(self, number, board=0):
         return self.callModule('light', board, number, 'getValue')
 
-    def getDistance(self, number, board):
+    def getDistance(self, number, board=0):
         return self.callModule('distanc', board, number, 'getValue')
 
-    def getGrayScale(self, number, board):
+    def getGrayScale(self, number, board=0):
         return self.callModule('grey', board, number, 'getValue')
 
-    def getResistance(self, number, board):
+    def getResistance(self, number, board=0):
         vcc = 65535
         raw = self.callModule('res', board, number, 'getValue')
         if not(raw == -1):
             return raw * 6800 / (vcc - raw)
         return raw
 
-    def getVoltage(self, number, board):
+    def getVoltage(self, number, board=0):
         vcc = 65535
         raw = self.callModule('volt', board, number, 'getValue')
         if not(raw == -1):
