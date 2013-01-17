@@ -191,14 +191,20 @@ class USB4Butia():
         if self.bb == []:
             self.find_butias(False)
         else:
-            for i, b in enumerate(self.bb):
-                res = self.loopBack('esta', i)
-                if not(res == 'esta'):
+            for b in self.bb:
+                info = ERROR
+                try:
+                    info = b.get_info()
+                except:
+                    if self.debug:
+                        print 'error refresh getinfo'
+
+                if info == ERROR:
                     self.openables_loaded[b] = []
                     self.openables_loaded.pop(b)
                     self.bb.remove(b)
                     try:
-                        b.close_device()
+                        b.close_baseboard()
                     except:
                         pass
 
