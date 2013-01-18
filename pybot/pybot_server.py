@@ -23,13 +23,16 @@ class server():
 
     def call_aux(self, modulename, board_number, number, function, params):
         params = params.split(' ')
+        print 'call aux', params
         par = []
         if modulename == 'motors':
             if function == 'setvel2mtr':
-                return self.robot.set2MotorSpeed(int(params[0]), int(params[1]), int(params[2]), int(params[3]))
-            elif function == 'setvelmtr':
-                print 'aca'
-                return self.robot.setMotorSpeed(int(params[0]), int(params[1]), int(params[2]))
+                if len(params) == 4:
+                    return self.robot.set2MotorSpeed(int(params[0]), int(params[1]), int(params[2]), int(params[3]))
+                elif len(params) == 6:
+                    for e in params:
+                        par.append(int(e))
+                    return self.robot.callModule(modulename, board_number, number, function, par)
         else:
             return self.robot.callModule(modulename, board_number, number, function, par)
 
@@ -47,7 +50,7 @@ class server():
 
             r = r.split(' ')
   
-            #print 'split', r
+            print 'split', r
 
             if len(r) > 0:
                 if r[0] == 'QUIT':
@@ -55,7 +58,7 @@ class server():
 
                 elif r[0] == 'LIST':
                     l = self.robot.get_modules_list()
-                    result = ', '.join(l)
+                    result = ','.join(l)
 
                 elif r[0] == 'REFRESH':
                     self.robot.refresh()
@@ -80,7 +83,7 @@ class server():
                         params = ' '.join(par)
 
                     result = str(self.call_aux(modulename, int(board), int(number), function, params))
-
+            print 'mando', result
             self.sc.send(result + '\n')
 
           
