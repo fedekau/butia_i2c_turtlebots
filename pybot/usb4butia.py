@@ -110,6 +110,9 @@ class USB4Butia():
         return self.listis
 
     def get_all_drivers(self):
+        global PATH_DRIVERS
+        if not(os.path.exists(PATH_DRIVERS)):
+            PATH_DRIVERS = 'drivers'
         # normal drivers
         tmp = os.listdir(PATH_DRIVERS)
         tmp.sort()
