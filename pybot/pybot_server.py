@@ -27,15 +27,25 @@ class server():
 
         while True:  
             rec = self.sc.recv(1024)
-            print "llego ", rec
-            r = rec.split(' ')
-            s = 'return:'
+            
+            r = rec.replace('\r', '')
+            r = r.replace('\n', '')
+
+            r = r.split(' ')
+  
             print 'split', r
 
-            if len(r) > 1:
-                if r[0] == 'LIST':
+            if len(r) > 0:
+                if r[0] == 'QUIT':
+                    print 'salir' 
+                    break
+
+                elif r[0] == 'LIST':
+                    print 'pasa'
                     l = self.robot.get_modules_list()
-                    s = ", ".join(l)
+                    s = ', '.join(l)
+                    self.sc.send(s + '\n')
+
                 elif r[0] == 'CALL':
                     board = 0
                     number = 0
@@ -54,12 +64,12 @@ class server():
                     if len(r) > 3:
                         params = r[3]
                     resultado = self.robot.callModule(modulename, int(board), int(number), function, params)
-                    s = s + 'salida: ' +  str(resultado)
 
-            if rec == 'QUIT':  
-                break
+                    self.sc.send(str(resultado) + '\n')
+
+
              
-            self.sc.send(s)  
+  
           
         print 'Closing..'  
           
