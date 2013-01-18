@@ -39,7 +39,7 @@ class Device():
         if not(type(params) == str):
             if not(len(params) == params_length):
                 if self.debug:
-                    print 'Incorrect lenght in params', call, params
+                    print 'Incorrect lenght in params', params_length, params
         else:
             params = self.to_ord(params)
 
