@@ -54,6 +54,12 @@ class Baseboard():
                 return e
         return ERROR
 
+    def get_device_name(self, handler):
+        if self.devices.has_key(handler):
+            return self.devices[handler].name
+        else:
+            return ''
+
     def get_user_modules_size(self):
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
