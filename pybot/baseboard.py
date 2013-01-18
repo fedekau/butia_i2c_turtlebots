@@ -25,8 +25,6 @@ GET_HANDLER_TYPE_PACKET_SIZE = 5
 GET_HANDLER_RESPONSE_PACKET_SIZE = 5
 CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE = 5
 
-MAX_RETRY = 5
-
 ERROR = -1
 
 class Baseboard():
@@ -35,6 +33,7 @@ class Baseboard():
         self.dev = dev
         self.debug = self.dev.debug
         self.devices = {}
+        self.openables_loaded = []
 
     def open_baseboard(self):
         self.dev.open_device()
@@ -47,6 +46,12 @@ class Baseboard():
 
     def add_device(self, handler, device):
         self.devices[handler] = device
+
+    def add_openable_loaded(self, name):
+        self.openables_loaded.append(name)
+
+    def get_openables_loaded(self):
+        return self.openables_loaded
 
     def get_device_handler(self, device):
         for e in self.devices:

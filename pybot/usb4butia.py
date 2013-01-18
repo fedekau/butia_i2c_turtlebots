@@ -20,7 +20,6 @@ class USB4Butia():
         self.debug = True
         self.hotplug = []
         self.openables = []
-        self.openables_loaded = {}
         self.drivers_loaded = {}
         self.bb = []
 
@@ -37,7 +36,6 @@ class USB4Butia():
             try:
                 b.open_baseboard()
                 self.bb.append(b)
-                self.openables_loaded[b] = []
             except:
                 if self.debug:
                     print 'error open baseboard'
@@ -80,14 +78,12 @@ class USB4Butia():
                             modules.append((str(m), module_name, str(i)))
 
                         if module_name in self.openables:
-                            loaded.append(module_name)
+                            b.add_openable_loaded(m, module_name)
 
                         d = Device(b, module_name, m)
                         if self.drivers_loaded.has_key(module_name):
                             d.add_functions(self.drivers_loaded[module_name])
                         b.add_device(m, d)
-
-                self.openables_loaded[b] = loaded
        
             except Exception, err:
                 if self.debug:
@@ -161,8 +157,8 @@ class USB4Butia():
 
                 else:
                     if modulename in self.openables:
-                        if not(modulename in self.openables_loaded[board]):
-                            self.openables_loaded[board].append(modulename)
+                        if not(modulename in board.get_openables_loaded()):
+                            board.add_openable_loaded(modulename)
                             dev = Device(board, modulename, None)
                             number = dev.module_open()
                             dev.add_functions(self.drivers_loaded[modulename])
@@ -204,8 +200,6 @@ class USB4Butia():
                         print 'error refresh getinfo'
 
                 if info == ERROR:
-                    self.openables_loaded[b] = []
-                    self.openables_loaded.pop(b)
                     self.bb.remove(b)
                     try:
                         b.close_baseboard()
