@@ -37,31 +37,28 @@ class server():
 
         self.sc, self.addr = self.socket.accept()
 
-        while True:  
+        while True:
+            result = ''
             rec = self.sc.recv(1024)
             
-            # sacar basura si viene de un telnet ;-)
+            # remove end line characters if become from telnet
             r = rec.replace('\r', '')
             r = r.replace('\n', '')
 
             r = r.split(' ')
   
-            print 'split', r
+            #print 'split', r
 
             if len(r) > 0:
                 if r[0] == 'QUIT':
-                    print 'salir' 
                     break
 
                 elif r[0] == 'LIST':
-                    print 'pasa'
                     l = self.robot.get_modules_list()
-                    s = ', '.join(l)
-                    self.sc.send(s + '\n')
+                    result = ', '.join(l)
 
                 elif r[0] == 'REFRESH':
                     self.robot.refresh()
-                    self.sc.send('\n')
 
                 elif r[0] == 'CALL':
                     board = 0
@@ -82,9 +79,9 @@ class server():
                         par = r[3:]
                         params = ' '.join(par)
 
-                    resultado = self.call_aux(modulename, int(board), int(number), function, params)
+                    result = str(self.call_aux(modulename, int(board), int(number), function, params))
 
-                    self.sc.send(str(resultado) + '\n')
+            self.sc.send(result + '\n')
 
           
         print 'Closing..'  
