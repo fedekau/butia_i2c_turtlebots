@@ -14,12 +14,24 @@ PYBOT_PORT = 2009
 class server():
 
     def __init__(self):
-        self.socket = socket.socket()
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((PYBOT_HOST, PYBOT_PORT))
         self.socket.listen(1)
-        
 
         self.robot = usb4butia.USB4Butia()
+
+    def call_aux(self, modulename, board_number, number, function, params):
+        params = params.split(' ')
+        par = []
+        if modulename == 'motors':
+            if function == 'setvel2mtr':
+                return self.robot.set2MotorSpeed(int(params[0]), int(params[1]), int(params[2]), int(params[3]))
+            elif function == 'setvelmtr':
+                print 'aca'
+                return self.robot.setMotorSpeed(int(params[0]), int(params[1]), int(params[2]))
+        else:
+            return self.robot.callModule(modulename, board_number, number, function, par)
 
     def init_server(self):
 
@@ -28,6 +40,7 @@ class server():
         while True:  
             rec = self.sc.recv(1024)
             
+            # sacar basura si viene de un telnet ;-)
             r = rec.replace('\r', '')
             r = r.replace('\n', '')
 
@@ -46,6 +59,10 @@ class server():
                     s = ', '.join(l)
                     self.sc.send(s + '\n')
 
+                elif r[0] == 'REFRESH':
+                    self.robot.refresh()
+                    self.sc.send('\n')
+
                 elif r[0] == 'CALL':
                     board = 0
                     number = 0
@@ -62,19 +79,20 @@ class server():
                     print 'datos', modulename, board, number, function
                     params = ''
                     if len(r) > 3:
-                        params = r[3]
-                    resultado = self.robot.callModule(modulename, int(board), int(number), function, params)
+                        par = r[3:]
+                        params = ' '.join(par)
+
+                    resultado = self.call_aux(modulename, int(board), int(number), function, params)
 
                     self.sc.send(str(resultado) + '\n')
 
-
-             
-  
           
         print 'Closing..'  
           
         self.sc.close()  
-        self.socket.close() 
+        self.socket.close()
+        self.robot.close()
+
 
 if __name__ == "__main__":
     s = server()
