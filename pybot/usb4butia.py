@@ -47,13 +47,14 @@ class USB4Butia():
     def get_modules_list(self, normal=True):
         modules = []
         n_boards = self.get_butia_count()
+        self.get_listis()
 
         if self.debug:
             print '=Listing Devices'
 
         for i, b in enumerate(self.bb):
             try:
-                self.get_listis()
+
                 loaded = []
                 s = b.get_handler_size()
 
