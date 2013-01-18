@@ -34,21 +34,22 @@ class Device():
         for f in func_list:
             self.functions[f['name']] = f
 
-    def module_send(self, data, params_length, params):
-        
-        l = len(params)
-        if not(l == params_length):
-            if self.debug:
-                print 'Incorrect lenght in params', data, params
-            raise
+    def module_send(self, call, params_length, params):
 
-        send_packet_length = 0x04 + l
+        if not(type(params) == str):
+            if not(len(params) == params_length):
+                if self.debug:
+                    print 'Incorrect lenght in params', call, params
+        else:
+            params = self.to_ord(params)
+
+        send_packet_length = 0x04 + len(params)
 
         w = []
         w.append(self.handler_tosend)
         w.append(send_packet_length)
         w.append(NULL_BYTE)
-        w.append(data)
+        w.append(call)
         for p in params:
             w.append(p)
 
@@ -59,53 +60,35 @@ class Device():
                 print 'Error module_send write'
             raise
 
-    def module_read(self, lenght = 0):
-        if lenght == 0:
-            raw = self.baseboard.dev.read(MAX_BYTES)
-        else:
-            raw = self.baseboard.dev.read(lenght)
+    def module_read(self):
+
+        raw = self.baseboard.dev.read(MAX_BYTES)
+
         if raw == ERROR:
             if self.debug:
                 print 'Error module_rad read'
-            raise
+            return -1
 
-        if raw[1] == 5:
+        elif raw[1] == 5:
             if raw[4] == 255:
                 return -1
             else:
                 return raw[4]
+
         elif raw[1] == 6:
             return raw[4] + raw[5] * 256
+
         else:
             ret = ''
-            for r in raw[3:]:
+            for r in raw[4:]:
                 if not(r == 0):
                     ret = ret + chr(r)
             return ret
 
-    def module_send_data(self, data):
-        s = self.to_ord(data)
-        send_packet_length = 0x04 + len(s)
-
-        w = []
-        w.append(self.handler_tosend)
-        w.append(send_packet_length)
-        w.append(NULL_BYTE)
-        for d in s:
-            w.append(d)
-
-        size = self.baseboard.dev.write(w)
-
-        if size == ERROR:
-            if self.debug:
-                print 'Error module_send write'
-            raise
-
-        return self.module_read(3 + len(s))
-
     def module_open(self):
-        
+
         module_name = self.to_ord(self.name)
+        module_name.append(0)
         
         open_packet_length = HEADER_PACKET_SIZE + len(module_name) 
 
@@ -144,17 +127,14 @@ class Device():
 
     def call_function(self, func, params):
 
-        if self.functions[func].has_key('call'):
-            raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
-            return self.module_read()
-        else:
-            return self.module_send_data(params)
+        raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
+        return self.module_read()
 
     def to_ord(self, string):
         s = []
         for l in string:
-            s.append(ord(l))
-        s.append(0)
-        
+            o = ord(l)
+            if not(o == 0):
+                s.append(o)
         return s
 
