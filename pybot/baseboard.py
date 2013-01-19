@@ -32,6 +32,7 @@ class Baseboard():
     def __init__(self, dev):
         self.dev = dev
         self.debug = self.dev.debug
+        self.listi = {}
         self.devices = {}
         self.openables_loaded = []
 
@@ -52,6 +53,24 @@ class Baseboard():
 
     def get_openables_loaded(self):
         return self.openables_loaded
+
+    def add_to_listi(self, number, name):
+        self.listi[number] = name
+
+    def get_listi(self):
+        if (self.listi == {}):
+            self.generate_listi()
+        return self.listi
+
+    def generate_listi(self):
+        try:
+            s = self.get_user_modules_size()
+            for m in range(s):
+                name = self.get_user_module_line(m)
+                self.listi[m] = name
+        except:
+            if self.debug:
+                print 'error listi'
 
     def get_device_handler(self, device):
         for e in self.devices:

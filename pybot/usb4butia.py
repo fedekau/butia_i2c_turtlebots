@@ -45,15 +45,13 @@ class USB4Butia():
     def get_modules_list(self, normal=True):
         modules = []
         n_boards = self.get_butia_count()
-        self.get_listis()
 
         if self.debug:
             print '=Listing Devices'
 
         for i, b in enumerate(self.bb):
             try:
-
-                loaded = []
+                listi = b.get_listi()
                 s = b.get_handler_size()
 
                 if self.debug:
@@ -61,7 +59,7 @@ class USB4Butia():
 
                 for m in range(0, s + 1):
                     module_type = b.get_handler_type(m)
-                    module_name = self.listis[b][module_type]
+                    module_name = listi[module_type]
                     if n_boards > 1:
                         complete_name = module_name + '@' + str(i) + ':' +  str(m)
                     else:
@@ -90,21 +88,6 @@ class USB4Butia():
                     print 'error module list', err
 
         return modules
-
-    def get_listis(self):
-        self.listis = {}
-        for b in self.bb:
-            try:
-                l = []
-                s = b.get_user_modules_size()
-                for m in range(s):
-                    name = b.get_user_module_line(m)
-                    l.append(name)
-                self.listis[b] = l
-            except:
-                if self.debug:
-                    print 'error listi'
-        return self.listis
 
     def get_all_drivers(self):
         global PATH_DRIVERS
