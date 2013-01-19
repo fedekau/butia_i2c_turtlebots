@@ -5,19 +5,19 @@ In each folder there should be a makefile or script to
 compile or the code itself in the case of python or lua code.
 
 bobot: Contains Bobot-server, a daemon responsible for
-    communicating with the firmware installed in the butia
+    communicating with the firmware installed in the Butia
     and exporting it's capabilities using TCP / IP
     requirements-projects: serialcomm, lualibusb
 
-turtle_art_plugin: Implements support of Butia in Turtle Arts.
-    Uses Turtle Art plugin system. In this folder there is a 
-    shell script to make an .xo with TurtleArtButia, a 
-    TurtleArt program whit logo changed and the butia plugin 
-    already instaled 
+turtle_art_plugin: Implements support of Butia in Turtle Blocks.
+    Uses Turtle Blocks plugin system. In this folder there is a 
+    shell script to make an .xo called TurtleBots, a 
+    TurtleBlocks activity whit the logo changed and the Butia plugin 
+    already instaled. It includes another plugins: FollowMe, Lego NxT,
+    Lego WeDo. 
     requirements-projects: bobotXO
 
-firmware: Contains the firmware butia for ardino Mega (for 
-    the moment). Also contains other firmwares and tests
+firmware: Contains the activity for update the firmware of Butia.
     requirements-projects: arduino, avrdude
 
 usb4all: project usb4all, a firmware for PIC microcontrollers,
@@ -40,5 +40,5 @@ libs/libusb: libusb headers files
 
 
 
-### Last edited 2011/06/12 by Guillermo Reisch <greisch@fing.edu.uy> ###
+### Last edited 2013/01/19 by Alan Aguiar <alanjas@hotmail.com> ###
 
