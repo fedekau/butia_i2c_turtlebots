@@ -76,7 +76,7 @@ class USB4Butia():
                             modules.append((str(m), module_name, str(i)))
 
                         if module_name in self.openables:
-                            b.add_openable_loaded(m, module_name)
+                            b.add_openable_loaded(module_name)
 
                         d = Device(b, module_name, m)
                         if self.drivers_loaded.has_key(module_name):
