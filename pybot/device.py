@@ -55,21 +55,14 @@ class Device():
 
         size = self.baseboard.dev.write(w)
 
-        if size == ERROR:
-            if self.debug:
-                print 'Error module_send write'
-            raise
-
     def module_read(self):
 
         raw = self.baseboard.dev.read(MAX_BYTES)
 
-        if raw == ERROR:
-            if self.debug:
-                print 'Error module_rad read'
-            return -1
+        if self.debug:
+            print 'device:module_rad return', raw
 
-        elif raw[1] == 5:
+        if raw[1] == 5:
             if raw[4] == 255:
                 return -1
             else:
@@ -105,17 +98,10 @@ class Device():
         w = w + module_name
         size = self.baseboard.dev.write(w)
 
-        if size == ERROR:
-            if self.debug:
-                print 'Error module_open write'
-            raise
-
         raw = self.baseboard.dev.read(OPEN_RESPONSE_PACKET_SIZE)
 
-        if raw == ERROR:
-            if self.debug:
-                print 'Error module_open read'
-            raise
+        if self.debug:
+            print 'device:module_open return', raw
 
         h = raw[4]
         self.handler = h

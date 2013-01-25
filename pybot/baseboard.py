@@ -92,27 +92,14 @@ class Baseboard():
         w.append(GET_USER_MODULES_SIZE_COMMAND)
         size = self.dev.write(w)
 
-        if size == ERROR:
-            if self.debug:
-                print 'Error get_user_modules_size write'
-            raise
-
         raw = self.dev.read(GET_USER_MODULE_LINE_PACKET_SIZE)
-
-        if raw == ERROR:
-            if self.debug:
-                print 'Error get_user_modules_size read'
-            raise
+        
+        if self.debug:
+            print 'baseboard:get_user_modules_size return', raw
 
         return raw[4]
 
     def get_user_module_line(self, index):
-        
-        if index < 0:
-            if self.debug:
-                print 'Error index get_user_module_line'
-            raise
-
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
         w.append(GET_USER_MODULE_LINE_PACKET_SIZE)
@@ -121,17 +108,10 @@ class Baseboard():
         w.append(index)
         size = self.dev.write(w)
 
-        if size == ERROR:
-            if self.debug:
-                print 'Error get_user_module_line write'
-            raise
-
         raw = self.dev.read(GET_LINE_RESPONSE_PACKET_SIZE)
 
-        if raw == ERROR:
-            if self.debug:
-                print 'Error get_user_module_line read'
-            raise
+        if self.debug:
+            print 'baseboard:get_user_module_line return', raw
 
         c = raw[4:len(raw)]
         t = ''
@@ -149,17 +129,10 @@ class Baseboard():
         w.append(GET_HANDLER_SIZE_COMMAND)
         size = self.dev.write(w)
 
-        if size == ERROR:
-            if self.debug:
-                print 'Error get_handler_size write'
-            raise
-
         raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
 
-        if raw == ERROR:
-            if self.debug:
-                print 'Error get_handler_size read'
-            raise
+        if self.debug:
+            print 'baseboard:get_handler_size return', raw
 
         return raw[4]
 
@@ -172,17 +145,10 @@ class Baseboard():
         w.append(index)
         size = self.dev.write(w)
 
-        if size == ERROR:
-            if self.debug:
-                print 'Error get_handler_type write'
-            raise
-
         raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
 
-        if raw == ERROR:
-            if self.debug:
-                print 'Error get_handler_type read'
-            raise
+        if self.debug:
+            print 'baseboard:get_handler_type return', raw
 
         return raw[4]
 
@@ -194,11 +160,6 @@ class Baseboard():
         w.append(SWITCH_TO_BOOT_BASE_BOARD_COMMAND)
         size = self.dev.write(w)
 
-        if size == ERROR:
-            if self.debug:
-                print 'Error switch_to_bootloader write'
-            raise
-
     def reset(self):
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
@@ -206,11 +167,6 @@ class Baseboard():
         w.append(NULL_BYTE)
         w.append(RESET_BASE_BOARD_COMMAND)
         size = self.dev.write(w)
-
-        if size == ERROR:
-            if self.debug:
-                print 'Error reset write'
-            raise
 
     def force_close_all(self):
         w = []
@@ -220,17 +176,10 @@ class Baseboard():
         w.append(CLOSEALL_BASE_BOARD_COMMAND)
         size = self.dev.write(w)
 
-        if size == ERROR:
-            if self.debug:
-                print 'Error force_close_all write'
-            raise
-
         raw = self.dev.read(CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE)
 
-        if raw == ERROR:
-            if self.debug:
-                print 'Error force_close_all read'
-            raise
+        if self.debug:
+            print 'baseboard:force_close_all return', raw
 
         return raw[4]
 
