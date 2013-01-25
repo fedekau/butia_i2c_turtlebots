@@ -144,6 +144,7 @@ apply_localization: walterGIT mktmpfolder extrasGIT
 apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
 	cp -rLf butia         $(BUILDDIR)/plugins/
 	cp -rLf sumtia        $(BUILDDIR)/plugins/
+	cp -rLf kinect        $(BUILDDIR)/plugins/
 	cp -rLf followme/     $(BUILDDIR)/plugins/
 	cp -rLf nxt_plugin/   $(BUILDDIR)/plugins/
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
@@ -154,6 +155,7 @@ apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia         $(BUILDDIR)/plugins/butia
 	ln -s `pwd`/sumtia        $(BUILDDIR)/plugins/sumtia
+	ln -s `pwd`/kinect        $(BUILDDIR)/plugins/kinect
 	ln -s `pwd`/followme      $(BUILDDIR)/plugins/followme
 	ln -s `pwd`/nxt_plugin    $(BUILDDIR)/plugins/nxt_plugin
 	ln -s `pwd`/wedo_plugin   $(BUILDDIR)/plugins/wedo_plugin
