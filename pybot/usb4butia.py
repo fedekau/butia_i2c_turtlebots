@@ -166,9 +166,6 @@ class USB4Butia():
                         else:
                             number = board.get_device_handler(modulename)
 
-                        if number == ERROR:
-                            return ERROR
-
                         return board.devices[number].call_function(function, params)
 
                     else:
