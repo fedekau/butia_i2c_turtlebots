@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 # 
 # ButiaAPI
-# Copyright (c) 2009, 2010, 2011, 2012 Butiá Team butia@fing.edu.uy 
-# Butia is a free open plataform for robotics projects
+# Copyright (c) 2009-2013 Butiá Team butia@fing.edu.uy 
+# Butia is a free and open robotic platform
 # www.fing.edu.uy/inco/proyectos/butia
-# Facultad de Ingenieria - Universidad de la República - Uruguay
+# Facultad de Ingeniería - Universidad de la República - Uruguay
 #
 # Implements abstractions for the comunications with the bobot-server
 #

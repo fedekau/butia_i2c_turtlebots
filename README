@@ -1,3 +1,10 @@
+######## ABOUT BUTIA #########
+
+Butia is a free and open robotic platform
+www.fing.edu.uy/inco/proyectos/butia
+Facultad de Ingeniería - Universidad de la República - Uruguay
+Butiá Team (butia@fing.edu.uy)
+
 ######## ABOUT BUTIA GIT #########
 
 Each folder contains a different project.
@@ -40,5 +47,5 @@ libs/libusb: libusb headers files
 
 
 
-### Last edited 2013/01/19 by Alan Aguiar <alanjas@hotmail.com> ###
+### Last edited 2013/01/25 by Alan Aguiar <alanjas@hotmail.com> ###
 

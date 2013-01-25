@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright (c) 2011 Butiá Team butia@fing.edu.uy 
-# Butia is a free open plataform for robotics projects
+# Copyright (c) 2011-2013 Butiá Team butia@fing.edu.uy 
+# Butia is a free and open robotic platform
 # www.fing.edu.uy/inco/proyectos/butia
-# Universidad de la República del Uruguay
+# Facultad de Ingeniería - Universidad de la República - Uruguay
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
