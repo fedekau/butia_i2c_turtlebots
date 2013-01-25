@@ -4,6 +4,7 @@ import logging
 import shlex
 import subprocess
 import sys, os
+import platform
 import time
 import gtk
 from gettext import gettext as _
@@ -87,10 +88,22 @@ class ButiaFirmware(activity.Activity):
             pass
 
     def flash(self):
+        path = './fsusb/x32/fsusb'
+        try:
+            arq,so = platform.architecture()
+            if arq == '32bit':
+                path = './fsusb/x32/fsusb'
+                print 'Use 32bits fsusb'
+            else:
+                path = './fsusb/x64/fsusb'
+                print 'Use 64bits fsusb'
+        except:
+            print 'Error getting platform info'
+        
         dialog = self.initing()
         proc = None
         try:
-            proc = subprocess.Popen(shlex.split("./fsusb --force_program USB4all-5.hex"))
+            proc = subprocess.Popen([path, '--force_program', 'USB4all-5.hex'])
         except Exception, err:
             print 'Error in fsusb:', err
 
