@@ -28,8 +28,6 @@ import com_usb
 from baseboard import Baseboard
 from device import Device
 
-PATH_DRIVERS = 'plugins/butia/pybot/drivers'
-
 ERROR = -1
 
 class USB4Butia():
@@ -108,19 +106,20 @@ class USB4Butia():
         return modules
 
     def get_all_drivers(self):
-        global PATH_DRIVERS
-        if not(os.path.exists(PATH_DRIVERS)):
-            PATH_DRIVERS = 'drivers'
+        # current folder
+        path_drivers = os.path.join(os.path.dirname(__file__), 'drivers')
+        if self.debug:
+            print 'Searching drivers in: ', path_drivers
         # normal drivers
-        tmp = os.listdir(PATH_DRIVERS)
+        tmp = os.listdir(path_drivers)
         tmp.sort()
         for d in tmp:
             if d.endswith('.py'):
                 name = d.replace('.py', '')
                 self.openables.append(name)
-                self.get_driver(PATH_DRIVERS, name)
+                self.get_driver(path_drivers, name)
         # hotplug drivers
-        path = os.path.join(PATH_DRIVERS, 'hotplug')
+        path = os.path.join(path_drivers, 'hotplug')
         tmp = os.listdir(path)
         tmp.sort()
         for d in tmp:
