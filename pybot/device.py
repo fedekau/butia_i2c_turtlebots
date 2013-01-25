@@ -28,7 +28,7 @@ class Device():
         if self.handler:
             self.handler_tosend = self.handler * 8
         self.functions = {}
-        self.debug = True
+        self.debug = False
 
     def add_functions(self, func_list):
         for f in func_list:

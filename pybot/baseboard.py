@@ -31,7 +31,7 @@ class Baseboard():
 
     def __init__(self, dev):
         self.dev = dev
-        self.debug = self.dev.debug
+        self.debug = False
         self.listi = {}
         self.devices = {}
         self.openables_loaded = []
