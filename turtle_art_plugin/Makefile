@@ -22,8 +22,8 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = f038f28cb92c340b70d38431e3e02feeb3274e37
-EXTRAS_VERSION = f212722e1ca3de1bc8a66e8cecb26e625024945e
+TURTLEBLOCKS_VERSION = af7ec4bf834d3823a6e51e648bd95aba3676d828
+EXTRAS_VERSION = 91686dfae4f13b9be775d60d86dfeac7258bc55e
 NXT_VERSION = 75114957ecefdc920cab0183a50a039ea9f7c4ce
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 
@@ -119,7 +119,7 @@ nxtGIT: nxt_plugin/.git
 
 butiaXO:
 	# I want butiaXO folder be OK! (needed by plugin)
-	make -C ../butiaXO
+	#make -C ../butiaXO
 
 
 ################ Construction...
@@ -141,14 +141,15 @@ apply_localization: walterGIT mktmpfolder extrasGIT
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
 
-apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
-	cp -rLf butia         $(BUILDDIR)/plugins/
-	cp -rLf sumtia        $(BUILDDIR)/plugins/
-	cp -rLf followme/     $(BUILDDIR)/plugins/
-	cp -rLf nxt_plugin/   $(BUILDDIR)/plugins/
+apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT pattern_detection_compile
+	cp -rLf butia               $(BUILDDIR)/plugins/
+	cp -rLf sumtia              $(BUILDDIR)/plugins/
+	cp -rLf followme            $(BUILDDIR)/plugins/
+	cp -rLf nxt_plugin          $(BUILDDIR)/plugins/
+	cp -rLf wedo_plugin         $(BUILDDIR)/plugins/
+	cp -rLf pattern_detection   $(BUILDDIR)/plugins/
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
-	cp -rLf wedo_plugin/  $(BUILDDIR)/plugins/
 
 pattern_detection_compile:
 	make -C pattern_detection/library
@@ -297,8 +298,6 @@ clean-xo:
 clean-plugins:
 	rm -f *.tar.gz
 
-
-.SUFFIXES:
 .SUFFIXES: .c .o .py .pyc .po .pot
 
 # targets that not represent generated files
@@ -311,4 +310,3 @@ clean-plugins:
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
  dev pattern_detection_compile
-

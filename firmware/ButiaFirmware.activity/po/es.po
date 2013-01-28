@@ -17,14 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: activity/activity.info:2
-msgid "ButiaFirmware"
+msgid "Butia Firmware"
 msgstr "Butia Firmware"
 
-#: ButiaFirmware.py:66
+#: ButiaFirmware.py:73
 msgid "CONTINUE"
 msgstr "CONTINUAR"
 
-#: ButiaFirmware.py:77
+#: ButiaFirmware.py:84
 msgid ""
 "You will upgrade the USB4Butia firmware.\n"
 "Not disconnect the board and not close this activity.\n"
@@ -34,21 +34,17 @@ msgstr ""
 "No desconecte la placa y no cierre la actividad.\n"
 "¿Deseas continuar?"
 
-#: ButiaFirmware.py:79 ButiaFirmware.py:112 ButiaFirmware.py:123
-#: ButiaFirmware.py:130
+#: ButiaFirmware.py:86 ButiaFirmware.py:142 ButiaFirmware.py:153
+#: ButiaFirmware.py:160
 msgid "Flashing USB4Butia board..."
 msgstr "Flasheando la placa USB4butia..."
 
-#: ButiaFirmware.py:102
+#: ButiaFirmware.py:123
 #, python-format
 msgid "The process takes %s seconds"
 msgstr "El proceso tardó %s segundos"
 
-#: ButiaFirmware.py:114
-msgid "Flashing..."
-msgstr "Flasheando..."
-
-#: ButiaFirmware.py:121
+#: ButiaFirmware.py:132 ButiaFirmware.py:151
 #, python-format
 msgid ""
 "The upgrade ends successfully!\n"
@@ -57,7 +53,7 @@ msgstr ""
 "¡El proceso de actualización terminó exitosamente!\n"
 "El proceso tardó %s segundos"
 
-#: ButiaFirmware.py:128
+#: ButiaFirmware.py:138 ButiaFirmware.py:158
 #, python-format
 msgid ""
 "The upgrade fails. Try again.\n"
@@ -66,3 +62,6 @@ msgstr ""
 "La actualización falló. Intente nuevamente.\n"
 "Error: %s"
 
+#: ButiaFirmware.py:144
+msgid "Flashing..."
+msgstr "Flasheando..."
