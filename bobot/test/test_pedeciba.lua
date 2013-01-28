@@ -15,9 +15,10 @@ local function send(s)
 --	print("ret:", ret)
 	return ret
 end
-sensor = {"button","distanc"}
-for id=1,2 do -- #sensor
-    for i=1,6 do
+cantPort = 6
+sensor = {"grey","button","distanc","volt","res"}
+for id=1,#sensor do -- #sensor
+    for i=1,cantPort do
         print("Connect a "..sensor[id].." sensor in port "..i)
         socket.sleep(10)
         j = 255
