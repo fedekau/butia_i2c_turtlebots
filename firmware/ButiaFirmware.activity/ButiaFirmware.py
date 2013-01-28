@@ -23,8 +23,10 @@ class ButiaFirmware(activity.Activity):
         activity.Activity.__init__(self, handle)
 
         self.build_toolbar()
+        flash = Flash(self)
+        self.set_canvas(flash.build_canvas())
+        self.show_all()
  
-        self.build_canvas()
 
     def build_toolbar(self):
         # Creates the Toolbox. It contains the Activity Toolbar, which is the
@@ -51,7 +53,11 @@ class ButiaFirmware(activity.Activity):
         self.set_toolbox(toolbox)
         toolbox.show()
 
-        self.show_all()
+
+class Flash():
+
+    def __init__(self, parent = None):
+        self.parent = parent
         
     def build_canvas(self):
         #The canvas is the main section of every Sugar Window.
@@ -71,12 +77,12 @@ class ButiaFirmware(activity.Activity):
         box12.show()
         box.add(box12)
         box.show()
+        return box
 
-        self.set_canvas(box)
 
-    def warning_message(self, widget):
+    def warning_message(self, widget=None):
         msg = _('You will upgrade the USB4Butia firmware.\nNot disconnect the board and not close this activity.\nYou want to continue?')
-        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
+        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
         dialog.set_title(_('Flashing USB4Butia board...'))
         res = dialog.run()
         dialog.destroy()
@@ -87,7 +93,7 @@ class ButiaFirmware(activity.Activity):
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
 
-    def flash(self):
+    def flash(self, show_dialogs=True):
         path = './fsusb/x32/fsusb'
         try:
             arq,so = platform.architecture()
@@ -99,8 +105,10 @@ class ButiaFirmware(activity.Activity):
                 print 'Use 64bits fsusb'
         except:
             print 'Error getting platform info'
-        
-        dialog = self.initing()
+
+        if show_dialogs:
+            dialog = self.initing()
+
         proc = None
         try:
             proc = subprocess.Popen([path, '--force_program', 'USB4all-5.hex'])
@@ -114,16 +122,25 @@ class ButiaFirmware(activity.Activity):
             t = f - i
             print _('The process takes %s seconds') % t
 
-        dialog.destroy()
+        if show_dialogs:
+            dialog.destroy()
 
         if proc and (proc.returncode == 0):
-            self.sucess(int(t))
+            if show_dialogs:
+                self.sucess(int(t))
+            else:
+                msg = _('The upgrade ends successfully!\nThe process takes %s seconds') % seconds
+                print msg
         else:
-            self.unsucess(proc.returncode)
+            if show_dialogs:
+                self.unsucess(proc.returncode)
+            else:
+                msg = _('The upgrade fails. Try again.\nError: %s') % proc.returncode
+                print msg
 
     def initing(self):
         msg = _('Flashing USB4Butia board...')
-        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
+        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
         dialog.set_title(_('Flashing...'))
         # Run es bloqueante
         #dialog.run()
@@ -132,15 +149,25 @@ class ButiaFirmware(activity.Activity):
 
     def sucess(self, seconds):
         msg = _('The upgrade ends successfully!\nThe process takes %s seconds') % seconds
-        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msg)
+        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msg)
         dialog.set_title(_('Flashing USB4Butia board...'))
         dialog.run()
         dialog.destroy()
 
     def unsucess(self, err):
         msg = _('The upgrade fails. Try again.\nError: %s') % err
-        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msg)
+        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msg)
         dialog.set_title(_('Flashing USB4Butia board...'))
         dialog.run()
         dialog.destroy()
+
+if __name__ == "__main__":
+    f = Flash()
+    argv = sys.argv[:]
+    if len(argv) > 1:
+        argv = argv[1:]
+        if argv[0] == 'silent':
+            f.flash(False)
+    else:
+        f.warning_message()
 
