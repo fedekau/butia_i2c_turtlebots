@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright (c) 2011 Butiá Team butia@fing.edu.uy 
-# Butia is a free open plataform for robotics projects
+#
+# Copyright (c) 2012-2013 Butiá Team butia@fing.edu.uy 
+# Butia is a free and open robotic platform
 # www.fing.edu.uy/inco/proyectos/butia
-# Universidad de la República del Uruguay
+# Facultad de Ingeniería - Universidad de la República - Uruguay
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,20 +19,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+
 import os
-import string
 import sys
-
-argv = sys.argv[:]
-
-
-TAPATH = '/usr/share/sugar/activities/TurtleBots.activity'
-
-
-if len(argv) > 1:
-    argv = argv[1:]
-    params = string.join(argv, ' ')
-    os.system(os.path.join(TAPATH, 'turtleblocks.py') + ' ' + params)
-else:
-    os.system(os.path.join(TAPATH, 'turtleblocks.py'))
+# Make sure that can import all files
+sys.path.insert(0, os.path.dirname(__file__))
 

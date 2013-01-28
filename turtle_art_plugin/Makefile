@@ -22,9 +22,9 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = c455878a4c6b1edbea762026c0bcb76466b981cc
-EXTRAS_VERSION = 30a8c909f1c2a86a9377f7d5da1d8af342ddc7af
-NXT_VERSION = cf71837b173bb78afb2446f8c3dea2932760dc85
+TURTLEBLOCKS_VERSION = af7ec4bf834d3823a6e51e648bd95aba3676d828
+EXTRAS_VERSION = 91686dfae4f13b9be775d60d86dfeac7258bc55e
+NXT_VERSION = 75114957ecefdc920cab0183a50a039ea9f7c4ce
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 
 
@@ -119,7 +119,7 @@ nxtGIT: nxt_plugin/.git
 
 butiaXO:
 	# I want butiaXO folder be OK! (needed by plugin)
-	make -C ../butiaXO
+	#make -C ../butiaXO
 
 
 ################ Construction...
@@ -136,7 +136,7 @@ mktmpfolder:
 
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
-	(cd turtle-extras && ./merge.py turtlebots)
+	(cd turtle-extras && ./merge.py turtlebots $(BUILDDIR))
 	cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
@@ -150,7 +150,7 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 	cp -rLf wedo_plugin/  $(BUILDDIR)/plugins/
 
-apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
+apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia         $(BUILDDIR)/plugins/butia
 	ln -s `pwd`/sumtia        $(BUILDDIR)/plugins/sumtia
@@ -160,8 +160,6 @@ apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
-	# ok, let's make this .xo
-	(cd $(TMPBUILDDIR) && python setup.py build)
 	#dist_xo no work in the tmp folder
 	(cd $(TMPBUILDDIR) && python setup.py dist_xo)
 	cp $(TMPBUILDDIR)/dist/*.xo .
@@ -188,9 +186,6 @@ plugin-followme: apply_hard_plugins
 	mv $(BUILDDIR)/plugins/followme_plugin.tar.gz .
 
 plugin-nxt: apply_hard_plugins
-	# remove .git from NXT plugin
-	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
-	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 	cp stagin/plugins/nxt_plugin/plugin.info $(BUILDDIR)/plugins
 	cd $(BUILDDIR)/plugins && tar -czvf nxt_plugin.tar.gz nxt_plugin/* plugin.info
 	rm $(BUILDDIR)/plugins/plugin.info
@@ -298,8 +293,6 @@ clean-xo:
 clean-plugins:
 	rm -f *.tar.gz
 
-
-.SUFFIXES:
 .SUFFIXES: .c .o .py .pyc .po .pot
 
 # targets that not represent generated files
@@ -312,3 +305,4 @@ clean-plugins:
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
  dev
+
