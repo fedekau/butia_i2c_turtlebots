@@ -116,13 +116,17 @@ class Flash():
             proc = subprocess.Popen([path, '--force_program', 'USB4all-5.hex'])
         except Exception, err:
             print 'Error in fsusb:', err
+            print 'Trying --program option'
+            try:
+                proc = subprocess.Popen([path, '--program', 'USB4all-5.hex'])
+            except Exception, err:
+                print 'Error in fsusb:', err
 
         i = time.time()
         if proc:
             proc.wait()
             f = time.time()
             t = f - i
-            print _('The process takes %s seconds') % t
 
         if show_dialogs:
             dialog.destroy()
@@ -131,7 +135,7 @@ class Flash():
             if show_dialogs:
                 self.sucess(int(t))
             else:
-                msg = _('The upgrade ends successfully!\nThe process takes %s seconds') % seconds
+                msg = _('The upgrade ends successfully!\nThe process takes %s seconds') % t
                 print msg
         else:
             if show_dialogs:
