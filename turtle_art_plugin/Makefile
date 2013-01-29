@@ -202,7 +202,13 @@ plugin-wedo: apply_hard_plugins
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/wedo_plugin.tar.gz .
 
-plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo
+plugin-marcas: apply_hard_plugins
+	cp stagin/plugins/pattern_detection/plugin.info $(BUILDDIR)/plugins
+	cd $(BUILDDIR)/plugins && tar -czvf pattern_detection.tar.gz pattern_detection/* plugin.info
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/pattern_detection.tar.gz .
+
+plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo plugin-marcas
 
 plugin-all: plugins
 
