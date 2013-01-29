@@ -121,6 +121,7 @@ class Pattern_detection(Plugin):
         return (self.detection.isMarkerPresent(valor) == 1)
 
     def _getMarkerTrigDist(self, valor):
+        self._start_cam()
         return self.detection.getMarkerTrigDist(valor)
 
 
