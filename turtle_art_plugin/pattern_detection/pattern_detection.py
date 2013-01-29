@@ -13,9 +13,8 @@ from TurtleArt.taconstants import MEDIA_SHAPES, NO_IMPORT, SKIN_PATHS, \
 
 from gettext import gettext as _
 
-plugin_name = 'pattern'
 plugin_folder = 'pattern_detection'
-
+SKIN_PATHS.append('plugins/' + plugin_folder + '/images')
 sys.path.insert(0, os.path.abspath('./plugins/' + plugin_folder + '/library'))
 
 import multiPatternDetectionAPI as detectionAPI
@@ -23,18 +22,16 @@ import multiPatternDetectionAPI as detectionAPI
 _logger = logging.getLogger('TurtleArt-activity pattern_detection plugin')
 
 class Pattern_detection(Plugin):
-    #Detection api class
-    detection = None
-    isInit = False
 
     def __init__(self, parent):
         self._parent = parent
+        self.detection = None
+        self.isInit = False
         self.detection = detectionAPI.detection()
 
     def setup(self):
 
-        SKIN_PATHS.append('plugins/' + plugin_folder + '/images')
-        palette = make_palette(plugin_name,
+        palette = make_palette('pattern_detection',
                      colors=["#00FF00","#008000"],
                      help_string=_('Deteccion de marcas'))
 
