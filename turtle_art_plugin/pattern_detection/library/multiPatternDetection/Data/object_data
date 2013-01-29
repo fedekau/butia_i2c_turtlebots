@@ -4,7 +4,7 @@
 #** <marker_width> in MM
 #** <centerX centerY>
 
-#the number of patterns to be recognized / Cantidad de marcas a ser detectadas (leidos de este mismo archivo en forma secuencial)
+#the number of patterns to be recognized don't modify this line/ Cantidad de marcas a ser detectadas no modificar esta linea
 8
 
 #Left sign
