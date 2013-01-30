@@ -289,6 +289,7 @@ uninstall-rules:
 
 clean: clean-tmp clean-plugins clean-xo clean-builddir
 	$(MAKE) -C ../butiaXO clean
+	$(MAKE) -C pattern_detection/library clean
 	# this remove only if it's a symlink ; don't remove if installed
 	rm -f ~/Activities/TurtleBots.activity
 
