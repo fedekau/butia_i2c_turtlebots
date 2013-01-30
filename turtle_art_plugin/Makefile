@@ -152,7 +152,7 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT pattern_
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 
 pattern_detection_compile:
-	make -C pattern_detection/library
+	$(MAKE) -C pattern_detection/library
 
 apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
