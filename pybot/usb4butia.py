@@ -17,21 +17,15 @@ ERROR = -1
 
 class USB4Butia():
 
-    def __init__(self, local = True):
-        self.local = local
+    def __init__(self):
         self.debug = True
         self.hotplug = []
         self.openables = []
         self.openables_loaded = {}
         self.drivers_loaded = {}
         self.bb = []
-        if self.local:
-            self.get_all_drivers()
-            self.find_butias()
-        else:
-            import socket
-            self.client = socket.socket()   
-            self.client.connect((PYBOT_HOST, PYBOT_PORT))
+        self.get_all_drivers()
+        self.find_butias()
 
     def doCommand(self, msg):
         msg = msg +'\n'
@@ -45,8 +39,7 @@ class USB4Butia():
         return ret
 
     def get_butia_count(self):
-        if self.local:
-            return len(self.bb)
+        return len(self.bb)
 
     def find_butias(self, get_modules=True):
         devices = com_usb.find()
@@ -64,68 +57,53 @@ class USB4Butia():
 
     def get_modules_list(self, normal=True):
         modules = []
-        if self.local:
-            n_boards = self.get_butia_count()
-            self.get_listis()
+        n_boards = self.get_butia_count()
+        self.get_listis()
 
-            if self.debug:
-                print '=Listing Devices'
+        if self.debug:
+            print '=Listing Devices'
 
-            for i, b in enumerate(self.bb):
-                try:
+        for i, b in enumerate(self.bb):
+            try:
 
-                    loaded = []
-                    s = b.get_handler_size()
+                loaded = []
+                s = b.get_handler_size()
+
+                if self.debug:
+                    print '===board', i
+
+                for m in range(0, s + 1):
+                    module_type = b.get_handler_type(m)
+                    module_name = self.listis[b][module_type]
+                    if n_boards > 1:
+                        complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                    else:
+                        complete_name = module_name + ':' +  str(m)
 
                     if self.debug:
-                        print '===board', i
+                        print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
 
-                    for m in range(0, s + 1):
-                        module_type = b.get_handler_type(m)
-                        module_name = self.listis[b][module_type]
-                        if n_boards > 1:
-                            complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                    if not(module_name == 'port'):
+
+                        if normal:
+                            modules.append(complete_name)
                         else:
-                            complete_name = module_name + ':' +  str(m)
+                            modules.append((str(m), module_name, str(i)))
 
-                        if self.debug:
-                            print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
+                        if module_name in self.openables:
+                            loaded.append(module_name)
 
-                        if not(module_name == 'port'):
+                        d = Device(b, module_name, m)
+                        if self.drivers_loaded.has_key(module_name):
+                            d.add_functions(self.drivers_loaded[module_name])
+                        b.add_device(m, d)
 
-                            if normal:
-                                modules.append(complete_name)
-                            else:
-                                modules.append((str(m), module_name, str(i)))
+                self.openables_loaded[b] = loaded
+       
+            except Exception, err:
+                if self.debug:
+                    print 'error module list', err
 
-                            if module_name in self.openables:
-                                loaded.append(module_name)
-
-                            d = Device(b, module_name, m)
-                            if self.drivers_loaded.has_key(module_name):
-                                d.add_functions(self.drivers_loaded[module_name])
-                            b.add_device(m, d)
-
-                    self.openables_loaded[b] = loaded
-           
-                except Exception, err:
-                    if self.debug:
-                        print 'error module list', err
-
-        else:
-            msg = 'LIST'
-            ret = self.doCommand(msg)
-            print 'sale del ret', ret
-            mo = []
-            if not (ret == '' or ret == ERROR):
-                mo = ret.split(',')  
-            print 'llega al modules', modules
-            if not(normal):
-                for m in mo:
-                    modules.append(self.split_module(m))
-            else:
-                modules = mo
-            print 'llega al modules final', modules
         return modules
 
     def split_module(self, mbn):
@@ -302,7 +280,7 @@ class USB4Butia():
 
     ################################ Movement calls ################################
 
-    def set2MotorSpeed(self, leftSense = 0, leftSpeed = 0, rightSense = 0, rightSpeed = 0):
+    def set2MotorSpeed(self, leftSense = 0, leftSpeed = 0, rightSense = 0, rightSpeed = 0, board = 0):
         msg = [int(leftSense), int(leftSpeed / 256.0), leftSpeed % 256, int(rightSense), int(rightSpeed / 256.0) , rightSpeed % 256]
         return self.callModule('motors', 0, 0, 'setvel2mtr', msg)
      
@@ -333,19 +311,19 @@ class USB4Butia():
     def getResistance(self, number, board=0):
         vcc = 65535
         raw = self.callModule('res', board, number, 'getValue')
-        if not(raw == -1):
+        if not(raw == ERROR):
             return raw * 6800 / (vcc - raw)
         return raw
 
     def getVoltage(self, number, board=0):
         vcc = 65535
         raw = self.callModule('volt', board, number, 'getValue')
-        if not(raw == -1):
+        if not(raw == ERROR):
             return raw * 5 / vcc
         return raw
 
     def setLed(self, on_off, number, board):
-        return self.callModule('led:' + str(number), 'turn', str(on_off))
+        return self.callModule('led', board, number, 'turn', str(on_off))
 
     ################################ Extras ################################
 
