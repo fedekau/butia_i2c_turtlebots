@@ -26,7 +26,7 @@ TURTLEBLOCKS_VERSION = a53cd196e7493dab9a7207a3b39eb1065cf54ba7
 EXTRAS_VERSION = e47299a5b95fb9d1f5d7ad3f79f5936cb853ad47
 NXT_VERSION = 75114957ecefdc920cab0183a50a039ea9f7c4ce
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
-
+ARDUINO_VERSION = 2f3cfc63f1db8eadfa70e7d9ac5fcc50335fc7a7
 
 SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
@@ -90,6 +90,9 @@ turtle-extras/.git:
 nxt_plugin/.git:
 	$(MAKE) first
 
+arduino/.git:
+	$(MAKE) first
+
 ############# checkout a version of submodule ##################
 SUBMODULE = mainline
 SUBMODULEVER = master
@@ -113,6 +116,9 @@ wedoGIT: WeDoMore/.git
 
 nxtGIT: nxt_plugin/.git
 	$(MAKE) SUBMODULE=nxt_plugin SUBMODULEVER=$(NXT_VERSION) checkoutsm
+
+arduinoGIT: arduino/.git
+	$(MAKE) SUBMODULE=arduino SUBMODULEVER=$(ARDUINO_VERSION) checkoutsm
 
 
 ################ Support for lua (bobot-server) ######################
@@ -141,12 +147,13 @@ apply_localization: walterGIT mktmpfolder extrasGIT
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
 
-apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT pattern_detection_compile
+apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoGIT pattern_detection_compile
 	cp -rLf butia               $(BUILDDIR)/plugins/
 	cp -rLf sumtia              $(BUILDDIR)/plugins/
 	cp -rLf followme            $(BUILDDIR)/plugins/
 	cp -rLf nxt_plugin          $(BUILDDIR)/plugins/
 	cp -rLf wedo_plugin         $(BUILDDIR)/plugins/
+	cp -rLf arduino             $(BUILDDIR)/plugins/
 	cp -rLf pattern_detection   $(BUILDDIR)/plugins/
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
@@ -154,13 +161,14 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT pattern_
 pattern_detection_compile:
 	$(MAKE) -C pattern_detection/library
 
-apply_sym_plugins: walterGIT nxtGIT wedoGIT apply_localization butiaXO pattern_detection_compile
+apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT apply_localization butiaXO pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia             $(BUILDDIR)/plugins/butia
 	ln -s `pwd`/sumtia            $(BUILDDIR)/plugins/sumtia
 	ln -s `pwd`/followme          $(BUILDDIR)/plugins/followme
 	ln -s `pwd`/nxt_plugin        $(BUILDDIR)/plugins/nxt_plugin
 	ln -s `pwd`/wedo_plugin       $(BUILDDIR)/plugins/wedo_plugin
+	ln -s `pwd`/arduino           $(BUILDDIR)/plugins/arduino
 	ln -s `pwd`/pattern_detection $(BUILDDIR)/plugins/pattern_detection
 
 xo:
@@ -202,13 +210,19 @@ plugin-wedo: apply_hard_plugins
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/wedo_plugin.tar.gz .
 
+plugin-arduino: apply_hard_plugins
+	cp stagin/plugins/arduino/plugin.info $(BUILDDIR)/plugins
+	cd $(BUILDDIR)/plugins && tar -czvf arduino_plugin.tar.gz arduino/* plugin.info
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/arduino_plugin.tar.gz .
+
 plugin-marcas: apply_hard_plugins
 	cp stagin/plugins/pattern_detection/plugin.info $(BUILDDIR)/plugins
 	cd $(BUILDDIR)/plugins && tar -czvf pattern_detection.tar.gz pattern_detection/* plugin.info
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/pattern_detection.tar.gz .
 
-plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo plugin-marcas
+plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo plugin-marcas plugin-arduino
 
 plugin-all: plugins
 
@@ -310,10 +324,10 @@ clean-plugins:
 # targets that not represent generated files
 .PHONY: all help \
  clean clean-tmp clean-builddir clean-xo clean-plugins \
- first walterGIT extrasGIT wedoGIT nxtGIT \
+ first walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT \
  butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins \
  genpot genpot_notraslated updatepo xo \
  install install-strip \
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
- dev pattern_detection_compile
+ dev pattern_detection_compile plugin-arduino

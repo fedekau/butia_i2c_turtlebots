@@ -10,3 +10,6 @@
 [submodule "turtle_art_plugin/turtle-extras"]
 	path = turtle_art_plugin/turtle-extras
 	url = git://git.sugarlabs.org/turtleart-extras/turtleart-extras.git
+[submodule "turtle_art_plugin/arduino"]
+	path = turtle_art_plugin/arduino
+	url = git://git.sugarlabs.org/arduino/mainline.git
