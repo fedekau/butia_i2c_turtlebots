@@ -21,62 +21,65 @@ class Client():
         self.parent = parent
         self.robot = self.parent.robot
 
-    def process(self, data):
+    def run(self):
 
-        result = ''
-        rec = data
-        
-        # remove end line characters if become from telnet
-        r = rec.replace('\r', '')
-        r = r.replace('\n', '')
+        alive = True
+        while alive:
+            result = ''
+            rec = self.sc.recv(BUFSIZ)
 
-        r = r.split(' ')
+            # remove end line characters if become from telnet
+            r = rec.replace('\r', '')
+            r = r.replace('\n', '')
 
-        print 'split', r
+            r = r.split(' ')
 
-        if len(r) > 0:
-            if r[0] == 'QUIT':
-                result = 'BYE'
-                self.parent.run = False
+            print 'split', r
 
-            elif r[0] == 'LIST':
-                l = self.robot.get_modules_list()
-                result = ','.join(l)
+            if len(r) > 0:
+                if r[0] == 'QUIT':
+                    alive = False
+                    result = 'BYE'
+                    self.parent.run = False
 
-            elif r[0] == 'REFRESH':
-                self.robot.refresh()
+                elif r[0] == 'LIST':
+                    l = self.robot.get_modules_list()
+                    result = ','.join(l)
 
-            elif r[0] == 'BUTIA_COUNT':
-                result = self.robot.get_butia_count()
+                elif r[0] == 'REFRESH':
+                    self.robot.refresh()
 
-            elif r[0] == 'CALL':
-                board = 0
-                number = 0
-                mbn = r[1]
-                if mbn.count('@') > 0:
-                    modulename, bn = mbn.split('@')
-                    board, number = bn.split(':')
-                else:
-                    if mbn.count(':') > 0:
-                        modulename, number = mbn.split(':')
+                elif r[0] == 'BUTIA_COUNT':
+                    result = self.robot.get_butia_count()
+
+                elif r[0] == 'CALL':
+                    board = 0
+                    number = 0
+                    mbn = r[1]
+                    if mbn.count('@') > 0:
+                        modulename, bn = mbn.split('@')
+                        board, number = bn.split(':')
                     else:
-                        modulename = mbn
-                function = r[2]
-                print 'datos', modulename, board, number, function
-                params = ''
-                if len(r) > 3:
-                    par = r[3:]
-                    params = ' '.join(par)
+                        if mbn.count(':') > 0:
+                            modulename, number = mbn.split(':')
+                        else:
+                            modulename = mbn
+                    function = r[2]
+                    print 'datos', modulename, board, number, function
+                    params = ''
+                    if len(r) > 3:
+                        par = r[3:]
+                        params = ' '.join(par)
 
-                result = self.call_aux(modulename, int(board), int(number), function, params)
+                    result = self.call_aux(modulename, int(board), int(number), function, params)
 
-            if not result == '':
-                result = str(result)
-            print 'mando', result
-            try:
-                self.sc.send(result + '\n')
-            except:
-                print 'fallo envio'
+                if not result == '':
+                    result = str(result)
+                print 'mando', result
+                try:
+                    self.sc.send(result + '\n')
+                except:
+                    print 'fallo envio'
 
 
     def call_aux(self, modulename, board_number, number, function, params):
@@ -98,7 +101,7 @@ class Client():
 class Server():
 
     def __init__(self):
-        self.outputs = []
+
         self.cl = []
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -116,7 +119,7 @@ class Server():
         while self.run:
 
             try:
-                inputready,outputready,exceptready = select.select(inputs, self.outputs, [])
+                inputready,outputready,exceptready = select.select(inputs, [], [])
             except select.error, e:
                 break
             except socket.error, e:
@@ -130,26 +133,30 @@ class Server():
                     print "conectado a " + str(addr)
 
                     t = Client(client, addr, self)
+                    #t.run()
+                    print 'salgo de lrun'
                     inputs.append(client)
-                    self.outputs.append(client)
                     self.cl.append(t)
+                    #self.outputs.append(client)
+                    #self.cl.append(t)
 
                 else:
+                    print 'antes else'
                     data = s.recv(BUFSIZ)
-                    print 'recibido', data, s
+                    print 'recibido', data
                     if data:
-                        if s in self.outputs:
+                        if data == 'QUIT':
+                            print 'salirrrrrrrrrrrrrrrrrrrrrrrr'
+                        if s in inputs:
                             print 'esta'
-                            for e in self.cl:
-                                if e.sc == s:
-                                    print 'el buscado'
-                                    e.process(data)
-                                    break
+                            s.send(data)
+                            break
+
                     else:
                         s.close()
                         inputs.remove(s)
-                        self.outputs.remove(s)
-
+                        #self.outputs.remove(s)
+        print 'Saliendo final'
         self.robot.close()
 
 
