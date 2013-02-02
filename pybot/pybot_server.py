@@ -3,7 +3,7 @@
 #
 # pybot server
 #
-
+import select
 import socket
 from threading import Thread
 import usb4butia
@@ -11,79 +11,77 @@ import usb4butia
 
 PYBOT_HOST = 'localhost'
 PYBOT_PORT = 2009
+BUFSIZ = 1024
 
-
-class Client(Thread):
+class Client():
     def __init__(self, socket, addr, parent):
-        Thread.__init__(self)
+
         self.sc = socket
         self.addr = addr
         self.parent = parent
         self.robot = self.parent.robot
 
-    def run(self):
+    def process(self, data):
 
-        alive = True
-        while alive:
-            result = ''
-            rec = self.sc.recv(1024)
-            
-            # remove end line characters if become from telnet
-            r = rec.replace('\r', '')
-            r = r.replace('\n', '')
+        result = ''
+        rec = data
+        
+        # remove end line characters if become from telnet
+        r = rec.replace('\r', '')
+        r = r.replace('\n', '')
 
-            r = r.split(' ')
-  
-            print 'split', r
+        r = r.split(' ')
 
-            if len(r) > 0:
-                if r[0] == 'QUIT':
-                    result = 'BYE'
-                    alive = False
+        print 'split', r
 
-                elif r[0] == 'LIST':
-                    l = self.robot.get_modules_list()
-                    result = ','.join(l)
+        if len(r) > 0:
+            if r[0] == 'QUIT':
+                result = 'BYE'
+                alive = False
 
-                elif r[0] == 'REFRESH':
-                    self.robot.refresh()
+            elif r[0] == 'LIST':
+                l = self.robot.get_modules_list()
+                result = ','.join(l)
 
-                elif r[0] == 'BUTIA_COUNT':
-                    result = self.robot.get_butia_count()
+            elif r[0] == 'REFRESH':
+                self.robot.refresh()
 
-                elif r[0] == 'CALL':
-                    board = 0
-                    number = 0
-                    mbn = r[1]
-                    if mbn.count('@') > 0:
-                        modulename, bn = mbn.split('@')
-                        board, number = bn.split(':')
+            elif r[0] == 'BUTIA_COUNT':
+                result = self.robot.get_butia_count()
+
+            elif r[0] == 'CALL':
+                board = 0
+                number = 0
+                mbn = r[1]
+                if mbn.count('@') > 0:
+                    modulename, bn = mbn.split('@')
+                    board, number = bn.split(':')
+                else:
+                    if mbn.count(':') > 0:
+                        modulename, number = mbn.split(':')
                     else:
-                        if mbn.count(':') > 0:
-                            modulename, number = mbn.split(':')
-                        else:
-                            modulename = mbn
-                    function = r[2]
-                    print 'datos', modulename, board, number, function
-                    params = ''
-                    if len(r) > 3:
-                        par = r[3:]
-                        params = ' '.join(par)
+                        modulename = mbn
+                function = r[2]
+                print 'datos', modulename, board, number, function
+                params = ''
+                if len(r) > 3:
+                    par = r[3:]
+                    params = ' '.join(par)
 
-                    result = self.call_aux(modulename, int(board), int(number), function, params)
+                result = self.call_aux(modulename, int(board), int(number), function, params)
 
-                if not result == '':
-                    result = str(result)
-                print 'mando', result
+            if not result == '':
+                result = str(result)
+            print 'mando', result
 
-                self.sc.send(result + '\n')
+            self.sc.send(result + '\n')
 
-            else:
-                print 'null message'
-                self.sc.send('\n')
+        else:
+            print 'null message'
+            self.sc.send('\n')
           
-        print 'Closing...', self.addr
-        self.sc.close()
+        """print 'Closing...', self.addr
+        self.sc.close()"""
 
 
     def call_aux(self, modulename, board_number, number, function, params):
@@ -105,6 +103,9 @@ class Client(Thread):
 class Server():
 
     def __init__(self):
+        self.outputs = []
+        self.cl = []
+
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((PYBOT_HOST, PYBOT_PORT))
@@ -114,14 +115,40 @@ class Server():
 
     def init_server(self):
 
+        inputs = [self.socket]
+
         run = True
         while run:
-            sc, addr = self.socket.accept()
 
-            print "conectado a " + str(addr)
+            try:
+                inputready,outputready,exceptready = select.select(inputs, self.outputs, [])
+            except select.error, e:
+                break
+            except socket.error, e:
+                break
 
-            t = Client(sc, addr, self)
-            t.start()
+            for s in inputready:
+                if s == self.socket:
+
+                    client, addr = self.socket.accept()
+
+                    print "conectado a " + str(addr)
+
+                    t = Client(client, addr, self)
+                    inputs.append(client)
+                    self.outputs.append(client)
+                    self.cl.append(t)
+
+                else:
+                    data = s.recv(BUFSIZ)
+                    print 'recibido', data, s
+                    if s in self.outputs:
+                        print 'esta'
+                        for e in self.cl:
+                            if e.sc == s:
+                                print 'el buscado'
+                                e.process(data)
+                                break
 
         self.robot.close()
 
