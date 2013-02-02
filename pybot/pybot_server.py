@@ -17,7 +17,7 @@ class server():
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((PYBOT_HOST, PYBOT_PORT))
-        self.socket.listen(1)
+        self.socket.listen(4)
 
         self.robot = usb4butia.USB4Butia()
 
@@ -62,6 +62,9 @@ class server():
 
                 elif r[0] == 'REFRESH':
                     self.robot.refresh()
+
+                elif r[0] == 'BUTIA_COUNT':
+                    result = str(self.robot.get_butia_count())
 
                 elif r[0] == 'CALL':
                     board = 0
