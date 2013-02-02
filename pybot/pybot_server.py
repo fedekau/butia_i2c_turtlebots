@@ -39,8 +39,8 @@ class server():
     def init_server(self):
 
         self.sc, self.addr = self.socket.accept()
-
-        while True:
+        run = True
+        while run:
             result = ''
             rec = self.sc.recv(1024)
             
@@ -54,7 +54,8 @@ class server():
 
             if len(r) > 0:
                 if r[0] == 'QUIT':
-                    break
+                    result = 'BYE'
+                    run = False
 
                 elif r[0] == 'LIST':
                     l = self.robot.get_modules_list()
@@ -86,10 +87,16 @@ class server():
                         params = ' '.join(par)
 
                     result = self.call_aux(modulename, int(board), int(number), function, params)
-            if not result == '':
-                result = str(result)
-            print 'mando', result
-            self.sc.send(result + '\n')
+
+                if not result == '':
+                    result = str(result)
+                print 'mando', result
+
+                self.sc.send(result + '\n')
+
+            else:
+                print 'null message'
+
 
           
         print 'Closing..'  
