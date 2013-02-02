@@ -176,100 +176,78 @@ class USB4Butia():
         if number == '':
             number = 0
         print 'llega', modulename, board_number, number, function, params
-        if self.local:
-            try:
 
-                if board_number < self.get_butia_count():
-                    board = self.bb[board_number]
+        try:
 
-                    if board.devices.has_key(number) and (board.devices[number].name == modulename):
+            if board_number < self.get_butia_count():
+                board = self.bb[board_number]
+
+                if board.devices.has_key(number) and (board.devices[number].name == modulename):
+
+                    return board.devices[number].call_function(function, params)
+
+                else:
+                    if modulename in self.openables:
+                        if not(modulename in self.openables_loaded[board]):
+                            self.openables_loaded[board].append(modulename)
+                            dev = Device(board, modulename, None)
+                            number = dev.module_open()
+                            dev.add_functions(self.drivers_loaded[modulename])
+                            board.add_device(number, dev)
+                        else:
+                            number = board.get_device_handler(modulename)
+
+                        if number == ERROR:
+                            return ERROR
 
                         return board.devices[number].call_function(function, params)
 
                     else:
-                        if modulename in self.openables:
-                            if not(modulename in self.openables_loaded[board]):
-                                self.openables_loaded[board].append(modulename)
-                                dev = Device(board, modulename, None)
-                                number = dev.module_open()
-                                dev.add_functions(self.drivers_loaded[modulename])
-                                board.add_device(number, dev)
-                            else:
-                                number = board.get_device_handler(modulename)
-
-                            if number == ERROR:
-                                return ERROR
-
-                            return board.devices[number].call_function(function, params)
-
-                        else:
-                            if self.debug:
-                                print 'no open and no openable'
-                            return ERROR
-                else:
-                    if self.debug:
-                        print 'no board number %s' % board_number
-                    return ERROR
-
-            except Exception, err:
-                print 'error call module', err
+                        if self.debug:
+                            print 'no open and no openable'
+                        return ERROR
+            else:
+                if self.debug:
+                    print 'no board number %s' % board_number
                 return ERROR
-        else:
-            msg = 'CALL ' + modulename + '@' + str(board_number) + ':' + str(number) + ' ' + function
-            if params != '' :
-                if not(type(params) == list):
-                    msg += ' ' + params
-                else:
-                    for e in params:
-                        msg += ' ' + str(e)
-            ret = self.doCommand(msg)
-            try:
-                ret = int(ret)
-            except:
-                try:
-                    ret = float(ret)
-                except:
-                    ret = ERROR
-            return ret
+
+        except Exception, err:
+            print 'error call module', err
+            return ERROR
+
 
     def reconnect(self):
         pass
 
     def refresh(self):
-        if self.local:
-            if self.bb == []:
-                self.find_butias(False)
-            else:
-                for b in self.bb:
-                    info = ERROR
-                    try:
-                        info = b.get_info()
-                    except:
-                        if self.debug:
-                            print 'error refresh getinfo'
-
-                    if info == ERROR:
-                        self.openables_loaded[b] = []
-                        self.openables_loaded.pop(b)
-                        self.bb.remove(b)
-                        try:
-                            b.close_baseboard()
-                        except:
-                            pass
+        if self.bb == []:
+            self.find_butias(False)
         else:
-            return self.doCommand('REFRESH')
-
-    def close(self):
-        if self.local:
             for b in self.bb:
+                info = ERROR
                 try:
-                    b.close_baseboard()
+                    info = b.get_info()
                 except:
                     if self.debug:
-                        print 'error in close baseboard'
-            self.bb = []
-        else:
-            return self.doCommand('QUIT')
+                        print 'error refresh getinfo'
+
+                if info == ERROR:
+                    self.openables_loaded[b] = []
+                    self.openables_loaded.pop(b)
+                    self.bb.remove(b)
+                    try:
+                        b.close_baseboard()
+                    except:
+                        pass
+
+    def close(self):
+        for b in self.bb:
+            try:
+                b.close_baseboard()
+            except:
+                if self.debug:
+                    print 'error in close baseboard'
+        self.bb = []
 
     def isPresent(self, module_name):
         module_list = self.get_modules_list()
