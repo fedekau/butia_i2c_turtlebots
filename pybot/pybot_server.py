@@ -14,18 +14,15 @@ PYBOT_PORT = 2009
 BUFSIZ = 1024
 
 class Client():
-    def __init__(self, socket, addr, parent):
+    def __init__(self, socket, addr):
 
         self.sc = socket
         self.addr = addr
-        self.parent = parent
 
 
 class Server():
 
     def __init__(self):
-
-        #self.cl = []
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -70,18 +67,13 @@ class Server():
 
                     print "conectado a " + str(addr)
 
-                    t = Client(client, addr, self)
-                    #t.run()
-                    #print 'salgo de lrun'
+                    t = Client(client, addr)
                     inputs.append(client)
-                    #self.cl.append(t)
-                    #self.outputs.append(client)
-                    #self.cl.append(t)
 
                 else:
     
                     data = s.recv(BUFSIZ)
-                    print 'recibido', data
+                    print 'recive', data
                     result = ''
                     if data:
                         # remove end line characters if become from telnet
@@ -128,9 +120,7 @@ class Server():
 
                                 result = self.call_aux(modulename, int(board), int(number), function, params)
 
-                        if not result == '':
-                            result = str(result)
-                        print 'mando', result
+                        result = str(result)
                         try:
                             s.send(result + '\n')
                         except:
@@ -140,8 +130,8 @@ class Server():
                         s.close()
                         inputs.remove(s)
                         
-                        #self.outputs.remove(s)
-        print 'Saliendo final'
+        print 'Closing server'
+        self.socket.close()
         self.robot.close()
 
 
