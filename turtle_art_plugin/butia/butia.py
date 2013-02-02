@@ -19,7 +19,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from pybot import usb4butia
+import butiaAPI
 import time
 import threading
 import re
@@ -709,7 +709,20 @@ class Butia(Plugin):
 
     def pybot_launch(self):
 
-        self.butia = usb4butia.USB4Butia()
+        output = commands.getoutput('ps -ax | grep pybot_server')
+        if 'pybot_server' in output:
+            debug_output('Pybot is alive!')
+        else:
+            try:
+                debug_output('creating Pybot server')
+                self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./plugins/butia/pybot')
+            except:
+                debug_output('ERROR creating Pybot server')
+
+        # Sure that bobot is running
+        time.sleep(1)
+
+        self.butia = butiaAPI.robot()
 
         self.pollthread=threading.Timer(3, self.bobot_poll)
         self.pollthread.start()
