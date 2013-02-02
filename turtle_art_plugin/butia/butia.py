@@ -364,6 +364,7 @@ class Butia(Plugin):
         self.pollrun = False
         self.pollthread.cancel()
         if self.butia:
+            self.butia.closeService()
             self.butia.close()
         if self.bobot:
             self.bobot.kill()
