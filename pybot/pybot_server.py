@@ -14,11 +14,12 @@ PYBOT_PORT = 2009
 
 
 class Client(Thread):
-    def __init__(self, socket, addr, robot):
+    def __init__(self, socket, addr, parent):
         Thread.__init__(self)
         self.sc = socket
         self.addr = addr
-        self.robot = robot
+        self.parent = parent
+        self.robot = self.parent.robot
 
     def run(self):
 
@@ -113,15 +114,16 @@ class Server():
 
     def init_server(self):
 
-        self.sc, self.addr = self.socket.accept()
+        run = True
+        while run:
+            sc, addr = self.socket.accept()
 
-        print "conectado a "+ str(self.addr)
+            print "conectado a " + str(addr)
 
-        t = Client(self.sc, self.addr, self.robot)
-        t.start()
+            t = Client(sc, addr, self)
+            t.start()
 
-        #self.socket.close()
-        #self.robot.close()
+        self.robot.close()
 
 
 if __name__ == "__main__":
