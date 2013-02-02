@@ -93,6 +93,8 @@ class robot:
 
     # call the module 'modulename'
     def callModule(self, modulename, board_number, number, function, params = ''):
+        if number == '':
+            number = 0
         msg = 'CALL ' + modulename + '@' + str(board_number) + ':' + str(number) + ' ' + function
         if params != '':
             msg += ' ' + params
@@ -216,6 +218,9 @@ class robot:
 
     def getGrayScale(self, number, board=0):
         return self.callModule('grey', board, number, 'getValue')
+
+    def getTemperature(self, number, board=0):
+        return self.callModule('temp', board, number, 'getValue')
 
     def getResistance(self, number, board=0):
         vcc = 65535
