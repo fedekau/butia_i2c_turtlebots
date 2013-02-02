@@ -64,7 +64,7 @@ class server():
                     self.robot.refresh()
 
                 elif r[0] == 'BUTIA_COUNT':
-                    result = str(self.robot.get_butia_count())
+                    result = self.robot.get_butia_count()
 
                 elif r[0] == 'CALL':
                     board = 0
@@ -85,7 +85,9 @@ class server():
                         par = r[3:]
                         params = ' '.join(par)
 
-                    result = str(self.call_aux(modulename, int(board), int(number), function, params))
+                    result = self.call_aux(modulename, int(board), int(number), function, params)
+            if not result == '':
+                result = str(result)
             print 'mando', result
             self.sc.send(result + '\n')
 
