@@ -149,6 +149,11 @@ class robot:
                 modulename = mbn
         return (number, modulename, board)
 
+    def get_butia_count(self):
+        msg = 'BUTIA_COUNT'
+        ret = self.doCommand(msg)
+        return ret
+
     # loopBack: send a message to butia and wait to recibe the same
     def loopBack(self, data, board=0):
         return self.callModule('lback', board, 0, 'send', data)
@@ -157,15 +162,15 @@ class robot:
     ### Operations for motores.lua driver
     #######################################################################
 
-    def set2MotorSpeed(self, leftSense = '0', leftSpeed = '0', rightSense = '0', rightSpeed = '0'):
-        msg = leftSense + ' ' + leftSpeed + ' ' + rightSense + ' ' + rightSpeed
-        return self.callModule('motors', 'setvel2mtr', msg)
+    def set2MotorSpeed(self, leftSense = 0, leftSpeed = 0, rightSense = 0, rightSpeed = 0, board = 0):
+        msg = str(leftSense) + ' ' + str(leftSpeed) + ' ' + str(rightSense) + ' ' + str(rightSpeed)
+        return self.callModule('motors', board, 0, 'setvel2mtr', msg)
      
-    def setMotorSpeed(self, idMotor = '0', sense = '0', speed = '0'):
-        msg = idMotor + ' ' + sense + ' ' + speed
-        return self.callModule('motors', 'setvelmtr', msg)
+    def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0, board = 0):
+        msg = str(idMotor) + ' ' + str(sense) + ' ' + str(speed)
+        return self.callModule('motors', board, 0, 'setvelmtr', msg)
 
-    #######################################################################
+    """#######################################################################
     ### Operations for ax.lua driver
     #######################################################################
 
@@ -187,7 +192,7 @@ class robot:
 
     def get_position(self, idMotor = '0'):
         msg = idMotor
-        return self.callModule('ax', 'get_position', msg)
+        return self.callModule('ax', 'get_position', msg)"""
 
     def ping(self, board=0):
         return self.callModule('placa', board, 0, 'ping')
