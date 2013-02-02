@@ -37,7 +37,7 @@ class Client():
         if len(r) > 0:
             if r[0] == 'QUIT':
                 result = 'BYE'
-                alive = False
+                self.parent.run = False
 
             elif r[0] == 'LIST':
                 l = self.robot.get_modules_list()
@@ -73,15 +73,10 @@ class Client():
             if not result == '':
                 result = str(result)
             print 'mando', result
-
-            self.sc.send(result + '\n')
-
-        else:
-            print 'null message'
-            self.sc.send('\n')
-          
-        """print 'Closing...', self.addr
-        self.sc.close()"""
+            try:
+                self.sc.send(result + '\n')
+            except:
+                print 'fallo envio'
 
 
     def call_aux(self, modulename, board_number, number, function, params):
@@ -117,8 +112,8 @@ class Server():
 
         inputs = [self.socket]
 
-        run = True
-        while run:
+        self.run = True
+        while self.run:
 
             try:
                 inputready,outputready,exceptready = select.select(inputs, self.outputs, [])
@@ -142,13 +137,18 @@ class Server():
                 else:
                     data = s.recv(BUFSIZ)
                     print 'recibido', data, s
-                    if s in self.outputs:
-                        print 'esta'
-                        for e in self.cl:
-                            if e.sc == s:
-                                print 'el buscado'
-                                e.process(data)
-                                break
+                    if data:
+                        if s in self.outputs:
+                            print 'esta'
+                            for e in self.cl:
+                                if e.sc == s:
+                                    print 'el buscado'
+                                    e.process(data)
+                                    break
+                    else:
+                        s.close()
+                        inputs.remove(s)
+                        self.outputs.remove(s)
 
         self.robot.close()
 
