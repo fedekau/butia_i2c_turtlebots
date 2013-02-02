@@ -11,8 +11,6 @@ from baseboard import Baseboard
 from device import Device
 
 PATH_DRIVERS = 'plugins/butia/pybot/drivers'
-PYBOT_HOST = 'localhost'
-PYBOT_PORT = 2009
 ERROR = -1
 
 class USB4Butia():
@@ -26,17 +24,6 @@ class USB4Butia():
         self.bb = []
         self.get_all_drivers()
         self.find_butias()
-
-    def doCommand(self, msg):
-        msg = msg +'\n'
-        ret = ERROR
-        try:
-            self.client.send(msg)
-            ret = self.client.recv(1024)
-            ret = ret[:-1]
-        except:
-            ret = ERROR
-        return ret
 
     def get_butia_count(self):
         return len(self.bb)
