@@ -131,7 +131,7 @@ class Device():
 
     def call_function(self, func, params):
 
-        raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
+        self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
         return self.module_read()
 
     def to_ord(self, string):

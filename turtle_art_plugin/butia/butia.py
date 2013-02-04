@@ -19,7 +19,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from pybot import usb4butia
+import butiaAPI
 import time
 import threading
 import re
@@ -364,6 +364,7 @@ class Butia(Plugin):
         self.pollrun = False
         self.pollthread.cancel()
         if self.butia:
+            self.butia.closeService()
             self.butia.close()
         if self.bobot:
             self.bobot.kill()
@@ -483,9 +484,11 @@ class Butia(Plugin):
                                 special_block_colors[blk.name] = COLOR_PRESENT[:]
 
                             if module == 'led':
-                                self.tw.lc.def_prim(blk.name, 1, lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x, z))
+                                self.tw.lc.def_prim(blk.name, 1, 
+                                lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x, z))
                             else:
-                                self.tw.lc.def_prim(blk.name, 0, lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
+                                self.tw.lc.def_prim(blk.name, 0, 
+                                lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
 
                             blk.spr.set_label(label)
                             block_names[blk.name][0] = label
@@ -588,55 +591,55 @@ class Butia(Plugin):
         else:
             return ERROR
 
-    def buttonButia(self, sensorid='', boardid=''):
+    def buttonButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getButton(sensorid, boardid)
         else:
             return ERROR
 
-    def ambientlightButia(self, sensorid='', boardid=''):
+    def ambientlightButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getAmbientLight(sensorid, boardid)
         else:
             return ERROR
 
-    def distanceButia(self, sensorid='', boardid=''):
+    def distanceButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getDistance(sensorid, boardid)
         else:
             return ERROR
 
-    def grayscaleButia(self, sensorid='', boardid=''):
+    def grayscaleButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getGrayScale(sensorid, boardid)
         else:
             return ERROR
         
-    def temperatureButia(self, sensorid='', boardid=''):
+    def temperatureButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getTemperature(sensorid, boardid)
         else:
             return ERROR
 
-    def resistanceButia(self, sensorid='', boardid=''):
+    def resistanceButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getResistance(sensorid, boardid)
         else:
             return ERROR
 
-    def voltageButia(self, sensorid='', boardid=''):
+    def voltageButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getVoltage(sensorid, boardid)
         else:
             return ERROR
 
-    def gpioButia(self, sensorid='', boardid=''):
+    def gpioButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getGpio(sensorid, boardid)
         else:
             return ERROR
 
-    def ledButia(self, on_off, sensorid='', boardid=''):
+    def ledButia(self, on_off, sensorid=0, boardid=0):
         if self.butia:
             self.butia.setLed(on_off, sensorid, boardid)
         else:
@@ -709,7 +712,20 @@ class Butia(Plugin):
 
     def pybot_launch(self):
 
-        self.butia = usb4butia.USB4Butia()
+        output = commands.getoutput('ps -ax | grep pybot_server')
+        if 'pybot_server' in output:
+            debug_output('Pybot is alive!')
+        else:
+            try:
+                debug_output('creating Pybot server')
+                self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./plugins/butia/pybot')
+            except:
+                debug_output('ERROR creating Pybot server')
+
+        # Sure that bobot is running
+        time.sleep(1)
+
+        self.butia = butiaAPI.robot()
 
         self.pollthread=threading.Timer(3, self.bobot_poll)
         self.pollthread.start()
