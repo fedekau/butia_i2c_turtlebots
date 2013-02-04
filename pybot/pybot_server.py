@@ -5,7 +5,6 @@
 #
 import select
 import socket
-from threading import Thread
 import usb4butia
 
 
@@ -55,9 +54,8 @@ class Server():
 
             try:
                 inputready,outputready,exceptready = select.select(inputs, [], [])
-            except select.error, e:
-                break
-            except socket.error, e:
+            except Exception, err:
+                print 'Error in select', err
                 break
 
             for s in inputready:
@@ -67,7 +65,7 @@ class Server():
 
                     print "conectado a " + str(addr)
 
-                    t = Client(client, addr)
+                    #t = Client(client, addr)
                     inputs.append(client)
 
                 else:
