@@ -158,19 +158,21 @@ class robot:
 
     # loopBack: send a message to butia and wait to recibe the same
     def loopBack(self, data, board=0):
-        return self.callModule('lback', board, 0, 'send', data)
+        msg = 'CALL lback@' + str(board) + ':0 send ' + data
+        return self.doCommand(msg)
             
     #######################################################################
     ### Operations for motores.lua driver
     #######################################################################
 
     def set2MotorSpeed(self, leftSense = 0, leftSpeed = 0, rightSense = 0, rightSpeed = 0, board = 0):
-        msg = str(leftSense) + ' ' + str(leftSpeed) + ' ' + str(rightSense) + ' ' + str(rightSpeed)
-        return self.callModule('motors', board, 0, 'setvel2mtr', msg)
+        msg_l = str(leftSense) + ' ' + str(int(leftSpeed / 256.0)) + ' ' + str(leftSpeed % 256)
+        msg_r = str(rightSense) + ' ' + str(int(rightSpeed / 256.0)) + ' ' + str(rightSpeed % 256)
+        return self.callModule('motors', board, 0, 'setvel2mtr', msg_l + ' ' + msg_r)
      
     def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0, board = 0):
-        msg = str(idMotor) + ' ' + str(sense) + ' ' + str(speed)
-        return self.callModule('motors', board, 0, 'setvelmtr', msg)
+        msg = str(idMotor) + ' ' + str(sense) + ' ' + str(int(speed / 256.0)) + ' ' + str(speed % 256)
+        return self.callModule('motors', 0, 0, 'setvelmtr', msg)
 
     """#######################################################################
     ### Operations for ax.lua driver

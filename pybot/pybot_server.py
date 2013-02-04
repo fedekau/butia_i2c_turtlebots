@@ -32,19 +32,13 @@ class Server():
         self.robot = usb4butia.USB4Butia()
 
     def call_aux(self, modulename, board_number, number, function, params):
-        params = params.split(' ')
-        #print 'call aux', params
-        par = []
-        if modulename == 'motors':
-            if function == 'setvel2mtr':
-                if len(params) == 4:
-                    return self.robot.set2MotorSpeed(int(params[0]), int(params[1]), int(params[2]), int(params[3]))
-                elif len(params) == 6:
-                    for e in params:
-                        par.append(int(e))
-                    return self.robot.callModule(modulename, board_number, number, function, par)
+        if len(params) > 1:
+            par = []
+            for e in params:
+                par.append(int(e))
         else:
-            return self.robot.callModule(modulename, board_number, number, function, par)
+            par = params
+        return self.robot.callModule(modulename, board_number, number, function, par)
 
     def init_server(self):
 
@@ -78,7 +72,6 @@ class Server():
                         # remove end line characters if become from telnet
                         r = data.replace('\r', '')
                         r = r.replace('\n', '')
-
                         r = r.split(' ')
 
                         #print 'split', r
@@ -111,13 +104,11 @@ class Server():
                                     else:
                                         modulename = mbn
                                 function = r[2]
-                                #print 'datos', modulename, board, number, function
-                                params = ''
+                                par = []
                                 if len(r) > 3:
                                     par = r[3:]
-                                    params = ' '.join(par)
 
-                                result = self.call_aux(modulename, int(board), int(number), function, params)
+                                result = self.call_aux(modulename, int(board), int(number), function, par)
 
                         result = str(result)
                         try:
