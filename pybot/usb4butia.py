@@ -162,7 +162,7 @@ class USB4Butia():
     def callModule(self, modulename, board_number, number, function, params = []):
         if number == '':
             number = 0
-        print 'llega', modulename, board_number, number, function, params
+        #print 'llega', modulename, board_number, number, function, params
 
         try:
 

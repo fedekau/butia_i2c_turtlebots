@@ -32,7 +32,7 @@ class Server():
 
     def call_aux(self, modulename, board_number, number, function, params):
         params = params.split(' ')
-        print 'call aux', params
+        #print 'call aux', params
         par = []
         if modulename == 'motors':
             if function == 'setvel2mtr':
@@ -71,7 +71,7 @@ class Server():
                 else:
     
                     data = s.recv(BUFSIZ)
-                    print 'recive', data
+                    #print 'recive', data
                     result = ''
                     if data:
                         # remove end line characters if become from telnet
@@ -80,7 +80,7 @@ class Server():
 
                         r = r.split(' ')
 
-                        print 'split', r
+                        #print 'split', r
 
                         if len(r) > 0:
                             if r[0] == 'QUIT':
@@ -110,7 +110,7 @@ class Server():
                                     else:
                                         modulename = mbn
                                 function = r[2]
-                                print 'datos', modulename, board, number, function
+                                #print 'datos', modulename, board, number, function
                                 params = ''
                                 if len(r) > 3:
                                     par = r[3:]
