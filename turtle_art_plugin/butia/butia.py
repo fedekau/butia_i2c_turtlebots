@@ -712,8 +712,8 @@ class Butia(Plugin):
 
     def pybot_launch(self):
 
-        output = commands.getoutput('ps -ax | grep pybot_server')
-        if 'pybot_server' in output:
+        output = commands.getoutput('ps -ax | grep python')
+        if 'pybot_server.py' in output:
             debug_output('Pybot is alive!')
         else:
             try:
