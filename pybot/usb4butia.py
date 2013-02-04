@@ -160,8 +160,7 @@ class USB4Butia():
                 print 'Driver not have FUNCTIONS'
 
     def callModule(self, modulename, board_number, number, function, params = []):
-        if number == '':
-            number = 0
+
         #print 'llega', modulename, board_number, number, function, params
 
         try:
