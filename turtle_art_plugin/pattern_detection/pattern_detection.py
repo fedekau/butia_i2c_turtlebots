@@ -19,7 +19,6 @@ sys.path.insert(0, os.path.abspath('./plugins/' + plugin_folder + '/library'))
 
 import multiPatternDetectionAPI as detectionAPI
 
-_logger = logging.getLogger('TurtleArt-activity pattern_detection plugin')
 
 class Pattern_detection(Plugin):
 
@@ -33,23 +32,23 @@ class Pattern_detection(Plugin):
 
         palette = make_palette('pattern_detection',
                      colors=["#00FF00","#008000"],
-                     help_string=_('Deteccion de marcas'))
+                     help_string=_('Pattern detection'))
 
         primitive_dictionary['isPresent'] = self._isPresent
         palette.add_block('isPresent',
                           style='boolean-1arg-block-style',
-                          label=_('Viendo Señal'),
+                          label=_('Seeing signal'),
                           prim_name='isPresent',
-                          help_string= _('Devuelve True si la señal esta en el campo visual de la camara'))
+                          help_string= _('Returns True if the signal is in front of the camera'))
         self._parent.lc.def_prim('isPresent', 1,
                              lambda self, x: primitive_dictionary['isPresent'](x))
 
         primitive_dictionary['getMarkerTrigDist'] = self._getMarkerTrigDist
         palette.add_block('getMarkerTrigDist',
                           style='number-style-1arg',
-                          label=_('Distancia Señal'),
+                          label=_('Distance to signal'),
                           prim_name='getMarkerTrigDist',
-                          help_string= _('Devuelve la distancia a la camara en mm'))
+                          help_string= _('Returns the distance of the siganl to the camera in milimeters'))
         self._parent.lc.def_prim('getMarkerTrigDist', 1,
                              lambda self, x: primitive_dictionary['getMarkerTrigDist'](x))
 
@@ -72,9 +71,6 @@ class Pattern_detection(Plugin):
 
     def start(self):
         pass
-
-    def end(self):
-        print "end pattern_detection"
 
     def _stop_cam(self):
         if self.isInit:
