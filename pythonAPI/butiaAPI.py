@@ -210,7 +210,11 @@ class robot:
         return self.callModule('butia', board, 0, 'read_ver')
 
     def getButton(self, number, board=0):
-        return self.callModule('button', board, number, 'getValue')
+        res = self.callModule('button', board, number, 'getValue')
+        if res != ERROR:
+            return (1 - res)
+        else:
+            return res
     
     def getAmbientLight(self, number, board=0):
         return self.callModule('light', board, number, 'getValue')
