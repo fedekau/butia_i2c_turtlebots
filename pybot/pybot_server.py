@@ -13,21 +13,15 @@ PYBOT_PORT = 2009
 BUFSIZ = 1024
 MAX_CLIENTS = 4
 
-class Client():
-    def __init__(self, socket, addr):
-
-        self.sc = socket
-        self.addr = addr
-
 
 class Server():
 
     def __init__(self):
-
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((PYBOT_HOST, PYBOT_PORT))
         self.socket.listen(MAX_CLIENTS)
+        self.clients = {}
 
         self.robot = usb4butia.USB4Butia()
 
@@ -55,20 +49,14 @@ class Server():
 
             for s in inputready:
                 if s == self.socket:
-
                     client, addr = self.socket.accept()
-
-                    print "conectado a " + str(addr)
-
-                    #t = Client(client, addr)
+                    print 'New client: ', str(addr)
                     inputs.append(client)
-
+                    self.clients[client] = addr
                 else:
-    
                     data = s.recv(BUFSIZ)
-                    #print 'recive', data
-                    result = ''
                     if data:
+                        result = ''
                         # remove end line characters if become from telnet
                         r = data.replace('\r', '')
                         r = r.replace('\n', '')
@@ -80,35 +68,38 @@ class Server():
                             if r[0] == 'QUIT':
                                 result = 'BYE'
                                 run = False
-
+                            elif r[0] == 'CLIENTS':
+                                first = True
+                                for c in self.clients:
+                                    addr = self.clients[c]
+                                    if first:
+                                        result = result + str(addr[0]) + ', ' + str(addr[1]) 
+                                        first = False
+                                    else:
+                                        result = result + '\n' + str(addr[0]) + ', ' + str(addr[1]) 
                             elif r[0] == 'LIST':
                                 l = self.robot.get_modules_list()
                                 result = ','.join(l)
-
                             elif r[0] == 'REFRESH':
                                 self.robot.refresh()
-
                             elif r[0] == 'BUTIA_COUNT':
                                 result = self.robot.get_butia_count()
-
                             elif r[0] == 'CALL':
-                                board = 0
-                                number = 0
-                                mbn = r[1]
-                                if mbn.count('@') > 0:
-                                    modulename, bn = mbn.split('@')
-                                    board, number = bn.split(':')
-                                else:
-                                    if mbn.count(':') > 0:
-                                        modulename, number = mbn.split(':')
+                                if len(r) >= 3:
+                                    board = 0
+                                    number = 0
+                                    mbn = r[1]
+                                    if mbn.count('@') > 0:
+                                        modulename, bn = mbn.split('@')
+                                        board, number = bn.split(':')
                                     else:
-                                        modulename = mbn
-                                function = r[2]
-                                par = []
-                                if len(r) > 3:
+                                        if mbn.count(':') > 0:
+                                            modulename, number = mbn.split(':')
+                                        else:
+                                            modulename = mbn
+                                    function = r[2]
                                     par = r[3:]
-
-                                result = self.call_aux(modulename, int(board), int(number), function, par)
+                                    result = self.call_aux(modulename, int(board), int(number), function, par)
 
                         result = str(result)
                         try:
@@ -119,6 +110,7 @@ class Server():
                     else:
                         s.close()
                         inputs.remove(s)
+                        self.clients.pop(s)
                         
         print 'Closing server'
         self.socket.close()
