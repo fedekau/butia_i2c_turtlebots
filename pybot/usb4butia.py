@@ -38,7 +38,6 @@ class USB4Butia():
         self.openables = []
         self.drivers_loaded = {}
         self.bb = []
-
         self.get_all_drivers()
         self.find_butias()
 
@@ -146,6 +145,8 @@ class USB4Butia():
 
     def callModule(self, modulename, board_number, number, function, params = []):
 
+        #print 'llega', modulename, board_number, number, function, params
+
         try:
 
             if board_number < self.get_butia_count():
@@ -180,6 +181,7 @@ class USB4Butia():
         except Exception, err:
             print 'error call module', err
             return ERROR
+
 
     def reconnect(self):
         pass
@@ -217,25 +219,25 @@ class USB4Butia():
         return (module_name in module_list)
 
     def loopBack(self, data, board=0):
-        return self.callModule('lback', board, None, 'send', data)
+        return self.callModule('lback', board, 0, 'send', data)
 
     ################################ Movement calls ################################
 
-    def set2MotorSpeed(self, leftSense = 0, leftSpeed = 0, rightSense = 0, rightSpeed = 0):
+    def set2MotorSpeed(self, leftSense = 0, leftSpeed = 0, rightSense = 0, rightSpeed = 0, board = 0):
         msg = [int(leftSense), int(leftSpeed / 256.0), leftSpeed % 256, int(rightSense), int(rightSpeed / 256.0) , rightSpeed % 256]
-        return self.callModule('motors', 0, None, 'setvel2mtr', msg)
+        return self.callModule('motors', board, 0, 'setvel2mtr', msg)
      
     def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0):
         msg = [idMotor, sense, int(speed / 256.0), speed % 256]
-        return self.callModule('motors', 0, None, 'setvelmtr', msg)
+        return self.callModule('motors', 0, 0, 'setvelmtr', msg)
 
     ################################ Sensors calls ################################
      
     def getBatteryCharge(self, board=0):
-        return self.callModule('butia', board, None, 'get_volt')
+        return self.callModule('butia', board, 0, 'get_volt')
 
     def getVersion(self, board=0):
-        return self.callModule('butia', board, None, 'read_ver')
+        return self.callModule('butia', board, 0, 'read_ver')
 
     def getButton(self, number, board=0):
         return self.callModule('button', board, number, 'getValue')
@@ -252,19 +254,19 @@ class USB4Butia():
     def getResistance(self, number, board=0):
         vcc = 65535
         raw = self.callModule('res', board, number, 'getValue')
-        if not(raw == -1):
+        if not(raw == ERROR):
             return raw * 6800 / (vcc - raw)
         return raw
 
     def getVoltage(self, number, board=0):
         vcc = 65535
         raw = self.callModule('volt', board, number, 'getValue')
-        if not(raw == -1):
+        if not(raw == ERROR):
             return raw * 5 / vcc
         return raw
 
     def setLed(self, on_off, number, board):
-        return self.callModule('led:' + str(number), 'turn', str(on_off))
+        return self.callModule('led', board, number, 'turn', str(on_off))
 
     ################################ Extras ################################
 

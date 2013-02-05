@@ -54,11 +54,8 @@ class Device():
 
     def module_send(self, call, params_length, params):
 
-        if not(type(params) == str):
-            if not(len(params) == params_length):
-                if self.debug:
-                    print 'Incorrect lenght in params', params_length, params
-        else:
+        if len(params) == 1:
+            params = params[0]
             params = self.to_ord(params)
 
         send_packet_length = 0x04 + len(params)
@@ -131,7 +128,7 @@ class Device():
 
     def call_function(self, func, params):
 
-        raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
+        self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
         return self.module_read()
 
     def to_ord(self, string):
