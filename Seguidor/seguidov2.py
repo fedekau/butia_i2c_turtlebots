@@ -31,10 +31,10 @@ class ClaseMain(threading.Thread):
         self.data = data
         self.butiabot = butiaAPI.robot()
         self.idIzq = "1"
-        self.idDer = "3"
-        self.negroDer = 32000
-        self.negroIzq = 40000
-        self.distMinimalSignal = 500
+        self.idDer = "4"
+        self.negroDer = 31000
+        self.negroIzq = 31000
+        self.distMinimalSignal = 400
         print str(self.detect.arMultiGetIdsMarker().split(";"))
         #self.detect.isMarkerPresent("Right")
 
