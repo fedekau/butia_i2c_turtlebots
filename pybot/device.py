@@ -55,8 +55,8 @@ class Device():
     def module_send(self, call, params_length, params):
 
         if len(params) == 1:
-            params = params[0]
-            params = self.to_ord(params)
+            if type(params[0]) == str:
+                params = self.to_ord(params[0])
 
         send_packet_length = 0x04 + len(params)
 
