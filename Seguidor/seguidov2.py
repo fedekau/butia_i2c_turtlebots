@@ -34,7 +34,7 @@ class ClaseMain(threading.Thread):
         self.idDer = "4"
         self.negroDer = 31000
         self.negroIzq = 31000
-        self.distMinimalSignal = 400
+        self.distMinimalSignal = 500
         print str(self.detect.arMultiGetIdsMarker().split(";"))
         #self.detect.isMarkerPresent("Right")
 
@@ -78,7 +78,7 @@ class ClaseMain(threading.Thread):
                 #rutina que mira las marcas
                 self.buscar_senial()
                 #rutina de seguidor de lineas
-                self.butiabot.set2MotorSpeed("0","300", "0", "300")
+                self.butiabot.set2MotorSpeed("0","600", "0", "600")
                 if self.butiabot.getGrayScale(self.idDer) < self.negroDer: #si derecha blanco
                     self.corregir_izquierda()
                     print "corrijo izq"
@@ -92,7 +92,7 @@ class ClaseMain(threading.Thread):
 
     def buscar_senial(self):
         print "entro"
-        if self.detect.isMarkerPresent("Left") :#and self.detect.getMarkerTrigDist("Left") < self.distMinimalSignal:
+        if self.detect.isMarkerPresent("Left") and self.detect.getMarkerTrigDist("Left") < self.distMinimalSignal:
             print "estoy cerca de la senia iquierda"
             self.girar_iquierda()
         elif self.detect.isMarkerPresent("Stop") and self.detect.getMarkerTrigDist("Stop") < self.distMinimalSignal:
