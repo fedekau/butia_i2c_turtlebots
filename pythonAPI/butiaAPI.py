@@ -256,8 +256,5 @@ class robot:
         return self.callModule('hackp', board, 0, 'write', msg)
 
     def getHack(self, pin, board = 0):
-        pin = str(pin)
-        return self.callModule('hackp', board, 0, 'read', pin)
-
-
+        return self.callModule('hackp', board, 0, 'read', str(pin))
 
