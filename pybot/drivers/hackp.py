@@ -1,14 +1,12 @@
 
 RD_VERSION = 0x00
-SET_27_TO_30 = 0x01 # opcode to set 4pin values
-SET_PIN27 = 0x02 # opcode to set individual values
-SET_PIN28 = 0x03
-SET_PIN29 = 0x04
-SET_PIN30 = 0x05
-GET_PIN27 = 0x06 #opcode to get pin values
-GET_PIN28 = 0x07
-GET_PIN29 = 0x08
-GET_PIN30 = 0x09
+SET_MODE = 0x01
+READ = 0x02
+WRITE = 0x03
+WRITE_PORT = 0x04
+PORT_IN = 0x05
+PORT_OUT = 0x06
+
 
 f1 = {
     'name': 'getVersion',
@@ -18,10 +16,25 @@ f1 = {
 }
 
 f2 = {
-    'name': 'set4pin',
-    'call': SET_27_TO_30,
-    'params': 4,
+    'name': 'setMode',
+    'call': SET_MODE,
+    'params': 2,
     'read': 1
 }
 
-FUNCTIONS = [f1, f2]
+f3 = {
+    'name': 'read',
+    'call': READ,
+    'params': 1,
+    'read': 1
+}
+
+f4 = {
+    'name': 'write',
+    'call': WRITE,
+    'params': 2,
+    'read': 1
+}
+
+FUNCTIONS = [f1, f2, f3, f4]
+
