@@ -219,7 +219,7 @@ class USB4Butia():
         return (module_name in module_list)
 
     def loopBack(self, data, board=0):
-        return self.callModule('lback', board, 0, 'send', data)
+        return self.callModule('lback', board, 0, 'send', [data])
 
     ################################ Movement calls ################################
 
@@ -255,6 +255,9 @@ class USB4Butia():
     def getGrayScale(self, number, board=0):
         return self.callModule('grey', board, number, 'getValue')
 
+    def getTemperature(self, number, board=0):
+        return self.callModule('temp', board, number, 'getValue')
+
     def getResistance(self, number, board=0):
         vcc = 65535
         raw = self.callModule('res', board, number, 'getValue')
@@ -270,20 +273,18 @@ class USB4Butia():
         return raw
 
     def setLed(self, on_off, number, board):
-        return self.callModule('led', board, number, 'turn', str(on_off))
+        return self.callModule('led', board, number, 'turn', [int(on_off)])
 
     ################################ Extras ################################
 
     def modeHack(self, pin, mode, board = 0):
-        msg = str(pin) + ' ' + str(mode)
-        return self.callModule('hackp', board, 'setMode', msg)
+        msg = [int(pin), int(mode)]
+        return self.callModule('hackp', board, 0, 'setMode', msg)
 
     def setHack(self, pin, value, board = 0):
-        msg = str(pin) + ' ' + str(value)
-        return self.callModule('hackp', board, 'write', msg)
+        msg = [int(pin), int(value)]
+        return self.callModule('hackp', board, 0, 'write', msg)
 
     def getHack(self, pin, board = 0):
-        pin = str(pin)
-        return self.callModule('hackp', board, 'read', pin)
-
+        return self.callModule('hackp', board, 0, 'read', [int(pin)])
 
