@@ -247,7 +247,12 @@ class USB4Butia():
             return res
     
     def getAmbientLight(self, number, board=0):
-        return self.callModule('light', board, number, 'getValue')
+        m = 65535
+        res = self.callModule('light', board, number, 'getValue')
+        if res != ERROR:
+            return (m - res)
+        else:
+            return res
 
     def getDistance(self, number, board=0):
         return self.callModule('distanc', board, number, 'getValue')
