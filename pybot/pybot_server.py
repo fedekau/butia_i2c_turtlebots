@@ -26,12 +26,12 @@ class Server():
         self.robot = usb4butia.USB4Butia()
 
     def call_aux(self, modulename, board_number, number, function, params):
-        if len(params) > 1:
+        if modulename == 'lback':
+            par = params
+        else:
             par = []
             for e in params:
                 par.append(int(e))
-        else:
-            par = params
         return self.robot.callModule(modulename, board_number, number, function, par)
 
     def init_server(self):
