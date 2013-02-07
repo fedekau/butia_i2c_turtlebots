@@ -49,6 +49,7 @@ class detection:
     self.multiPatternLib.arMultiCleanup()
 
   def isMarkerPresent(self, marker):
+    marker = str(marker)
     return self.multiPatternLib.arMultiIsMarkerPresent(marker)
 
   def getMarkerTrigDist(self, marker):
