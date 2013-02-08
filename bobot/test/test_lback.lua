@@ -22,8 +22,6 @@ send("OPEN lback")
 --socket.sleep(1)
 while true do
 	send("CALL lback send ping!" .. socket.gettime())
-	--send("CALL lback read")
-	--socket.sleep(2)
 	--socket.sleep(0.1)
 	
 end

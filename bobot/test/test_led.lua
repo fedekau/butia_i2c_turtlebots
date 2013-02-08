@@ -7,24 +7,26 @@ local host, port = "localhost", 2009
 
 local client = assert(socket.connect(host, port))
 client:settimeout(nil) --blocking
---client:settimeout(1)
 
 local function send(s)
-	print("sending", s)
+--	print("sending", s)
 	client:send(s.."\n")
 	local ret = client:receive()
-	print("ret:", ret)
+--	print("ret:", ret)
 	return ret
 end
-send("LIST")
-socket.sleep(1)
-send("OPEN led")
-socket.sleep(1)
-local intensidad = 0
-while true do        
-    --send("CALL led setLight " .. (256 - math.pow(2,intensidad)))
-    send("CALL led setLight " ..  intensidad)
-    intensidad = (intensidad + 1) % 256
-	print (intensidad)
-    socket.sleep(0.1)
+
+raw_val = send("LIST")
+_, pos = string.find(raw_val, "led:")
+
+if pos ~= nil then
+    port = string.sub(raw_val,pos+1,pos+1)  -- get port number
+    while true do
+	    print (send("CALL led:"..port.." turnOn"))
+	    socket.sleep(0.5)
+	    print (send("CALL led:"..port.." turnOff"))
+	    socket.sleep(0.5)
+    end
+else
+     print("err::No led connected.")
 end

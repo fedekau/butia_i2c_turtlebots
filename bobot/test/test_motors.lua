@@ -19,22 +19,19 @@ local function send(s)
 end
 send("LIST")
 socket.sleep(1)
-send("OPEN sensor")
+send("OPEN motors")
 socket.sleep(1)
-send("OPEN motores")
 while true do
-	local digIn = send("CALL sensor sendig 5")
-	
-	if digIn == "1" then
-		send("CALL motores setvel2mtr 0 800 0 800")
-		socket.sleep(1)
-	else
-		send("CALL motores setvel2mtr 0 0 0 0")
-	end	
-	
-	send("CALL sensor senanl 4")
-	send("CALL sensor senanl 2")
-	
-	socket.sleep(1)	
-	
+	local vel = math.random(1024)
+	local sentido = math.random(1)
+	send("CALL motors setvel2mtr 0 "..vel .." 0 " ..vel)
+	socket.sleep(2)
+	send("CALL motors setvel2mtr 1 "..vel .." 1 " ..vel)
+	socket.sleep(2)
+	send("CALL motors setvel2mtr 1 "..vel .." 0 " ..vel)
+	socket.sleep(2)
+	send("CALL motors setvel2mtr 0 "..vel .." 1 " ..vel)
+	socket.sleep(2)
+	send("CALL motors setvel2mtr 0 0 0 0")
+	socket.sleep(2)
 end
