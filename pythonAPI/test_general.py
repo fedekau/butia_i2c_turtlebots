@@ -9,8 +9,11 @@ print butiabot.get_modules_list()
 print 'Butia battery charge'
 print butiabot.getBatteryCharge()
 
-print 'Butia firmware version'
+print 'Butia version'
 print butiabot.getVersion()
+
+print 'Butia firmware version'
+print butiabot.getFirmwareVersion()
 
 ret = butiabot.loopBack("hola")
 print 'I send: hola'
