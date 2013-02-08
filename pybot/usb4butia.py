@@ -229,15 +229,20 @@ class USB4Butia():
      
     def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0):
         msg = [idMotor, sense, int(speed / 256.0), speed % 256]
-        return self.callModule('motors', 0, 0, 'setvelmtr', msg)
+        return self.callModule('motors', board, 0, 'setvelmtr', msg)
 
-    ################################ Sensors calls ################################
+    ############################### General calls ###############################
      
     def getBatteryCharge(self, board=0):
         return self.callModule('butia', board, 0, 'get_volt')
 
     def getVersion(self, board=0):
         return self.callModule('butia', board, 0, 'read_ver')
+
+    def getFirmwareVersion(self, board=0):
+        return self.callModule('admin', board, 0, 'getVersion')
+
+    ############################### Sensors calls ###############################
 
     def getButton(self, number, board=0):
         res = self.callModule('button', board, number, 'getValue')

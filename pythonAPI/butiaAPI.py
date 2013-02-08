@@ -172,7 +172,7 @@ class robot:
      
     def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0, board = 0):
         msg = str(idMotor) + ' ' + str(sense) + ' ' + str(int(speed / 256.0)) + ' ' + str(speed % 256)
-        return self.callModule('motors', 0, 0, 'setvelmtr', msg)
+        return self.callModule('motors', board, 0, 'setvelmtr', msg)
 
     """#######################################################################
     ### Operations for ax.lua driver
@@ -196,18 +196,23 @@ class robot:
 
     def get_position(self, idMotor = '0'):
         msg = idMotor
-        return self.callModule('ax', 'get_position', msg)"""
+        return self.callModule('ax', 'get_position', msg)
 
     def ping(self, board=0):
-        return self.callModule('placa', board, 0, 'ping')
+        return self.callModule('placa', board, 0, 'ping')"""
     
-    ################################ Sensors calls ################################
+    ############################### General calls ###############################
      
     def getBatteryCharge(self, board=0):
         return self.callModule('butia', board, 0, 'get_volt')
 
     def getVersion(self, board=0):
         return self.callModule('butia', board, 0, 'read_ver')
+
+    def getFirmwareVersion(self, board=0):
+        return self.callModule('admin', board, 0, 'getVersion')
+
+    ############################### Sensors calls ###############################
 
     def getButton(self, number, board=0):
         res = self.callModule('button', board, number, 'getValue')
@@ -250,7 +255,7 @@ class robot:
     def setLed(self, on_off, number, board):
         return self.callModule('led', board, number, 'turn', str(on_off))
 
-    ################################ Extras ################################
+    ################################## Extras ##################################
 
     def modeHack(self, pin, mode, board = 0):
         msg = str(pin) + ' ' + str(mode)
