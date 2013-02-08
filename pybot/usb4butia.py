@@ -160,7 +160,7 @@ class USB4Butia():
                     if modulename in self.openables:
                         if not(modulename in board.get_openables_loaded()):
                             board.add_openable_loaded(modulename)
-                            dev = Device(board, modulename, None)
+                            dev = Device(board, modulename)
                             number = dev.module_open()
                             dev.add_functions(self.drivers_loaded[modulename])
                             board.add_device(number, dev)

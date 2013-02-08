@@ -39,11 +39,11 @@ ERROR = -1
 
 class Device():
 
-    def __init__(self, baseboard, name, handler):
+    def __init__(self, baseboard, name, handler=None):
         self.baseboard = baseboard
         self.name = name
         self.handler = handler
-        if self.handler:
+        if not(self.handler == None):
             self.handler_tosend = self.handler * 8
         self.functions = {}
         self.debug = False
