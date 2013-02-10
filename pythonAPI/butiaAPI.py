@@ -154,7 +154,7 @@ class robot:
     def get_butia_count(self):
         msg = 'BUTIA_COUNT'
         ret = self.doCommand(msg)
-        return ret
+        return int(ret)
 
     # loopBack: send a message to butia and wait to recibe the same
     def loopBack(self, data, board=0):
