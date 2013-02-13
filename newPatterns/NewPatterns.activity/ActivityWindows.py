@@ -18,7 +18,7 @@ from pysvg.structure import *
 from pysvg.core import *
 from pysvg.text import *
 from pysvg import parser
-from Config import *
+from config import *
 
 #plugin_name = 'pattern'
 #plugin_folder = 'pattern_detection'
@@ -52,7 +52,7 @@ class ActivityWindows:
 
     def __init__(self, runaslib=True):
         # Load Glade XML
-        self.xml = gtk.glade.XML("NewPatternsActivity.glade")
+        self.xml = gtk.glade.XML("NewPatterns.glade")
         # get Library
         self.detection = detectionAPI.detection()
         self.conf = Config("./properties.conf")

@@ -1,8 +1,8 @@
 [Activity]
 name = New Patterns
-bundle_id = uy.fing.NewPatternsActivity
+bundle_id = uy.edu.fing.newPatterns
 icon = NewPatterns
-exec = sugar-activity NewPatternsActivity.NewPatternsActivity
+exec = sugar-activity newPatterns.NewPatternsActivity
 show_launcher = yes
 activity_version = 1
 mime_types = text/plain;application/zip

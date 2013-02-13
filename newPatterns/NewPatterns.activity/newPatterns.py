@@ -10,7 +10,7 @@ from sugar.activity.widgets import ActivityToolbarButton
 from sugar.activity.widgets import StopButton
 
 from ActivityWindows import ActivityWindows
-from Config import *
+from config import *
 
 from gettext import gettext as _
 
