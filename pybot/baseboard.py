@@ -66,6 +66,9 @@ class Baseboard():
     def add_device(self, handler, device):
         self.devices[handler] = device
 
+    def reset_device_list(self):
+        self.devices = {}
+
     def add_openable_loaded(self, name):
         if not(name in self.openables_loaded):
             self.openables_loaded.append(name)
@@ -85,12 +88,14 @@ class Baseboard():
         return self.listi
 
     def generate_listi(self):
+        self.listi = {}
         try:
             s = self.get_user_modules_size()
             for m in range(s):
                 name = self.get_user_module_line(m)
                 self.listi[m] = name
         except:
+            self.listi = {}
             if self.debug:
                 print 'error listi'
 
