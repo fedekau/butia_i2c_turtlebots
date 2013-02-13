@@ -147,44 +147,29 @@ class USB4Butia():
                 print 'Driver not have FUNCTIONS'
 
     def callModule(self, modulename, board_number, number, function, params = []):
-
-        #print 'llega', modulename, board_number, number, function, params
-
         try:
-
-            if board_number < self.get_butia_count():
-                board = self.bb[board_number]
-
-                if board.devices.has_key(number) and (board.devices[number].name == modulename):
-
-                    return board.devices[number].call_function(function, params)
-
-                else:
-                    if modulename in self.openables:
-                        if not(modulename in board.get_openables_loaded()):
-                            board.add_openable_loaded(modulename)
-                            dev = Device(board, modulename)
-                            number = dev.module_open()
-                            dev.add_functions(self.drivers_loaded[modulename])
-                            board.add_device(number, dev)
-                        else:
-                            number = board.get_device_handler(modulename)
-
-                        return board.devices[number].call_function(function, params)
-
-                    else:
-                        if self.debug:
-                            print 'no open and no openable'
-                        return ERROR
+            board = self.bb[board_number]
+            if board.devices.has_key(number) and (board.devices[number].name == modulename):
+                return board.devices[number].call_function(function, params)
             else:
-                if self.debug:
-                    print 'no board number %s' % board_number
-                return ERROR
-
+                if modulename in self.openables:
+                    if modulename in board.get_openables_loaded():
+                        number = board.get_device_handler(modulename)
+                    else:
+                        board.add_openable_loaded(modulename)
+                        dev = Device(board, modulename)
+                        number = dev.module_open()
+                        dev.add_functions(self.drivers_loaded[modulename])
+                        board.add_device(number, dev)
+                    return board.devices[number].call_function(function, params)
+                else:
+                    if self.debug:
+                        print 'no open and no openable'
+                    return ERROR
         except Exception, err:
-            print 'error call module', err
+            if self.debug:
+                print 'error call module', err
             return ERROR
-
 
     def reconnect(self):
         pass
@@ -230,7 +215,7 @@ class USB4Butia():
         msg = [int(leftSense), int(leftSpeed / 256.0), leftSpeed % 256, int(rightSense), int(rightSpeed / 256.0) , rightSpeed % 256]
         return self.callModule('motors', board, 0, 'setvel2mtr', msg)
      
-    def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0):
+    def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0, board = 0):
         msg = [idMotor, sense, int(speed / 256.0), speed % 256]
         return self.callModule('motors', board, 0, 'setvelmtr', msg)
 
