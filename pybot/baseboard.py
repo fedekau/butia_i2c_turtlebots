@@ -67,10 +67,14 @@ class Baseboard():
         self.devices[handler] = device
 
     def add_openable_loaded(self, name):
-        self.openables_loaded.append(name)
+        if not(name in self.openables_loaded):
+            self.openables_loaded.append(name)
 
     def get_openables_loaded(self):
         return self.openables_loaded
+
+    def reset_openables_loaded(self):
+        self.openables_loaded = []
 
     def add_to_listi(self, number, name):
         self.listi[number] = name
