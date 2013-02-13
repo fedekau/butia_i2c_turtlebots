@@ -3,10 +3,13 @@
 #
 # pybot server
 #
+
+import sys
 import select
 import socket
 import usb4butia
 
+argv = sys.argv[:]
 
 PYBOT_HOST = 'localhost'
 PYBOT_PORT = 2009
@@ -16,14 +19,14 @@ MAX_CLIENTS = 4
 
 class Server():
 
-    def __init__(self):
+    def __init__(self, debug=False):
+        self.debug = debug
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((PYBOT_HOST, PYBOT_PORT))
         self.socket.listen(MAX_CLIENTS)
         self.clients = {}
-
-        self.robot = usb4butia.USB4Butia()
+        self.robot = usb4butia.USB4Butia(self.debug)
 
     def call_aux(self, modulename, board_number, number, function, params):
         if modulename == 'lback':
@@ -105,7 +108,7 @@ class Server():
                         try:
                             s.send(result + '\n')
                         except:
-                            print 'fallo envio'
+                            print 'Send fails'
 
                     else:
                         s.close()
@@ -118,6 +121,9 @@ class Server():
 
 
 if __name__ == "__main__":
-    s = Server()
+    if 'DEBUG' in argv:
+        s = Server(True)
+    else:
+        s = Server()
     s.init_server()
 

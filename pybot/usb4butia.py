@@ -32,8 +32,8 @@ ERROR = -1
 
 class USB4Butia():
 
-    def __init__(self):
-        self.debug = True
+    def __init__(self, debug=False):
+        self.debug = debug
         self.hotplug = []
         self.openables = []
         self.drivers_loaded = {}
