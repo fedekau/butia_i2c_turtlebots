@@ -38,6 +38,7 @@ class USB4Butia():
         self.openables = []
         self.drivers_loaded = {}
         self.bb = []
+        self.modules = []
         self.get_all_drivers()
         self.find_butias()
 
@@ -58,7 +59,7 @@ class USB4Butia():
             self.get_modules_list()
 
     def get_modules_list(self, normal=True):
-        modules = []
+        self.modules = []
         n_boards = self.get_butia_count()
 
         if self.debug:
@@ -73,8 +74,7 @@ class USB4Butia():
                     print '===board', i
 
                 for m in range(0, s + 1):
-                    module_type = b.get_handler_type(m)
-                    module_name = listi[module_type]
+                    module_name = listi[b.get_handler_type(m)]
                     if n_boards > 1:
                         complete_name = module_name + '@' + str(i) + ':' +  str(m)
                     else:
@@ -86,24 +86,26 @@ class USB4Butia():
                     if not(module_name == 'port'):
 
                         if normal:
-                            modules.append(complete_name)
+                            self.modules.append(complete_name)
                         else:
-                            modules.append((str(m), module_name, str(i)))
+                            self.modules.append((str(m), module_name, str(i)))
 
-                        if module_name in self.openables:
-                            b.add_openable_loaded(module_name)
+                        if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
+                            d = Device(b, module_name, m)
+                            d.add_functions(self.drivers_loaded[module_name])
+                            b.add_device(m, d)
 
-                        d = Device(b, module_name, m)
-                        # driver exists ever
-                        #if self.drivers_loaded.has_key(module_name):
-                        d.add_functions(self.drivers_loaded[module_name])
-                        b.add_device(m, d)
-       
+                            if module_name in self.openables:
+                                b.add_openable_loaded(module_name)
+                    else:
+                        if b.devices.has_key(m):
+                            b.devices.pop(m)
+
             except Exception, err:
                 if self.debug:
                     print 'error module list', err
 
-        return modules
+        return self.modules
 
     def get_all_drivers(self):
         # current folder
