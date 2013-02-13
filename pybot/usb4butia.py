@@ -94,8 +94,9 @@ class USB4Butia():
                             b.add_openable_loaded(module_name)
 
                         d = Device(b, module_name, m)
-                        if self.drivers_loaded.has_key(module_name):
-                            d.add_functions(self.drivers_loaded[module_name])
+                        # driver exists ever
+                        #if self.drivers_loaded.has_key(module_name):
+                        d.add_functions(self.drivers_loaded[module_name])
                         b.add_device(m, d)
        
             except Exception, err:
