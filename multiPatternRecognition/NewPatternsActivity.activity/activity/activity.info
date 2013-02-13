@@ -1,6 +1,6 @@
 [Activity]
 name = New Patterns
-service_name = uy.fing.NewPatternsActivity
+bundle_id = uy.fing.NewPatternsActivity
 icon = NewPatterns
 exec = sugar-activity NewPatternsActivity.NewPatternsActivity
 show_launcher = yes
