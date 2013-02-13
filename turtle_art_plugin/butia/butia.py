@@ -728,7 +728,12 @@ class Butia(Plugin):
 
         self.butia = butiaAPI.robot()
 
-        self.pollthread=threading.Timer(3, self.bobot_poll)
+        time.sleep(1)
+
+        ver = self.butia.getFirmwareVersion()
+        debug_output('USB4Butia firmware version: %s' % ver)
+
+        self.pollthread=threading.Timer(2, self.bobot_poll)
         self.pollthread.start()
 
     def bobot_poll(self):
