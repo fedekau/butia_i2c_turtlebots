@@ -74,7 +74,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         text_buffer = gtksourceview2.Buffer()
 
     def initialize_snippets_cb(self, Button):
-	self.model.clear()
+        self.model.clear()
         direntry = {"name": "Devices",
                     "path": "" }
         olditerdev = self.model.insert_before(None, None)
@@ -387,8 +387,8 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
 
         #root = os.path.join(get_bundle_path(), 'data')
 
-	#initialize snippets 
-	self.initialize_snippets_cb(None)
+        #initialize snippets 
+        self.initialize_snippets_cb(None)
 
         # Source buffer
         import gtksourceview2
