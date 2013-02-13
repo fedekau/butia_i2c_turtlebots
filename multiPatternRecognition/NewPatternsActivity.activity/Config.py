@@ -34,9 +34,9 @@ class Config:
     def __gen_turtle_path(self,turtle_id,plugin_folder):
         #genero el path al plugin
         #turtle_path ="algo"
-        print "turtle id" +  turtle_id
-        turtle_path =bundleregistry.get_registry().get_bundle(turtle_id).get_path()
-        self.__plugin_folder = turtle_path+"/plugins/"+plugin_folder
+        print "turtle id:" , turtle_id
+        turtle_path = bundleregistry.get_registry().get_bundle(turtle_id).get_path()
+        self.__plugin_folder = turtle_path + "/plugins/" + plugin_folder
 
 
         
@@ -44,10 +44,11 @@ class Config:
           #reviso que exista el torutga para ese id
           bunlde = None
           bunlde = bundleregistry.get_registry().get_bundle(turtle_id)
-          if(bunlde is None):
+          if (bunlde is None):
               return False
           else:
               return True
+
     def is_plugin_installed(self):
         return os.path.isdir(self.__plugin_folder)
     
@@ -64,4 +65,5 @@ class Config:
         return self.get_plugin_folder() + "/library"
 
     def get_plugin_data_path(self):
-        return self.get_plugin_library_path() + "/multiPatternDetection/Data"    
+        return self.get_plugin_library_path() + "/multiPatternDetection/Data"
+

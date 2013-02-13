@@ -1,43 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-import sys
-import os
-import zipfile
-import pygtk
 import gtk
-import pango
+
 from sugar.activity import activity
-from sugar.graphics import style
 from sugar.graphics.alert import Alert
-
-from sugar.graphics.toggletoolbutton import ToggleToolButton
-from sugar.graphics.menuitem import MenuItem
-
-from sugar.graphics import style
-from sugar import network
-from sugar.datastore import datastore
-from sugar.graphics.alert import NotifyAlert
-from gettext import gettext as _
-from sugar.activity  import activityfactory
+from sugar.graphics.toolbarbox import ToolbarBox
+from sugar.activity.widgets import ActivityToolbarButton
+from sugar.activity.widgets import StopButton
 
 from ActivityWindows import ActivityWindows
-#import ActivityWindows
-from sugar.graphics.alert import Alert
 from Config import *
+
+from gettext import gettext as _
 
 class NewPatternsActivity(activity.Activity):
     
     def __init__(self, handle):
         activity.Activity.__init__(self, handle)
-        toolbox = activity.ActivityToolbox(self)
-        activity_toolbar = toolbox.get_activity_toolbar()
-        activity_toolbar.keep.props.visible = False
-        activity_toolbar.share.props.visible = False
-        self.set_toolbox(toolbox)
 
-        toolbox.show()
+        self.max_participants = 1
+
+        self.build_toolbar()
+
         # Create the main container
         self._main_view = gtk.VBox()
 
@@ -84,11 +69,29 @@ class NewPatternsActivity(activity.Activity):
 
         self.set_canvas(self._main_view)
         self.show_all()
-        
-     
+
+    def build_toolbar(self):
+
+        toolbox = ToolbarBox()
+
+        activity_button = ActivityToolbarButton(self)
+        toolbox.toolbar.insert(activity_button, -1)
+        activity_button.show()
+
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        toolbox.toolbar.insert(separator, -1)
+        separator.show()
+
+        stop_button = StopButton(self)
+        toolbox.toolbar.insert(stop_button, -1)
+        stop_button.show()
+
+        self.set_toolbox(toolbox)
+        toolbox.show()
 
     def _destroy_cb(widget, data=None):
         Gtk.main_quit()
 
 
- 
