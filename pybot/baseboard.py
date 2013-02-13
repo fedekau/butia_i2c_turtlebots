@@ -117,7 +117,7 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(GET_USER_MODULES_SIZE_COMMAND)
-        size = self.dev.write(w)
+        self.dev.write(w)
 
         raw = self.dev.read(GET_USER_MODULE_LINE_PACKET_SIZE)
         
@@ -133,7 +133,7 @@ class Baseboard():
         w.append(NULL_BYTE)
         w.append(GET_USER_MODULE_LINE_COMMAND)
         w.append(index)
-        size = self.dev.write(w)
+        self.dev.write(w)
 
         raw = self.dev.read(GET_LINE_RESPONSE_PACKET_SIZE)
 
@@ -154,7 +154,7 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(GET_HANDLER_SIZE_COMMAND)
-        size = self.dev.write(w)
+        self.dev.write(w)
 
         raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
 
@@ -170,7 +170,7 @@ class Baseboard():
         w.append(NULL_BYTE)
         w.append(GET_HANDLER_TYPE_COMMAND)
         w.append(index)
-        size = self.dev.write(w)
+        self.dev.write(w)
 
         raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
 
@@ -185,7 +185,7 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(SWITCH_TO_BOOT_BASE_BOARD_COMMAND)
-        size = self.dev.write(w)
+        self.dev.write(w)
 
     def reset(self):
         w = []
@@ -193,7 +193,7 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(RESET_BASE_BOARD_COMMAND)
-        size = self.dev.write(w)
+        self.dev.write(w)
 
     def force_close_all(self):
         w = []
@@ -201,7 +201,7 @@ class Baseboard():
         w.append(DEFAULT_PACKET_SIZE)
         w.append(NULL_BYTE)
         w.append(CLOSEALL_BASE_BOARD_COMMAND)
-        size = self.dev.write(w)
+        self.dev.write(w)
 
         raw = self.dev.read(CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE)
 

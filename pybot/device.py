@@ -68,7 +68,7 @@ class Device():
         for p in params:
             w.append(p)
 
-        size = self.baseboard.dev.write(w)
+        self.baseboard.dev.write(w)
 
     def module_read(self):
 
@@ -111,7 +111,7 @@ class Device():
         w.append(module_in_endpoint)
         w.append(module_out_endpoint)
         w = w + module_name
-        size = self.baseboard.dev.write(w)
+        self.baseboard.dev.write(w)
 
         raw = self.baseboard.dev.read(OPEN_RESPONSE_PACKET_SIZE)
 
