@@ -711,14 +711,9 @@ class Butia(Plugin):
                 debug_output('ERROR creating Pybot server')
 
         # Sure that bobot is running
-        time.sleep(1)
+        time.sleep(2)
 
         self.butia = butiaAPI.robot()
-
-        time.sleep(1)
-
-        ver = self.butia.getFirmwareVersion()
-        debug_output('USB4Butia firmware version: %s' % ver)
 
         self.pollthread=threading.Timer(2, self.bobot_poll)
         self.pollthread.start()
