@@ -51,7 +51,7 @@ ERROR_PIN_MODE = _('ERROR: The mode must be INPUT or OUTPUT.')
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
-modules_help['led'] = _("adjust LED intensity between 0 and 255")
+modules_help['led'] = _("Turn LED on and off: 0 is off; 1 is on")
 modules_help['gray'] = _("returns the gray level")
 modules_help['button'] = _("returns 1 when the button is press and 0 otherwise")
 modules_help['light'] = _("returns the light level")
@@ -62,7 +62,6 @@ modules_help['magneticinduction'] = _("returns 1 when the sensors detects a magn
 modules_help['vibration'] = _("switches from 0 to 1, the frequency depends on the vibration")
 modules_help['resistanceB'] = _("returns the value of the resistance")
 modules_help['voltageB'] = _("returns the value of the voltage")
-modules_help['gpio'] = _("gpio")
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 modules_name_from_device_id = {} 
@@ -74,7 +73,6 @@ modules_name_from_device_id['temperature'] = 'temp'
 modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
 modules_name_from_device_id['voltageB'] = 'volt'
-modules_name_from_device_id['gpio'] = 'gpio'
 
 device_id_from_module_name = {} 
 device_id_from_module_name['led'] = 'led'
@@ -85,7 +83,6 @@ device_id_from_module_name['temp'] = 'temperature'
 device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
 device_id_from_module_name['volt'] = 'voltage'
-device_id_from_module_name['gpio'] = 'gpio'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -96,9 +93,8 @@ label_name_from_device_id['temperature'] = _('temperature')
 label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
-label_name_from_device_id['gpio'] = _('gpio')
 
-refreshable_block_list = ['light', 'gray', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'gpio']
+refreshable_block_list = ['light', 'gray', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
@@ -301,13 +297,12 @@ class Butia(Plugin):
         primitive_dictionary['distanceButia'] = self.distanceButia
         primitive_dictionary['resistanceBButia'] = self.resistanceButia
         primitive_dictionary['voltageBButia'] = self.voltageButia
-        primitive_dictionary['gpioButia'] = self.gpioButia
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'gray', 'light', 'distance', 'temperature', 'resistanceB', 'voltageB', 'gpio']]
+                     ['box-style', ['button', 'gray', 'light', 'distance', 'temperature', 'resistanceB', 'voltageB']]
                  ]:
 
             (blockstyle , listofmodules) = i
@@ -322,7 +317,7 @@ class Butia(Plugin):
                     module = j + str(k)
                     block_name = module + 'Butia'
                     
-                    if (j == 'resistanceB') or (j == 'voltageB') or (j == 'gpio'):
+                    if (j == 'resistanceB') or (j == 'voltageB'):
                         palette2.add_block(block_name, 
                                  style=blockstyle,
                                  label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
@@ -630,12 +625,6 @@ class Butia(Plugin):
     def voltageButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getVoltage(sensorid, boardid)
-        else:
-            return ERROR
-
-    def gpioButia(self, sensorid=0, boardid=0):
-        if self.butia:
-            return self.butia.getGpio(sensorid, boardid)
         else:
             return ERROR
 
