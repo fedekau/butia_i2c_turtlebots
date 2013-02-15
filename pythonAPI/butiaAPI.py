@@ -221,7 +221,7 @@ class robot:
         else:
             return res
     
-    def getAmbientLight(self, number, board=0):
+    def getLight(self, number, board=0):
         m = 65535
         res = self.callModule('light', board, number, 'getValue')
         if res != ERROR:
