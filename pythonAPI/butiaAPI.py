@@ -26,6 +26,7 @@ import socket
 import string
 import math
 import threading
+import errno
 
 ERROR = -1
 
@@ -57,7 +58,9 @@ class robot:
             self.client.send(msg) 
             ret = self.client.recv(1024)
             ret = ret[:-1]
-        except:
+        except Exception, e:
+            if e.errno == errno.EPIPE:
+                self.reconnect()
             ret = ERROR
         self.lock.release()
         
