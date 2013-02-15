@@ -38,12 +38,12 @@ for s in modules:
 number = int(number)
 
 print raw_input("Calibrando blanco, enter para continuar ")
-val = butiabot.getGrayScale(number)
+val = butiabot.getGray(number)
 if not(val == ERROR):
     BLANCO = val
 
 print raw_input("Calibrando negro, enter para continuar ")
-val = butiabot.getGrayScale(number)
+val = butiabot.getGray(number)
 if not(val == ERROR):
     NEGRO = val
 
@@ -53,7 +53,7 @@ print "Limit value: " + str(VAL_LIMITE)
 print raw_input("Enter para continuar...")
 
 while True:
-    val = butiabot.getGrayScale(number) #leo el valor del sensor
+    val = butiabot.getGray(number) #leo el valor del sensor
     print val
     
     if val == ERROR:
@@ -94,7 +94,7 @@ while True:
                 cont = 0
                 factor = factor*2
             print cont
-            val = butiabot.getGrayScale(number) #leo el valor del sensor
+            val = butiabot.getGray(number) #leo el valor del sensor
             print val
             if val == ERROR:
                 val = VAL_LIMITE - 10        

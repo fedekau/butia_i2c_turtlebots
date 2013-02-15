@@ -250,7 +250,7 @@ class USB4Butia():
     def getDistance(self, number, board=0):
         return self.callModule('distanc', board, number, 'getValue')
 
-    def getGrayScale(self, number, board=0):
+    def getGray(self, number, board=0):
         return self.callModule('grey', board, number, 'getValue')
 
     def getTemperature(self, number, board=0):

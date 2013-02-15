@@ -52,7 +52,7 @@ ERROR_PIN_MODE = _('ERROR: The mode must be INPUT or OUTPUT.')
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
 modules_help['led'] = _("adjust LED intensity between 0 and 255")
-modules_help['grayscale'] = _("returns the gray level")
+modules_help['gray'] = _("returns the gray level")
 modules_help['button'] = _("returns 1 when the button is press and 0 otherwise")
 modules_help['ambientlight'] = _("returns the ambient light level")
 modules_help['temperature'] = _("returns the ambient temperature")
@@ -68,7 +68,7 @@ modules_help['gpio'] = _("gpio")
 modules_name_from_device_id = {} 
 modules_name_from_device_id['led'] = 'led'
 modules_name_from_device_id['button'] = 'button'
-modules_name_from_device_id['grayscale'] = 'grey'
+modules_name_from_device_id['gray'] = 'grey'
 modules_name_from_device_id['ambientlight'] = 'light'
 modules_name_from_device_id['temperature'] = 'temp'
 modules_name_from_device_id['distance'] = 'distanc'
@@ -79,7 +79,7 @@ modules_name_from_device_id['gpio'] = 'gpio'
 device_id_from_module_name = {} 
 device_id_from_module_name['led'] = 'led'
 device_id_from_module_name['button'] = 'button'
-device_id_from_module_name['grey'] = 'grayscale'
+device_id_from_module_name['grey'] = 'gray'
 device_id_from_module_name['light'] = 'ambientlight'
 device_id_from_module_name['temp'] = 'temperature'
 device_id_from_module_name['distanc'] = 'distance'
@@ -90,15 +90,15 @@ device_id_from_module_name['gpio'] = 'gpio'
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
 label_name_from_device_id['button'] = _('button')
-label_name_from_device_id['grayscale'] = _('grayscale')
-label_name_from_device_id['ambientlight'] = _('ambient light')
+label_name_from_device_id['gray'] = _('gray')
+label_name_from_device_id['ambientlight'] = _('light')
 label_name_from_device_id['temperature'] = _('temperature')
 label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
 label_name_from_device_id['gpio'] = _('gpio')
 
-refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'gpio']
+refreshable_block_list = ['ambientlight', 'gray', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'gpio']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
@@ -295,7 +295,7 @@ class Butia(Plugin):
         #add every function in the code 
         primitive_dictionary['ledButia'] = self.ledButia
         primitive_dictionary['ambientlightButia'] = self.ambientlightButia
-        primitive_dictionary['grayscaleButia'] = self.grayscaleButia
+        primitive_dictionary['grayButia'] = self.grayButia
         primitive_dictionary['buttonButia'] = self.buttonButia
         primitive_dictionary['temperatureButia'] = self.temperatureButia
         primitive_dictionary['distanceButia'] = self.distanceButia
@@ -307,7 +307,7 @@ class Butia(Plugin):
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'resistanceB', 'voltageB', 'gpio']]
+                     ['box-style', ['button', 'gray', 'ambientlight', 'temperature', 'distance', 'resistanceB', 'voltageB', 'gpio']]
                  ]:
 
             (blockstyle , listofmodules) = i
@@ -609,9 +609,9 @@ class Butia(Plugin):
         else:
             return ERROR
 
-    def grayscaleButia(self, sensorid=0, boardid=0):
+    def grayButia(self, sensorid=0, boardid=0):
         if self.butia:
-            return self.butia.getGrayScale(sensorid, boardid)
+            return self.butia.getGray(sensorid, boardid)
         else:
             return ERROR
         

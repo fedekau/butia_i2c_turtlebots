@@ -19,7 +19,7 @@ number = int(number)
 if number > 0:
     error = False
     while not error:
-        val = butiabot.getGrayScale(number)
+        val = butiabot.getGray(number)
         if val == -1:
             error = True
         else:
