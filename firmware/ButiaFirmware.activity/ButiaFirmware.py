@@ -18,6 +18,7 @@ from sugar.activity.widgets import ActivityToolbarButton
 from sugar.activity.widgets import StopButton
 from sugar.graphics.toolbarbox import ToolbarButton
 
+from pybot import usb4butia
 
 class ButiaFirmware(activity.Activity):
 
@@ -69,15 +70,22 @@ class Flash():
         img = gtk.Image()
         img.set_from_file("activity/fua-icon.svg")
         img.show()
-        box.add(img) 
+        box.add(img)
 
-        box12 = gtk.HBox()
+        boxH = gtk.HBox()
+
+        button_check = gtk.Button(_("Check version"))
+        button_check.connect("clicked", self.check_message)
+        button_check.show()
+        boxH.add(button_check)
+
         button_accept = gtk.Button(_("CONTINUE"))
         button_accept.connect("clicked", self.warning_message)
         button_accept.show()
-        box12.add(button_accept)
-        box12.show()
-        box.add(box12)
+        boxH.add(button_accept)
+
+        boxH.show()
+        box.add(boxH)
         box.show()
         return box
 
@@ -94,6 +102,13 @@ class Flash():
 
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
+
+    def check_message(self, widget=None):
+        msg = _('The current Firmware is %s') % self.get_version()
+        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg)
+        dialog.set_title(_('USB4Butia firmware version...'))
+        res = dialog.run()
+        dialog.destroy()
 
     def flash(self, show_dialogs=True):
         path = './fsusb/x32/fsusb'
@@ -166,6 +181,13 @@ class Flash():
         dialog.set_title(_('Flashing USB4Butia board...'))
         dialog.run()
         dialog.destroy()
+
+    def get_version(self):
+        b = usb4butia.USB4Butia()
+        version = b.getFirmwareVersion()
+        b.close()
+        return version
+
 
 if __name__ == "__main__":
     f = Flash()
