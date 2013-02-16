@@ -32,7 +32,7 @@ ERROR = -1
 
 class USB4Butia():
 
-    def __init__(self, debug=False):
+    def __init__(self, debug=False, get_modules=True):
         self.debug = debug
         self.hotplug = []
         self.openables = []
@@ -40,7 +40,7 @@ class USB4Butia():
         self.bb = []
         self.modules = []
         self.get_all_drivers()
-        self.find_butias()
+        self.find_butias(get_modules)
 
     def get_butia_count(self):
         return len(self.bb)
