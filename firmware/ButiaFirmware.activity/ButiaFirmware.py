@@ -79,7 +79,7 @@ class Flash():
         button_check.show()
         boxH.add(button_check)
 
-        button_accept = gtk.Button(_("CONTINUE"))
+        button_accept = gtk.Button(_("Burn Firmware"))
         button_accept.connect("clicked", self.warning_message)
         button_accept.show()
         boxH.add(button_accept)
@@ -104,8 +104,13 @@ class Flash():
             pass
 
     def check_message(self, widget=None):
-        msg = _('The current Firmware is %s') % self.get_version()
-        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg)
+        ver = self.get_version()
+        if ver == -1:
+            msg = _('Error reading Firmware version.\nTry again...')
+            dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg)
+        else:
+            msg = _('The current Firmware is\n%s') % ver
+            dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg)
         dialog.set_title(_('USB4Butia firmware version...'))
         res = dialog.run()
         dialog.destroy()
@@ -177,13 +182,13 @@ class Flash():
 
     def unsucess(self, err):
         msg = _('The upgrade fails. Try again.\nError: %s') % err
-        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msg)
+        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
         dialog.set_title(_('Flashing USB4Butia board...'))
         dialog.run()
         dialog.destroy()
 
     def get_version(self):
-        b = usb4butia.USB4Butia()
+        b = usb4butia.USB4Butia(get_modules=False)
         version = b.getFirmwareVersion()
         b.close()
         return version
