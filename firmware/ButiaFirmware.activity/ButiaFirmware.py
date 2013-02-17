@@ -20,6 +20,8 @@ from sugar.graphics.toolbarbox import ToolbarButton
 
 from pybot import usb4butia
 
+firmware_hex = 'USB4all-5.hex'
+
 class ButiaFirmware(activity.Activity):
 
     def __init__(self, handle):
@@ -133,7 +135,7 @@ class Flash():
 
         proc = None
         try:
-            proc = subprocess.Popen([path, '--force_program', 'USB4all-5.hex'])
+            proc = subprocess.Popen([path, '--force_program', firmware_hex])
         except Exception, err:
             print 'Error in fsusb --force_program:', err
             # if fsusb is corrupted: 8 Exec format error
@@ -147,19 +149,19 @@ class Flash():
 
                 path = './fsusb/src/fsusb'
                 try:
-                    proc = subprocess.Popen([path, '--force_program', 'USB4all-5.hex'])
+                    proc = subprocess.Popen([path, '--force_program', firmware_hex])
                 except Exception, err:
                     print 'Error in fsusb (build version):', err
 
                     print 'Trying --program option '
                     try:
-                        proc = subprocess.Popen([path, '--program', 'USB4all-5.hex'])
+                        proc = subprocess.Popen([path, '--program', firmware_hex])
                     except Exception, err:
                         print 'Error in fsusb --program:', err
             else:
                 print 'Trying --program option '
                 try:
-                    proc = subprocess.Popen([path, '--program', 'USB4all-5.hex'])
+                    proc = subprocess.Popen([path, '--program', firmware_hex])
                 except Exception, err:
                     print 'Error in fsusb --program:', err
 
