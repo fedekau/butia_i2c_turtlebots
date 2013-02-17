@@ -20,7 +20,7 @@ from sugar.graphics.toolbarbox import ToolbarButton
 
 from pybot import usb4butia
 
-firmware_hex = 'USB4all-5.hex'
+firmware_hex = 'USB4Butia-6.hex'
 
 class ButiaFirmware(activity.Activity):
 
