@@ -116,12 +116,12 @@ class Flash():
         dialog.destroy()
 
     def flash(self, show_dialogs=True):
+        i = time.time()
         path = './fsusb/x32/fsusb'
         try:
             arq,so = platform.architecture()
             if arq == '32bit':
-                path = './fsusb/x32/fsusb'
-                print 'Use 32bits fsusb'
+                print 'Use default 32bits fsusb'
             else:
                 path = './fsusb/x64/fsusb'
                 print 'Use 64bits fsusb'
@@ -135,14 +135,34 @@ class Flash():
         try:
             proc = subprocess.Popen([path, '--force_program', 'USB4all-5.hex'])
         except Exception, err:
-            print 'Error in fsusb:', err
-            print 'Trying --program option'
-            try:
-                proc = subprocess.Popen([path, '--program', 'USB4all-5.hex'])
-            except Exception, err:
-                print 'Error in fsusb:', err
+            print 'Error in fsusb --force_program:', err
+            # if fsusb is corrupted: 8 Exec format error
+            if err.errno == 8:
+                print 'Making fsusb binary'
+                try:
+                    proc = subprocess.Popen(['make'], cwd='./fsusb/src')
+                    proc.wait()
+                except Exception, err:
+                    print 'error in make fsusb:', err
 
-        i = time.time()
+                path = './fsusb/src/fsusb'
+                try:
+                    proc = subprocess.Popen([path, '--force_program', 'USB4all-5.hex'])
+                except Exception, err:
+                    print 'Error in fsusb (build version):', err
+
+                    print 'Trying --program option '
+                    try:
+                        proc = subprocess.Popen([path, '--program', 'USB4all-5.hex'])
+                    except Exception, err:
+                        print 'Error in fsusb --program:', err
+            else:
+                print 'Trying --program option '
+                try:
+                    proc = subprocess.Popen([path, '--program', 'USB4all-5.hex'])
+                except Exception, err:
+                    print 'Error in fsusb --program:', err
+
         if proc:
             proc.wait()
             f = time.time()
