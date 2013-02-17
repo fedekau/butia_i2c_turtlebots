@@ -218,11 +218,11 @@ class Flash():
 
 if __name__ == "__main__":
     f = Flash()
-    argv = sys.argv[:]
-    if len(argv) > 1:
-        argv = argv[1:]
-        if argv[0] == 'silent':
-            f.flash(False)
+    argv = sys.argv[1:]
+    if 'silent' in argv:
+        f.flash(False)
+    elif 'check_version' in argv:
+        f.check_message()
     else:
         f.warning_message()
 
