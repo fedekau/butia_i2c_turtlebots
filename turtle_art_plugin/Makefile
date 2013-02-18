@@ -27,7 +27,7 @@ EXTRAS_VERSION = c3a89bcb99fb385143b4184620e0e22a1f70a4c5
 NXT_VERSION = 43bbb462abab48ec443eafc258b6f11a252e32db
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 ARDUINO_VERSION = 2f3cfc63f1db8eadfa70e7d9ac5fcc50335fc7a7
-PYUSB_VERSION = 49b32910003eece913c746418b05ea1bb2d9fff7
+PYUSB_VERSION = e535b29ef38246e7ceac2c97ac2078c2b430c89f
 
 SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
