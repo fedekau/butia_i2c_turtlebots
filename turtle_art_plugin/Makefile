@@ -27,6 +27,7 @@ EXTRAS_VERSION = c3a89bcb99fb385143b4184620e0e22a1f70a4c5
 NXT_VERSION = 43bbb462abab48ec443eafc258b6f11a252e32db
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 ARDUINO_VERSION = 2f3cfc63f1db8eadfa70e7d9ac5fcc50335fc7a7
+PYUSB_VERSION = 49b32910003eece913c746418b05ea1bb2d9fff7
 
 SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
@@ -93,6 +94,9 @@ nxt_plugin/.git:
 arduino/.git:
 	$(MAKE) first
 
+pyusb/.git:
+	$(MAKE) first
+
 ############# checkout a version of submodule ##################
 SUBMODULE = mainline
 SUBMODULEVER = master
@@ -119,6 +123,9 @@ nxtGIT: nxt_plugin/.git
 
 arduinoGIT: arduino/.git
 	$(MAKE) SUBMODULE=arduino SUBMODULEVER=$(ARDUINO_VERSION) checkoutsm
+
+pyusbGIT: pyusb/.git
+	$(MAKE) SUBMODULE=pyusb SUBMODULEVER=$(PYUSB_VERSION) checkoutsm
 
 
 ################ Support for lua (bobot-server) ######################
@@ -147,7 +154,7 @@ apply_localization: walterGIT mktmpfolder extrasGIT
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
 
-apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoGIT pattern_detection_compile
+apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
 	cp -rLf butia               $(BUILDDIR)/plugins/
 	cp -rLf sumtia              $(BUILDDIR)/plugins/
 	cp -rLf followme            $(BUILDDIR)/plugins/
@@ -157,11 +164,17 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoG
 	cp -rLf pattern_detection   $(BUILDDIR)/plugins/
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
+	# add pyusb extra information
+	cp pyusb/ACKNOWLEDGEMENTS   $(BUILDDIR)/plugins/butia/pybot/usb
+	cp pyusb/LICENSE            $(BUILDDIR)/plugins/butia/pybot/usb
+	cp pyusb/README.rst         $(BUILDDIR)/plugins/butia/pybot/usb
+	cp pyusb/ReleaseNotes.rst   $(BUILDDIR)/plugins/butia/pybot/usb
+	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
 
 pattern_detection_compile:
 	$(MAKE) -C pattern_detection/library
 
-apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT apply_localization butiaXO pattern_detection_compile
+apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT apply_localization butiaXO pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia             $(BUILDDIR)/plugins/butia
 	ln -s `pwd`/sumtia            $(BUILDDIR)/plugins/sumtia
@@ -326,7 +339,7 @@ clean-plugins:
  clean clean-tmp clean-builddir clean-xo clean-plugins \
  first walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT \
  butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins \
- genpot genpot_notraslated updatepo xo \
+ genpot genpot_notraslated updatepo xo pyusbGIT \
  install install-strip \
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
