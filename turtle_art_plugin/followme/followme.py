@@ -30,12 +30,13 @@ from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tautils import convert
 from TurtleArt.tawindow import block_names
-
+pygame = None
 try:
     import pygame
     import pygame.camera
 except ImportError:
     print _('Error importing Pygame. This plugin require Pygame 1.9')
+    pygame = None
 
 COLOR_PRESENT = ["#00FF00","#008000"]
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
@@ -65,8 +66,9 @@ class Followme(Plugin):
         self.lcamaras = []
         
     def camera_init(self):
-        pygame.camera.init()
-        self.get_camera(self.mode)
+        if pygame is not None:
+            pygame.camera.init()
+            self.get_camera(self.mode)
 
     def get_camera(self, mode):
         self.stop_camera()
@@ -88,15 +90,16 @@ class Followme(Plugin):
             print _('No camera was found')
 
     def set_camera_flags(self):
-        if (self.brightness == -1):
-            self.cam.set_controls(True, False)
-        else:
-            self.cam.set_controls(True, False, self.brightness)
-        res = self.cam.get_controls()
-        self.flip = res[0]
-        self.tamanioc = self.cam.get_size()
-        self.x_offset = int(self.tamanioc[0] / 2.0 - 5)
-        self.y_offset = int(self.tamanioc[1] / 2.0 - 5)
+        if self.cam_present:
+            if (self.brightness == -1):
+                self.cam.set_controls(True, False)
+            else:
+                self.cam.set_controls(True, False, self.brightness)
+            res = self.cam.get_controls()
+            self.flip = res[0]
+            self.tamanioc = self.cam.get_size()
+            self.x_offset = int(self.tamanioc[0] / 2.0 - 5)
+            self.y_offset = int(self.tamanioc[1] / 2.0 - 5)
 
     def stop_camera(self):
         if (self.cam_present and self.cam_on):
@@ -119,15 +122,13 @@ class Followme(Plugin):
                 print _('Error starting camera')
 
     def get_mask(self):
-        if self.cam_on:
-            try:
-                self.capture = self.cam.get_image(self.capture)
-                pygame.transform.threshold(self.capture_aux, self.capture, self.colorc, 
-                            (self.threshold[0],self.threshold[1], self.threshold[2]), (0,0,0), 2)
-                self.mask = pygame.mask.from_threshold(self.capture_aux, self.colorc, self.threshold)
-            except:
-                print _('Error in get mask')
-        return self.mask
+        try:
+            self.capture = self.cam.get_image(self.capture)
+            pygame.transform.threshold(self.capture_aux, self.capture, self.colorc, 
+                        (self.threshold[0],self.threshold[1], self.threshold[2]), (0,0,0), 2)
+            self.mask = pygame.mask.from_threshold(self.capture_aux, self.colorc, self.threshold)
+        except:
+            print _('Error in get mask')
 
     def calc_luminance(self):
         self.start_camera()
@@ -464,32 +465,35 @@ class Followme(Plugin):
     def prim_xposition(self):
         res = -1
         self.start_camera()
-        mask = self.get_mask()            
-        self.connected = mask.connected_component()
-        if (self.connected.count() > self.pixels):
-            centroid = self.mask.centroid()
-            if self.flip:
-                res = centroid[0]
-            else:
-                res = self.tamanioc[0] - centroid[0]
+        if self.cam_on:
+            self.get_mask()
+            self.connected = self.mask.connected_component()
+            if (self.connected.count() > self.pixels):
+                centroid = self.mask.centroid()
+                if self.flip:
+                    res = centroid[0]
+                else:
+                    res = self.tamanioc[0] - centroid[0]
         return res
 
     def prim_yposition(self):
         res = -1
         self.start_camera()
-        mask = self.get_mask()            
-        self.connected = mask.connected_component()
-        if (self.connected.count() > self.pixels):
-            centroid = self.mask.centroid()
-            res = self.tamanioc[1] - centroid[1]
+        if self.cam_on:
+            self.get_mask()
+            self.connected = self.mask.connected_component()
+            if (self.connected.count() > self.pixels):
+                centroid = self.mask.centroid()
+                res = self.tamanioc[1] - centroid[1]
         return res
 
     def prim_pixels(self):
         res = -1
         self.start_camera()
-        mask = self.get_mask()            
-        self.connected = mask.connected_component()
-        res = self.connected.count()
+        if self.cam_on:
+            self.get_mask()
+            self.connected = self.mask.connected_component()
+            res = self.connected.count()
         return res
 
     def _prim_savecalibration(self, name, x):
