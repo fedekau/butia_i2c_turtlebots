@@ -1,3 +1,15 @@
+"""
+Rutinas para seguidor de lineas junto con el plugin de marcas
+al correr levanta dos hilos uno para el manejo del butia (ClaseMain) y otra para el teclado (ClaseTecla)
+- para salir presionar c + enter
+- para ver los valores de los sensores de grises, G +enter, luego 1 para ver el derecho o
+2 para el izquierdo, para salir S+enter, para ver el otro poner nuevamente G y el numero correspondiente.
+- Para que comienze a hacer caminar el Robot m + enter, se sale con S y enter
+
+
+"""
+
+
 import butiaAPI
 import multiPatternDetectionAPI
 import threading
@@ -31,9 +43,9 @@ class ClaseMain(threading.Thread):
         self.data = data
         self.butiabot = butiaAPI.robot()
         self.idIzq = "1"
-        self.idDer = "3"
-        self.negroDer = 32000
-        self.negroIzq = 40000
+        self.idDer = "4"
+        self.negroDer = 31000
+        self.negroIzq = 31000
         self.distMinimalSignal = 500
         print str(self.detect.arMultiGetIdsMarker().split(";"))
         #self.detect.isMarkerPresent("Right")
@@ -78,7 +90,7 @@ class ClaseMain(threading.Thread):
                 #rutina que mira las marcas
                 self.buscar_senial()
                 #rutina de seguidor de lineas
-                self.butiabot.set2MotorSpeed("0","300", "0", "300")
+                self.butiabot.set2MotorSpeed("0","600", "0", "600")
                 if self.butiabot.getGrayScale(self.idDer) < self.negroDer: #si derecha blanco
                     self.corregir_izquierda()
                     print "corrijo izq"
@@ -92,14 +104,24 @@ class ClaseMain(threading.Thread):
 
     def buscar_senial(self):
         print "entro"
-        if self.detect.isMarkerPresent("Left") :#and self.detect.getMarkerTrigDist("Left") < self.distMinimalSignal:
+        if self.detect.isMarkerPresent("Left") and self.detect.getMarkerTrigDist("Left") < self.distMinimalSignal:
             print "estoy cerca de la senia iquierda"
             self.girar_iquierda()
-        elif self.detect.isMarkerPresent("Stop") and self.detect.getMarkerTrigDist("Stop") < self.distMinimalSignal:
-            print "paro los X segundos"
-            self.parar()
+        elif self.detect.isMarkerPresent("Left") and self.detect.getMarkerTrigDist("Left") < self.distMinimalSignal:
+            print "estoy cerca de la senia iquierda"
+            self.girar_iquierda()
 
-    def parar(self):
+        elif self.detect.isMarkerPresent("Yield") and self.detect.getMarkerTrigDist("Yield") < self.distMinimalSignal:
+            print "paro los X segundos"
+            self.stopNgo()
+        elif self.detect.isMarkerPresent("Stop") and self.detect.getMarkerTrigDist("Stop") < self.distMinimalSignal:
+            self.stop()
+
+
+    def stop(self):
+        self.data.set_codigo("S")
+
+    def stopNgo(self):
         #paro X segundos
         #luego sigo derecho hasta no ver la marca
         salir = False
@@ -115,6 +137,31 @@ class ClaseMain(threading.Thread):
             self.butiabot.set2MotorSpeed("0","500", "0", "500")
         print "salgo parar"
 
+    def girar_derecha(self):
+        # giro hacia la izquieda hasta que el grisizquierda este en negro y el
+        #gris izquierda en blanco
+        self.detect.isMarkerPresent("Stop")
+        self.detect.isMarkerPresent("Stop")
+        self.detect.isMarkerPresent("Stop")
+        salir = False
+        #self.butiabot.set2MotorSpeed("0", "0", "0", "0")
+        #time.sleep(3)
+        #while self.butiabot.getGrayScale(self.idDer) < self.negroDer and not salir :#and self.butiabot.getGrayScale(self.idIzq)  > self.negroIzq and not salir:
+        while self.detect.isMarkerPresent("Right") and not salir :
+            cod = self.data.get_codigo()
+            if cod == "S":
+                salir = True
+            self.butiabot.set2MotorSpeed("1", "400", "0", "400") #giro hacia la izquierda
+        print "encontre negro"
+        while self.butiabot.getGrayScale(self.idIzq) < self.negroIzq and not salir :#and self.butiabot.getGrayScale(self.idIzq)  > self.negroIzq and not salir:
+            cod = self.data.get_codigo()
+            if cod == "S":
+                salir = True
+            self.butiabot.set2MotorSpeed("1", "400", "0", "400") #giro hacia la izquierda
+        #self.butiabot.set2MotorSpeed("0", "0", "0", "0")
+
+
+
     def girar_iquierda(self):
         # giro hacia la izquieda hasta que el grisizquierda este en negro y el
         #gris izquierda en blanco
@@ -122,7 +169,7 @@ class ClaseMain(threading.Thread):
         self.detect.isMarkerPresent("Stop")
         self.detect.isMarkerPresent("Stop")
         salir = False
-        self.butiabot.set2MotorSpeed("0", "0", "0", "0")
+        #self.butiabot.set2MotorSpeed("0", "0", "0", "0")
         #time.sleep(3)
         #while self.butiabot.getGrayScale(self.idDer) < self.negroDer and not salir :#and self.butiabot.getGrayScale(self.idIzq)  > self.negroIzq and not salir:
         while self.detect.isMarkerPresent("Left") and not salir :
@@ -137,7 +184,7 @@ class ClaseMain(threading.Thread):
                 salir = True
             self.butiabot.set2MotorSpeed("0", "400", "1", "400") #giro hacia la izquierda
         self.butiabot.set2MotorSpeed("0", "0", "0", "0")
-        print "Sali"
+
 
     def corregir_izquierda(self):
         # busco linea a la derecha
