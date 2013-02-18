@@ -40,3 +40,9 @@ turtle_art_plugin/*.tar.gz
 # tmp/**/* 
 
 butialo/staging/**/*
+
+#ignore generate files of pattern
+turtle_art_plugin/pattern_detection/library/multiPatternDetection/libMultiPatternDetection.so
+turtle_art_plugin/pattern_detection/library/multiPatternDetection/multiPatternTest
+newPatterns/NewPatterns.activity/MANIFEST
+

@@ -19,7 +19,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from pybot import usb4butia
+import butiaAPI
 import time
 import threading
 import re
@@ -51,54 +51,48 @@ ERROR_PIN_MODE = _('ERROR: The mode must be INPUT or OUTPUT.')
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
-modules_help['led'] = _("adjust LED intensity between 0 and 255")
-modules_help['grayscale'] = _("returns the gray level")
+modules_help['led'] = _("Turn LED on and off: 0 is off; 1 is on")
+modules_help['gray'] = _("returns the gray level")
 modules_help['button'] = _("returns 1 when the button is press and 0 otherwise")
-modules_help['ambientlight'] = _("returns the ambient light level")
-modules_help['temperature'] = _("returns the ambient temperature")
+modules_help['light'] = _("returns the light level")
+modules_help['temperature'] = _("returns the temperature")
 modules_help['distance'] = _("returns the distance from the object in front of the sensor")
-modules_help['tilt'] = _("returns 0 or 1 depending on the sensor inclination")
 modules_help['magneticinduction'] = _("returns 1 when the sensors detects a magnetic field, 0 otherwise")
-modules_help['vibration'] = _("switches from 0 to 1, the frequency depends on the vibration")
 modules_help['resistanceB'] = _("returns the value of the resistance")
 modules_help['voltageB'] = _("returns the value of the voltage")
-modules_help['gpio'] = _("gpio")
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 modules_name_from_device_id = {} 
 modules_name_from_device_id['led'] = 'led'
 modules_name_from_device_id['button'] = 'button'
-modules_name_from_device_id['grayscale'] = 'grey'
-modules_name_from_device_id['ambientlight'] = 'light'
+modules_name_from_device_id['gray'] = 'grey'
+modules_name_from_device_id['light'] = 'light'
 modules_name_from_device_id['temperature'] = 'temp'
 modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
 modules_name_from_device_id['voltageB'] = 'volt'
-modules_name_from_device_id['gpio'] = 'gpio'
 
 device_id_from_module_name = {} 
 device_id_from_module_name['led'] = 'led'
 device_id_from_module_name['button'] = 'button'
-device_id_from_module_name['grey'] = 'grayscale'
-device_id_from_module_name['light'] = 'ambientlight'
+device_id_from_module_name['grey'] = 'gray'
+device_id_from_module_name['light'] = 'light'
 device_id_from_module_name['temp'] = 'temperature'
 device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
 device_id_from_module_name['volt'] = 'voltage'
-device_id_from_module_name['gpio'] = 'gpio'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
 label_name_from_device_id['button'] = _('button')
-label_name_from_device_id['grayscale'] = _('grayscale')
-label_name_from_device_id['ambientlight'] = _('ambient light')
+label_name_from_device_id['gray'] = _('gray')
+label_name_from_device_id['light'] = _('light')
 label_name_from_device_id['temperature'] = _('temperature')
 label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
-label_name_from_device_id['gpio'] = _('gpio')
 
-refreshable_block_list = ['ambientlight', 'grayscale', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'gpio']
+refreshable_block_list = ['light', 'gray', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
@@ -294,20 +288,19 @@ class Butia(Plugin):
 
         #add every function in the code 
         primitive_dictionary['ledButia'] = self.ledButia
-        primitive_dictionary['ambientlightButia'] = self.ambientlightButia
-        primitive_dictionary['grayscaleButia'] = self.grayscaleButia
+        primitive_dictionary['lightButia'] = self.lightButia
+        primitive_dictionary['grayButia'] = self.grayButia
         primitive_dictionary['buttonButia'] = self.buttonButia
         primitive_dictionary['temperatureButia'] = self.temperatureButia
         primitive_dictionary['distanceButia'] = self.distanceButia
         primitive_dictionary['resistanceBButia'] = self.resistanceButia
         primitive_dictionary['voltageBButia'] = self.voltageButia
-        primitive_dictionary['gpioButia'] = self.gpioButia
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'grayscale', 'ambientlight', 'temperature', 'distance', 'resistanceB', 'voltageB', 'gpio']]
+                     ['box-style', ['button', 'gray', 'light', 'distance', 'temperature', 'resistanceB', 'voltageB']]
                  ]:
 
             (blockstyle , listofmodules) = i
@@ -322,7 +315,7 @@ class Butia(Plugin):
                     module = j + str(k)
                     block_name = module + 'Butia'
                     
-                    if (j == 'resistanceB') or (j == 'voltageB') or (j == 'gpio'):
+                    if (j == 'resistanceB') or (j == 'voltageB'):
                         palette2.add_block(block_name, 
                                  style=blockstyle,
                                  label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
@@ -364,6 +357,7 @@ class Butia(Plugin):
         self.pollrun = False
         self.pollthread.cancel()
         if self.butia:
+            self.butia.closeService()
             self.butia.close()
         if self.bobot:
             self.bobot.kill()
@@ -434,7 +428,7 @@ class Butia(Plugin):
 
         COLOR_STATIC = self.staticBlocksColor()
 
-        if boards_present:
+        if boards_present > 0:
             COLOR_EXTRAS = COLOR_PRESENT[:]
         else:
             COLOR_EXTRAS = COLOR_NOTPRESENT[:]
@@ -483,9 +477,11 @@ class Butia(Plugin):
                                 special_block_colors[blk.name] = COLOR_PRESENT[:]
 
                             if module == 'led':
-                                self.tw.lc.def_prim(blk.name, 1, lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x, z))
+                                self.tw.lc.def_prim(blk.name, 1, 
+                                lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x, z))
                             else:
-                                self.tw.lc.def_prim(blk.name, 0, lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
+                                self.tw.lc.def_prim(blk.name, 0, 
+                                lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
 
                             blk.spr.set_label(label)
                             block_names[blk.name][0] = label
@@ -588,55 +584,49 @@ class Butia(Plugin):
         else:
             return ERROR
 
-    def buttonButia(self, sensorid='', boardid=''):
+    def buttonButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getButton(sensorid, boardid)
         else:
             return ERROR
 
-    def ambientlightButia(self, sensorid='', boardid=''):
+    def lightButia(self, sensorid=0, boardid=0):
         if self.butia:
-            return self.butia.getAmbientLight(sensorid, boardid)
+            return self.butia.getLight(sensorid, boardid)
         else:
             return ERROR
 
-    def distanceButia(self, sensorid='', boardid=''):
+    def distanceButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getDistance(sensorid, boardid)
         else:
             return ERROR
 
-    def grayscaleButia(self, sensorid='', boardid=''):
+    def grayButia(self, sensorid=0, boardid=0):
         if self.butia:
-            return self.butia.getGrayScale(sensorid, boardid)
+            return self.butia.getGray(sensorid, boardid)
         else:
             return ERROR
         
-    def temperatureButia(self, sensorid='', boardid=''):
+    def temperatureButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getTemperature(sensorid, boardid)
         else:
             return ERROR
 
-    def resistanceButia(self, sensorid='', boardid=''):
+    def resistanceButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getResistance(sensorid, boardid)
         else:
             return ERROR
 
-    def voltageButia(self, sensorid='', boardid=''):
+    def voltageButia(self, sensorid=0, boardid=0):
         if self.butia:
             return self.butia.getVoltage(sensorid, boardid)
         else:
             return ERROR
 
-    def gpioButia(self, sensorid='', boardid=''):
-        if self.butia:
-            return self.butia.getGpio(sensorid, boardid)
-        else:
-            return ERROR
-
-    def ledButia(self, on_off, sensorid='', boardid=''):
+    def ledButia(self, on_off, sensorid=0, boardid=0):
         if self.butia:
             self.butia.setLed(on_off, sensorid, boardid)
         else:
@@ -684,6 +674,7 @@ class Butia(Plugin):
                 if self.hack_states[pin] == 1:
                     raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.'))
                 else:
+                    value = int(value)
                     if (value < 0) or (value > 1):
                         raise logoerror(ERROR_PIN_VALUE)
                     else:
@@ -709,9 +700,22 @@ class Butia(Plugin):
 
     def pybot_launch(self):
 
-        self.butia = usb4butia.USB4Butia()
+        output = commands.getoutput('ps -ax | grep python')
+        if 'pybot_server.py' in output:
+            debug_output('Pybot is alive!')
+        else:
+            try:
+                debug_output('creating Pybot server')
+                self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./plugins/butia/pybot')
+            except:
+                debug_output('ERROR creating Pybot server')
 
-        self.pollthread=threading.Timer(3, self.bobot_poll)
+        # Sure that bobot is running
+        time.sleep(2)
+
+        self.butia = butiaAPI.robot()
+
+        self.pollthread=threading.Timer(2, self.bobot_poll)
         self.pollthread.start()
 
     def bobot_poll(self):

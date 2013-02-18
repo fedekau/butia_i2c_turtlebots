@@ -1,14 +1,13 @@
 local device = _G
 local string_byte=string.byte
 local RD_VERSION = string.char(0x00)
-local IN = 0x01
-local OUT = 0x02
-local READ = 0x03
-local LOW = 0x04
-local HIGH = 0x05
-local WRITE_PORT = 0x06
-local PORT_IN = 0x07
-local PORT_OUT = 0x08
+local SET_MODE = 0x01
+local READ = 0x02
+local WRITE = 0x03
+local WRITE_PORT = 0x04
+local PORT_IN = 0x05
+local PORT_OUT = 0x06
+
 local ERROR = -1
 local SUCCESS = 0
 
@@ -24,6 +23,19 @@ api.getVersion.call = function ()
     return raw_val
 end
 
+api.setMode = {}
+api.setMode.parameters = {[1]={rname="pin", rtype="int"},[2]={rname="mode", rtype="int"}} 
+api.setMode.returns = {[1]={rname="dato", rtype="int"}} -- 1 if no error ocurred, -1 instead
+api.setMode.call = function (pin,mode)
+    if (mode == nil) or (pin == nil) then return ERROR end
+    pin, mode = tonumber(pin), tonumber(mode)
+    if ((mode ~= 0) and (mode ~= 1)) or (pin < 0) or (pin > 7) then return ERROR end
+    local msg = string.char(SET_MODE, pin, mode)
+    device:send(msg)
+    local ret = device:read(1)  -- opcode
+    return SUCCESS
+end
+
 api.read = {}
 api.read.parameters = {[1]={rname="pin", rtype="int"}} 
 api.read.returns = {[1]={rname="dato", rtype="int"}} -- value of pin if no error ocurred, -1 instead
@@ -31,7 +43,7 @@ api.read.call = function (pin)
     if (pin == nil) then return ERROR end
     pin = tonumber(pin)
     if (pin < 0) or (pin > 7) then return ERROR end
-    device:send(string.char(READ,pin))
+    device:send(string.char(READ, pin))
     local ret = device:read(2)  -- 2 byte to read (opcode, pin value)
     if ret == nil or #ret~=2 then return ERROR end
     return string.byte(ret,2) or 0
@@ -44,30 +56,7 @@ api.write.call = function (pin,value)
     if (value == nil) or (pin == nil) then return ERROR end
     pin, value = tonumber(pin), tonumber(value)
     if ((value ~= 0) and (value ~= 1)) or (pin < 0) or (pin > 7) then return ERROR end
-    local msg
-    if (value == 0) then
-        msg = string.char(LOW,pin)
-    else 
-        msg = string.char(HIGH,pin)
-    end
-    device:send(msg)
-    local ret = device:read(1)  -- opcode
-    return SUCCESS
-end
-
-api.setMode = {}
-api.setMode.parameters = {[1]={rname="pin", rtype="int"},[2]={rname="mode", rtype="int"}} 
-api.setMode.returns = {[1]={rname="dato", rtype="int"}} -- 1 if no error ocurred, -1 instead
-api.setMode.call = function (pin,mode)
-    if (mode == nil) or (pin == nil) then return ERROR end
-    pin, mode = tonumber(pin), tonumber(mode)
-    if ((mode ~= 0) and (mode ~= 1)) or (pin < 0) or (pin > 7) then return ERROR end
-    local msg
-    if (mode == 0) then 
-        msg = string.char(OUT,pin)
-    else 
-        msg = string.char(IN,pin)
-    end
+    local msg = string.char(WRITE, pin, value)
     device:send(msg)
     local ret = device:read(1)  -- opcode
     return SUCCESS

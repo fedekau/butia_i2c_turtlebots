@@ -2,73 +2,102 @@ import butiaAPI
 import time
 
 #definicion de constantes
-VAL_LIMITE = 420 #valor limite para diferenciar entre un negro y un blanco --buscar una mejor manera de hacerlo (automatico o seudo asistida)
-VENTANA = 5 #cuanto tiene que contar antes de girar hacia el otro lado
-INCSPEED = 20 #cuanto tiene que contar antes de aumentar la velocidad
+VAL_LIMITE = 160 #valor limite para diferenciar entre un negro y un blanco
+VENTANA = 10 #cuanto tiene que contar antes de girar hacia el otro lado
+INCSPEED = 30 #cuanto tiene que contar antes de aumentar la velocidad
+GIROIZQ = 0
+GIRODER = 1
+AVANLEN = 2
+AVANRAP = 3
 
 #variables inicialization
-contVent = 0
 lastFind = 0 # cero = derecha, uno = izquierda. Esto dice hacia donde estaba girando the last time I found black
 aumentVel = 0
 encontre = False
 cont = 0
 factor = 0
+estado = 0
+
+#otras
+BLANCO = 0
+NEGRO = 65536
+ERROR = -1
 
 butiabot = butiaAPI.robot()
-modulos = butiabot.listarModulos()
-print modulos
+modules = butiabot.get_modules_list()
 
-butiabot.abrirSensor()
-butiabot.abrirMotores()
+if modules == []:
+    print 'No modules detected'
+else:
+    print modules
 
+number = 0
+for s in modules:
+    if s.startswith('grey:'):
+        number = s.strip('grey:')
+number = int(number)
+
+print raw_input("Calibrando blanco, enter para continuar ")
+val = butiabot.getGray(number)
+if not(val == ERROR):
+    BLANCO = val
+
+print raw_input("Calibrando negro, enter para continuar ")
+val = butiabot.getGray(number)
+if not(val == ERROR):
+    NEGRO = val
+
+VAL_LIMITE = (BLANCO + NEGRO) // 2
+print "Blanco: " + str(BLANCO) + " Negro: " + str(NEGRO)
+print "Limit value: " + str(VAL_LIMITE)
+print raw_input("Enter para continuar...")
 
 while True:
-	sen1 = butiabot.getValSenAnalog("4") #leo el valor del sensor
-	print sen1
-	if sen1 == "nil value\n" or sen1 == '' or sen1 == " ":
-		sen1 = "400"
-		
-	if sen1 != None and sen1 != "nil value\n" and int(sen1) >= VAL_LIMITE:
-		aumentVel = aumentVel + 1
-		print aumentVel
-		contVent = 0 #reseteo el factor de creicimiento de la ventana de busqueda de la linea negra
-		if aumentVel <= INCSPEED:		
-			print "avanzo vel 300"
-			butiabot.setVelocidadMotores("0","300", "0", "300")
-		else:
-			print "avanzo vel 600"
-			butiabot.setVelocidadMotores("0","600", "0", "600")
-	else:
-		#me pongo a buscar a linea negra otra vez
-		aumentVel = 0 #reseteo la variable que controla la velocidad
-		encontre = False
-		cont = 0
-        factor = 2
+    val = butiabot.getGray(number) #leo el valor del sensor
+    print val
+    
+    if val == ERROR:
+        val = VAL_LIMITE - 10
         
-
-		
-		while not encontre:
-			
-			if lastFind == 0:
-				print "girando derecha"
-                butiabot.setVelocidadMotores("1", "100", "0", "100") #giro hacia la derecha
-                
-			else:
-                print "girando izquierda"
-                butiabot.setVelocidadMotores("0", "100", "1", "100") #giro hacia la izquierda 
-			cont = cont + 1
+    if not(val == ERROR) and val >= VAL_LIMITE:
+        print "avanzando..."
+        aumentVel = aumentVel + 1
+        print aumentVel
+        if aumentVel <= INCSPEED and estado != AVANLEN:        
+            print "avanzo vel 800"
+            butiabot.set2MotorSpeed(0, 400, 0, 400)
+            estado = AVANLEN
+        else:
+            if aumentVel > INCSPEED and estado != AVANRAP:        
+                print "avanzo vel 800"
+                butiabot.set2MotorSpeed(0, 800, 0, 800)
+                estado = AVANRAP
+    else:
+        aumentVel = 0 #reseteo la variable que controla la velocidad
+        encontre = False
+        factor = 2
+        cont = 0
+        while (not encontre):            
+            print "searching black line..."
+            if lastFind == 0 and estado != GIRODER:
+                print "girando derecha"
+                butiabot.set2MotorSpeed(1, 300, 0, 300) #giro hacia la derecha
+                estado = GIRODER
+            else:
+                if lastFind == 1 and estado != GIROIZQ:
+                    print "girando izquierda"
+                    butiabot.set2MotorSpeed(0, 300, 1, 300) #giro hacia la izquierda 
+                    estado = GIROIZQ
+            cont = cont + 1
             if cont > factor*VENTANA:
                 lastFind = not lastFind
                 cont = 0
                 factor = factor*2
-            
+            print cont
+            val = butiabot.getGray(number) #leo el valor del sensor
+            print val
+            if val == ERROR:
+                val = VAL_LIMITE - 10        
+            if not(val == ERROR) and val >= VAL_LIMITE:
+                encontre = True
 
-			print cont
-			sen1 = butiabot.getValSenAnalog("4") #leo el valor del sensor
-			print sen1
-			if sen1 == "nil value\n" or sen1 == '' or sen1 == " ":
-				sen1 = "400"
-		
-			if sen1 != None and sen1 != "nil value\n" and int(sen1) >= VAL_LIMITE:
-				encontre = True
-				

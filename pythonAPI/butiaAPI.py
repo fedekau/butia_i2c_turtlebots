@@ -26,16 +26,17 @@ import socket
 import string
 import math
 import threading
+import errno
 
-ERROR_SENSOR_READ = -1
+ERROR = -1
 
-BOBOT_HOST = 'localhost'
-BOBOT_PORT = 2009
+PYBOT_HOST = 'localhost'
+PYBOT_PORT = 2009
 
 class robot:
     
 
-    def __init__(self, host = BOBOT_HOST, port = BOBOT_PORT):
+    def __init__(self, host = PYBOT_HOST, port = PYBOT_PORT):
         """
         init the robot class
         """
@@ -43,28 +44,26 @@ class robot:
         self.host = host
         self.port = port
         self.client = None
-        self.fclient = None
         self.reconnect()
-
        
     def doCommand(self, msg):
         """
         Executes a command in butia.
         @param msg message to be executed
         """
-        msg = msg +'\n'
-        ret = ERROR_SENSOR_READ
+        msg = msg + '\n'
+        ret = ERROR
         self.lock.acquire()
         try:     
             self.client.send(msg) 
-            ret = self.fclient.readline()
+            ret = self.client.recv(1024)
             ret = ret[:-1]
-        except:
-            ret = ERROR_SENSOR_READ # Doesn't return here to release the lock
+        except Exception, e:
+            if e.errno == errno.EPIPE:
+                self.reconnect()
+            ret = ERROR
         self.lock.release()
         
-        if ((ret == 'nil value') or (ret == None) or (ret == 'fail') or (ret == 'missing driver')):
-            ret = ERROR_SENSOR_READ
         return ret
           
     # connect o reconnect the bobot
@@ -73,29 +72,21 @@ class robot:
         try:
             self.client = socket.socket()
             self.client.connect((self.host, self.port))  
-            self.fclient = self.client.makefile()
-            msg = 'INIT'
-            #bobot server instance is running, but we have to check for new or remove hardware
-            self.doCommand(msg)
         except:
-            return ERROR_SENSOR_READ
+            return ERROR
         return 0
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
         return self.doCommand('REFRESH')
 
-    # close the comunication with the bobot
+    # close the comunication with pybot
     def close(self):
         try:
-            if self.fclient != None:
-                self.fclient.close()
-                self.fclient = None
-            if self.client != None:
-                self.client.close()
-                self.client = None
+            self.client.close()
+            self.client = None
         except:
-            return ERROR_SENSOR_READ
+            return ERROR
         return 0
 
     #######################################################################
@@ -104,9 +95,11 @@ class robot:
 
 
     # call the module 'modulename'
-    def callModule(self, modulename, function , params = ''):
-        msg = 'CALL ' + modulename + ' ' + function
-        if params != '' :
+    def callModule(self, modulename, board_number, number, function, params = ''):
+        if number == '':
+            number = 0
+        msg = 'CALL ' + modulename + '@' + str(board_number) + ':' + str(number) + ' ' + function
+        if params != '':
             msg += ' ' + params
         ret = self.doCommand(msg)
         try:
@@ -115,7 +108,7 @@ class robot:
             try:
                 ret = float(ret)
             except:
-                ret = ERROR_SENSOR_READ
+                ret = ERROR
         return ret
 
     # Close bobot service
@@ -133,37 +126,58 @@ class robot:
         return (module_name in module_list)
 
     # returns a list of modules
-    def get_modules_list(self):
+    def get_modules_list(self, normal=True):
         msg = 'LIST'
         l = []
         ret = self.doCommand(msg)
-        if not (ret == '' or ret == ERROR_SENSOR_READ):
+        if not (ret == '' or ret == ERROR):
             l = ret.split(',')
-        return l
+        modules = []
+        if not(normal):
+            for m in l:
+                modules.append(self.split_module(m))
+        else:
+            modules = l
+
+        return modules
+
+    def split_module(self, mbn):
+        board = '0'
+        number = '0'
+        if mbn.count('@') > 0:
+            modulename, bn = mbn.split('@')
+            board, number = bn.split(':')
+        else:
+            if mbn.count(':') > 0:
+                modulename, number = mbn.split(':')
+            else:
+                modulename = mbn
+        return (number, modulename, board)
+
+    def get_butia_count(self):
+        msg = 'BUTIA_COUNT'
+        ret = self.doCommand(msg)
+        return int(ret)
 
     # loopBack: send a message to butia and wait to recibe the same
-    def loopBack(self, data):
-        msg = 'lback send ' + data
-        ret = self.doCommand(msg)
-        if ret != -1 :
-            msg = 'CALL lback read'
-            return self.doCommand(msg)
-        else:
-            return ERROR_SENSOR_READ
+    def loopBack(self, data, board=0):
+        msg = 'CALL lback@' + str(board) + ':0 send ' + data
+        return self.doCommand(msg)
             
     #######################################################################
     ### Operations for motores.lua driver
     #######################################################################
 
-    def set2MotorSpeed(self, leftSense = '0', leftSpeed = '0', rightSense = '0', rightSpeed = '0'):
-        msg = leftSense + ' ' + leftSpeed + ' ' + rightSense + ' ' + rightSpeed
-        return self.callModule('motors', 'setvel2mtr', msg)
+    def set2MotorSpeed(self, leftSense = 0, leftSpeed = 0, rightSense = 0, rightSpeed = 0, board = 0):
+        msg_l = str(leftSense) + ' ' + str(int(leftSpeed / 256.0)) + ' ' + str(leftSpeed % 256)
+        msg_r = str(rightSense) + ' ' + str(int(rightSpeed / 256.0)) + ' ' + str(rightSpeed % 256)
+        return self.callModule('motors', board, 0, 'setvel2mtr', msg_l + ' ' + msg_r)
      
-    def setMotorSpeed(self, idMotor = '0', sense = '0', speed = '0'):
-        msg = idMotor + ' ' + sense + ' ' + speed
-        return self.callModule('motors', 'setvelmtr', msg)
+    def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0, board = 0):
+        msg = str(idMotor) + ' ' + str(sense) + ' ' + str(int(speed / 256.0)) + ' ' + str(speed % 256)
+        return self.callModule('motors', board, 0, 'setvelmtr', msg)
 
-    #######################################################################
+    """#######################################################################
     ### Operations for ax.lua driver
     #######################################################################
 
@@ -187,74 +201,73 @@ class robot:
         msg = idMotor
         return self.callModule('ax', 'get_position', msg)
 
-    #######################################################################
-    ### Operations for butia.lua driver
-    #######################################################################
-
-    def ping(self):
-        return self.callModule('placa', 'ping')
-
-    # returns the approximate charge of the battery        
-    def getBatteryCharge(self):
-        return self.callModule('butia', 'get_volt')
-
-    # returns the firmware version 
-    def getVersion(self):
-        return self.callModule('butia', 'read_ver')
+    def ping(self, board=0):
+        return self.callModule('placa', board, 0, 'ping')"""
     
-    # set de motor idMotor on determinate angle
-    def setPosition(self, idMotor = 0, angle = 0):
-        msg = str(idMotor) + ' ' + str(angle)
-        return self.callModule('placa', 'setPosicion' , msg )
+    ############################### General calls ###############################
+     
+    def getBatteryCharge(self, board=0):
+        return self.callModule('butia', board, 0, 'get_volt')
+
+    def getVersion(self, board=0):
+        return self.callModule('butia', board, 0, 'read_ver')
+
+    def getFirmwareVersion(self, board=0):
+        return self.callModule('admin', board, 0, 'getVersion')
+
+    ############################### Sensors calls ###############################
+
+    def getButton(self, number, board=0):
+        res = self.callModule('button', board, number, 'getValue')
+        if res != ERROR:
+            return (1 - res)
+        else:
+            return res
     
-    # return the value of button: 1 if pressed, 0 otherwise
-    def getButton(self, number=''):
-        return self.callModule('button:' + str(number), 'getValue')
+    def getLight(self, number, board=0):
+        m = 65535
+        res = self.callModule('light', board, number, 'getValue')
+        if res != ERROR:
+            return (m - res)
+        else:
+            return res
 
-    # return the value en ambient light sensor
-    def getAmbientLight(self, number=''):
-        return self.callModule('light:' + str(number), 'getValue')
+    def getDistance(self, number, board=0):
+        return self.callModule('distanc', board, number, 'getValue')
 
-    # return the value of the distance sensor
-    def getDistance(self, number=''):
-        return self.callModule('distanc:' + str(number), 'getValue')
-    
-    # return the value of the grayscale sensor
-    def getGrayScale(self, number=''):
-        return self.callModule('grey:' + str(number), 'getValue')
+    def getGray(self, number, board=0):
+        return self.callModule('grey', board, number, 'getValue')
 
-    # return the value of the temperature sensor
-    def getTemperature(self, number=''):
-        return self.callModule('temp:' + str(number), 'getValue')
+    def getTemperature(self, number, board=0):
+        return self.callModule('temp', board, number, 'getValue')
 
-    # return the value of the resistance sensor
-    def getResistance(self, number=''):
-        return self.callModule('res:' + str(number), 'getValue')
+    def getResistance(self, number, board=0):
+        vcc = 65535
+        raw = self.callModule('res', board, number, 'getValue')
+        if not(raw == ERROR):
+            return raw * 6800 / (vcc - raw)
+        return raw
 
-    # return the value of the resistance sensor
-    def getVoltage(self, number=''):
-        return self.callModule('volt:' + str(number), 'getValue')
+    def getVoltage(self, number, board=0):
+        vcc = 65535
+        raw = self.callModule('volt', board, number, 'getValue')
+        if not(raw == ERROR):
+            return raw * 5 / vcc
+        return raw
 
-    # gpio
-    def getGpio(self, number=''):
-        return self.callModule('gpio:' + str(number), 'getValue')
+    def setLed(self, on_off, number, board):
+        return self.callModule('led', board, number, 'turn', str(on_off))
 
-    # set the led intensity
-    def setLed(self, on_off, number= ''):
-        return self.callModule('led:' + str(number), 'turn', str(on_off))
+    ################################## Extras ##################################
 
-    # Hacks
-    def modeHack(self, pin, mode):
+    def modeHack(self, pin, mode, board = 0):
         msg = str(pin) + ' ' + str(mode)
-        return self.callModule('hackp', 'setMode', msg)
+        return self.callModule('hackp', board, 0, 'setMode', msg)
 
-    def setHack(self, pin, value):
+    def setHack(self, pin, value, board = 0):
         msg = str(pin) + ' ' + str(value)
-        return self.callModule('hackp', 'write', msg)
+        return self.callModule('hackp', board, 0, 'write', msg)
 
-    def getHack(self, pin):
-        pin = str(pin)
-        return self.callModule('hackp', 'read', pin)
-
-
+    def getHack(self, pin, board = 0):
+        return self.callModule('hackp', board, 0, 'read', str(pin))
 

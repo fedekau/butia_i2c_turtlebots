@@ -39,11 +39,11 @@ ERROR = -1
 
 class Device():
 
-    def __init__(self, baseboard, name, handler):
+    def __init__(self, baseboard, name, handler=None):
         self.baseboard = baseboard
         self.name = name
         self.handler = handler
-        if self.handler:
+        if not(self.handler == None):
             self.handler_tosend = self.handler * 8
         self.functions = {}
         self.debug = False
@@ -54,12 +54,9 @@ class Device():
 
     def module_send(self, call, params_length, params):
 
-        if not(type(params) == str):
-            if not(len(params) == params_length):
-                if self.debug:
-                    print 'Incorrect lenght in params', params_length, params
-        else:
-            params = self.to_ord(params)
+        if len(params) == 1:
+            if type(params[0]) == str:
+                params = self.to_ord(params[0])
 
         send_packet_length = 0x04 + len(params)
 
@@ -71,7 +68,7 @@ class Device():
         for p in params:
             w.append(p)
 
-        size = self.baseboard.dev.write(w)
+        self.baseboard.dev.write(w)
 
     def module_read(self):
 
@@ -114,7 +111,7 @@ class Device():
         w.append(module_in_endpoint)
         w.append(module_out_endpoint)
         w = w + module_name
-        size = self.baseboard.dev.write(w)
+        self.baseboard.dev.write(w)
 
         raw = self.baseboard.dev.read(OPEN_RESPONSE_PACKET_SIZE)
 
@@ -131,7 +128,7 @@ class Device():
 
     def call_function(self, func, params):
 
-        raw = self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
+        self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
         return self.module_read()
 
     def to_ord(self, string):

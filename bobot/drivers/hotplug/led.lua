@@ -1,8 +1,7 @@
 local device = _G
 
 local RD_VERSION=string.char(0x00)
-local TURN_ON=string.char(0x01)
-local TURN_OFF=string.char(0x02)
+local TURN =string.char(0x01)
 local string_byte=string.byte
 
 -- description: lets us know grey module's version
@@ -27,10 +26,7 @@ api.turn.returns = {[1]={rname="ret1", rtype="int"}}
 api.turn.call = function (value)
     value = tonumber(value)
     if value == nil or value ~= 0 and value ~= 1 then return -1 end
-    if value == 0 then
-        device:send(TURN_OFF)
-    else
-        device:send(TURN_ON)
-    end
-	return 1
+    local msg = string.char(TURN, value)
+    device:send(msg)
+	return 0
 end

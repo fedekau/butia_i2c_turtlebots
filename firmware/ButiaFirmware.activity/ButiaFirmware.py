@@ -18,6 +18,9 @@ from sugar.activity.widgets import ActivityToolbarButton
 from sugar.activity.widgets import StopButton
 from sugar.graphics.toolbarbox import ToolbarButton
 
+from pybot import usb4butia
+
+firmware_hex = 'USB4Butia-6.hex'
 
 class ButiaFirmware(activity.Activity):
 
@@ -69,15 +72,22 @@ class Flash():
         img = gtk.Image()
         img.set_from_file("activity/fua-icon.svg")
         img.show()
-        box.add(img) 
+        box.add(img)
 
-        box12 = gtk.HBox()
-        button_accept = gtk.Button(_("CONTINUE"))
+        boxH = gtk.HBox()
+
+        button_check = gtk.Button(_("Check version"))
+        button_check.connect("clicked", self.check_message)
+        button_check.show()
+        boxH.add(button_check)
+
+        button_accept = gtk.Button(_("Burn Firmware"))
         button_accept.connect("clicked", self.warning_message)
         button_accept.show()
-        box12.add(button_accept)
-        box12.show()
-        box.add(box12)
+        boxH.add(button_accept)
+
+        boxH.show()
+        box.add(boxH)
         box.show()
         return box
 
@@ -95,13 +105,25 @@ class Flash():
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
 
+    def check_message(self, widget=None):
+        ver = self.get_version()
+        if ver == -1:
+            msg = _('Error reading Firmware version.\nTry again...')
+            dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg)
+        else:
+            msg = _('The current Firmware is\n%s') % ver
+            dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg)
+        dialog.set_title(_('USB4Butia firmware version...'))
+        res = dialog.run()
+        dialog.destroy()
+
     def flash(self, show_dialogs=True):
+        i = time.time()
         path = './fsusb/x32/fsusb'
         try:
             arq,so = platform.architecture()
             if arq == '32bit':
-                path = './fsusb/x32/fsusb'
-                print 'Use 32bits fsusb'
+                print 'Use default 32bits fsusb'
             else:
                 path = './fsusb/x64/fsusb'
                 print 'Use 64bits fsusb'
@@ -113,16 +135,36 @@ class Flash():
 
         proc = None
         try:
-            proc = subprocess.Popen([path, '--force_program', 'USB4all-5.hex'])
+            proc = subprocess.Popen([path, '--force_program', firmware_hex])
         except Exception, err:
-            print 'Error in fsusb:', err
-            print 'Trying --program option'
-            try:
-                proc = subprocess.Popen([path, '--program', 'USB4all-5.hex'])
-            except Exception, err:
-                print 'Error in fsusb:', err
+            print 'Error in fsusb --force_program:', err
+            # if fsusb is corrupted: 8 Exec format error
+            if err.errno == 8:
+                print 'Making fsusb binary'
+                try:
+                    proc = subprocess.Popen(['make'], cwd='./fsusb/src')
+                    proc.wait()
+                except Exception, err:
+                    print 'error in make fsusb:', err
 
-        i = time.time()
+                path = './fsusb/src/fsusb'
+                try:
+                    proc = subprocess.Popen([path, '--force_program', firmware_hex])
+                except Exception, err:
+                    print 'Error in fsusb (build version):', err
+
+                    print 'Trying --program option '
+                    try:
+                        proc = subprocess.Popen([path, '--program', firmware_hex])
+                    except Exception, err:
+                        print 'Error in fsusb --program:', err
+            else:
+                print 'Trying --program option '
+                try:
+                    proc = subprocess.Popen([path, '--program', firmware_hex])
+                except Exception, err:
+                    print 'Error in fsusb --program:', err
+
         if proc:
             proc.wait()
             f = time.time()
@@ -162,18 +204,25 @@ class Flash():
 
     def unsucess(self, err):
         msg = _('The upgrade fails. Try again.\nError: %s') % err
-        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msg)
+        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
         dialog.set_title(_('Flashing USB4Butia board...'))
         dialog.run()
         dialog.destroy()
 
+    def get_version(self):
+        b = usb4butia.USB4Butia(get_modules=False)
+        version = b.getFirmwareVersion()
+        b.close()
+        return version
+
+
 if __name__ == "__main__":
     f = Flash()
-    argv = sys.argv[:]
-    if len(argv) > 1:
-        argv = argv[1:]
-        if argv[0] == 'silent':
-            f.flash(False)
+    argv = sys.argv[1:]
+    if 'silent' in argv:
+        f.flash(False)
+    elif 'check_version' in argv:
+        f.check_message()
     else:
         f.warning_message()
 

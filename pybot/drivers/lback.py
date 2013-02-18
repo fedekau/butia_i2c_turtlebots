@@ -12,12 +12,8 @@ f1 = {
 f2 = {
     'name': 'send',
     'call': SEND_DATA,
-    'params': 1
+    'params': 1,
+    'read': 1
 }
 
-f3 = {
-    'name': 'read',
-    'params': 0
-}
-
-FUNCTIONS = [f1, f2, f3]
+FUNCTIONS = [f1, f2]

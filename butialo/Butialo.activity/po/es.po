@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-13 04:38-0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Alan Aguiar <alanjas@hotmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: activity/activity.info:2
+msgid "Butialo"
+msgstr ""
+
+#: pippy_app.py:242
+msgid "As Butialo Document"
+msgstr ""
+
+#: pippy_app.py:262
+msgid "Actions"
+msgstr "Acciones"
+
+#: pippy_app.py:264 pippy_app.py:269 activity.py:70
+msgid "Edit"
+msgstr "Editar"
+
+#: pippy_app.py:289
+msgid "_Run!"
+msgstr "_Ejecutar"
+
+#: pippy_app.py:290
+msgid "<alt>r"
+msgstr "<alt>e"
+
+#: pippy_app.py:303
+msgid "_Stop"
+msgstr "_Detener"
+
+#: pippy_app.py:304
+msgid "<alt>s"
+msgstr "<alt>d"
+
+#: pippy_app.py:317
+msgid "_Reload"
+msgstr "_Recargar"
+
+#: pippy_app.py:318
+msgid "<alt>d"
+msgstr "<alt>r"
+
+#: pippy_app.py:347
+msgid "_Auto-format"
+msgstr "_Auto-formto"
+
+#: pippy_app.py:348
+msgid "<alt>f"
+msgstr "<alt>f"
+
+#: pippy_app.py:377
+msgid "Available"
+msgstr "Disponible"
+
+#: pippy_app.py:521
+#, python-format
+msgid "%s Activity"
+msgstr "Actividad %s"
+
+#: activity.py:65
+msgid "Copy selected text to clipboard"
+msgstr "Copia el texto seleccionado al portapapeles"
+

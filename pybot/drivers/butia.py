@@ -3,7 +3,7 @@ RD_VERSION = 0x02
 GET_VOLT = 0x03
 
 f1 = {
-    'name': 'getVersion',
+    'name': 'read_ver',
     'call': RD_VERSION,
     'params': 0,
     'read': 2
