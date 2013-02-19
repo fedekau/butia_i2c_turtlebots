@@ -49,14 +49,19 @@ class Device():
         self.debug = False
 
     def add_functions(self, func_list):
+        """
+        Add the functions to current device
+        """
         for f in func_list:
             self.functions[f['name']] = f
 
     def module_send(self, call, params_length, params):
-
+        """
+        Send to the device the specifiy call and parameters
+        """
         if len(params) == 1:
             if type(params[0]) == str:
-                params = self.to_ord(params[0])
+                params = to_ord(params[0])
 
         send_packet_length = 0x04 + len(params)
 
@@ -71,21 +76,19 @@ class Device():
         self.baseboard.dev.write(w)
 
     def module_read(self):
-
+        """
+        Read the device data
+        """
         raw = self.baseboard.dev.read(MAX_BYTES)
-
         if self.debug:
             print 'device:module_rad return', raw
-
         if raw[1] == 5:
             if raw[4] == 255:
                 return -1
             else:
                 return raw[4]
-
         elif raw[1] == 6:
             return raw[4] + raw[5] * 256
-
         else:
             ret = ''
             for r in raw[4:]:
@@ -94,8 +97,10 @@ class Device():
             return ret
 
     def module_open(self):
-
-        module_name = self.to_ord(self.name)
+        """
+        Open this device. Return the handler
+        """
+        module_name = to_ord(self.name)
         module_name.append(0)
         
         open_packet_length = HEADER_PACKET_SIZE + len(module_name) 
@@ -124,18 +129,26 @@ class Device():
         return h
 
     def has_function(self, func):
+        """
+        Check if this device has func function
+        """
         return self.functions.has_key(func)
 
     def call_function(self, func, params):
-
+        """
+        Call specify func function with params parameters
+        """
         self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
         return self.module_read()
 
-    def to_ord(self, string):
-        s = []
-        for l in string:
-            o = ord(l)
-            if not(o == 0):
-                s.append(o)
-        return s
+def to_ord(string):
+    """
+    Useful function to convert characters into ordinal Unicode
+    """
+    s = []
+    for l in string:
+        o = ord(l)
+        if not(o == 0):
+            s.append(o)
+    return s
 
