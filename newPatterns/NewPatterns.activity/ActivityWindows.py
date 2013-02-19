@@ -156,7 +156,8 @@ class ActivityWindows:
         treeselection.set_mode(gtk.SELECTION_SINGLE)
         treeselection.set_select_function(self.on_select_list,self.model_TV, True)
 
-        #treeView.set_cursor(data[0])
+        # select the first row as default
+        treeView.set_cursor(0)
 
     def on_select_list(self, selection, model, path, is_selected, user_data):
         iter = model.get_iter(path)
