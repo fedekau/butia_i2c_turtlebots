@@ -46,6 +46,9 @@ class usb_device():
         self.debug = True
 
     def open_device(self):
+        """
+        Open the baseboard, configure the interface
+        """
         try:
             self.handle = self.device.open()
             self.handle.setConfiguration(USB4ALL_CONFIGURATION)
@@ -58,6 +61,9 @@ class usb_device():
         return self.handle
 
     def close_device(self):
+        """
+        Close the comunication with the baseboard
+        """
         try:
             if self.handle:
                 self.handle.releaseInterface()
@@ -69,6 +75,9 @@ class usb_device():
         self.device = None
 
     def read(self, length):
+        """
+        Read from the device length bytes
+        """
         try:
             return self.handle.bulkRead(ADMIN_MODULE_OUT_ENDPOINT, length, TIMEOUT)
         except:
@@ -77,6 +86,9 @@ class usb_device():
             raise
  
     def write(self, data):
+        """
+        Write in the device: data
+        """
         try:
             return self.handle.bulkWrite(ADMIN_MODULE_IN_ENDPOINT, data, TIMEOUT)
         except:
@@ -85,6 +97,9 @@ class usb_device():
             raise
 
     def get_info(self):
+        """
+        Get the device info such as manufacturer, etc
+        """
         try:
             names = self.handle.getString(1, 255)
             copy = self.handle.getString(2, 255)
@@ -96,6 +111,9 @@ class usb_device():
             raise
 
 def find():
+    """
+    List all busses and returns a list of baseboards detected
+    """
     l = []
     for bus in usb.busses():
         for dev in bus.devices:
