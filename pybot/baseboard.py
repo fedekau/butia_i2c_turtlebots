@@ -47,47 +47,82 @@ ERROR = -1
 
 class Baseboard():
 
-    def __init__(self, dev):
+    def __init__(self, dev, debug=False):
         self.dev = dev
-        self.debug = False
+        self.debug = debug
         self.listi = {}
         self.devices = {}
         self.openables_loaded = []
 
     def open_baseboard(self):
+        """
+        Open the baseboard
+        """
         self.dev.open_device()
 
     def close_baseboard(self):
+        """
+        Close the baseboard
+        """
         self.dev.close_device()
 
     def get_info(self):
+        """
+        Get baseboard info: manufacture..
+        """
         return self.dev.get_info()
 
     def add_device(self, handler, device):
+        """
+        Add a device with handler: handler to the dictionary
+        """
         self.devices[handler] = device
 
     def reset_device_list(self):
+        """
+        Cleans the device dictionary
+        """
         self.devices = {}
 
     def add_openable_loaded(self, name):
+        """
+        Add the name of device that was opened to prevent open twice
+        """
         if not(name in self.openables_loaded):
             self.openables_loaded.append(name)
 
     def get_openables_loaded(self):
+        """
+        Get the list of modules that was openened (no pnp)
+        """
         return self.openables_loaded
 
     def reset_openables_loaded(self):
+        """
+        Reset the list of openables modules
+        """
         self.openables_loaded = []
 
     def add_to_listi(self, number, name):
+        """
+        Add a device to listi
+        """
         self.listi[number] = name
 
     def get_listi(self):
+        """
+        Get the listi: the list of modules present in the board that can be
+        opened (or pnp module opens)
+        """
         if (self.listi == {}):
             self.generate_listi()
         return self.listi
 
     def generate_listi(self):
+        """
+        Generate the listi: the list of modules present in the board that can be
+        opened (or pnp module opens)
+        """
         self.listi = {}
         try:
             s = self.get_user_modules_size()
@@ -99,19 +134,28 @@ class Baseboard():
             if self.debug:
                 print 'error listi'
 
-    def get_device_handler(self, device):
+    def get_device_handler(self, name):
+        """
+        Get the handler of device with name: name
+        """
         for e in self.devices:
-            if self.devices[e].name == device:
+            if self.devices[e].name == name:
                 return e
         return ERROR
 
     def get_device_name(self, handler):
+        """
+        Get the name of device with handler: handler
+        """
         if self.devices.has_key(handler):
             return self.devices[handler].name
         else:
             return ''
 
     def get_user_modules_size(self):
+        """
+        Get the size of the list of user modules (listi)
+        """
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
         w.append(DEFAULT_PACKET_SIZE)
@@ -127,6 +171,9 @@ class Baseboard():
         return raw[4]
 
     def get_user_module_line(self, index):
+        """
+        Get the name of device with index: index (listi)
+        """
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
         w.append(GET_USER_MODULE_LINE_PACKET_SIZE)
@@ -149,6 +196,9 @@ class Baseboard():
         return t
 
     def get_handler_size(self):
+        """
+        Get the number of handlers opened
+        """
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
         w.append(DEFAULT_PACKET_SIZE)
@@ -164,6 +214,9 @@ class Baseboard():
         return raw[4]
 
     def get_handler_type(self, index):
+        """
+        Get the type of the handler: index (return listi index)
+        """
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
         w.append(GET_HANDLER_TYPE_PACKET_SIZE)
@@ -180,6 +233,9 @@ class Baseboard():
         return raw[4]
 
     def switch_to_bootloader(self):
+        """
+        Admin module command to switch to bootloader
+        """
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
         w.append(DEFAULT_PACKET_SIZE)
@@ -188,6 +244,9 @@ class Baseboard():
         self.dev.write(w)
 
     def reset(self):
+        """
+        Admin module command to reset the board
+        """
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
         w.append(DEFAULT_PACKET_SIZE)
@@ -196,6 +255,9 @@ class Baseboard():
         self.dev.write(w)
 
     def force_close_all(self):
+        """
+        Admin module command to force close all opened modules
+        """
         w = []
         w.append(ADMIN_HANDLER_SEND_COMMAND)
         w.append(DEFAULT_PACKET_SIZE)
