@@ -170,6 +170,9 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoG
 	cp pyusb/README.rst         $(BUILDDIR)/plugins/butia/pybot/usb
 	cp pyusb/ReleaseNotes.rst   $(BUILDDIR)/plugins/butia/pybot/usb
 	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
+	# put pattern_examples into turtle examples folder
+	#mkdir $(BUILDDIR)/samples/pattern_examples
+	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
 
 pattern_detection_compile:
 	$(MAKE) -C pattern_detection/library
