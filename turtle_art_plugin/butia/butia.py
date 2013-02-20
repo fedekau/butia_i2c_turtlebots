@@ -720,10 +720,12 @@ class Butia(Plugin):
 
     def bobot_poll(self):
         if self.pollrun:
-            if (self.tw.activity.init_complete and self.can_refresh):
+            self.pollthread = threading.Timer(6, self.bobot_poll)
+            if self.tw.activity.init_complete:
                 self.butia.refresh()
                 self.check_for_device_change(False)
-            self.pollthread=threading.Timer(3, self.bobot_poll)
+                if self.can_refresh:
+                    self.pollthread = threading.Timer(3, self.bobot_poll)
             self.pollthread.start()
         else:
             debug_output("Ending butia poll")
