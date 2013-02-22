@@ -255,7 +255,7 @@ class robot:
             return raw * 5 / vcc
         return raw
 
-    def setLed(self, on_off, number, board):
+    def setLed(self, number, on_off, board=0):
         return self.callModule('led', board, number, 'turn', str(on_off))
 
     ################################## Extras ##################################

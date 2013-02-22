@@ -345,7 +345,7 @@ class USB4Butia():
             return raw * 5 / vcc
         return raw
 
-    def setLed(self, on_off, number, board):
+    def setLed(self, number, on_off, board=0):
         """
         Sets on or off the LED connected in port: number (0 is off, 1 is on)
         """

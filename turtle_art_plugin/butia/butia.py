@@ -626,9 +626,13 @@ class Butia(Plugin):
         else:
             return ERROR
 
-    def ledButia(self, on_off, sensorid=0, boardid=0):
+    def ledButia(self, value, sensorid=0, boardid=0):
         if self.butia:
-            self.butia.setLed(on_off, sensorid, boardid)
+            value = int(value)
+            if (value < 0) or (value > 1):
+                raise logoerror(ERROR_PIN_VALUE)
+            else:
+                self.butia.setLed(sensorid, value, boardid)
         else:
             return ERROR
 
