@@ -164,6 +164,9 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoG
 	cp -rLf pattern_detection   $(BUILDDIR)/plugins/
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
+	# remove arduino trash
+	rm -rf $(BUILDDIR)/plugins/arduino/.git
+	rm -f $(BUILDDIR)/plugins/arduino/.gitignore
 	# add pyusb extra information
 	cp pyusb/ACKNOWLEDGEMENTS   $(BUILDDIR)/plugins/butia/pybot/usb
 	cp pyusb/LICENSE            $(BUILDDIR)/plugins/butia/pybot/usb
