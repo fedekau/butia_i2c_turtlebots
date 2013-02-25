@@ -1,3 +1,13 @@
+VERSION 19
++add Arduino plugin
++add pattern detection plugin
+/improve blocks refresh
+/uses TB 172+
+/uses Pybot instead Bobot
++add compatibility with XO-1.75 (ARM)
+/fix some bugs on refresh blocks
++new drivers
+
 VERSION 18
 +more translations
 /use TurtleBlocks v169
@@ -34,7 +44,6 @@ VERSION 18
 /new gnome number entry
 /update WeDo plugin
 /fix resistance block conflict with resistance of turtle
-
 
 VERSION 17
 /followme: remove redundant save calibration - add brightness block
