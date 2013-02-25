@@ -59,8 +59,9 @@ class robot:
             ret = self.client.recv(1024)
             ret = ret[:-1]
         except Exception, e:
-            if e.errno == errno.EPIPE:
-                self.reconnect()
+            if hasattr(e, 'errno'):
+                if e.errno == errno.EPIPE:
+                    self.reconnect()
             ret = ERROR
         self.lock.release()
         
