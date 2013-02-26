@@ -1,23 +1,43 @@
 local device = _G
 local WRITE_INFO = 0x01
 local READ_INFO  = 0x02
-local GET_RAW_POS = 0x03
 local char000    = string.char(0,0,0)
 local mode='wheel'
 
---byte id,byte regstart, int value
+--- Write info
+-- write value in regstart to motor[id]
+-- byte id, byte regstart, int value
 api={}
 api.write_info = {}
-api.write_info.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="regstart", rtype="number", min=0, max=255},[3]={rname="value", rtype="number", min=0, max=65536}} ----byte id,byte regstart, int value
+api.write_info.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="regstart", rtype="number", min=0, max=49},[3]={rname="value", rtype="number", min=0, max=65536}}
 api.write_info.returns = {[1]={rname="write_info_return", rtype="number"}} --one return
 api.write_info.call = function (id, regstart, value)
-    id, regstart, value = tonumber(id), tonumber(regstart), tonumber(value)
-    local write_info_payload = string.char(WRITE_INFO, id, regstart, math.floor(value / 256),value % 256) 
-    device:send(write_info_payload)
-    local write_info_response = device:read(2) or char000
-    local raw_val = (string.byte(write_info_response, 2) or 0) 
-    return raw_val
-end
+        id, regstart, value = tonumber(id), tonumber(regstart), tonumber(value)
+        local write_info_payload = string.char(WRITE_INFO, id, regstart, math.floor(value / 256), value % 256) 
+        device:send(write_info_payload)
+        local write_info_response = device:read(2) or char000
+        local raw_val = (string.byte(write_info_response, 2) or 0) 
+        return raw_val
+    end
+
+--- Read info
+-- read value in regstart from motor[id]
+-- byte id, byte regstart, byte lenght of regstart
+-- @return current value ar regstart
+-- 0..65535
+api.read_info = {}
+api.read_info.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="regstart", rtype="number", min=0, max=49},[3]={rname="lenght", rtype="number", default=1, min=1, max=2}}
+api.read_info.returns = {[1]={rname="value", rtype="number"}} --one return
+api.read_info.call = function(id, regstart, lenght)
+        local lenght = lenght or 1
+        local send_response = device:send(string.char(READ_INFO, id, regstart, lenght))
+        local value = device:read(3) or char000
+        local h_value = string.byte(value, 2)
+        local l_value = string.byte(value, 3)
+        local value = 256 * h_value + l_value
+	    return value
+    end
+
 
 --- Set wheel mode.
 --Set the motor to continuous rotation mode.
@@ -76,8 +96,8 @@ api.get_position = {}
 api.get_position.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="pos", rtype="number", min=0, max=1023}}
 api.get_position.returns = {[1]={rname="motor_position", rtype="number"}} --one return
 api.get_position.call = function(id)
-        local send_response = device:send(string.char(GET_RAW_POS,id))
-		local value = device:read(3) or string.char(0,0,0)
+        local send_response = device:send(string.char(READ_INFO, id ,0x24, 2))
+		local value = device:read(3) or char000
         local h_value = string.byte(value, 2)
         local l_value = string.byte(value, 3)
         local raw_angle = 256 * h_value + l_value
