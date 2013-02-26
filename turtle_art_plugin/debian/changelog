@@ -1,3 +1,10 @@
+turtlebots (19-r0) unstable; urgency=low
+
+  * core: +based on TurtleBlocks v172+
+  * butia: /use Pybot for the robot control
+
+ -- Alan Aguiar <alanjas@hotmail.com>  Tue, 26 Feb 2013 18:33:53 -0200
+
 turtlebots (18-r1) unstable; urgency=low
 
   * Release for MG2 compatibility
