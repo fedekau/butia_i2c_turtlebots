@@ -33,7 +33,7 @@ ERROR = -1
 class USB4Butia():
 
     def __init__(self, debug=False, get_modules=True):
-        self.debug = debug
+        self._debug = debug
         self._hotplug = []
         self._openables = []
         self._drivers_loaded = {}
@@ -59,7 +59,7 @@ class USB4Butia():
                 b.open_baseboard()
                 self._bb.append(b)
             except:
-                if self.debug:
+                if self._debug:
                     print 'error open baseboard'
         if get_modules:
             self.get_modules_list()
@@ -71,7 +71,7 @@ class USB4Butia():
         self._modules = []
         n_boards = self.get_butia_count()
 
-        if self.debug:
+        if self._debug:
             print '=Listing Devices'
 
         for i, b in enumerate(self._bb):
@@ -79,7 +79,7 @@ class USB4Butia():
                 listi = b.get_listi()
                 s = b.get_handler_size()
 
-                if self.debug:
+                if self._debug:
                     print '===board', i
 
                 for m in range(0, s + 1):
@@ -89,7 +89,7 @@ class USB4Butia():
                     else:
                         complete_name = module_name + ':' +  str(m)
 
-                    if self.debug:
+                    if self._debug:
                         print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
 
                     if not(module_name == 'port'):
@@ -111,7 +111,7 @@ class USB4Butia():
                             b.devices.pop(m)
 
             except Exception, err:
-                if self.debug:
+                if self._debug:
                     print 'error module list', err
 
         return self._modules
@@ -122,7 +122,7 @@ class USB4Butia():
         """
         # current folder
         path_drivers = os.path.join(os.path.dirname(__file__), 'drivers')
-        if self.debug:
+        if self._debug:
             print 'Searching drivers in: ', path_drivers
         # normal drivers
         tmp = os.listdir(path_drivers)
@@ -146,19 +146,19 @@ class USB4Butia():
         """
         Get a specify driver
         """
-        if self.debug:
+        if self._debug:
             print 'Loading driver %s...' % driver
         abs_path = os.path.abspath(os.path.join(path, driver + '.py'))
         f = None
         try:
             f = imp.load_source(driver, abs_path)
         except:
-            if self.debug:
+            if self._debug:
                 print 'Cannot load %s' % driver, abs_path
         if f and hasattr(f, 'FUNCTIONS'):
             self._drivers_loaded[driver] = f.FUNCTIONS
         else:
-            if self.debug:
+            if self._debug:
                 print 'Driver not have FUNCTIONS'
 
     def callModule(self, modulename, board_number, number, function, params = []):
@@ -183,11 +183,11 @@ class USB4Butia():
                         board.add_device(number, dev)
                     return board.devices[number].call_function(function, params)
                 else:
-                    if self.debug:
+                    if self._debug:
                         print 'no open and no openable'
                     return ERROR
         except Exception, err:
-            if self.debug:
+            if self._debug:
                 print 'error call module', err
             return ERROR
 
@@ -210,7 +210,7 @@ class USB4Butia():
                 try:
                     info = b.get_info()
                 except:
-                    if self.debug:
+                    if self._debug:
                         print 'error refresh getinfo'
 
                 if info == ERROR:
@@ -228,7 +228,7 @@ class USB4Butia():
             try:
                 b.close_baseboard()
             except:
-                if self.debug:
+                if self._debug:
                     print 'error in close baseboard'
         self._bb = []
 
