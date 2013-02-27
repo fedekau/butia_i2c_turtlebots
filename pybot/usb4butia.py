@@ -39,7 +39,7 @@ class USB4Butia():
         self._drivers_loaded = {}
         self._bb = []
         self._modules = []
-        self.get_all_drivers()
+        self._get_all_drivers()
         self.find_butias(get_modules)
 
     def get_butia_count(self):
@@ -116,7 +116,7 @@ class USB4Butia():
 
         return self._modules
 
-    def get_all_drivers(self):
+    def _get_all_drivers(self):
         """
         Load the drivers for the differents devices
         """
@@ -131,7 +131,7 @@ class USB4Butia():
             if d.endswith('.py'):
                 name = d.replace('.py', '')
                 self._openables.append(name)
-                self.get_driver(path_drivers, name)
+                self._get_driver(path_drivers, name)
         # hotplug drivers
         path = os.path.join(path_drivers, 'hotplug')
         tmp = os.listdir(path)
@@ -140,9 +140,9 @@ class USB4Butia():
             if d.endswith('.py'):
                 name = d.replace('.py', '')
                 self._hotplug.append(name)
-                self.get_driver(path, name)
+                self._get_driver(path, name)
 
-    def get_driver(self, path, driver):
+    def _get_driver(self, path, driver):
         """
         Get a specify driver
         """
