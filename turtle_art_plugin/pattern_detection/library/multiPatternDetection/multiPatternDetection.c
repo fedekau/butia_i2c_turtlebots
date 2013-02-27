@@ -20,7 +20,7 @@ ObjectData_T    *object;
 int             objectnum;
 
 int xsize, ysize;
-int	thresh = 80;
+int	thresh = 150;
 int count = 0;
 
 /*Camera refresh times  */
@@ -109,11 +109,11 @@ void arMultiRefresh(void) {
 
 ObjectData_T  *arMultiGetObjectData( char *name ) {
 	double now = arUtilTimer();
-	if(now-last_refresh > refresh_windows )  {
+	//if(now-last_refresh > refresh_windows )  {
 		//take a new capture
 		// printf("refreshing cam \n");
-		arMultiRefresh();
-	} 
+		//arMultiRefresh();
+	//} 
 	int i;
 	for( i = 0; i < objectnum; i++ ) {
 		if(strcmp(name, object[i].name)==0) { 
