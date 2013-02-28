@@ -3,7 +3,6 @@
 #include <string.h>
 #include <math.h>
 
-#include <AR/gsub.h>
 #include <AR/param.h>
 #include <AR/ar.h>
 #include <AR/video.h>
@@ -20,7 +19,7 @@ ObjectData_T    *object;
 int             objectnum;
 
 int xsize, ysize;
-int	thresh = 80;
+int	thresh = 150;
 int count = 0;
 
 /*Camera refresh times  */
@@ -109,11 +108,11 @@ void arMultiRefresh(void) {
 
 ObjectData_T  *arMultiGetObjectData( char *name ) {
 	double now = arUtilTimer();
-	if(now-last_refresh > refresh_windows )  {
+	//if(now-last_refresh > refresh_windows )  {
 		//take a new capture
 		// printf("refreshing cam \n");
-		arMultiRefresh();
-	} 
+		//arMultiRefresh();
+	//} 
 	int i;
 	for( i = 0; i < objectnum; i++ ) {
 		if(strcmp(name, object[i].name)==0) { 
@@ -256,6 +255,5 @@ void arMultiCleanup(void) {
 	free(gVid);
 	gVid= NULL;
 
-	argCleanup();
 	printf("fin CleanUP");
 }
