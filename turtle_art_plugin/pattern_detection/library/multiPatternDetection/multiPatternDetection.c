@@ -3,7 +3,6 @@
 #include <string.h>
 #include <math.h>
 
-#include <AR/gsub.h>
 #include <AR/param.h>
 #include <AR/ar.h>
 #include <AR/video.h>
@@ -256,6 +255,5 @@ void arMultiCleanup(void) {
 	free(gVid);
 	gVid= NULL;
 
-	argCleanup();
 	printf("fin CleanUP");
 }
