@@ -3,7 +3,6 @@
 #include <string.h>
 #include <math.h>
 
-#include <AR/gsub.h>
 #include <AR/param.h>
 #include <AR/ar.h>
 #include <AR/video.h>
@@ -77,9 +76,9 @@ void arMultiRefresh(void) {
 
 				//argDrawSquare(marker_info[j].vertex,0,0);
 
-				if( k == -1 )
-					k = j;
-				else
+				if( k == -1 ) 
+					k = j; 
+				else 
 					if( marker_info[k].cf < marker_info[j].cf ) k = j; //better confidence factor
 			}
 		}
@@ -109,14 +108,14 @@ void arMultiRefresh(void) {
 
 ObjectData_T  *arMultiGetObjectData( char *name ) {
 	double now = arUtilTimer();
-// 	if(now-last_refresh > refresh_windows )  {
+	//if(now-last_refresh > refresh_windows )  {
 		//take a new capture
 		// printf("refreshing cam \n");
 		//arMultiRefresh();
-// 	}
+	//} 
 	int i;
 	for( i = 0; i < objectnum; i++ ) {
-		if(strcmp(name, object[i].name)==0) {
+		if(strcmp(name, object[i].name)==0) { 
 			return &object[i];
 		}
 	}
@@ -124,15 +123,15 @@ ObjectData_T  *arMultiGetObjectData( char *name ) {
 }
 
 int arMultiMarkerTrigDist(char *id) {
-	double      cam_trans[3][4];
+	double      cam_trans[3][4];  
 	double      quat[4], pos[3];
 	
 	
 	//printf("name %s\n", id);
-	ObjectData_T *objeto = arMultiGetObjectData(id);
+	ObjectData_T *objeto = arMultiGetObjectData(id); 
 	if(objeto != NULL) {
 
-		if ( objeto->visible){
+		if ( objeto->visible){ 
 			if( arUtilMatInv(objeto->trans, cam_trans) < 0 ){
 				return -1;
 			}else{
@@ -147,7 +146,7 @@ int arMultiMarkerTrigDist(char *id) {
 		}else{
 			return -1;
 		}
-
+ 
 	} else {
 		// dio error
 		printf("arMultiMarkerTrigDist - undefined id\n");
@@ -159,10 +158,10 @@ int arMultiMarkerTrigDist(char *id) {
 int arMultiIsMarkerPresent(char *id) {
 
 
-	ObjectData_T *objeto = arMultiGetObjectData(id);
+	ObjectData_T *objeto = arMultiGetObjectData(id); 
 	if(objeto != NULL) {
 
-		return  objeto->visible ;
+		return  objeto->visible ; 
 	} else {
 		// dio error
 		printf("arMultiIsMarkerPresent - undefined id\n");
@@ -176,8 +175,8 @@ int arMultiIsMarkerPresent(char *id) {
  * Reads the name of the objects defined in object_data
  * puts the names of the ids concatenated with ';' in the output buffer.
  * returns 1 if ok, 0 if no object is read.
- *
- */
+ * 
+ */ 
 int arMultiGetIdsMarker( char* _data_path,char* output) {
 	if((_data_path != NULL)) {
 		data_path = _data_path;
@@ -256,6 +255,5 @@ void arMultiCleanup(void) {
 	free(gVid);
 	gVid= NULL;
 
-	argCleanup();
 	printf("fin CleanUP");
 }
