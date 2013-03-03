@@ -128,13 +128,6 @@ pyusbGIT: pyusb/.git
 	$(MAKE) SUBMODULE=pyusb SUBMODULEVER=$(PYUSB_VERSION) checkoutsm
 
 
-################ Support for lua (bobot-server) ######################
-
-butiaXO:
-	# I want butiaXO folder be OK! (needed by plugin)
-	#make -C ../butiaXO
-
-
 ################ Construction...
 
 mktmpfolder:
@@ -154,7 +147,7 @@ apply_localization: walterGIT mktmpfolder extrasGIT
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
 
-apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
+apply_hard_plugins: apply_localization walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
 	cp -rLf butia               $(BUILDDIR)/plugins/
 	cp -rLf sumtia              $(BUILDDIR)/plugins/
 	cp -rLf followme            $(BUILDDIR)/plugins/
@@ -180,7 +173,7 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoG
 pattern_detection_compile:
 	$(MAKE) -C pattern_detection/library
 
-apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT apply_localization butiaXO pattern_detection_compile
+apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT apply_localization pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia             $(BUILDDIR)/plugins/butia
 	ln -s `pwd`/sumtia            $(BUILDDIR)/plugins/sumtia
@@ -321,7 +314,6 @@ uninstall-rules:
 
 
 clean: clean-tmp clean-plugins clean-xo clean-builddir
-	$(MAKE) -C ../butiaXO clean
 	$(MAKE) -C pattern_detection/library clean
 	# this remove only if it's a symlink ; don't remove if installed
 	rm -f ~/Activities/TurtleBots.activity
@@ -344,7 +336,7 @@ clean-plugins:
 .PHONY: all help \
  clean clean-tmp clean-builddir clean-xo clean-plugins \
  first walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT \
- butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins \
+ mktmpfolder apply_hard_plugins apply_sym_plugins \
  genpot genpot_notraslated updatepo xo pyusbGIT \
  install install-strip \
  uninstall uninstall-strip \
