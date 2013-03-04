@@ -56,19 +56,22 @@ class ButiaAX12ID(activity.Activity):
         #The canvas is the main section of every Sugar Window.
         # It fills all the area below the toolbox.
 
-        box = gtk.VBox()
+        box = gtk.HBox()
+        vbox = gtk.VBox()
         img = gtk.Image()
+        fbcidl = gtk.Fixed()
+        fbcidr = gtk.Fixed()
+        fbcid = gtk.Fixed()
+        fim = gtk.Fixed()
 
         img.set_from_file("activity/wall.svg")
         img.show()
-        #box.add(img)
 
-
-
-        boxl = gtk.HBox(False, 1)
-        #boxl.set_spacing(100)
-        #box1 = gtk.HBox(False, 1)
-        #boxl.set_size_request (200, 200)
+        self.add(fbcidl)
+        self.add(fbcidr)
+        self.add(fbcid)
+        self.add(fim)        
+        
 		#Boton change ID left motor
         button_acceptl = gtk.Button(_("Change ID (LEFT motor)"))
         #button_acceptl.set_size_request(100, 100)
@@ -77,6 +80,37 @@ class ButiaAX12ID(activity.Activity):
         button_acceptr = gtk.Button(_("Change ID (RIGHT motor)"))
         #button_acceptr.set_size_request(100, 100)
         button_acceptr.connect("clicked", self.warning_messageIDR)
+
+        fbcidl.add(button_acceptl)
+        fbcidr.add(button_acceptr)
+        
+        fbcidl.put(button_acceptl, 10, 50)
+        fim.put(img, 1, 100)
+        fbcidr.put(button_acceptr, 10, 60)
+
+        #fim.set_size_request(1, 1)
+        
+#        button_acceptl.show()
+#        button_acceptr.show()
+
+#        fbcidl.show()
+#        fbcidr.show()
+
+        vbox.add(fbcidl)
+        vbox.add(fbcidr)
+        box.add(vbox)
+        box.add(fim)
+        box.show_all()
+
+
+        '''     #box.add(img)
+
+
+
+        boxl = gtk.HBox(False, 1)
+        #boxl.set_spacing(100)
+        #box1 = gtk.HBox(False, 1)
+        #boxl.set_size_request (200, 200)
         button_acceptl.show()
         button_acceptr.show()
         #boxl.pack_start(button_acceptl, True, True)
@@ -99,10 +133,11 @@ class ButiaAX12ID(activity.Activity):
         boxr.show()
         box.add(boxr)
 		  
-        box.show()
+        box.show()'''
 
         self.set_canvas(box)
-		  
+#	return box
+  
 	#levantar bobot
     def bobot_launch(self):
 
