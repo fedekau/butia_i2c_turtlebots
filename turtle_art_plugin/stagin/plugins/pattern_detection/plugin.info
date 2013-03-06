@@ -1,4 +1,5 @@
 [Plugin]
 name=pattern_detection
 palette=pattern_detection
-version=18
+version=19
+

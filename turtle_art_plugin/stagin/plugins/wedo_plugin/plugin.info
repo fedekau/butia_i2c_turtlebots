@@ -1,4 +1,5 @@
 [Plugin]
 name=wedo_plugin
 palette=WeDo
-version=18
+version=19
+
