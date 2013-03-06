@@ -1,9 +1,15 @@
 turtlebots (19-r0) unstable; urgency=low
 
-  * core: +based on TurtleBlocks v172+
-  * butia: /use Pybot for the robot control
+  * core: +based on TurtleBlocks v173
+  * add Arduino plugin
+  * add pattern detection plugin
+  * butia: /uses Pybot instead Bobot
+  * butia: +add compatibility with XO-1.75 (ARM)
+  * butia: /fix some bugs on refresh blocks
+  * butia: +new drivers
+  * +new translations
 
- -- Alan Aguiar <alanjas@hotmail.com>  Tue, 26 Feb 2013 18:33:53 -0200
+ -- Alan Aguiar <alanjas@hotmail.com>  Wed, 06 Mar 2013 17:19:52 -0200
 
 turtlebots (18-r1) unstable; urgency=low
 
