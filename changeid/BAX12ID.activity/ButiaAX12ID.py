@@ -80,13 +80,21 @@ class ButiaAX12ID(activity.Activity):
         button_acceptr = gtk.Button(_("Change ID (RIGHT motor)"))
         #button_acceptr.set_size_request(100, 100)
         button_acceptr.connect("clicked", self.warning_messageIDR)
+        #Boton change ID motor
+        button_accept = gtk.Button(_("Change ID"))
+        #button_acceptr.set_size_request(100, 100)
+        button_accept.connect("clicked", self.warning_messageID)
+
 
         fbcidl.add(button_acceptl)
         fbcidr.add(button_acceptr)
+        fbcid.add(button_accept)
         
         fbcidl.put(button_acceptl, 10, 50)
+        fbcidr.put(button_acceptr, 10, -200)
+        fbcid.put(button_accept, 10, -200)
         fim.put(img, 1, 100)
-        fbcidr.put(button_acceptr, 10, 60)
+
 
         #fim.set_size_request(1, 1)
         
@@ -98,6 +106,8 @@ class ButiaAX12ID(activity.Activity):
 
         vbox.add(fbcidl)
         vbox.add(fbcidr)
+        vbox.add(fbcid)
+
         box.add(vbox)
         box.add(fim)
         box.show_all()
@@ -191,6 +201,31 @@ class ButiaAX12ID(activity.Activity):
 		  #mensaje change id right
     def warning_messageIDR(self, widget):
         msg = _('Please connect ONLY the RIGHT motor to the board, and the power to this motor.\nNot disconnect the board and not close this activity.\nDo you want to continue?')
+        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
+        dialog.set_title(_('Changing motor ID...'))
+        res = dialog.run()
+        dialog.destroy()
+
+        self.bobot_launch()
+
+        if res == gtk.RESPONSE_OK:
+            
+            #dialog = self.initing()
+				#prender led (broadcast, reg, value)
+            self.butia.write_info('254', '3', '2' )
+            #self.butia.write_info('254', '25', '1' )
+            if self.butia:
+                self.butia.close()
+                self.butia.closeService()
+            if self.bobot:
+                self.bobot.kill()
+
+        elif res ==  gtk.RESPONSE_CANCEL:
+            pass
+
+		  #mensaje change id
+    def warning_messageID(self, widget):
+        msg = _('Please connect to the board ONLY the motor or motors that you want to change it id.\nNot disconnect the board and not close this activity.\nDo you want to continue?')
         dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
