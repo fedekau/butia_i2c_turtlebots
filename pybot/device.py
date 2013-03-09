@@ -113,29 +113,23 @@ class Device():
         """
         Check if this device has func function
         """
-        return self.functions.has_key(func)
+        return hasattr(self.functions, func)
 
     def call_function(self, func, params):
         """
         Call specify func function with params parameters
         """
-        #self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
-
         f = getattr(self.functions, func)
-
         return f(self, *params)
 
-    def ordinal(self, string):
-        return to_ord(string)
-
-def to_ord(string):
-    """
-    Useful function to convert characters into ordinal Unicode
-    """
-    s = []
-    for l in string:
-        o = ord(l)
-        if not(o == 0):
-            s.append(o)
-    return s
+    def to_ord(self, string):
+        """
+        Useful function to convert characters into ordinal Unicode
+        """
+        s = []
+        for l in string:
+            o = ord(l)
+            if not(o == 0):
+                s.append(o)
+        return s
 
