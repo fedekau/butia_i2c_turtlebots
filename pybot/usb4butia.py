@@ -38,6 +38,7 @@ class USB4Butia():
         self._openables = []
         self._drivers_loaded = {}
         self._bb = []
+        self._b_ports = []
         self._modules = []
         self._get_all_drivers()
         self.find_butias(get_modules)
@@ -52,15 +53,31 @@ class USB4Butia():
         """
         Search for connected USB4Butia boards and open it
         """
+        devices_ports = []
         devices = com_usb.find()
         for dev in devices:
-            b = Baseboard(dev)
-            try:
-                b.open_baseboard()
-                self._bb.append(b)
-            except:
-                if self._debug:
-                    print 'error open baseboard'
+            n = dev.device.dev.address
+            print n
+            devices_ports.append(n)
+            if not(n in self._b_ports):
+                b = Baseboard(dev)
+                try:
+                    b.open_baseboard()
+                    self._bb.append(b)
+                    self._b_ports.append(n)
+                except:
+                    if self._debug:
+                        print 'error open baseboard'
+        for b in self._bb:
+            n = b.dev.device.dev.address
+            print n
+            if not(n in devices_ports):
+                self._bb.remove(b)
+                try:
+                    b.close_baseboard()
+                except:
+                    pass
+            
         if get_modules:
             self.get_modules_list()
 
@@ -202,23 +219,7 @@ class USB4Butia():
         Refresh: if no boards presents, search for them.. else, check if 
         the boards continues present
         """
-        if self._bb == []:
-            self.find_butias(False)
-        else:
-            for b in self._bb:
-                info = ERROR
-                try:
-                    info = b.get_info()
-                except:
-                    if self._debug:
-                        print 'error refresh getinfo'
-
-                if info == ERROR:
-                    self._bb.remove(b)
-                    try:
-                        b.close_baseboard()
-                    except:
-                        pass
+        self.find_butias(False)
 
     def close(self):
         """
