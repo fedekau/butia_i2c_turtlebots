@@ -81,7 +81,7 @@ class Device():
         """
         Open this device. Return the handler
         """
-        module_name = self.ordinal(self.name)
+        module_name = self.to_ord(self.name)
         module_name.append(0)
         
         open_packet_length = HEADER_PACKET_SIZE + len(module_name) 
