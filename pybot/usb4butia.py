@@ -57,7 +57,6 @@ class USB4Butia():
         devices = com_usb.find()
         for dev in devices:
             n = dev.device.dev.address
-            print n
             devices_ports.append(n)
             if not(n in self._b_ports):
                 b = Baseboard(dev)
@@ -68,16 +67,17 @@ class USB4Butia():
                 except:
                     if self._debug:
                         print 'error open baseboard'
+
         for b in self._bb:
             n = b.dev.device.dev.address
-            print n
             if not(n in devices_ports):
                 self._bb.remove(b)
+                self._b_ports.remove(n)
                 try:
                     b.close_baseboard()
                 except:
                     pass
-            
+
         if get_modules:
             self.get_modules_list()
 
