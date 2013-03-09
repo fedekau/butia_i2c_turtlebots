@@ -169,15 +169,11 @@ class USB4Butia():
         f = None
         try:
             f = imp.load_source(driver, abs_path)
+            self._drivers_loaded[driver] = f
         except:
             if self._debug:
                 print 'Cannot load %s' % driver, abs_path
-        if f and hasattr(f, 'FUNCTIONS'):
-            self._drivers_loaded[driver] = f.FUNCTIONS
-        else:
-            if self._debug:
-                print 'Driver not have FUNCTIONS'
-
+        
     def callModule(self, modulename, board_number, number, function, params = []):
         """
         Call one function: function for module: modulename in board: board_name

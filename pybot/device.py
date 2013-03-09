@@ -45,44 +45,45 @@ class Device():
         self.handler = handler
         if not(self.handler == None):
             self.handler_tosend = self.handler * 8
-        self.functions = {}
+        self.functions = None
         self.debug = False
 
-    def add_functions(self, func_list):
+    def add_functions(self, func):
         """
         Add the functions to current device
         """
-        for f in func_list:
-            self.functions[f['name']] = f
+        self.functions = func
 
-    def module_send(self, call, params_length, params):
+    def send(self, msg):
         """
         Send to the device the specifiy call and parameters
         """
-        if len(params) == 1:
+        """if len(params) == 1:
             if type(params[0]) == str:
-                params = to_ord(params[0])
+                params = to_ord(params[0])"""
 
-        send_packet_length = 0x04 + len(params)
+        length = 0x04 + len(msg)
 
         w = []
         w.append(self.handler_tosend)
-        w.append(send_packet_length)
+        w.append(length)
         w.append(NULL_BYTE)
-        w.append(call)
-        for p in params:
+        for p in msg:
             w.append(p)
 
         self.baseboard.dev.write(w)
 
-    def module_read(self):
+    def read(self, lenght):
         """
         Read the device data
         """
         raw = self.baseboard.dev.read(MAX_BYTES)
         if self.debug:
             print 'device:module_rad return', raw
-        if raw[1] == 5:
+
+        return raw[3:]
+
+        """if raw[1] == 5:
             if raw[4] == 255:
                 return -1
             else:
@@ -94,7 +95,7 @@ class Device():
             for r in raw[4:]:
                 if not(r == 0):
                     ret = ret + chr(r)
-            return ret
+            return ret"""
 
     def module_open(self):
         """
@@ -138,8 +139,11 @@ class Device():
         """
         Call specify func function with params parameters
         """
-        self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
-        return self.module_read()
+        #self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
+
+        f = getattr(self.functions, func)
+
+        return f(self, *params)
 
 def to_ord(string):
     """
