@@ -58,12 +58,7 @@ class Device():
         """
         Send to the device the specifiy call and parameters
         """
-        """if len(params) == 1:
-            if type(params[0]) == str:
-                params = to_ord(params[0])"""
-
         length = 0x04 + len(msg)
-
         w = []
         w.append(self.handler_tosend)
         w.append(length)
@@ -80,28 +75,13 @@ class Device():
         raw = self.baseboard.dev.read(MAX_BYTES)
         if self.debug:
             print 'device:module_rad return', raw
-
         return raw[3:]
-
-        """if raw[1] == 5:
-            if raw[4] == 255:
-                return -1
-            else:
-                return raw[4]
-        elif raw[1] == 6:
-            return raw[4] + raw[5] * 256
-        else:
-            ret = ''
-            for r in raw[4:]:
-                if not(r == 0):
-                    ret = ret + chr(r)
-            return ret"""
 
     def module_open(self):
         """
         Open this device. Return the handler
         """
-        module_name = to_ord(self.name)
+        module_name = self.ordinal(self.name)
         module_name.append(0)
         
         open_packet_length = HEADER_PACKET_SIZE + len(module_name) 
@@ -144,6 +124,9 @@ class Device():
         f = getattr(self.functions, func)
 
         return f(self, *params)
+
+    def ordinal(self, string):
+        return to_ord(string)
 
 def to_ord(string):
     """
