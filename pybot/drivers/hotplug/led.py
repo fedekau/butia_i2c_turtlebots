@@ -10,6 +10,6 @@ def getVersion(dev):
 def turn(dev, on):
     msg = [TURN, on]
     dev.send(msg)
-    raw = dev.read(1)
-    return raw[0]
+    raw = dev.read(2)
+    return raw[1]
 

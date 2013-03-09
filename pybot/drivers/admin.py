@@ -2,18 +2,11 @@
 RESET = 0xFF
 GET_FIRMWARE_VERSION = 0xFE
 
-f1 = {
-    'name': 'reset',
-    'call': RESET,
-    'params': 0,
-    'read': 0
-}
+def getVersion(dev):
+    dev.send([GET_FIRMWARE_VERSION])
+    raw = dev.read(2)
+    return raw[1]
 
-f2 = {
-    'name': 'getVersion',
-    'call': GET_FIRMWARE_VERSION,
-    'params': 0,
-    'read': 1
-}
+def reset(dev):
+    dev.send([RESET])
 
-FUNCTIONS = [f1, f2]
