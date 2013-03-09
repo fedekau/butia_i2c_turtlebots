@@ -170,12 +170,12 @@ class robot:
     #######################################################################
 
     def set2MotorSpeed(self, leftSense = 0, leftSpeed = 0, rightSense = 0, rightSpeed = 0, board = 0):
-        msg_l = str(leftSense) + ' ' + str(int(leftSpeed / 256.0)) + ' ' + str(leftSpeed % 256)
-        msg_r = str(rightSense) + ' ' + str(int(rightSpeed / 256.0)) + ' ' + str(rightSpeed % 256)
+        msg_l = str(leftSense) + ' ' + str(leftSpeed)
+        msg_r = str(rightSense) + ' ' + str(rightSpeed)
         return self.callModule('motors', board, 0, 'setvel2mtr', msg_l + ' ' + msg_r)
      
     def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0, board = 0):
-        msg = str(idMotor) + ' ' + str(sense) + ' ' + str(int(speed / 256.0)) + ' ' + str(speed % 256)
+        msg = str(idMotor) + ' ' + str(sense) + ' ' + str(speed)
         return self.callModule('motors', board, 0, 'setvelmtr', msg)
 
     """#######################################################################
