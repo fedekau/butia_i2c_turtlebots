@@ -19,12 +19,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from pybot import butiaAPI
 import time
 import threading
 import re
 import subprocess
 import commands
+from pybot import pybot_client
 
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
@@ -714,7 +714,7 @@ class Butia(Plugin):
         # Sure that bobot is running
         time.sleep(2)
 
-        self.butia = butiaAPI.robot()
+        self.butia = pybot_client.robot()
 
         self.pollthread=threading.Timer(2, self.bobot_poll)
         self.pollthread.start()

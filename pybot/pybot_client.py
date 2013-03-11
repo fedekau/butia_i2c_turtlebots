@@ -27,14 +27,14 @@ import string
 import math
 import threading
 import errno
-from butia_functions import functions
+from functions import ButiaFunctions
 
 ERROR = -1
 
 PYBOT_HOST = 'localhost'
 PYBOT_PORT = 2009
 
-class robot(functions):
+class robot(ButiaFunctions):
     
     def __init__(self, host = PYBOT_HOST, port = PYBOT_PORT):
         """

@@ -27,11 +27,11 @@ import imp
 import com_usb
 from baseboard import Baseboard
 from device import Device
-from butia_functions import functions
+from functions import ButiaFunctions
 
 ERROR = -1
 
-class USB4Butia(functions):
+class USB4Butia(ButiaFunctions):
 
     def __init__(self, debug=False, get_modules=True):
         self._debug = debug
