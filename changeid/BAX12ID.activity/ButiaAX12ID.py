@@ -16,14 +16,16 @@ from sugar.activity.widgets import ActivityToolbarButton
 from sugar.activity.widgets import StopButton
 from sugar.graphics.toolbarbox import ToolbarButton
 
-
 class ButiaAX12ID(activity.Activity):
+
+    sel = ""
 
 
     def __init__(self, handle):
         activity.Activity.__init__(self, handle)
         self.build_toolbar()
         self.build_canvas()
+
 	
     def build_toolbar(self):
         # Creates the Toolbox. It contains the Activity Toolbar, which is the
@@ -63,10 +65,14 @@ class ButiaAX12ID(activity.Activity):
         fbcidr = gtk.Fixed()
         fbcid = gtk.Fixed()
         fim = gtk.Fixed()
+        fcom = gtk.Fixed()
+        
+        #combo = gtk.ComboBox()
 
         img.set_from_file("activity/wall.svg")
         img.show()
 
+        self.add(fcom)
         self.add(fbcidl)
         self.add(fbcidr)
         self.add(fbcid)
@@ -85,65 +91,53 @@ class ButiaAX12ID(activity.Activity):
         #button_acceptr.set_size_request(100, 100)
         button_accept.connect("clicked", self.warning_messageID)
 
+        
+        #bcb = ComboID()
+
+
+        # ID combobox
+        l = gtk.ListStore(str)
+        combo = gtk.ComboBox(l)
+        cell = gtk.CellRendererText()
+        combo.pack_start(cell, True)
+        combo.add_attribute(cell, 'text', 0)
+        combo.append_text('Select ID:')
+        for i in range(0, 253):
+            combo.append_text(str(i))
+        combo.set_active(0)
+
+        def changed_cb(self):
+            #self.sel = combo.get_active()
+            model = combo.get_model()
+            index = combo.get_active()
+            if index:
+                ButiaAX12ID.sel = model[index][0]
+            return
+
+        combo.connect('changed', changed_cb)
+        
+
+
+
 
         fbcidl.add(button_acceptl)
         fbcidr.add(button_acceptr)
         fbcid.add(button_accept)
+        fcom.add(combo)
         
-        fbcidl.put(button_acceptl, 10, 50)
-        fbcidr.put(button_acceptr, 10, -200)
-        fbcid.put(button_accept, 10, -200)
-        fim.put(img, 1, 100)
-
-
-        #fim.set_size_request(1, 1)
-        
-#        button_acceptl.show()
-#        button_acceptr.show()
-
-#        fbcidl.show()
-#        fbcidr.show()
+        fbcidl.put(button_acceptl, 10, 20)
+        fbcidr.put(button_acceptr, 10, 20)
+        fbcid.put(button_accept, 10, 20)
+        fcom.put(combo, 10, 20)
+        fim.put(img, 1, 20)
 
         vbox.add(fbcidl)
         vbox.add(fbcidr)
         vbox.add(fbcid)
-
+        vbox.add(fcom)
         box.add(vbox)
         box.add(fim)
         box.show_all()
-
-
-        '''     #box.add(img)
-
-
-
-        boxl = gtk.HBox(False, 1)
-        #boxl.set_spacing(100)
-        #box1 = gtk.HBox(False, 1)
-        #boxl.set_size_request (200, 200)
-        button_acceptl.show()
-        button_acceptr.show()
-        #boxl.pack_start(button_acceptl, True, True)
-        #boxl.pack_start(button_acceptr, True, False)        
-        #boxl.add(box1)
-        boxl.add(button_acceptl)
-        #img.set_size_request(300, 300)
-        boxl.add(img)
-        boxl.add(button_acceptr)
-        boxl.show()
-        box.add(boxl)
-		  
-
-        boxr = gtk.VBox()
-        boxr.set_size_request (300,300)
-        button_accept = gtk.Button(_("Change ID"))
-        button_accept.connect("clicked", self.warning_messageIDR)
-        button_accept.show()
-        boxr.add(button_accept)
-        boxr.show()
-        box.add(boxr)
-		  
-        box.show()'''
 
         self.set_canvas(box)
 #	return box
@@ -225,7 +219,7 @@ class ButiaAX12ID(activity.Activity):
 
 		  #mensaje change id
     def warning_messageID(self, widget):
-        msg = _('Please connect to the board ONLY the motor or motors that you want to change it id.\nNot disconnect the board and not close this activity.\nDo you want to continue?')
+        msg = _('Please connect to the board ONLY the motor or motors that you want to change it id.\nYour motor''s new ID will be ' + str(ButiaAX12ID.sel) + '\nNot disconnect the board and not close this activity.\nDo you want to continue?')
         dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
@@ -234,11 +228,7 @@ class ButiaAX12ID(activity.Activity):
         self.bobot_launch()
 
         if res == gtk.RESPONSE_OK:
-            
-            #dialog = self.initing()
-				#prender led (broadcast, reg, value)
-            self.butia.write_info('254', '3', '2' )
-            #self.butia.write_info('254', '25', '1' )
+            self.butia.write_info('254', '3', str(ButiaAX12ID.sel) )
             if self.butia:
                 self.butia.close()
                 self.butia.closeService()
@@ -247,4 +237,3 @@ class ButiaAX12ID(activity.Activity):
 
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
-
