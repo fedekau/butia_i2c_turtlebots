@@ -98,10 +98,9 @@ class Device():
         if self.debug:
             print 'device:module_open return', raw
 
-        h = raw[4]
-        self.handler = h
+        self.handler = raw[4]
         self.handler_tosend = self.handler * 8
-        return h
+        return self.handler
 
     def has_function(self, func):
         """
@@ -114,7 +113,14 @@ class Device():
         Call specify func function with params parameters
         """
         f = getattr(self.functions, func)
-        return f(self, *params)
+        if self.name == 'lback':
+            return f(self, params)
+        else:
+            par = []
+            for e in params:
+                par.append(int(e))
+
+            return f(self, *par)
 
     def to_ord(self, string):
         """

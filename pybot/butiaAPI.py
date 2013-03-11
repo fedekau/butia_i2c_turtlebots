@@ -99,7 +99,7 @@ class robot(functions):
     # call the module 'modulename'
     def callModule(self, modulename, board_number, number, function, params = ''):
         if number == '':
-            number = 0
+            number = '0'
         msg = 'CALL ' + modulename + '@' + str(board_number) + ':' + str(number) + ' ' + function
         if params != '':
             msg += ' ' + params
@@ -110,7 +110,10 @@ class robot(functions):
             try:
                 ret = float(ret)
             except:
-                ret = ERROR
+                try:
+                    ret = str(ret)
+                except:
+                    ret = ERROR
         return ret
 
     # Close bobot service

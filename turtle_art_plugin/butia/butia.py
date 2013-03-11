@@ -461,13 +461,13 @@ class Butia(Plugin):
                                         blk.set_visibility(False)
 
                                 label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
-                                value = blk_index
-                                board = 0
+                                value = str(blk_index)
+                                board = '0'
                                 special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
                             else:
                                 val = self.match_dict[s]
-                                value = int(val[0])
-                                board = int(val[1])
+                                value = val[0]
+                                board = val[1]
                                 label = label_name_from_device_id[blk_name] + ':' + val[0] + ' ' + _('Butia')
                                 if boards_present > 1:
                                     label = label + ' ' + val[1]
@@ -478,7 +478,7 @@ class Butia(Plugin):
 
                             if module == 'led':
                                 self.tw.lc.def_prim(blk.name, 1, 
-                                lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x, z))
+                                lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x,z))
                             else:
                                 self.tw.lc.def_prim(blk.name, 0, 
                                 lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
@@ -543,15 +543,15 @@ class Butia(Plugin):
         left = int(left)
         right = int(right)
         if left > 0:
-            sentLeft = 0
+            sentLeft = '0'
         else:
-            sentLeft = 1
+            sentLeft = '1'
         if right > 0:
-            sentRight = 0
+            sentRight = '0'
         else:
-            sentRight = 1
+            sentRight = '1'
         if self.butia:
-            self.butia.set2MotorSpeed(sentLeft, abs(left), sentRight, abs(right))
+            self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
     def moveButia(self, left, right):
         self.set_vels(left, right)
@@ -584,49 +584,49 @@ class Butia(Plugin):
         else:
             return ERROR
 
-    def buttonButia(self, sensorid=0, boardid=0):
+    def buttonButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getButton(sensorid, boardid)
         else:
             return ERROR
 
-    def lightButia(self, sensorid=0, boardid=0):
+    def lightButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getLight(sensorid, boardid)
         else:
             return ERROR
 
-    def distanceButia(self, sensorid=0, boardid=0):
+    def distanceButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getDistance(sensorid, boardid)
         else:
             return ERROR
 
-    def grayButia(self, sensorid=0, boardid=0):
+    def grayButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getGray(sensorid, boardid)
         else:
             return ERROR
         
-    def temperatureButia(self, sensorid=0, boardid=0):
+    def temperatureButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getTemperature(sensorid, boardid)
         else:
             return ERROR
 
-    def resistanceButia(self, sensorid=0, boardid=0):
+    def resistanceButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getResistance(sensorid, boardid)
         else:
             return ERROR
 
-    def voltageButia(self, sensorid=0, boardid=0):
+    def voltageButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getVoltage(sensorid, boardid)
         else:
             return ERROR
 
-    def ledButia(self, value, sensorid=0, boardid=0):
+    def ledButia(self, value, sensorid='0', boardid='0'):
         if self.butia:
             value = int(value)
             if (value < 0) or (value > 1):

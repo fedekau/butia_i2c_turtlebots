@@ -45,15 +45,6 @@ class Server():
         self.clients = {}
         self.robot = usb4butia.USB4Butia(self.debug)
 
-    def call_aux(self, modulename, board_number, number, function, params):
-        if modulename == 'lback':
-            par = params
-        else:
-            par = []
-            for e in params:
-                par.append(int(e))
-        return self.robot.callModule(modulename, board_number, number, function, par)
-
     def init_server(self):
 
         inputs = [self.socket]
@@ -81,8 +72,6 @@ class Server():
                         r = data.replace('\r', '')
                         r = r.replace('\n', '')
                         r = r.split(' ')
-
-                        #print 'split', r
 
                         if len(r) > 0:
                             if r[0] == 'QUIT':
@@ -122,8 +111,10 @@ class Server():
                                         else:
                                             modulename = mbn
                                     function = r[2]
-                                    par = r[3:]
-                                    result = self.call_aux(modulename, int(board), int(number), function, par)
+                                    par = ''
+                                    for p in r[3:]:
+                                        par = par + ' ' + str(p)
+                                    result = self.robot.callModule(modulename, board, number, function, par)
 
                         result = str(result)
                         try:

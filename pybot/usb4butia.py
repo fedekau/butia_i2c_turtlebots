@@ -174,12 +174,14 @@ class USB4Butia(functions):
             if self._debug:
                 print 'Cannot load %s' % driver, abs_path
         
-    def callModule(self, modulename, board_number, number, function, params = []):
+    def callModule(self, modulename, board_number, number, function, params = ''):
         """
         Call one function: function for module: modulename in board: board_name
         with handler: number (only if the module is pnp, else, the parameter is
         None) with parameteres: params
         """
+        board_number = int(board_number)
+        number = int(number)
         try:
             board = self._bb[board_number]
             if board.devices.has_key(number) and (board.devices[number].name == modulename):

@@ -14,146 +14,148 @@ class functions():
         module_list = self.get_modules_list()
         return (module_name in module_list)
 
-    def loopBack(self, data, board=0):
+    def loopBack(self, data, board='0'):
         """
         LoopBack command: send data to the board and get the result. If all is ok
         the return must be exactly of the data parameter
         """
-        return self.callModule('lback', board, 0, 'send', [data])
+        return self.callModule('lback', str(board), '0', 'send', str(data))
 
     ############################## Movement calls ##############################
 
-    def set2MotorSpeed(self, leftSense = 0, leftSpeed = 0, rightSense = 0, rightSpeed = 0, board = 0):
+    def set2MotorSpeed(self, leftSense='0', leftSpeed='0', rightSense='0', rightSpeed='0', board='0'):
         """
         Set the speed of 2 motors. The sense is 0 or 1, and the speed is
         between 0 and 1023
         """
-        msg = [int(leftSense), int(leftSpeed), int(rightSense), int(rightSpeed)]
-        return self.callModule('motors', board, 0, 'setvel2mtr', msg)
+        msg = str(leftSense) + ' ' + str(leftSpeed) + ' ' + str(rightSense)
+        msg = msg + ' ' +  str(rightSpeed)
+        return self.callModule('motors', str(board), '0', 'setvel2mtr', msg)
      
-    def setMotorSpeed(self, idMotor = 0, sense = 0, speed = 0, board = 0):
+    def setMotorSpeed(self, idMotor='0', sense='0', speed='0', board='0'):
         """
         Set the speed of one motor. idMotor = 0 for left motor and 1 for the
         right motor. The sense is 0 or 1, and the speed is between 0 and 1023
         """
-        msg = [idMotor, sense, int(speed)]
-        return self.callModule('motors', board, 0, 'setvelmtr', msg)
+        msg = str(idMotor) + ' ' + str(sense) + ' ' + str(speed)
+        return self.callModule('motors', str(board), '0', 'setvelmtr', msg)
 
 
     ##################### Operations for ax.lua driver #########################
 
-    def wheel_mode(self, idMotor = '0'):
-        msg = idMotor
+    def wheel_mode(self, idMotor='0'):
+        msg = str(idMotor)
         return self.callModule('ax', 'wheel_mode', msg)
      
-    def joint_mode(self, idMotor = '0', min = '0', max = '1023'):
-        msg = idMotor + ' ' + min + ' ' + max
+    def joint_mode(self, idMotor='0', _min='0', _max='1023'):
+        msg = str(idMotor) + ' ' + str(_min) + ' ' + str(_max)
         return self.callModule('ax', 'joint_mode', msg)
 
-	def set_speed(self, idMotor = '0', speed = '0'):
-		msg = idMotor + ' ' + speed 
+	def set_speed(self, idMotor='0', speed='0'):
+		msg = str(idMotor) + ' ' + str(speed) 
         return self.callModule('ax', 'set_speed', msg)
 
-    def set_position(self, idMotor = '0', pos = '0'):
-        msg = idMotor + ' ' + pos
+    def set_position(self, idMotor='0', pos='0'):
+        msg = str(idMotor) + ' ' + str(pos)
         return self.callModule('ax', 'set_position', msg)
 
-    def get_position(self, idMotor = '0'):
-        msg = idMotor
+    def get_position(self, idMotor='0'):
+        msg = str(idMotor)
         return self.callModule('ax', 'get_position', msg)
 
-    def ping(self, board=0):
-        return self.callModule('placa', board, 0, 'ping')
+    def ping(self, board='0'):
+        return self.callModule('placa', str(board), '0', 'ping')
 
     ############################### General calls ###############################
      
-    def getBatteryCharge(self, board=0):
+    def getBatteryCharge(self, board='0'):
         """
         Gets the battery level charge
         """
-        return self.callModule('butia', board, 0, 'get_volt')
+        return self.callModule('butia', str(board), '0', 'get_volt')
 
-    def getVersion(self, board=0):
+    def getVersion(self, board='0'):
         """
         Gets the version of Butiá module. 22 for new version
         """
-        return self.callModule('butia', board, 0, 'read_ver')
+        return self.callModule('butia', str(board), '0', 'read_ver')
 
-    def getFirmwareVersion(self, board=0):
+    def getFirmwareVersion(self, board='0'):
         """
         Gets the version of the Firmware
         """
-        return self.callModule('admin', board, 0, 'getVersion')
+        return self.callModule('admin', str(board), '0', 'getVersion')
 
     ############################### Sensors calls ###############################
 
-    def getButton(self, number, board=0):
+    def getButton(self, number, board='0'):
         """
         Gets the value of the button connected in port: number
         """
-        return self.callModule('button', board, number, 'getValue')
+        return self.callModule('button', str(board), str(number), 'getValue')
     
-    def getLight(self, number, board=0):
+    def getLight(self, number, board='0'):
         """
         Gets the value of the light sensor connected in port: number
         """
-        return self.callModule('light', board, number, 'getValue')
+        return self.callModule('light', str(board), str(number), 'getValue')
 
-    def getDistance(self, number, board=0):
+    def getDistance(self, number, board='0'):
         """
         Gets the value of the distance sensor connected in port: number
         """
-        return self.callModule('distanc', board, number, 'getValue')
+        return self.callModule('distanc', str(board), str(number), 'getValue')
 
-    def getGray(self, number, board=0):
+    def getGray(self, number, board='0'):
         """
         Gets the value of the gray sensor connected in port: number
         """
-        return self.callModule('grey', board, number, 'getValue')
+        return self.callModule('grey', str(board), str(number), 'getValue')
 
-    def getTemperature(self, number, board=0):
+    def getTemperature(self, number, board='0'):
         """
         Gets the value of the temperature sensor connected in port: number
         """
-        return self.callModule('temp', board, number, 'getValue')
+        return self.callModule('temp', str(board), str(number), 'getValue')
 
-    def getResistance(self, number, board=0):
+    def getResistance(self, number, board='0'):
         """
         Gets the value of the resistance sensor connected in port: number
         """
-        return self.callModule('res', board, number, 'getValue')
+        return self.callModule('res', str(board), str(number), 'getValue')
 
-    def getVoltage(self, number, board=0):
+    def getVoltage(self, number, board='0'):
         """
         Gets the value of the voltage sensor connected in port: number
         """
-        return self.callModule('volt', board, number, 'getValue')
+        return self.callModule('volt', str(board), str(number), 'getValue')
 
-    def setLed(self, number, on_off, board=0):
+    def setLed(self, number, on_off, board='0'):
         """
         Sets on or off the LED connected in port: number (0 is off, 1 is on)
         """
-        return self.callModule('led', board, number, 'turn', [int(on_off)])
+        return self.callModule('led', str(board), str(number), 'turn', str(on_off))
 
     ################################ Extras ################################
 
-    def modeHack(self, pin, mode, board = 0):
+    def modeHack(self, pin, mode, board='0'):
         """
         Sets the mode of hack pin. If mode 0 = input, mode 1 = output
         """
-        msg = [int(pin), int(mode)]
-        return self.callModule('hackp', board, 0, 'setMode', msg)
+        msg = str(pin) + ' ' + str(mode)
+        return self.callModule('hackp', str(board), '0', 'setMode', msg)
 
-    def setHack(self, pin, value, board = 0):
+    def setHack(self, pin, value, board='0'):
         """
         Sets the value of hack pin configured as output. Value is 0 or 1
         """
-        msg = [int(pin), int(value)]
-        return self.callModule('hackp', board, 0, 'write', msg)
+        msg = str(pin) + ' ' + str(value)
+        return self.callModule('hackp', str(board), '0', 'write', msg)
 
-    def getHack(self, pin, board = 0):
+    def getHack(self, pin, board='0'):
         """
         Gets the value of hack pin configured as input. Returns 0 or 1
         """
-        return self.callModule('hackp', board, 0, 'read', [int(pin)])
+        return self.callModule('hackp', str(board), '0', 'read', str(pin))
+
 
