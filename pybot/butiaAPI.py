@@ -118,5 +118,37 @@ class robot(functions):
         msg = 'QUIT'
         return self.doCommand(msg)
 
+    def get_butia_count(self):
+        msg = 'BUTIA_COUNT'
+        ret = self.doCommand(msg)
+        return int(ret)
 
+    # returns a list of modules
+    def get_modules_list(self, normal=True):
+        msg = 'LIST'
+        l = []
+        ret = self.doCommand(msg)
+        if not (ret == '' or ret == ERROR):
+            l = ret.split(',')
+        modules = []
+        if not(normal):
+            for m in l:
+                modules.append(self.split_module(m))
+        else:
+            modules = l
+
+        return modules
+
+    def split_module(self, mbn):
+        board = '0'
+        number = '0'
+        if mbn.count('@') > 0:
+            modulename, bn = mbn.split('@')
+            board, number = bn.split(':')
+        else:
+            if mbn.count(':') > 0:
+                modulename, number = mbn.split(':')
+            else:
+                modulename = mbn
+        return (number, modulename, board)
 
