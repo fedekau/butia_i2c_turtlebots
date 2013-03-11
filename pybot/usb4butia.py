@@ -180,8 +180,11 @@ class USB4Butia(functions):
         with handler: number (only if the module is pnp, else, the parameter is
         None) with parameteres: params
         """
+        if number == '':
+            number = 0
+        else:
+            number = int(number)
         board_number = int(board_number)
-        number = int(number)
         try:
             board = self._bb[board_number]
             if board.devices.has_key(number) and (board.devices[number].name == modulename):
