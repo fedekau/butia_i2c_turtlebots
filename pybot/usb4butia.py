@@ -117,10 +117,8 @@ class USB4Butia():
                             self._modules.append((str(m), module_name, str(i)))
 
                         if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
-                            d = Device(b, module_name, m)
-                            d.add_functions(self._drivers_loaded[module_name])
+                            d = Device(b, module_name, m, self._drivers_loaded[module_name])
                             b.add_device(m, d)
-
                             if module_name in self._openables:
                                 b.add_openable_loaded(module_name)
                     else:
@@ -190,9 +188,8 @@ class USB4Butia():
                         number = board.get_device_handler(modulename)
                     else:
                         board.add_openable_loaded(modulename)
-                        dev = Device(board, modulename)
+                        dev = Device(board, modulename, func=self._drivers_loaded[modulename])
                         number = dev.module_open()
-                        dev.add_functions(self._drivers_loaded[modulename])
                         board.add_device(number, dev)
                     return board.devices[number].call_function(function, params)
                 else:

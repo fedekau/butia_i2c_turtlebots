@@ -39,20 +39,14 @@ ERROR = -1
 
 class Device():
 
-    def __init__(self, baseboard, name, handler=None):
+    def __init__(self, baseboard, name, handler=None, func=None):
         self.baseboard = baseboard
         self.name = name
         self.handler = handler
         if not(self.handler == None):
             self.handler_tosend = self.handler * 8
-        self.functions = None
-        self.debug = False
-
-    def add_functions(self, func):
-        """
-        Add the functions to current device
-        """
         self.functions = func
+        self.debug = False
 
     def send(self, msg):
         """
