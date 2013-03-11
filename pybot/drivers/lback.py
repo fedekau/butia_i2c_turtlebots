@@ -10,7 +10,7 @@ def getVersion(dev):
 def send(dev, data):
     msg = [SEND_DATA] + dev.to_ord(data)
     dev.send(msg)
-    raw = dev.read(len(data))
+    raw = dev.read(len(data) + 1)
     ret = ''
     for r in raw[1:]:
         if not(r == 0):

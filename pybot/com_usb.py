@@ -80,9 +80,9 @@ class usb_device():
         """
         try:
             return self.handle.bulkRead(ADMIN_MODULE_OUT_ENDPOINT, length, TIMEOUT)
-        except:
+        except Exception, err:
             if self.debug:
-                print 'Exception in read usb'
+                print 'Exception in read usb', err
             raise
  
     def write(self, data):
@@ -91,9 +91,9 @@ class usb_device():
         """
         try:
             return self.handle.bulkWrite(ADMIN_MODULE_IN_ENDPOINT, data, TIMEOUT)
-        except:
+        except Exception, err:
             if self.debug:
-                print 'Exception in write usb'
+                print 'Exception in write usb', err
             raise
 
     def get_info(self):
