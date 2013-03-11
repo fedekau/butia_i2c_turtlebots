@@ -723,9 +723,9 @@ class Butia(Plugin):
         if self.pollrun:
             self.pollthread = threading.Timer(6, self.bobot_poll)
             if self.tw.activity.init_complete:
-                self.butia.refresh()
                 self.check_for_device_change(False)
-                if self.can_refresh:
+                if self.can_refresh or (self.list_connected_device_module == []):
+                    self.butia.refresh()
                     self.pollthread = threading.Timer(3, self.bobot_poll)
             self.pollthread.start()
         else:

@@ -79,7 +79,7 @@ class robot(functions):
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
-        return self.doCommand('REFRESH')
+        self.doCommand('REFRESH')
 
     # close the comunication with pybot
     def close(self):
@@ -138,7 +138,6 @@ class robot(functions):
                 modules.append(self.split_module(m))
         else:
             modules = l
-
         return modules
 
     def split_module(self, mbn):
