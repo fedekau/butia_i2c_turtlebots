@@ -7,7 +7,7 @@ def getVersion(dev):
     raw = dev.read(3)
     return raw[1] + raw[2] * 256
 
-def get_volt(dev):
+def getVolt(dev):
     dev.send([GET_VOLT])
     raw = dev.read(2)
     return raw[1]

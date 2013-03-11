@@ -89,13 +89,13 @@ class functions:
         """
         Gets the battery level charge
         """
-        return self.callModule('butia', str(board), '0', 'get_volt')
+        return self.callModule('butia', str(board), '0', 'getVolt')
 
     def getVersion(self, board='0'):
         """
         Gets the version of Butiá module. 22 for new version
         """
-        return self.callModule('butia', str(board), '0', 'read_ver')
+        return self.callModule('butia', str(board), '0', 'getVersion')
 
     def getFirmwareVersion(self, board='0'):
         """
