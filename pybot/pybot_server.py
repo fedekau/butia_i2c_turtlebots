@@ -104,6 +104,10 @@ class Server():
                                 self.robot.refresh()
                             elif r[0] == 'BUTIA_COUNT':
                                 result = self.robot.get_butia_count()
+                            elif r[0] == 'DESCRIBE':
+                                if len(r) >= 2:
+                                    module = r[1]
+                                result = 'Not implemented yet'
                             elif r[0] == 'CALL':
                                 if len(r) >= 3:
                                     board = 0
