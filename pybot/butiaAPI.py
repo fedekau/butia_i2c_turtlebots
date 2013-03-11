@@ -40,7 +40,6 @@ class robot(functions):
         """
         init the robot class
         """
-        functions.__init__(self)
         self.lock = threading.Lock()
         self.host = host
         self.port = port
