@@ -140,7 +140,7 @@ class ButiaAX12ID(activity.Activity):
         else:
             try:
                 print 'creating bobot'
-                self.bobot = subprocess.Popen(['./lua', 'bobot-server.lua'], cwd='./lib/butia_support')
+                self.bobot = subprocess.Popen(['./lua', 'bobot-server.lua'], cwd='./lib/bobot')
             except:
                 print 'ERROR creating bobot'
         time.sleep(1)
