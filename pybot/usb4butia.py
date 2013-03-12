@@ -33,7 +33,7 @@ ERROR = -1
 
 class USB4Butia(ButiaFunctions):
 
-    def __init__(self, debug=False, get_modules=True):
+    def __init__(self, debug=False, get_modules=True, chotox=False):
         self._debug = debug
         self._hotplug = []
         self._openables = []
@@ -42,6 +42,7 @@ class USB4Butia(ButiaFunctions):
         self._b_ports = []
         self._modules = []
         self._get_all_drivers()
+        self.chotox_mode = chotox
         self.find_butias(get_modules)
 
     def get_butia_count(self):
@@ -91,44 +92,51 @@ class USB4Butia(ButiaFunctions):
 
         if self._debug:
             print '=Listing Devices'
-
-        for i, b in enumerate(self._bb):
-            try:
-                listi = b.get_listi()
-                s = b.get_handler_size()
-
-                if self._debug:
-                    print '===board', i
-
-                for m in range(0, s + 1):
-                    module_name = listi[b.get_handler_type(m)]
-                    if n_boards > 1:
-                        complete_name = module_name + '@' + str(i) + ':' +  str(m)
-                    else:
-                        complete_name = module_name + ':' +  str(m)
-
+        if not(self.chotox_mode):
+            for i, b in enumerate(self._bb):
+                try:
+                    listi = b.get_listi()
+                    s = b.get_handler_size()
+                    if self._debug:
+                        print '===board', i
+                    for m in range(0, s + 1):
+                        module_name = listi[b.get_handler_type(m)]
+                        if n_boards > 1:
+                            complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                        else:
+                            complete_name = module_name + ':' +  str(m)
+                        if self._debug:
+                            print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
+                        if not(module_name == 'port'):
+                            if normal:
+                                self._modules.append(complete_name)
+                            else:
+                                self._modules.append((str(m), module_name, str(i)))
+                            if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
+                                d = Device(b, module_name, m, self._drivers_loaded[module_name])
+                                b.add_device(m, d)
+                                if module_name in self._openables:
+                                    b.add_openable_loaded(module_name)
+                        else:
+                            if b.devices.has_key(m):
+                                b.devices.pop(m)
+                except Exception, err:
+                    if self._debug:
+                        print 'error module list', err
+        else:
+            devices = {0:'admin', 2:'button', 4:'grey', 5:'distanc', 7:'pnp', 8:'motors'}
+            if self._debug:
+                print '===board', 0
+            for i in range(10):
+                if devices.has_key(i):
+                    module_name = devices[i]
+                elif i < 7:
+                    module_name = 'port'
+                if devices.has_key(i) or (i < 7):
+                    complete_name = module_name + ':' +  str(i)
+                    self._modules.append(complete_name)
                     if self._debug:
                         print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
-
-                    if not(module_name == 'port'):
-
-                        if normal:
-                            self._modules.append(complete_name)
-                        else:
-                            self._modules.append((str(m), module_name, str(i)))
-
-                        if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
-                            d = Device(b, module_name, m, self._drivers_loaded[module_name])
-                            b.add_device(m, d)
-                            if module_name in self._openables:
-                                b.add_openable_loaded(module_name)
-                    else:
-                        if b.devices.has_key(m):
-                            b.devices.pop(m)
-
-            except Exception, err:
-                if self._debug:
-                    print 'error module list', err
 
         return self._modules
 
