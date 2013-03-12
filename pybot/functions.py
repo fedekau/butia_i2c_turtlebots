@@ -64,7 +64,7 @@ class ButiaFunctions:
         msg = str(idMotor) + ' '  + str(regstart) + ' ' + str(value)
         return self.callModule('ax', str(board), '0', 'write_info', msg)
 
-    def read_info(self, idMotor , regstart, lenght='1', board='0'):
+    def read_info(self, idMotor, regstart, lenght='1', board='0'):
         msg = str(idMotor) + ' '  + str(regstart) + ' ' + str(length)
         return self.callModule('ax', str(board), '0', 'write_info', msg)
 

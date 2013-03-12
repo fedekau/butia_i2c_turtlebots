@@ -8,14 +8,15 @@ def getVersion(dev):
     raw = dev.read(3)
     return raw[1] + raw[2] * 256
 
-def write_info(dev, id, regstart, value):
-    msg = [WRITE_INFO, id, regstart, value / 256, value % 256]
+def write_info(dev, id_motor, regstart, value):
+    msg = [WRITE_INFO, id_motor, regstart, value / 256, value % 256]
+    print 'msg', msg
     dev.send(msg)
     raw = dev.read(2)
     return raw[1]
 
-def read_info(dev, id, regstart, lenght):
-    msg = [READ_INFO, id, regstart, lenght]
+def read_info(dev, id_motor, regstart, lenght):
+    msg = [READ_INFO, id_motor, regstart, lenght]
     dev.send(msg)
     raw = dev.read(lenght + 1)
     if lenght == 1:
