@@ -150,7 +150,7 @@ class ButiaAX12ID(activity.Activity):
             print self.modules
         else:
             print _('Butia robot was not detected')
-
+    
 	#change left id message
     def warning_messageIDL(self, widget):
         msg = _('Please connect ONLY the LEFT motor to the board, and the power to this motor.\nNot disconnect the board and not close this activity.\nDo you want to continue?')
@@ -159,6 +159,7 @@ class ButiaAX12ID(activity.Activity):
         res = dialog.run()
         dialog.destroy()
         self.bobot_launch()
+        check = 0
         if res == gtk.RESPONSE_OK:
             self.butia.write_info('254', '3', '1' )           
             time.sleep(1)
@@ -167,7 +168,13 @@ class ButiaAX12ID(activity.Activity):
             self.butia.write_info('1', '25', '0')
             #print check
             if check == 1:
-                msg1 = _('ID Change CORRECT\nNew motor ID: 1')
+                msg1 = _('ID Change CORRECT.\nYour new motor ID is 1.')
+                dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
+                dialog1.set_title(_('Information'))
+                res1 = dialog1.run()
+                dialog1.destroy()
+            else:
+                msg1 = _('ID Change ERROR\nPlease check board and motor connections.')
                 dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
                 dialog1.set_title(_('Information'))
                 res1 = dialog1.run()
@@ -175,9 +182,6 @@ class ButiaAX12ID(activity.Activity):
 
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
-
-        
-        
         if self.butia:
             self.butia.close()
             self.butia.closeService()
@@ -201,11 +205,18 @@ class ButiaAX12ID(activity.Activity):
             self.butia.write_info('2', '25', '0')
             #print check
             if check == 1:
-                msg1 = _('ID Change CORRECT.\nNew motor ID: 2')
+                msg1 = _('ID Change CORRECT.\nYour new motor ID is 2.')
                 dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
                 dialog1.set_title(_('Information'))
                 res1 = dialog1.run()
                 dialog1.destroy()
+            else:
+                msg1 = _('ID Change ERROR\nPlease check board and motor connections.')
+                dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
+                dialog1.set_title(_('Information'))
+                res1 = dialog1.run()
+                dialog1.destroy()
+
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
 
@@ -232,13 +243,21 @@ class ButiaAX12ID(activity.Activity):
             self.butia.write_info(str(ButiaAX12ID.sel), '25', '0')
             #print check
             if check == 1:
-                msg1 = _('ID Change CORRECT.\nNew motor ID: ' + str(ButiaAX12ID.sel))
+                msg1 = _('ID Change CORRECT.\nYour new motor ID is ' + str(ButiaAX12ID.sel) +'.')
                 dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
                 dialog1.set_title(_('Information'))
                 res1 = dialog1.run()
                 dialog1.destroy()
+            else:
+                msg1 = _('ID Change ERROR\nPlease check board and motor connections.')
+                dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
+                dialog1.set_title(_('Information'))
+                res1 = dialog1.run()
+                dialog1.destroy()
+
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
+
         if self.butia:
             self.butia.close()
             self.butia.closeService()
