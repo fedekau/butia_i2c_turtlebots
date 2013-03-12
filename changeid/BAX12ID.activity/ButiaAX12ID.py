@@ -5,7 +5,7 @@ import commands
 import sys, os
 import time
 import gtk
-import butiaAPI
+from pybot import pybot_client
 from gettext import gettext as _
 
 
@@ -130,26 +130,24 @@ class ButiaAX12ID(activity.Activity):
         box.show_all()
         self.set_canvas(box)
   
-	#bobot
-    def bobot_launch(self):
 
-        print 'Initialising butia...'
-        output = commands.getoutput('ps -ax | grep lua')
-        if 'bobot-server' in output:
-            print 'bobot is alive!'
+    def pybot_launch(self):
+
+        output = commands.getoutput('ps -ax | grep python')
+        if 'pybot_server.py' in output:
+            print 'Pybot is alive!'
         else:
             try:
-                print 'creating bobot'
-                self.bobot = subprocess.Popen(['./lua', 'bobot-server.lua'], cwd='./lib/bobot')
+                print 'creating Pybot server'
+                self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./plugins/butia/pybot')
             except:
-                print 'ERROR creating bobot'
-        time.sleep(1)
-        self.butia = butiaAPI.robot()
-        self.modules = self.butia.get_modules_list()
-        if (self.modules != []):
-            print self.modules
-        else:
-            print _('Butia robot was not detected')
+                print 'ERROR creating Pybot server'
+
+        # Sure that bobot is running
+        time.sleep(2)
+
+        self.butia = pybot_client.robot()
+
     
 	#change left id message
     def warning_messageIDL(self, widget):
@@ -158,7 +156,7 @@ class ButiaAX12ID(activity.Activity):
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
         dialog.destroy()
-        self.bobot_launch()
+        self.pybot_launch()
         check = 0
         if res == gtk.RESPONSE_OK:
             self.butia.write_info('254', '3', '1' )           
@@ -185,8 +183,6 @@ class ButiaAX12ID(activity.Activity):
         if self.butia:
             self.butia.close()
             self.butia.closeService()
-        if self.bobot:
-            self.bobot.kill()
 		  
     
     #change right id message
@@ -196,7 +192,7 @@ class ButiaAX12ID(activity.Activity):
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
         dialog.destroy()
-        self.bobot_launch()
+        self.pybot_launch()
         if res == gtk.RESPONSE_OK:
             self.butia.write_info('254', '3', '2' )
             time.sleep(1)
@@ -223,8 +219,6 @@ class ButiaAX12ID(activity.Activity):
         if self.butia:
             self.butia.close()
             self.butia.closeService()
-        if self.bobot:
-            self.bobot.kill()
 
 
     #change custom id message
@@ -234,7 +228,7 @@ class ButiaAX12ID(activity.Activity):
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
         dialog.destroy()
-        self.bobot_launch()
+        self.pybot_launch()
         if res == gtk.RESPONSE_OK:
             self.butia.write_info('254', '3', str(ButiaAX12ID.sel) )
             time.sleep(1)
@@ -261,7 +255,3 @@ class ButiaAX12ID(activity.Activity):
         if self.butia:
             self.butia.close()
             self.butia.closeService()
-        if self.bobot:
-            self.bobot.kill()
-
-
