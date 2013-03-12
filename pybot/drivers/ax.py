@@ -17,7 +17,10 @@ def write_info(dev, id, regstart, value):
 def read_info(dev, id, regstart, lenght):
     msg = [READ_INFO, id, regstart, lenght]
     dev.send(msg)
-    raw = dev.read(3)
-    raw[1] + raw[2] * 256
+    raw = dev.read(lenght + 1)
+    if lenght == 1:
+        return raw[1]
+    else:
+        return raw[1] + raw[2] * 256
    
 

@@ -60,6 +60,14 @@ class ButiaFunctions:
 
     ##################### Operations for ax.lua driver #########################
 
+    def write_info(self, idMotor , regstart, value):
+        msg = str(idMotor) + ' '  + str(regstart) + ' ' + str(value)
+        return self.callModule('ax', 'write_info', msg)
+
+    def read_info(self, idMotor , regstart, lenght='1'):
+        msg = str(idMotor) + ' '  + str(regstart) + ' ' + str(length)
+        return self.callModule('ax', 'write_info', msg)
+
     def wheel_mode(self, idMotor='0'):
         msg = str(idMotor)
         return self.callModule('ax', 'wheel_mode', msg)
@@ -83,7 +91,7 @@ class ButiaFunctions:
     def ping(self, board='0'):
         return self.callModule('placa', str(board), '0', 'ping')
 
-    ############################### General calls ###############################
+    ############################### General calls ##############################
      
     def getBatteryCharge(self, board='0'):
         """
