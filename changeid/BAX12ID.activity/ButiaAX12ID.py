@@ -25,7 +25,7 @@ class ButiaAX12ID(activity.Activity):
         activity.Activity.__init__(self, handle)
         self.build_toolbar()
         self.build_canvas()
-
+        self.pybot_launch()
 	
     def build_toolbar(self):
         # Creates the Toolbox. It contains the Activity Toolbar, which is the
@@ -70,11 +70,11 @@ class ButiaAX12ID(activity.Activity):
         img.set_from_file("activity/wall.svg")
         img.show()
 
-        self.add(fcom)
-        self.add(fbcidl)
-        self.add(fbcidr)
-        self.add(fbcid)
-        self.add(fim)        
+        #self.add(fcom)
+        #self.add(fbcidl)
+        #self.add(fbcidr)
+        #self.add(fbcid)
+        #self.add(fim) 
         
 		#Boton change ID left motor
         button_acceptl = gtk.Button(_("Change ID (LEFT motor)"))
@@ -104,12 +104,12 @@ class ButiaAX12ID(activity.Activity):
             return
         combo.connect('changed', changed_cb)
         
-        fbcidl.add(button_acceptl)
-        fbcidr.add(button_acceptr)
-        fbcid.add(button_accept)
-        fcom.add(combo)
+        #fbcidl.add(button_acceptl)
+        #fbcidr.add(button_acceptr)
+        #fbcid.add(button_accept)
+        #fcom.add(combo)
         
-
+        self.connect("destroy", self.on_destroy)
 
 ###############################################################################
 ######################HACER LOS LAYOUTS SIZEABLES##############################
@@ -139,7 +139,7 @@ class ButiaAX12ID(activity.Activity):
         else:
             try:
                 print 'creating Pybot server'
-                self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./plugins/butia/pybot')
+                self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./pybot')
             except:
                 print 'ERROR creating Pybot server'
 
@@ -147,6 +147,7 @@ class ButiaAX12ID(activity.Activity):
         time.sleep(2)
 
         self.butia = pybot_client.robot()
+        time.sleep(1)
 
     
 	#change left id message
@@ -156,7 +157,6 @@ class ButiaAX12ID(activity.Activity):
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
         dialog.destroy()
-        self.pybot_launch()
         check = 0
         if res == gtk.RESPONSE_OK:
             self.butia.write_info('254', '3', '1' )           
@@ -180,9 +180,6 @@ class ButiaAX12ID(activity.Activity):
 
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
-        if self.butia:
-            self.butia.close()
-            self.butia.closeService()
 		  
     
     #change right id message
@@ -192,7 +189,7 @@ class ButiaAX12ID(activity.Activity):
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
         dialog.destroy()
-        self.pybot_launch()
+        
         if res == gtk.RESPONSE_OK:
             self.butia.write_info('254', '3', '2' )
             time.sleep(1)
@@ -216,11 +213,6 @@ class ButiaAX12ID(activity.Activity):
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
 
-        if self.butia:
-            self.butia.close()
-            self.butia.closeService()
-
-
     #change custom id message
     def warning_messageID(self, widget):
         msg = _('Please connect to the board ONLY the motor or motors that you want to change it id.\nYour motor''s new ID will be ' + str(ButiaAX12ID.sel) + '\nNot disconnect the board and not close this activity.\nDo you want to continue?')
@@ -228,7 +220,6 @@ class ButiaAX12ID(activity.Activity):
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
         dialog.destroy()
-        self.pybot_launch()
         if res == gtk.RESPONSE_OK:
             self.butia.write_info('254', '3', str(ButiaAX12ID.sel) )
             time.sleep(1)
@@ -252,6 +243,9 @@ class ButiaAX12ID(activity.Activity):
         elif res ==  gtk.RESPONSE_CANCEL:
             pass
 
+    def on_destroy(self, widget):
+        gtk.main_quit()
         if self.butia:
             self.butia.close()
             self.butia.closeService()
+
