@@ -10,7 +10,6 @@ def getVersion(dev):
 
 def write_info(dev, id_motor, regstart, value):
     msg = [WRITE_INFO, id_motor, regstart, value / 256, value % 256]
-    print 'msg', msg
     dev.send(msg)
     raw = dev.read(2)
     return raw[1]

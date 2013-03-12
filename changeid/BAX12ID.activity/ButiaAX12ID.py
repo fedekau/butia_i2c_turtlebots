@@ -246,6 +246,6 @@ class ButiaAX12ID(activity.Activity):
     def on_destroy(self, widget):
         gtk.main_quit()
         if self.butia:
-            self.butia.close()
             self.butia.closeService()
+            self.butia.close()
 
