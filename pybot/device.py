@@ -117,8 +117,10 @@ class Device():
             return f(self, params)
         else:
             par = []
-            for e in params:
-                par.append(int(e))
+            if not(params == ''):
+                params = params.split(' ')
+                for e in params:
+                    par.append(int(e))
 
             return f(self, *par)
 
