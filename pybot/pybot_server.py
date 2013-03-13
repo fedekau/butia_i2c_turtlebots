@@ -36,23 +36,15 @@ MAX_CLIENTS = 4
 
 class Server():
 
-    def __init__(self, debug=False):
+    def __init__(self, debug=False, chotox=False):
         self.debug = debug
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((PYBOT_HOST, PYBOT_PORT))
         self.socket.listen(MAX_CLIENTS)
         self.clients = {}
-        self.robot = usb4butia.USB4Butia(self.debug)
-
-    def call_aux(self, modulename, board_number, number, function, params):
-        if modulename == 'lback':
-            par = params
-        else:
-            par = []
-            for e in params:
-                par.append(int(e))
-        return self.robot.callModule(modulename, board_number, number, function, par)
+        self.chotox_mode = chotox
+        self.robot = usb4butia.USB4Butia(debug=self.debug, chotox=self.chotox_mode)
 
     def init_server(self):
 
@@ -82,8 +74,6 @@ class Server():
                         r = r.replace('\n', '')
                         r = r.split(' ')
 
-                        #print 'split', r
-
                         if len(r) > 0:
                             if r[0] == 'QUIT':
                                 result = 'BYE'
@@ -104,6 +94,10 @@ class Server():
                                 self.robot.refresh()
                             elif r[0] == 'BUTIA_COUNT':
                                 result = self.robot.get_butia_count()
+                            elif r[0] == 'DESCRIBE':
+                                if len(r) >= 2:
+                                    module = r[1]
+                                result = 'Not implemented yet'
                             elif r[0] == 'CALL':
                                 if len(r) >= 3:
                                     board = 0
@@ -118,8 +112,8 @@ class Server():
                                         else:
                                             modulename = mbn
                                     function = r[2]
-                                    par = r[3:]
-                                    result = self.call_aux(modulename, int(board), int(number), function, par)
+                                    par = ' '.join(r[3:])
+                                    result = self.robot.callModule(modulename, board, number, function, par)
 
                         result = str(result)
                         try:
@@ -138,9 +132,13 @@ class Server():
 
 
 if __name__ == "__main__":
-    if 'DEBUG' in argv:
-        s = Server(True)
+    if 'chotox' in argv:
+        chotox = True
     else:
-        s = Server()
+        chotox = False
+    if 'DEBUG' in argv:
+        s = Server(True, chotox)
+    else:
+        s = Server(False, chotox)
     s.init_server()
 

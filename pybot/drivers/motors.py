@@ -3,25 +3,20 @@ RD_VERSION = 0x00
 SET_VEL_2MTR = 0x01
 SET_VEL_MTR = 0x02
 
-f1 = {
-    'name': 'getVersion',
-    'call': RD_VERSION,
-    'params': 0,
-    'read': 3
-}
+def getVersion(dev):
+    dev.send([RD_VERSION])
+    raw = dev.read(3)
+    return raw[1] + raw[2] * 256
 
-f2 = {
-    'name': 'setvel2mtr',
-    'call': SET_VEL_2MTR,
-    'params': 6,
-    'read': 1
-}
+def setvel2mtr(dev, sentido1, vel1, sentido2, vel2):
+    msg = [SET_VEL_2MTR, sentido1, vel1 / 256, vel1 % 256, sentido2, vel2 / 256, vel2 % 256]
+    dev.send(msg)
+    raw = dev.read(1)
+    return raw[0]
 
-f3 = {
-    'name': 'setvelmtr',
-    'call': SET_VEL_MTR,
-    'params': 4,
-    'read': 1
-}
+def setvelmtr(dev, motor_id, sentido, vel):
+    msg = [SET_VEL_MTR, motor_id, sentido, vel / 256, vel % 256]
+    dev.send(msg)
+    raw = dev.read(1)
+    return raw[0]
 
-FUNCTIONS = [f1, f2, f3]
