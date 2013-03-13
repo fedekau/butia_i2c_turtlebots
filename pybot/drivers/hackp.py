@@ -7,34 +7,26 @@ WRITE_PORT = 0x04
 PORT_IN = 0x05
 PORT_OUT = 0x06
 
+def getVersion(dev):
+    dev.send([RD_VERSION])
+    raw = dev.read(3)
+    return raw[1] + raw[2] * 256
 
-f1 = {
-    'name': 'getVersion',
-    'call': RD_VERSION,
-    'params': 0,
-    'read': 3
-}
+def setMode(dev, pin, value):
+    msg = [SET_MODE, pin, value]
+    dev.send(msg)
+    raw = dev.read(2)
+    return raw[1]
 
-f2 = {
-    'name': 'setMode',
-    'call': SET_MODE,
-    'params': 2,
-    'read': 1
-}
+def read(dev, pin):
+    msg = [READ, pin]
+    dev.send(pin)
+    raw = dev.read(2)
+    return raw[1]
 
-f3 = {
-    'name': 'read',
-    'call': READ,
-    'params': 1,
-    'read': 1
-}
-
-f4 = {
-    'name': 'write',
-    'call': WRITE,
-    'params': 2,
-    'read': 1
-}
-
-FUNCTIONS = [f1, f2, f3, f4]
+def write(dev, pin, value):
+    msg = [WRITE, pin, value]
+    dev.send(pin)
+    raw = dev.read(1)
+    return raw[1]
 

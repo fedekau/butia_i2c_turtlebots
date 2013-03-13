@@ -39,68 +39,43 @@ ERROR = -1
 
 class Device():
 
-    def __init__(self, baseboard, name, handler=None):
+    def __init__(self, baseboard, name, handler=None, func=None):
         self.baseboard = baseboard
         self.name = name
         self.handler = handler
         if not(self.handler == None):
             self.handler_tosend = self.handler * 8
-        self.functions = {}
+        self.functions = func
         self.debug = False
 
-    def add_functions(self, func_list):
-        """
-        Add the functions to current device
-        """
-        for f in func_list:
-            self.functions[f['name']] = f
-
-    def module_send(self, call, params_length, params):
+    def send(self, msg):
         """
         Send to the device the specifiy call and parameters
         """
-        if len(params) == 1:
-            if type(params[0]) == str:
-                params = to_ord(params[0])
-
-        send_packet_length = 0x04 + len(params)
-
+        length = 0x04 + len(msg)
         w = []
         w.append(self.handler_tosend)
-        w.append(send_packet_length)
+        w.append(length)
         w.append(NULL_BYTE)
-        w.append(call)
-        for p in params:
+        for p in msg:
             w.append(p)
 
         self.baseboard.dev.write(w)
 
-    def module_read(self):
+    def read(self, lenght):
         """
         Read the device data
         """
         raw = self.baseboard.dev.read(MAX_BYTES)
         if self.debug:
             print 'device:module_rad return', raw
-        if raw[1] == 5:
-            if raw[4] == 255:
-                return -1
-            else:
-                return raw[4]
-        elif raw[1] == 6:
-            return raw[4] + raw[5] * 256
-        else:
-            ret = ''
-            for r in raw[4:]:
-                if not(r == 0):
-                    ret = ret + chr(r)
-            return ret
+        return raw[3:]
 
     def module_open(self):
         """
         Open this device. Return the handler
         """
-        module_name = to_ord(self.name)
+        module_name = self.to_ord(self.name)
         module_name.append(0)
         
         open_packet_length = HEADER_PACKET_SIZE + len(module_name) 
@@ -123,32 +98,40 @@ class Device():
         if self.debug:
             print 'device:module_open return', raw
 
-        h = raw[4]
-        self.handler = h
+        self.handler = raw[4]
         self.handler_tosend = self.handler * 8
-        return h
+        return self.handler
 
     def has_function(self, func):
         """
         Check if this device has func function
         """
-        return self.functions.has_key(func)
+        return hasattr(self.functions, func)
 
     def call_function(self, func, params):
         """
         Call specify func function with params parameters
         """
-        self.module_send(self.functions[func]['call'], self.functions[func]['params'], params)
-        return self.module_read()
+        f = getattr(self.functions, func)
+        if self.name == 'lback':
+            return f(self, params)
+        else:
+            par = []
+            if not(params == ''):
+                params = params.split(' ')
+                for e in params:
+                    par.append(int(e))
 
-def to_ord(string):
-    """
-    Useful function to convert characters into ordinal Unicode
-    """
-    s = []
-    for l in string:
-        o = ord(l)
-        if not(o == 0):
-            s.append(o)
-    return s
+            return f(self, *par)
+
+    def to_ord(self, string):
+        """
+        Useful function to convert characters into ordinal Unicode
+        """
+        s = []
+        for l in string:
+            o = ord(l)
+            if not(o == 0):
+                s.append(o)
+        return s
 
