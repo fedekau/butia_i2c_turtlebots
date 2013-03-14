@@ -571,7 +571,7 @@ class Butia(Plugin):
                     left = '1'
                 if not(right == 0):
                     right = '1'
-                self.butia.set2CCMotorSpeed(sentLeft, left, sentRight, right)
+                self.butia.set2CCMotorSpeed(sentLeft, str(left), sentRight, str(right))
             else:
                 self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
