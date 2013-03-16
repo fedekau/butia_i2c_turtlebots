@@ -1,7 +1,6 @@
 
 RD_VERSION = 0x00
 SET_VEL_2MTR = 0x01
-SET_VEL_MTR = 0x02
 
 def getVersion(dev):
     dev.send([RD_VERSION])
