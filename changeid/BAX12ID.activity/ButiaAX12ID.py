@@ -1,8 +1,8 @@
-import logging
-import shlex
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import subprocess
 import commands
-import sys, os
 import time
 import gtk
 from pybot import pybot_client
@@ -10,16 +10,14 @@ from gettext import gettext as _
 
 
 from sugar.activity import activity
-from sugar.graphics.toolbarbox import ToolbarBox
-from sugar.graphics.toolbutton import ToolButton
 from sugar.activity.widgets import ActivityToolbarButton
+from sugar.graphics.toolbarbox import ToolbarBox
 from sugar.activity.widgets import StopButton
 from sugar.graphics.toolbarbox import ToolbarButton
 
 class ButiaAX12ID(activity.Activity):
 
     sel = ""
-
 
     def __init__(self, handle):
         activity.Activity.__init__(self, handle)
@@ -33,7 +31,6 @@ class ButiaAX12ID(activity.Activity):
         # functionalities, such as the 'Collaborate' and 'Close' buttons.
 
         toolbox = ToolbarBox()
-
         activity_button = ActivityToolbarButton(self)
         toolbox.toolbar.insert(activity_button, -1)
         activity_button.show()
@@ -45,15 +42,16 @@ class ButiaAX12ID(activity.Activity):
         toolbox.toolbar.insert(separator, -1)
         separator.show()
 
+        # Activity stop button
         stop_button = StopButton(self)
         toolbox.toolbar.insert(stop_button, -1)
         stop_button.show()
 
         self.set_toolbox(toolbox)
         toolbox.show()
-
         self.show_all()
         
+    # aux function for combobox selection
     def changed_cb(self):
             model = self.combo.get_model()
             index = self.combo.get_active()
@@ -76,12 +74,6 @@ class ButiaAX12ID(activity.Activity):
         
         img.set_from_file("activity/wall.svg")
         img.show()
-
-        #self.add(fcom)
-        #self.add(fbcidl)
-        #self.add(fbcidr)
-        #self.add(fbcid)
-        #self.add(fim) 
         
 		#Boton change ID left motor
         button_acceptl = gtk.Button(_("Change ID (LEFT motor)"))
@@ -137,14 +129,12 @@ class ButiaAX12ID(activity.Activity):
                 self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./pybot')
             except:
                 print 'ERROR creating Pybot server'
-
         # Sure that bobot is running
         time.sleep(2)
-
         self.butia = pybot_client.robot()
         time.sleep(1)
 
-
+    #main function, change id
     def change_id(self, idn):
         self.butia.write_info('254', '3', str(idn) )   
         time.sleep(1)
@@ -156,13 +146,13 @@ class ButiaAX12ID(activity.Activity):
             msg1 = _('ID Change CORRECT.\nYour new motor ID is ' + str(idn) + '.')
             dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
             dialog1.set_title(_('Information'))
-            res1 = dialog1.run()
+            dialog1.run()
             dialog1.destroy()
         else:
             msg1 = _('ID Change ERROR\nPlease check board and motor connections.')
             dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
             dialog1.set_title(_('Information'))
-            res1 = dialog1.run()
+            dialog1.run()
             dialog1.destroy()        
 
 	#change left id message
