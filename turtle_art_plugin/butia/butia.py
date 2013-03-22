@@ -30,7 +30,7 @@ from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary, logoerror
-from TurtleArt.tautils import debug_output
+from TurtleArt.tautils import debug_output, power_manager_off
 from TurtleArt.tawindow import block_names
 
 from plugins.plugin import Plugin
@@ -100,6 +100,7 @@ class Butia(Plugin):
     
     def __init__(self, parent):
         self.tw = parent
+        power_manager_off(True)
         self.actualSpeed = [600, 600]
         self.hack_states = [1, 1, 1, 1, 1, 1, 1, 1]
         self.butia = None
@@ -363,6 +364,7 @@ class Butia(Plugin):
             self.butia.close()
         if self.bobot:
             self.bobot.kill()
+        power_manager_off(False)
 
     ################################ Refresh process ################################
 
