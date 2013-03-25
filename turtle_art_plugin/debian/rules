@@ -9,5 +9,37 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-%:
+build:
 	dh $@ 
+
+clean:
+	dh $@
+
+install: build
+	dh $@
+
+# Build architecture-dependent files here.
+binary-arch: install
+# We have nothing to do by default.
+
+# Build architecture-independent files here.
+binary-indep: install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs
+	dh_installexamples
+	dh_installudev --name=usb4all       --priority 70
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install
