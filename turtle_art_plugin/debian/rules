@@ -30,6 +30,8 @@ binary-indep: install
 	dh_installdocs
 	dh_installexamples
 	dh_installudev --name=usb4all       --priority 70
+	dh_installudev --name=lego-nxt      --priority 70
+	dh_installudev --name=lego-wedo     --priority 70
 	dh_installman
 	dh_link
 	dh_strip
