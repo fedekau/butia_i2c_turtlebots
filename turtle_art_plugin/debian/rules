@@ -10,19 +10,59 @@
 #export DH_VERBOSE=1
 
 build:
-	dh $@ 
+	dh_testdir
+	dh_auto_configure
+#	dh_auto_build
 
 clean:
-	dh $@
+	dh_testdir
+	dh_auto_clean
 
-install: build
-	dh $@
+install:
+#	dh_testdir
+#	dh_auto_configure
+#	dh_auto_build
+	dh_auto_test
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	dh_auto_install
+	dh_install
+	dh_installdocs
+	dh_installchangelogs
+	dh_installexamples
+	dh_installman
+	dh_installcatalogs
+	dh_installcron
+	dh_installdebconf
+	dh_installemacsen
+	dh_installifupdown
+	dh_installinfo
+	#dh_pysupport
+	dh_python2
+	dh_installinit
+	dh_installmenu
+	dh_installmime
+	dh_installmodules
+	dh_installlogcheck
+	dh_installlogrotate
+	dh_installpam
+	dh_installppp
+	dh_installudev
+	dh_installwm
+	dh_installxfonts
+	dh_installgsettings
+	dh_bugfiles
+	dh_ucf
+	dh_lintian
+	dh_gconf
+	dh_icons
+	dh_perl
+	dh_usrlocal
+	dh_link
+	dh_compress
+	dh_fixperms
 
-# Build architecture-dependent files here.
-binary-arch: install
-# We have nothing to do by default.
-
-# Build architecture-independent files here.
 binary-indep: install
 	dh_testdir
 	dh_testroot
@@ -43,5 +83,5 @@ binary-indep: install
 	dh_md5sums
 	dh_builddeb
 
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install
+binary: binary-indep
+.PHONY: build clean binary-indep binary install
