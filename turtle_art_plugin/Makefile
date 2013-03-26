@@ -246,7 +246,7 @@ install-activity: xo
 install-xo: install-activity
 
 install: all install-permissions
-	$(MAKE) prefix= install-rules
+	#$(MAKE) prefix= install-rules
 	mkdir -p $(DESTDIR)$(activitiesdir)
 	cp -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
 	mkdir -p $(DESTDIR)$(bindir)
