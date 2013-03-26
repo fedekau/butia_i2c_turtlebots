@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 	printf("salio test %d\n", j);
 	int i;
 	sleep(2);
-	printf("%s \n",&objs);
+	printf("%s \n", objs);
 
 	//initialize applications
 	arMultiInit(NULL);
