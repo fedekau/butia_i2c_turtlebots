@@ -29,9 +29,10 @@ case "$1" in
         echo "######### INSTALL PERMISSIONS  ###########"
         echo "##########################################"
         echo ""
-        echo "This part set what users are in group lego"
-        echo "the group lego allow users to use the lego brick"
-        echo "this script has detect the follow users in this machine:"
+        echo "This part set what users are in group 'robots'"
+        echo "the group 'robots' allow users to use the robots: lego nxt,"
+        echo "lego wedo and butia."
+        echo "This script has detect the follow users in this machine:"
         echo "$lusers"
         echo ""
         echo "if this is correct just press ENTER"
@@ -47,6 +48,7 @@ case "$1" in
         for i in $lusers ; do
             adduser $i robots
         done
+        udevadm control --reload-rules
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
