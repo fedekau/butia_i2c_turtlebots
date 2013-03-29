@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import subprocess
@@ -6,7 +6,6 @@ import commands
 import time
 import gtk
 from pybot import pybot_client
-from gettext import gettext as _
 
 from sugar.activity import activity
 from sugar.activity.widgets import ActivityToolbarButton
@@ -14,12 +13,7 @@ from sugar.graphics.toolbarbox import ToolbarBox
 from sugar.activity.widgets import StopButton
 from sugar.graphics.toolbarbox import ToolbarButton
 
-msg = _('Please connect ONLY the %s motor to the board, and the power to this motor.\n')
-msg2 = _('Please connect to the board ONLY the motor or motors that you want to change it ID.\n\
-Your motor''s new ID will be %s\n')
-end = _('Not disconnect the board and not close this activity.\n\
-Do you want to continue?')
-
+from gettext import gettext as _
 
 class ButiaAX12ID(activity.Activity):
 
@@ -94,7 +88,7 @@ class ButiaAX12ID(activity.Activity):
         cell = gtk.CellRendererText()
         combo.pack_start(cell, True)
         combo.add_attribute(cell, 'text', 0)
-        combo.append_text('Select ID:')
+        combo.append_text(_('Select ID:'))
         #list of available IDs
         for i in range(0, 253):
             combo.append_text(str(i))
@@ -135,6 +129,7 @@ class ButiaAX12ID(activity.Activity):
 
     #main function, change id
     def change_id(self, idn, msg):
+        msg = msg + _("Not disconnect the board and not close this activity.\nDo you want to continue?")
         dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
@@ -161,12 +156,12 @@ class ButiaAX12ID(activity.Activity):
 
 	#change left id message
     def warning_messageIDL(self, widget):
-        m = msg % _('LEFT') + end
+        m = _("Please connect ONLY the %s motor to the board, and the power to this motor.\n") % _('LEFT')
         self.change_id('1', m)
     
     #change right id message
     def warning_messageIDR(self, widget):
-        m = msg % _('RIGHT') + end
+        m = _("Please connect ONLY the %s motor to the board, and the power to this motor.\n") % _('RIGHT')
         self.change_id('2', m)
 
     #change custom id message
@@ -178,7 +173,9 @@ class ButiaAX12ID(activity.Activity):
             dialog.run()
             dialog.destroy()
         else:
-            m = msg2 % str(self.sel) + end
+            m = _("Please connect to the board ONLY the motor or motors that you want to change it ID.\n\
+Your motor's new ID will be %s.\n")
+            m = m % str(self.sel)
             self.change_id(str(self.sel), m)
 
     def on_destroy(self, widget):
