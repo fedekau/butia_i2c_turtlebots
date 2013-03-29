@@ -167,7 +167,6 @@ apply_hard_plugins: apply_localization walterGIT nxtGIT wedoGIT arduinoGIT pyusb
 	cp pyusb/ReleaseNotes.rst   $(BUILDDIR)/plugins/butia/pybot/usb
 	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
 	# put pattern_examples into turtle examples folder
-	#mkdir $(BUILDDIR)/samples/pattern_examples
 	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
 
 pattern_detection_compile:
@@ -245,8 +244,8 @@ install-activity: xo
 
 install-xo: install-activity
 
-install: all install-permissions
-	#$(MAKE) prefix= install-rules
+install: all
+	$(MAKE) prefix= install-rules
 	mkdir -p $(DESTDIR)$(activitiesdir)
 	cp -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
 	mkdir -p $(DESTDIR)$(bindir)
@@ -257,21 +256,20 @@ install: all install-permissions
 	$(INSTALL_DATA) $(BUILDDIR)/turtlebots.desktop $(DESTDIR)$(datadir)/applications/
 	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
 
-install-permissions:
-	if [ -e $(DESTDIR)/etc/group ] ; then \
-          addgroup --system robots ; \
-          ./permissions.sh ; \
-        fi ;
-
-
 install-strip: install
 	#strip $(DESTDIR) file...
 
 install-rules:
-	mkdir -p $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-lego-nxt.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-usb4all.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-lego-wedo.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	if [ -e $(DESTDIR)/lib/udev/rules.d/60-usb4all.rules ] ; then \
+		echo Rules already exists ; \
+	else \
+		cp `pwd`/rules/60-lego-nxt.rules $(DESTDIR)/lib/udev/rules.d; \
+		cp `pwd`/rules/60-usb4all.rules $(DESTDIR)/lib/udev/rules.d; \
+		cp `pwd`/rules/60-lego-wedo.rules $(DESTDIR)/lib/udev/rules.d; \
+	fi ;
+	if [ -e $(DESTDIR)/etc/group ] ; then \
+		./permissions.sh ; \
+	fi ;
 
 ############### UNInstall procedures #################
 
@@ -285,7 +283,7 @@ uninstall-dev: uninstall-activity
 uninstall-strip: uninstall
 	#unstrip $(DESTDIR) file... :-P
 
-uninstall: uninstall-permissions
+uninstall:
 	$(MAKE) prefix= uninstall-rules
 	rm -rf $(DESTDIR)$(activitiesdir)/TurtleBots.activity
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(activitiesdir)
@@ -295,20 +293,14 @@ uninstall: uninstall-permissions
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/applications
 	rm -f $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/turtlebots.svg
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
-	# not more needed - rm -rf $(DESTDIR)$(localedir)/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
-
-uninstall-permissions:
-	if [ -e $(DESTDIR)/etc/group ] ; then \
-          # remove group (actuali I dont knock how to remove group winout error if not exist) \
-          if (delgroup --system robots) ; then echo group removed... ; fi ; \
-        fi ;
 
 uninstall-rules:
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-nxt.rules
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-usb4all.rules
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-wedo.rules
-	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(sysconfdir)/udev/rules.d
-
+	rm -f $(DESTDIR)/lib/udev/rules.d/60-lego-nxt.rules
+	rm -f $(DESTDIR)/lib/udev/rules.d/60-usb4all.rules
+	rm -f $(DESTDIR)/lib/udev/rules.d/60-lego-wedo.rules
+	if [ -e $(DESTDIR)/etc/group ] ; then \
+		if (delgroup --system robots) ; then echo group removed... ; fi ; \
+	fi ;
 
 ####### CLEAN STUFF ######
 

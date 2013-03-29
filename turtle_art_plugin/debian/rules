@@ -7,7 +7,7 @@
 # This special exception was added by Craig Small in version 0.37 of dh-make.
 
 # Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+export DH_VERBOSE=1
 
 build:
 	dh_testdir
@@ -24,6 +24,9 @@ binary:
 	dh_testroot
 	dh_prep
 	dh_installdirs
+	dh_installudev   --name=usb4all       --priority 60
+	dh_installudev   --name=lego-nxt      --priority 60
+	dh_installudev   --name=lego-wedo     --priority 60
 	dh_auto_install
 	dh_install
 	dh_installdocs
@@ -45,9 +48,6 @@ binary:
 	dh_installlogrotate
 	dh_installpam
 	dh_installppp
-	dh_installudev   --name=usb4all       --priority 60
-	dh_installudev   --name=lego-nxt      --priority 60
-	dh_installudev   --name=lego-wedo     --priority 60
 	dh_installwm
 	dh_installxfonts
 	dh_installgsettings

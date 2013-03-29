@@ -26,10 +26,7 @@ if [ "`id -u`" != "0" ] ; then
 fi 
 
 if [ -e /etc/group ] ; then 
-    # check if not exist lego group (create it if not...)
-    if [ "x`cat /etc/group | grep ^robots:`" = "x" ] ; then 
-         addgroup --system robots
-    fi
+    addgroup --system robots
     lusers=`cat /etc/passwd | grep "1[0-9]\{3\}" | sed "s/:.\+//"`
     echo "##########################################"
     echo "######### INSTALL PERMISSIONS  ###########"
