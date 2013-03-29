@@ -23,11 +23,11 @@ api.getVolt.returns = {[1]={rname="volts", rtype="string"}} --nos devuelve el vo
 api.getVolt.call = function ()
 	device:send(GET_VOLT) --envío el código de operación
 	local data_in = device:read(2) --leo 2 bytes, primero el código de operación y segundo el voltaje
-	local voltaje = string.byte(data_in or "00000000" , 2) --leo el segundo byte obtenido que es el que tiene el voltaje
+	local voltaje = string.byte(data_in or "00000000", 2) --leo el segundo byte obtenido que es el que tiene el voltaje
     if voltaje == 255 then
         return voltaje
     else
-	    return (voltaje / 10)
+        return (voltaje / 10)
     end
 end
 
