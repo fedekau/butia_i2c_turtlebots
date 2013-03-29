@@ -2,23 +2,25 @@
 
 CURRDIR=`pwd`
 
-rm -rf staging
+rm -rf /tmp/staging
 rm -rf *.xo
-mkdir staging
+mkdir /tmp/staging
 
 cd ../butiaXO
 make
 
 cd $CURRDIR
-cp -Lr Butialo.activity -t staging
-
+cp -Lr Butialo.activity -t /tmp/staging
 
 cd $CURRDIR
-cd staging/Butialo.activity
+cd /tmp/staging/Butialo.activity
+git init
+git add *
+git commit -m 'all files'
 python setup.py build
 python setup.py dist_xo
 
 cd $CURRDIR
-mv staging/Butialo.activity/dist/*.xo .
+mv /tmp/staging/Butialo.activity/dist/*.xo .
 
 
