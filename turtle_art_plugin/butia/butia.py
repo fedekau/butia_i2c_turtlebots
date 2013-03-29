@@ -150,7 +150,7 @@ class Butia(Plugin):
                      style='box-style',
                      label=_('battery charge Butia'),
                      prim_name='batterychargeButia',
-                     help_string=_('returns the battery charge as a number between 0 and 255'))
+                     help_string=_('returns the battery charge in volts. If no motors present, it returns 255'))
         self.tw.lc.def_prim('batterychargeButia', 0, lambda self: primitive_dictionary['batterychargeButia']())
         special_block_colors['batterychargeButia'] = self.batteryColor()[:]
 
@@ -378,15 +378,15 @@ class Butia(Plugin):
             return ["#FFA500","#808080"]
         if self.battery_value == ERROR:
             return COLOR_NOTPRESENT[:]
-        elif (self.battery_value == 255) or (self.battery_value < 74):
+        elif (self.battery_value == 255) or (self.battery_value < 7.4):
             return ["#FF0000","#808080"]
-        elif ((self.battery_value < 254) and (self.battery_value >= 74)):
+        elif ((self.battery_value < 254) and (self.battery_value >= 7.4)):
             return ["#FFA500","#808080"]
 
     def staticBlocksColor(self):
         if self.use_cc:
             return COLOR_PRESENT[:]
-        if (self.battery_value == 255) or (self.battery_value < 74):
+        if (self.battery_value == 255) or (self.battery_value < 7.4):
             return COLOR_NOTPRESENT[:]
         else:
             return COLOR_PRESENT[:]
