@@ -45,6 +45,10 @@ class usb_device():
         self.handle = None
         self.debug = True
 
+    def _debug(self, message, err=''):
+        if self.debug:
+            print message, err
+
     def open_device(self):
         """
         Open the baseboard, configure the interface
@@ -54,8 +58,7 @@ class usb_device():
             self.handle.setConfiguration(USB4ALL_CONFIGURATION)
             self.handle.claimInterface(USB4ALL_INTERFACE)
         except usb.USBError, err:
-            if self.debug:
-                print err
+            self._debug('ERROR:com_usb:open_device', err)
             self.handle = None
             raise
         return self.handle
@@ -68,8 +71,7 @@ class usb_device():
             if self.handle:
                 self.handle.releaseInterface()
         except Exception, err:
-            if self.debug:
-                print err
+            self._debug('ERROR:com_usb:close_device', err)
             raise
         self.handle = None
         self.device = None
@@ -81,8 +83,7 @@ class usb_device():
         try:
             return self.handle.bulkRead(ADMIN_MODULE_OUT_ENDPOINT, length, TIMEOUT)
         except Exception, err:
-            if self.debug:
-                print 'Exception in read usb', err
+            self._debug('ERROR:com_usb:read', err)
             raise
  
     def write(self, data):
@@ -92,8 +93,7 @@ class usb_device():
         try:
             return self.handle.bulkWrite(ADMIN_MODULE_IN_ENDPOINT, data, TIMEOUT)
         except Exception, err:
-            if self.debug:
-                print 'Exception in write usb', err
+            self._debug('ERROR:com_usb:write', err)
             raise
 
     def get_info(self):
@@ -106,8 +106,7 @@ class usb_device():
             sn = self.handle.getString(3, 255)
             return [names, copy, sn]
         except Exception, err:
-            if self.debug:
-                print 'Exception in get_info', err
+            self._debug('ERROR:com_usb:get_info', err)
             raise
 
 def find():
@@ -121,7 +120,6 @@ def find():
                 if dev.idVendor == USB4ALL_VENDOR and dev.idProduct == USB4ALL_PRODUCT:
                     l.append(usb_device(dev))
     except Exception, err:
-        if self.debug:
-            print 'find gives the error:', err
+        pass
     return l
 
