@@ -6,22 +6,22 @@ LIBS= -lARvideo -lAR -lpthread -lXi -lX11 -lm -pthread -lgstreamer-0.10 -lgobjec
 CFLAG= -fPIC -O -pthread -I/usr/include/gstreamer-0.10 -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -I/usr/include/libxml2 -I/usr/X11R6/include -I$(INC_DIR)
 
 
-OBJS = multiPatternDetection.o object.o 
-HEADDERS = object.h multiPatternDetection.h
+OBJS = patterns.o object.o 
+HEADDERS = object.h patterns.h
 
-all: multiPatternTest multiPatternDetection.so
+all: patternsTest libPatterns.so
 
-multiPatternDetection.so: $(OBJS)
-	cc -shared -o libMultiPatternDetection.so $(OBJS) $(LIBS) -L$(LIB_DIR)
+libPatterns.so: $(OBJS)
+	cc -shared -o libPatterns.so $(OBJS) $(LIBS) -L$(LIB_DIR)
 
-multiPatternTest: multiPatternTest.o $(OBJS)
-	cc -o multiPatternTest multiPatternTest.o $(OBJS) $(LDFLAG) $(LIBS)
+patternsTest: patternsTest.o $(OBJS)
+	cc -o patternsTest patternsTest.o $(OBJS) $(LDFLAG) $(LIBS)
 
-multiPatternTest.o: multiPatternTest.c $(HEADDERS)
-	cc -c $(CFLAG) multiPatternTest.c
+patternsTest.o: patternsTest.c $(HEADDERS)
+	cc -c $(CFLAG) patternsTest.c
 
-multiPatternDetection.o: multiPatternDetection.c $(HEADDERS)
-	cc -c $(CFLAG) multiPatternDetection.c
+patterns.o: patterns.c $(HEADDERS)
+	cc -c $(CFLAG) patterns.c
 
 object.o: object.c $(HEADDERS)
 	cc -c $(CFLAG) object.c
@@ -29,8 +29,8 @@ object.o: object.c $(HEADDERS)
 clean:
 	rm -f *.o
 	rm -f *.so
-	rm -f multiPatternDetection
-	rm -f multiPatternTest
+	rm -f patterns
+	rm -f patternsTest
 
-
+.PHONY: all clean patternsTest
 	

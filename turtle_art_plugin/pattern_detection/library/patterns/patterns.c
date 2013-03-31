@@ -7,7 +7,7 @@
 #include <AR/ar.h>
 #include <AR/video.h>
 #include "object.h"
-#include "multiPatternDetection.h"
+#include "patterns.h"
 #include <assert.h>
 #include <math.h>
 
