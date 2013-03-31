@@ -36,7 +36,8 @@ class ButiaFunctions:
         LoopBack command: send data to the board and get the result. If all is ok
         the return must be exactly of the data parameter
         """
-        return self.callModule('lback', str(board), '0', 'send', str(data))
+        msg = [str(data)]
+        return self.callModule('lback', str(board), '0', 'send', msg)
 
     ############################## Movement calls ##############################
 
@@ -45,8 +46,7 @@ class ButiaFunctions:
         Set the speed of 2 motors. The sense is 0 or 1, and the speed is
         between 0 and 1023
         """
-        msg = str(leftSense) + ' ' + str(leftSpeed) + ' ' + str(rightSense)
-        msg = msg + ' ' +  str(rightSpeed)
+        msg = [str(leftSense), str(leftSpeed), str(rightSense), str(rightSpeed)]
         return self.callModule('motors', str(board), '0', 'setvel2mtr', msg)
 
     def set2CCMotorSpeed(self, leftSense='0', leftSpeed='0', rightSense='0', rightSpeed='0', board='0'):
@@ -54,8 +54,7 @@ class ButiaFunctions:
         Set the speed of 2 CC motors. The sense is 0 or 1, and the speed is
         0: off or 1: on
         """
-        msg = str(leftSense) + ' ' + str(leftSpeed) + ' ' + str(rightSense)
-        msg = msg + ' ' +  str(rightSpeed)
+        msg = [str(leftSense), str(leftSpeed), str(rightSense), str(rightSpeed)]
         return self.callModule('shld_cc', str(board), '0', 'setvel2mtr', msg)
      
     def setMotorSpeed(self, idMotor='0', sense='0', speed='0', board='0'):
@@ -63,42 +62,39 @@ class ButiaFunctions:
         Set the speed of one motor. idMotor = 0 for left motor and 1 for the
         right motor. The sense is 0 or 1, and the speed is between 0 and 1023
         """
-        msg = str(idMotor) + ' ' + str(sense) + ' ' + str(speed)
+        msg = [str(idMotor), str(sense), str(speed)]
         return self.callModule('motors', str(board), '0', 'setvelmtr', msg)
 
 
     ##################### Operations for ax.lua driver #########################
 
-    def write_info(self, idMotor, regstart, value, board='0'):
-        msg = str(idMotor) + ' '  + str(regstart) + ' ' + str(value)
+    def writeInfo(self, idMotor, regstart, value, board='0'):
+        msg = [str(idMotor), str(regstart), str(value)]
         return self.callModule('ax', str(board), '0', 'write_info', msg)
 
-    def read_info(self, idMotor, regstart, lenght='1', board='0'):
-        msg = str(idMotor) + ' '  + str(regstart) + ' ' + str(length)
+    def readInfo(self, idMotor, regstart, lenght='1', board='0'):
+        msg = [str(idMotor), str(regstart), str(length)]
         return self.callModule('ax', str(board), '0', 'write_info', msg)
 
-    def wheel_mode(self, idMotor='0', board='0'):
-        msg = str(idMotor)
+    def wheelMode(self, idMotor='0', board='0'):
+        msg = [str(idMotor)]
         return self.callModule('ax', str(board), '0', 'wheel_mode', msg)
      
-    def joint_mode(self, idMotor='0', _min='0', _max='1023', board='0'):
-        msg = str(idMotor) + ' ' + str(_min) + ' ' + str(_max)
+    def jointMode(self, idMotor='0', _min='0', _max='1023', board='0'):
+        msg = [str(idMotor), str(_min), str(_max)]
         return self.callModule('ax', str(board), '0', 'joint_mode', msg)
 
-	def set_speed(self, idMotor='0', speed='0', board='0'):
-		msg = str(idMotor) + ' ' + str(speed) 
+    def setSpeed(self, idMotor='0', speed='0', board='0'):
+        msg = [str(idMotor), str(speed)]
         return self.callModule('ax', str(board), '0', 'set_speed', msg)
 
-    def set_position(self, idMotor='0', pos='0', board='0'):
-        msg = str(idMotor) + ' ' + str(pos)
+    def setPosition(self, idMotor='0', pos='0', board='0'):
+        msg = [str(idMotor), str(pos)]
         return self.callModule('ax', str(board), '0', 'set_position', msg)
 
-    def get_position(self, idMotor='0', board='0'):
-        msg = str(idMotor)
+    def getPosition(self, idMotor='0', board='0'):
+        msg = [str(idMotor)]
         return self.callModule('ax', str(board), '0', 'get_position', msg)
-
-    def ping(self, board='0'):
-        return self.callModule('placa', str(board), '0', 'ping')
 
     ############################### General calls ##############################
      
@@ -168,7 +164,8 @@ class ButiaFunctions:
         """
         Sets on or off the LED connected in port: number (0 is off, 1 is on)
         """
-        return self.callModule('led', str(board), str(number), 'turn', str(on_off))
+        msg = [str(on_off)]
+        return self.callModule('led', str(board), str(number), 'turn', msg)
 
     ################################ Extras ################################
 
@@ -176,20 +173,20 @@ class ButiaFunctions:
         """
         Sets the mode of hack pin. If mode 0 = input, mode 1 = output
         """
-        msg = str(pin) + ' ' + str(mode)
+        msg = [str(pin), str(mode)]
         return self.callModule('hackp', str(board), '0', 'setMode', msg)
 
     def setHack(self, pin, value, board='0'):
         """
         Sets the value of hack pin configured as output. Value is 0 or 1
         """
-        msg = str(pin) + ' ' + str(value)
+        msg = [str(pin), str(value)]
         return self.callModule('hackp', str(board), '0', 'write', msg)
 
     def getHack(self, pin, board='0'):
         """
         Gets the value of hack pin configured as input. Returns 0 or 1
         """
-        return self.callModule('hackp', str(board), '0', 'read', str(pin))
-
+        msg = [str(pin)]
+        return self.callModule('hackp', str(board), '0', 'read', msg)
 

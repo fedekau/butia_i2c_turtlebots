@@ -10,5 +10,8 @@ def getVersion(dev):
 def getVolt(dev):
     dev.send([GET_VOLT])
     raw = dev.read(2)
-    return raw[1]
+    if raw[1] == 255:
+        return raw[1]
+    else:
+        return raw[1] / 10.0
 

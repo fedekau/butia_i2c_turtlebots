@@ -20,13 +20,13 @@ def setMode(dev, pin, value):
 
 def read(dev, pin):
     msg = [READ, pin]
-    dev.send(pin)
+    dev.send(msg)
     raw = dev.read(2)
     return raw[1]
 
 def write(dev, pin, value):
     msg = [WRITE, pin, value]
-    dev.send(pin)
+    dev.send(msg)
     raw = dev.read(1)
     return raw[1]
 

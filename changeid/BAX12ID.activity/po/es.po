@@ -1,0 +1,103 @@
+# Spanish translations for BAX package.
+# Copyright (C) 2013 THE BAX'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the BAX package.
+# Alan Aguiar <alanjas@hotmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: BAX 12ID.activity\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-29 11:32-0300\n"
+"PO-Revision-Date: 2013-03-29 11:32-0300\n"
+"Last-Translator: Alan Aguiar <alanjas@hotmail.com>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: activity/activity.info:2
+msgid "Butia AX-12 ID"
+msgstr "Butia AX-12 ID"
+
+#: activity/activity.info:8
+msgid "AX-12 ID Changer"
+msgstr "Cambia ID de motores AX-12"
+
+#: ButiaAX12ID.py:77 ButiaAX12ID.py:80
+#, python-format
+msgid "Change ID (%s motor)"
+msgstr "Cambiar ID (motor %s)"
+
+#: ButiaAX12ID.py:77 ButiaAX12ID.py:159
+msgid "LEFT"
+msgstr "IZQUIERDO"
+
+#: ButiaAX12ID.py:80 ButiaAX12ID.py:164
+msgid "RIGHT"
+msgstr "DERECHO"
+
+#: ButiaAX12ID.py:83
+msgid "Change ID (CUSTOM)"
+msgstr "Cambiar ID (PERSONALIZADO)"
+
+#: ButiaAX12ID.py:91
+msgid "Select ID:"
+msgstr "Seleccione ID:"
+
+#: ButiaAX12ID.py:132
+msgid ""
+"Not disconnect the board and not close this activity.\n"
+"Do you want to continue?"
+msgstr ""
+"No desconecte la placa y no cierre esta actividad.\n"
+"¿Desea continuar?"
+
+#: ButiaAX12ID.py:134
+msgid "Changing motor ID..."
+msgstr "Cambiando el ID del motor..."
+
+#: ButiaAX12ID.py:145
+#, python-format
+msgid ""
+"ID Change CORRECT.\n"
+"Your new motor ID is %s."
+msgstr ""
+"El Cambio de ID fue CORRECTO.\n"
+"Tu nuevo ID de motor es %s."
+
+#: ButiaAX12ID.py:147 ButiaAX12ID.py:153 ButiaAX12ID.py:172
+msgid "Information"
+msgstr "Información"
+
+#: ButiaAX12ID.py:151
+msgid ""
+"ID Change ERROR\n"
+"Please check board and motor connections."
+msgstr ""
+"ERROR en el Cambio de ID.\n"
+"Por favor chequea la placa y la conexión con el motor."
+
+#: ButiaAX12ID.py:159 ButiaAX12ID.py:164
+#, python-format
+msgid ""
+"Please connect ONLY the %s motor to the board, and the power to this motor.\n"
+msgstr ""
+"Por favor solo conecta el motor %s a la placa y la alimentación al motor.\n"
+
+#: ButiaAX12ID.py:170
+msgid "You must select an ID in the combo."
+msgstr "Debes seleccionar un ID en el combo."
+
+#: ButiaAX12ID.py:176
+#, python-format
+msgid ""
+"Please connect to the board ONLY the motor or motors that you want to change "
+"it ID.\n"
+"Your motor's new ID will be %s.\n"
+msgstr ""
+"Por favor conecta a la placa SOLO el motor o los motores que deseas cambiar "
+"su ID.\n"
+"El nuevo ID de tus motores será %s.\n"
+

@@ -8,9 +8,10 @@ def getVersion(dev):
     return raw[1] + raw[2] * 256
 
 def send(dev, data):
-    msg = [SEND_DATA] + dev.to_ord(data)
+    info = data[0]
+    msg = [SEND_DATA] + dev.to_ord(info)
     dev.send(msg)
-    raw = dev.read(len(data) + 1)
+    raw = dev.read(len(info) + 1)
     ret = ''
     for r in raw[1:]:
         if not(r == 0):

@@ -1,15 +1,16 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # butiaRemotoJoystick.py
 # Para el proyecto Butia, manejar el butia con joystick
 #
 # basado en codigo de:
-# 	created 19 December 2007
-# 	copyleft 2007 Brian D. Wendt
-# 	http://principialabs.com/
+#     created 19 December 2007
+#     copyleft 2007 Brian D. Wendt
+#     http://principialabs.com/
 #
-# 	code adapted from:
-#	http://svn.lee.org/swarm/trunk/mothernode/python/multijoy.py
+#     code adapted from:
+#    http://svn.lee.org/swarm/trunk/mothernode/python/multijoy.py
 #
 # Copyleft Guillermo Reisch (2010)
 #
@@ -20,9 +21,11 @@
 #  pywin32  - http://sourceforge.net/projects/pywin32/
 #
 
+import sys
+sys.path.append('../../pybot')
+import pybot_client
 import pygame
 import math
-import butiaAPI
 
 # allow multiple joysticks
 joy = []
@@ -32,13 +35,13 @@ YPOS = 0.0
 
 #butia definitions
 MOTOR_MAX  = 1000
-butiabot = butiaAPI.robot()
-butiabot.reconnect("localhost", 2009)
-modulos = butiabot.listarModulos()
-print modulos
 
-#butiabot.abrirSensor()
-butiabot.abrirMotores()
+butia = pybot_client.robot()
+modules = butia.getModulesList()
+if modules == []:
+    print 'No modules detected'
+else:
+    print modules
 
 
 # Arduino USB port address (try "COM5" on Win32)
@@ -50,36 +53,36 @@ butiabot.abrirMotores()
 
 # dada una velocidad setea los motores a la vel qued eberia
 def handleSpeed():
-	global XPOS
-	global YPOS
+    global XPOS
+    global YPOS
 
-	print "x: %f , y: %f)" % (XPOS, YPOS)
-	# siempre entre -1.0 y 1.0 
+    print "x: %f , y: %f)" % (XPOS, YPOS)
+    # siempre entre -1.0 y 1.0 
 
-	xplusy = XPOS + YPOS
-	yminusx = YPOS - XPOS
+    xplusy = XPOS + YPOS
+    yminusx = YPOS - XPOS
 
-	#rueda izq la de id mayor
-	sentidoIzq = 0 #forward
-	if xplusy < 0:
-		xplusy = abs(xplusy)
-		sentidoIzq = 1
+    #rueda izq la de id mayor
+    sentidoIzq = 0 #forward
+    if xplusy < 0:
+        xplusy = abs(xplusy)
+        sentidoIzq = 1
 
-	#rueda der la de id menor
-	sentidoDer = 0 #forward
-	if yminusx < 0:
-		yminusx = abs(yminusx)
-		sentidoDer = 1
-	#llevo el valor que lo limite al intervalo [-1, 1], al intervalo [-1000, 1000]  	
-	xplusy = xplusy*1000
-	yminusx = yminusx*1000
+    #rueda der la de id menor
+    sentidoDer = 0 #forward
+    if yminusx < 0:
+        yminusx = abs(yminusx)
+        sentidoDer = 1
+    #llevo el valor que lo limite al intervalo [-1, 1], al intervalo [-1000, 1000]
+    xplusy = xplusy*1000
+    yminusx = yminusx*1000
 
-	#normalizo 
-	if xplusy > MOTOR_MAX:
-		xplusy = MOTOR_MAX
-	if yminusx > MOTOR_MAX:
-		yminusx = MOTOR_MAX
-	butiabot.setVelocidadMotores(str(sentidoDer),str(yminusx), str(sentidoIzq), str(xplusy))
+    #normalizo
+    if xplusy > MOTOR_MAX:
+        xplusy = MOTOR_MAX
+    if yminusx > MOTOR_MAX:
+        yminusx = MOTOR_MAX
+    butia.set2MotorSpeed(str(sentidoDer),str(yminusx), str(sentidoIzq), str(xplusy))
 
 
 # handle joystick event
@@ -109,7 +112,7 @@ def handleJoyEvent(e):
             # Arduino joystick-servo hack
             if (axis == "X"):
                 XPOS = e.dict['value']
-		handleSpeed()
+                handleSpeed()
                 # convert joystick position to servo increment, 0-180
                 #move = round(pos * 90, 0)
                 #if (move < 0):
@@ -125,7 +128,7 @@ def handleJoyEvent(e):
 
             if (axis == "Y"):
                 YPOS = e.dict['value']
-		handleSpeed()
+                handleSpeed()
 
 
     elif e.type == pygame.JOYBUTTONDOWN:

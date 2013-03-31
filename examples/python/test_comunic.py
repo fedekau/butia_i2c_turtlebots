@@ -1,6 +1,9 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# test de comunicacion
+
 import socket
 
-    
 s = socket.socket()  
 s.connect(("localhost", 2009))  
     

@@ -88,12 +88,12 @@ class Server():
                                     else:
                                         result = result + '\n' + str(addr[0]) + ', ' + str(addr[1]) 
                             elif r[0] == 'LIST':
-                                l = self.robot.get_modules_list()
+                                l = self.robot.getModulesList()
                                 result = ','.join(l)
                             elif r[0] == 'REFRESH':
                                 self.robot.refresh()
                             elif r[0] == 'BUTIA_COUNT':
-                                result = self.robot.get_butia_count()
+                                result = self.robot.getButiaCount()
                             elif r[0] == 'DESCRIBE':
                                 if len(r) >= 2:
                                     module = r[1]
@@ -112,7 +112,7 @@ class Server():
                                         else:
                                             modulename = mbn
                                     function = r[2]
-                                    par = ' '.join(r[3:])
+                                    par = r[3:]
                                     result = self.robot.callModule(modulename, board, number, function, par)
 
                         result = str(result)
@@ -132,13 +132,12 @@ class Server():
 
 
 if __name__ == "__main__":
+    chotox = False
+    debug = False
     if 'chotox' in argv:
         chotox = True
-    else:
-        chotox = False
     if 'DEBUG' in argv:
-        s = Server(True, chotox)
-    else:
-        s = Server(False, chotox)
+        debug = True
+    s = Server(debug, chotox)
     s.init_server()
 

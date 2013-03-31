@@ -48,6 +48,10 @@ class Device():
         self.functions = func
         self.debug = False
 
+    def _debug(self, message, err=''):
+        if self.debug:
+            print message, err
+
     def send(self, msg):
         """
         Send to the device the specifiy call and parameters
@@ -57,8 +61,7 @@ class Device():
         w.append(self.handler_tosend)
         w.append(length)
         w.append(NULL_BYTE)
-        for p in msg:
-            w.append(p)
+        w = w + msg
 
         self.baseboard.dev.write(w)
 
@@ -67,8 +70,7 @@ class Device():
         Read the device data
         """
         raw = self.baseboard.dev.read(MAX_BYTES)
-        if self.debug:
-            print 'device:module_rad return', raw
+        self._debug('device:read', raw)
         return raw[3:]
 
     def module_open(self):
@@ -95,8 +97,7 @@ class Device():
 
         raw = self.baseboard.dev.read(OPEN_RESPONSE_PACKET_SIZE)
 
-        if self.debug:
-            print 'device:module_open return', raw
+        self._debug('device:module_open', raw)
 
         self.handler = raw[4]
         self.handler_tosend = self.handler * 8
@@ -117,10 +118,8 @@ class Device():
             return f(self, params)
         else:
             par = []
-            if not(params == ''):
-                params = params.split(' ')
-                for e in params:
-                    par.append(int(e))
+            for e in params:
+                par.append(int(e))
 
             return f(self, *par)
 

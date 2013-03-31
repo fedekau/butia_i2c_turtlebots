@@ -6,14 +6,9 @@ rm -rf /tmp/staging
 rm -rf *.xo
 mkdir /tmp/staging
 
-cd ../butiaXO
-make
+cp -Lr BAX12ID.activity -t /tmp/staging
 
-cd $CURRDIR
-cp -Lr Butialo.activity -t /tmp/staging
-
-cd $CURRDIR
-cd /tmp/staging/Butialo.activity
+cd /tmp/staging/BAX12ID.activity
 git init
 git add *
 git commit -m 'all files'
@@ -21,6 +16,6 @@ python setup.py build
 python setup.py dist_xo
 
 cd $CURRDIR
-mv /tmp/staging/Butialo.activity/dist/*.xo .
+mv /tmp/staging/BAX12ID.activity/dist/*.xo .
 
 

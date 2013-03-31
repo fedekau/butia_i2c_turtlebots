@@ -54,6 +54,10 @@ class Baseboard():
         self.devices = {}
         self.openables_loaded = []
 
+    def _debug(self, message, err=''):
+        if self.debug:
+            print message, err
+
     def open_baseboard(self):
         """
         Open the baseboard
@@ -131,8 +135,7 @@ class Baseboard():
                 self.listi[m] = name
         except:
             self.listi = {}
-            if self.debug:
-                print 'error listi'
+            self._debug('ERROR: listi')
 
     def get_device_handler(self, name):
         """
@@ -165,8 +168,7 @@ class Baseboard():
 
         raw = self.dev.read(GET_USER_MODULE_LINE_PACKET_SIZE)
         
-        if self.debug:
-            print 'baseboard:get_user_modules_size return', raw
+        self._debug('baseboard:get_user_modules_size', raw)
 
         return raw[4]
 
@@ -184,15 +186,13 @@ class Baseboard():
 
         raw = self.dev.read(GET_LINE_RESPONSE_PACKET_SIZE)
 
-        if self.debug:
-            print 'baseboard:get_user_module_line return', raw
+        self._debug('baseboard:get_user_module_line', raw)
 
         c = raw[4:len(raw)]
         t = ''
         for e in c:
             if not(e == NULL_BYTE):
                 t = t + chr(e)
-
         return t
 
     def get_handler_size(self):
@@ -208,8 +208,7 @@ class Baseboard():
 
         raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
 
-        if self.debug:
-            print 'baseboard:get_handler_size return', raw
+        self._debug('baseboard:get_handler_size', raw)
 
         return raw[4]
 
@@ -227,8 +226,7 @@ class Baseboard():
 
         raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
 
-        if self.debug:
-            print 'baseboard:get_handler_type return', raw
+        self._debug('baseboard:get_handler_type', raw)
 
         return raw[4]
 
@@ -267,8 +265,7 @@ class Baseboard():
 
         raw = self.dev.read(CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE)
 
-        if self.debug:
-            print 'baseboard:force_close_all return', raw
+        self._debug('baseboard:force_close_all', raw)
 
         return raw[4]
 
