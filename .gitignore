@@ -46,3 +46,5 @@ turtle_art_plugin/pattern_detection/library/multiPatternDetection/libMultiPatter
 turtle_art_plugin/pattern_detection/library/multiPatternDetection/multiPatternTest
 newPatterns/NewPatterns.activity/MANIFEST
 
+changeid/BAX12ID.activity/locale
+
