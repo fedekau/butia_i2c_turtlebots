@@ -147,7 +147,7 @@ apply_localization: walterGIT mktmpfolder extrasGIT
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
 
-apply_hard_plugins: apply_localization walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
+apply_hard_plugins: apply_localization nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
 	cp -rLf butia               $(BUILDDIR)/plugins/
 	cp -rLf sumtia              $(BUILDDIR)/plugins/
 	cp -rLf followme            $(BUILDDIR)/plugins/
@@ -188,7 +188,13 @@ apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT apply_localizati
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
-	#dist_xo no work in the tmp folder
+	# dist_xo no work in the tmp folder -> use /tmp
+	# workarround for double locale .mo files
+	(cd $(TMPBUILDDIR) && rm -rf locale)
+	(cd $(TMPBUILDDIR) && git init)
+	(cd $(TMPBUILDDIR) && git add *)
+	(cd $(TMPBUILDDIR) && git commit -m 'all files')
+	(cd $(TMPBUILDDIR) && python setup.py build)
 	(cd $(TMPBUILDDIR) && python setup.py dist_xo)
 	cp $(TMPBUILDDIR)/dist/*.xo .
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) clean-builddir

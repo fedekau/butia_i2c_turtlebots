@@ -9,6 +9,7 @@ mkdir /tmp/staging
 cp -Lr ButiaFirmware.activity -t /tmp/staging
 
 cd /tmp/staging/ButiaFirmware.activity
+rm -rf locale
 git init
 git add *
 git commit -m 'all files'

@@ -12,8 +12,8 @@ make
 cd $CURRDIR
 cp -Lr Butialo.activity -t /tmp/staging
 
-cd $CURRDIR
 cd /tmp/staging/Butialo.activity
+rm -rf locale
 git init
 git add *
 git commit -m 'all files'

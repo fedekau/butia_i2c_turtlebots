@@ -9,6 +9,7 @@ mkdir /tmp/staging
 cp -Lr BAX12ID.activity -t /tmp/staging
 
 cd /tmp/staging/BAX12ID.activity
+rm -rf locale
 git init
 git add *
 git commit -m 'all files'
