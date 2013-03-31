@@ -168,6 +168,10 @@ apply_hard_plugins: apply_localization walterGIT nxtGIT wedoGIT arduinoGIT pyusb
 	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
 	# put pattern_examples into turtle examples folder
 	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
+	# remove unnecessary .o files of pattern_detection
+	rm $(BUILDDIR)/plugins/pattern_detection/library/patterns/*.o
+	# remove ARTollkit binaries
+	rm -rf $(BUILDDIR)/plugins/pattern_detection/library/ARToolkit
 
 pattern_detection_compile:
 	$(MAKE) -C pattern_detection/library
