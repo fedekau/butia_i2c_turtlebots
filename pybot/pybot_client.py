@@ -96,12 +96,9 @@ class robot(ButiaFunctions):
 
 
     # call the module 'modulename'
-    def callModule(self, modulename, board_number, number, function, params = ''):
-        if number == '':
-            number = '0'
+    def callModule(self, modulename, board_number, number, function, params = []):
         msg = 'CALL ' + modulename + '@' + str(board_number) + ':' + str(number) + ' ' + function
-        if params != '':
-            msg += ' ' + params
+        msg = msg + ' '.join(params)
         ret = self.doCommand(msg)
         try:
             ret = int(ret)

@@ -112,7 +112,7 @@ class Server():
                                         else:
                                             modulename = mbn
                                     function = r[2]
-                                    par = ' '.join(r[3:])
+                                    par = r[3:]
                                     result = self.robot.callModule(modulename, board, number, function, par)
 
                         result = str(result)

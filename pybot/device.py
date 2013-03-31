@@ -61,8 +61,7 @@ class Device():
         w.append(self.handler_tosend)
         w.append(length)
         w.append(NULL_BYTE)
-        for p in msg:
-            w.append(p)
+        w = w + p
 
         self.baseboard.dev.write(w)
 
@@ -119,10 +118,8 @@ class Device():
             return f(self, params)
         else:
             par = []
-            if not(params == ''):
-                params = params.split(' ')
-                for e in params:
-                    par.append(int(e))
+            for e in params:
+                par.append(int(e))
 
             return f(self, *par)
 
