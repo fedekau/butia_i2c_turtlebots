@@ -61,7 +61,7 @@ class Device():
         w.append(self.handler_tosend)
         w.append(length)
         w.append(NULL_BYTE)
-        w = w + p
+        w = w + msg
 
         self.baseboard.dev.write(w)
 

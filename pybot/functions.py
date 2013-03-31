@@ -84,7 +84,7 @@ class ButiaFunctions:
         msg = [str(idMotor), str(_min), str(_max)]
         return self.callModule('ax', str(board), '0', 'joint_mode', msg)
 
-	def set_speed(self, idMotor='0', speed='0', board='0'):
+    def set_speed(self, idMotor='0', speed='0', board='0'):
         msg = [str(idMotor), str(speed)]
         return self.callModule('ax', str(board), '0', 'set_speed', msg)
 
