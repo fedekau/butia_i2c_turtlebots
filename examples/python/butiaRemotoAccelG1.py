@@ -1,16 +1,22 @@
-#butiaRemoto
-import butiaAPI
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Butia Remoto
+
+import sys
+sys.path.append('../../pybot')
+import pybot_client
 import android
 import time
 
 droid = android.Android()
 
-butiabot = butiaAPI.robot()
-modulos = butiabot.listarModulos()
-print modulos
+butia = butiaAPI.robot()
+modules = butia.getModulesList()
+if modules == []:
+    print 'No modules detected'
+else:
+    print modules
 
-#butiabot.abrirSensor()
-butiabot.abrirMotores()
 s = droid.startSensing()
 a = 'q' #no hace nada
 
@@ -61,11 +67,8 @@ while True:
 			xplusy = 990
 		if yminusx > 990:
 			yminusx = 990
-		butiabot.setVelocidadMotores(str(sentidoDer),str(yminusx), str(sentidoIzq), str(xplusy))			
+		butia.set2MotorSpeed(str(sentidoDer),str(yminusx), str(sentidoIzq), str(xplusy))			
 		
-	#butiabot.setVelocidadMotores("0","0", "0", "0")
-
-print v				
 droid.stopSensing()
 print "fin"		
 						

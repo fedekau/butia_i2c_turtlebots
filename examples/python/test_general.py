@@ -1,21 +1,24 @@
-import butiaAPI
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Test General
+
+import sys
+sys.path.append('../../pybot')
+import pybot_client
 import time
 
-butiabot = butiaAPI.robot()
+butia = pybot_client.robot()
 
 print 'Loaded modules'
-print butiabot.get_modules_list()
+print butia.getModulesList()
 
 print 'Butia battery charge'
-print butiabot.getBatteryCharge()
-
-print 'Butia version'
-print butiabot.getVersion()
+print butia.getBatteryCharge()
 
 print 'Butia firmware version'
-print butiabot.getFirmwareVersion()
+print butia.getFirmwareVersion()
 
-ret = butiabot.loopBack("hola")
+ret = butia.loopBack("hola")
 print 'I send: hola'
 print 'and get: ' + ret
 
@@ -23,46 +26,45 @@ print 'and get: ' + ret
 
 print 'Check both motors'
 print 'Check: 0 500 0 500'
-ret = butiabot.set2MotorSpeed(0, 1000, 0, 500)
+ret = butia.set2MotorSpeed(0, 1000, 0, 500)
 time.sleep(2)
 
 print 'Stop'
-ret = butiabot.set2MotorSpeed(0, 0, 0, 0)
+ret = butia.set2MotorSpeed(0, 0, 0, 0)
 time.sleep(1)
 
 # LEFT MOTOR
 
 print 'Check left motor'
 print 'Check: 0 0 1023'
-ret = butiabot.setMotorSpeed(0, 0, 1023)
+ret = butia.setMotorSpeed(0, 0, 1023)
 time.sleep(1)
 
 print 'Check: 0 1 1023'
-ret = butiabot.setMotorSpeed(0, 1, 1023)
+ret = butia.setMotorSpeed(0, 1, 1023)
 time.sleep(1)
 
 print 'Stop left motor'
-ret = butiabot.setMotorSpeed(0, 0, 0)
+ret = butia.setMotorSpeed(0, 0, 0)
 time.sleep(1)
 
 # RIGHT MOTOR
 
 print 'Check right motor'
 print 'Check: 1 0 1023'
-ret = butiabot.setMotorSpeed(1, 0, 1023)
+ret = butia.setMotorSpeed(1, 0, 1023)
 time.sleep(1)
 
 print 'Check: 1 1 1023'
-ret = butiabot.setMotorSpeed(1, 1, 1023)
+ret = butia.setMotorSpeed(1, 1, 1023)
 time.sleep(1)
 
 print 'Stop left motor'
-ret = butiabot.setMotorSpeed(1, 0, 0)
+ret = butia.setMotorSpeed(1, 0, 0)
 time.sleep(1)
 
 
 print 'the end'
-
-butiabot.close()
+butia.close()
 
 

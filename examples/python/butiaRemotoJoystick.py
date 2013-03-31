@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # butiaRemotoJoystick.py
 # Para el proyecto Butia, manejar el butia con joystick
@@ -20,9 +21,11 @@
 #  pywin32  - http://sourceforge.net/projects/pywin32/
 #
 
+import sys
+sys.path.append('../../pybot')
+import pybot_client
 import pygame
 import math
-import butiaAPI
 
 # allow multiple joysticks
 joy = []
@@ -32,13 +35,9 @@ YPOS = 0.0
 
 #butia definitions
 MOTOR_MAX  = 1000
-butiabot = butiaAPI.robot()
-butiabot.reconnect("localhost", 2009)
-modulos = butiabot.listarModulos()
+butia = pybot_client.robot()
+modulos = butia.getModulesList()
 print modulos
-
-#butiabot.abrirSensor()
-butiabot.abrirMotores()
 
 
 # Arduino USB port address (try "COM5" on Win32)
@@ -79,7 +78,7 @@ def handleSpeed():
 		xplusy = MOTOR_MAX
 	if yminusx > MOTOR_MAX:
 		yminusx = MOTOR_MAX
-	butiabot.setVelocidadMotores(str(sentidoDer),str(yminusx), str(sentidoIzq), str(xplusy))
+	butia.set2MotorSpeed(str(sentidoDer),str(yminusx), str(sentidoIzq), str(xplusy))
 
 
 # handle joystick event
@@ -109,7 +108,7 @@ def handleJoyEvent(e):
             # Arduino joystick-servo hack
             if (axis == "X"):
                 XPOS = e.dict['value']
-		handleSpeed()
+                handleSpeed()
                 # convert joystick position to servo increment, 0-180
                 #move = round(pos * 90, 0)
                 #if (move < 0):
@@ -125,7 +124,7 @@ def handleJoyEvent(e):
 
             if (axis == "Y"):
                 YPOS = e.dict['value']
-		handleSpeed()
+                handleSpeed()
 
 
     elif e.type == pygame.JOYBUTTONDOWN:

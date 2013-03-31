@@ -1,10 +1,14 @@
-import butiaAPI
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Test grey sensor
+
+import sys
+sys.path.append('../../pybot')
+import pybot_client
 import time
 
-
-butiabot = butiaAPI.robot()
-modules = butiabot.get_modules_list()
-
+butia = pybot_client.robot()
+modules = butia.getModulesList()
 if modules == []:
     print 'No modules detected'
 else:
@@ -19,7 +23,7 @@ number = int(number)
 if number > 0:
     error = False
     while not error:
-        val = butiabot.getGray(number)
+        val = butia.getGray(number)
         if val == -1:
             error = True
         else:
@@ -28,4 +32,5 @@ if number > 0:
 else:
     print 'No grey sensor was found'
 
-butiabot.closeService()
+butia.close()
+

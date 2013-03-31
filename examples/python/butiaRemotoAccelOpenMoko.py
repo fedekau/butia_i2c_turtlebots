@@ -1,5 +1,10 @@
-#butiaRemoto
-import butiaAPI
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Butia Remoto
+
+import sys
+sys.path.append('../../pybot')
+import pybot_client
 import time
 import struct
 import math
@@ -51,12 +56,13 @@ def getX(in_file_f):
 #			print("x: " + str(x))
 	return x
 
-butiabot = butiaAPI.robot()
-modulos = butiabot.listarModulos()
-print modulos
+butia = pybot_client.robot()
+modules = butia.getModulesList()
+if modules == []:
+    print 'No modules detected'
+else:
+    print modules
 
-#butiabot.abrirSensor()
-butiabot.abrirMotores()
 a = 'q' #no hace nada
 
 time.sleep(1)
@@ -109,8 +115,8 @@ while True:
 		xplusy = MOTOR_MAX
 	if yminusx > MOTOR_MAX:
 		yminusx = MOTOR_MAX
-	butiabot.setVelocidadMotores(str(sentidoDer),str(yminusx), str(sentidoIzq), str(xplusy))			
-print v		
+	butia.set2MotorSpeed(str(sentidoDer),str(yminusx), str(sentidoIzq), str(xplusy))			
+	
 in_file.close()		
 print "fin"		
 						
