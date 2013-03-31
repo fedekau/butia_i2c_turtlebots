@@ -135,11 +135,11 @@ class ButiaAX12ID(activity.Activity):
         res = dialog.run()
         dialog.destroy()
         if res == gtk.RESPONSE_OK:
-            self.butia.write_info('254', '3', str(idn))
+            self.butia.writeInfo('254', '3', str(idn))
             time.sleep(1)
-            check = self.butia.write_info(str(idn), '25', '1')
+            check = self.butia.writeInfo(str(idn), '25', '1')
             time.sleep(1)
-            self.butia.write_info(str(idn), '25', '0')
+            self.butia.writeInfo(str(idn), '25', '0')
             #print check
             if check == 1:
                 msg1 = _('ID Change CORRECT.\nYour new motor ID is %s.') % str(idn)
