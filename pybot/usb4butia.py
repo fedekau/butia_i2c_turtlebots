@@ -34,7 +34,7 @@ ERROR = -1
 class USB4Butia(ButiaFunctions):
 
     def __init__(self, debug=False, get_modules=True, chotox=False):
-        self.debug = debug
+        self._debug_flag = debug
         self._hotplug = []
         self._openables = []
         self._drivers_loaded = {}
@@ -42,14 +42,14 @@ class USB4Butia(ButiaFunctions):
         self._b_ports = []
         self._modules = []
         self._get_all_drivers()
-        self.chotox_mode = chotox
+        self._chotox_mode = chotox
         self.find_butias(get_modules)
 
     def _debug(self, message, err=''):
-        if self.debug:
+        if self._debug_flag:
             print message, err
 
-    def get_butia_count(self):
+    def getButiaCount(self):
         """
         Gets the number of boards detected
         """
@@ -84,17 +84,17 @@ class USB4Butia(ButiaFunctions):
                     pass
 
         if get_modules:
-            self.get_modules_list()
+            self.getModulesList()
 
-    def get_modules_list(self, normal=True):
+    def getModulesList(self, normal=True):
         """
         Get the list of modules loaded in the board
         """
         self._modules = []
-        n_boards = self.get_butia_count()
+        n_boards = self.getButiaCount()
 
         self._debug('=Listing Devices')
-        if not(self.chotox_mode):
+        if not(self._chotox_mode):
             for i, b in enumerate(self._bb):
                 try:
                     listi = b.get_listi()

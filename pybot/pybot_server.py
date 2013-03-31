@@ -88,12 +88,12 @@ class Server():
                                     else:
                                         result = result + '\n' + str(addr[0]) + ', ' + str(addr[1]) 
                             elif r[0] == 'LIST':
-                                l = self.robot.get_modules_list()
+                                l = self.robot.getModulesList()
                                 result = ','.join(l)
                             elif r[0] == 'REFRESH':
                                 self.robot.refresh()
                             elif r[0] == 'BUTIA_COUNT':
-                                result = self.robot.get_butia_count()
+                                result = self.robot.getButiaCount()
                             elif r[0] == 'DESCRIBE':
                                 if len(r) >= 2:
                                     module = r[1]

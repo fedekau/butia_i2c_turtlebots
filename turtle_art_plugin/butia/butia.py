@@ -313,7 +313,6 @@ class Butia(Plugin):
                     if (m == 0):
                         isHidden = False
                         k = ''
-
                     module = j + str(k)
                     block_name = module + 'Butia'
                     
@@ -332,6 +331,7 @@ class Butia(Plugin):
                                  help_string=_(modules_help[j]),
                                  hidden=isHidden)
 
+                    k = m
                     if blockstyle == 'basic-style-1arg':
                         self.tw.lc.def_prim(block_name, 1, lambda self, w, x=k, y=j, z=0: primitive_dictionary[y + 'Butia'](w, x, z))
                     else:
@@ -470,9 +470,10 @@ class Butia(Plugin):
                                 if blk_index !='' :
                                     if blk.type == 'proto': # only make invisible the block in the palette not in the program area
                                         blk.set_visibility(False)
-
+                                    value = str(blk_index)
+                                else:
+                                    value = '0'
                                 label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
-                                value = str(blk_index)
                                 board = '0'
                                 special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
                             else:
@@ -517,8 +518,8 @@ class Butia(Plugin):
         old_list_connected_device_module = self.list_connected_device_module[:]
 
         if self.butia:
-            self.list_connected_device_module = self.butia.get_modules_list(False)
-            boards_present = self.butia.get_butia_count()
+            self.list_connected_device_module = self.butia.getModulesList(False)
+            boards_present = self.butia.getButiaCount()
         else:
             self.list_connected_device_module = []
             boards_present = 0

@@ -46,7 +46,7 @@ class robot(ButiaFunctions):
         self.client = None
         self.reconnect()
        
-    def doCommand(self, msg):
+    def _doCommand(self, msg):
         """
         Executes a command in butia.
         @param msg message to be executed
@@ -79,7 +79,7 @@ class robot(ButiaFunctions):
 
     # ask bobot for refresh is state of devices connected
     def refresh(self):
-        self.doCommand('REFRESH')
+        self._doCommand('REFRESH')
 
     # close the comunication with pybot
     def close(self):
@@ -100,7 +100,7 @@ class robot(ButiaFunctions):
         msg = 'CALL ' + modulename + '@' + str(board_number) + ':' + str(number) + ' ' + function
         if not(params == []):
             msg = msg + ' ' + ' '.join(params)
-        ret = self.doCommand(msg)
+        ret = self._doCommand(msg)
         try:
             ret = int(ret)
         except:
@@ -116,29 +116,29 @@ class robot(ButiaFunctions):
     # Close bobot service
     def closeService(self):
         msg = 'QUIT'
-        return self.doCommand(msg)
+        return self._doCommand(msg)
 
-    def get_butia_count(self):
+    def getButiaCount(self):
         msg = 'BUTIA_COUNT'
-        ret = self.doCommand(msg)
+        ret = self._doCommand(msg)
         return int(ret)
 
     # returns a list of modules
-    def get_modules_list(self, normal=True):
+    def getModulesList(self, normal=True):
         msg = 'LIST'
         l = []
-        ret = self.doCommand(msg)
+        ret = self._doCommand(msg)
         if not (ret == '' or ret == ERROR):
             l = ret.split(',')
         modules = []
         if not(normal):
             for m in l:
-                modules.append(self.split_module(m))
+                modules.append(self._split_module(m))
         else:
             modules = l
         return modules
 
-    def split_module(self, mbn):
+    def _split_module(self, mbn):
         board = '0'
         number = '0'
         if mbn.count('@') > 0:
