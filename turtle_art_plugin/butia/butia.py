@@ -106,12 +106,11 @@ class Butia(Plugin):
         self.butia = None
         self.pollthread = None
         self.pollrun = True
+        self.bobot = None
+        self.use_cc = False
         self.battery_value = ERROR
         self.battery_color = COLOR_NOTPRESENT[:]
         self.old_battery_color = COLOR_NOTPRESENT[:]
-        self.bobot = None
-        self.butia = None
-        self.use_cc = False
         self.match_list = []
         self.modules_changed = []
         self.list_connected_device_module = []
