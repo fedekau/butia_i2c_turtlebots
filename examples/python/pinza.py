@@ -44,20 +44,20 @@ butia.setPosition(PINZA_IZQ, str(posIzq))
 time.sleep(1)
 
 while posActDer < closeDer or  posActIzq > closeIzq:
-	posDer += inc
-	posIzq += -inc
-	butia.setPosition(PINZA_DER, str(posDer))
-	butia.setPosition(PINZA_IZQ, str(posIzq))
+    posDer += inc
+    posIzq += -inc
+    butia.setPosition(PINZA_DER, str(posDer))
+    butia.setPosition(PINZA_IZQ, str(posIzq))
 
-	time.sleep(float(vel))
+    time.sleep(float(vel))
 
-	if abs(posActDer-butia.getPosition(PINZA_DER)) < 5:
-		butia.setPosition(PINZA_DER, str(posActDer-500))
+    if abs(posActDer-butia.getPosition(PINZA_DER)) < 5:
+        butia.setPosition(PINZA_DER, str(posActDer-500))
 
-	posActDer = butia.getPosition(PINZA_DER)
-	posActIzq = butia.getPosition(PINZA_IZQ)
+    posActDer = butia.getPosition(PINZA_DER)
+    posActIzq = butia.getPosition(PINZA_IZQ)
 
-	#print "posActDer= ", posActDer
-	  
+    #print "posActDer= ", posActDer
+      
 butia.close()
 

@@ -18,15 +18,15 @@ vel = 600
 
 while a != 'q':
     a = raw_input("Choose your action f, v, j, k: ")
-	
+
     if a == 'f':
-        butia.set2MotorSpeed("0", str(vel), "0", str(vel))	#forward
+        butia.set2MotorSpeed("0", str(vel), "0", str(vel))    #forward
     elif a == 'v':
-        butia.set2MotorSpeed("1",str(vel), "1", str(vel))	#backward
+        butia.set2MotorSpeed("1",str(vel), "1", str(vel))    #backward
     elif a == 'j':
-        butia.set2MotorSpeed("0",str(vel), "1", str(vel))	#left
+        butia.set2MotorSpeed("0",str(vel), "1", str(vel))    #left
     elif a == 'k':
-        butia.set2MotorSpeed("1",str(vel), "0", str(vel))	#right	
+        butia.set2MotorSpeed("1",str(vel), "0", str(vel))    #right
     elif a == '+':
         vel = vel + 50
         if vel > 1023:
@@ -37,6 +37,8 @@ while a != 'q':
         if vel < 0:
             vel = 0
         print vel
-	else:	
-		butia.set2MotorSpeed("0","0", "0", "0")	#stop	
+    else:
+        butia.set2MotorSpeed("0","0", "0", "0")    #stop
+
+butia.close()
 
