@@ -22,9 +22,9 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = e2b1aa8ff714bb40341245a6782b43fd656c2a5c
-EXTRAS_VERSION = 951a984a9f4ba9276753a39ca5545aa980107114
-NXT_VERSION = 7625a4a2826c3be6b1b1b5f4c973be3760220519
+TURTLEBLOCKS_VERSION = 1670f1ba9fb4a5a08870ffbabe04f4754cfa8c2f
+EXTRAS_VERSION = bfad9de5b5abf8dfbc01cfa6e4784845b53f49e0
+NXT_VERSION = 633f56d238f9f235646f980c0a7ac190097a8232
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 ARDUINO_VERSION = 48f70626f1425170b469009f9687edfa9fa1a02d
 PYUSB_VERSION = 163c93aaad39a4c0c9c9f21a652557f9fd71f6c9
@@ -128,13 +128,6 @@ pyusbGIT: pyusb/.git
 	$(MAKE) SUBMODULE=pyusb SUBMODULEVER=$(PYUSB_VERSION) checkoutsm
 
 
-################ Support for lua (bobot-server) ######################
-
-butiaXO:
-	# I want butiaXO folder be OK! (needed by plugin)
-	#make -C ../butiaXO
-
-
 ################ Construction...
 
 mktmpfolder:
@@ -154,7 +147,7 @@ apply_localization: walterGIT mktmpfolder extrasGIT
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
 
-apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
+apply_hard_plugins: apply_localization walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
 	cp -rLf butia               $(BUILDDIR)/plugins/
 	cp -rLf sumtia              $(BUILDDIR)/plugins/
 	cp -rLf followme            $(BUILDDIR)/plugins/
@@ -180,7 +173,7 @@ apply_hard_plugins: apply_localization butiaXO walterGIT nxtGIT wedoGIT arduinoG
 pattern_detection_compile:
 	$(MAKE) -C pattern_detection/library
 
-apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT apply_localization butiaXO pattern_detection_compile
+apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT apply_localization pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia             $(BUILDDIR)/plugins/butia
 	ln -s `pwd`/sumtia            $(BUILDDIR)/plugins/sumtia
@@ -321,7 +314,6 @@ uninstall-rules:
 
 
 clean: clean-tmp clean-plugins clean-xo clean-builddir
-	$(MAKE) -C ../butiaXO clean
 	$(MAKE) -C pattern_detection/library clean
 	# this remove only if it's a symlink ; don't remove if installed
 	rm -f ~/Activities/TurtleBots.activity
@@ -344,7 +336,7 @@ clean-plugins:
 .PHONY: all help \
  clean clean-tmp clean-builddir clean-xo clean-plugins \
  first walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT \
- butiaXO mktmpfolder apply_hard_plugins apply_sym_plugins \
+ mktmpfolder apply_hard_plugins apply_sym_plugins \
  genpot genpot_notraslated updatepo xo pyusbGIT \
  install install-strip \
  uninstall uninstall-strip \

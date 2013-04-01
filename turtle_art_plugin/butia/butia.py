@@ -19,18 +19,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import butiaAPI
 import time
 import threading
 import re
 import subprocess
 import commands
+from pybot import pybot_client
 
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary, logoerror
-from TurtleArt.tautils import debug_output
+from TurtleArt.tautils import debug_output, power_manager_off
 from TurtleArt.tawindow import block_names
 
 from plugins.plugin import Plugin
@@ -100,15 +100,18 @@ class Butia(Plugin):
     
     def __init__(self, parent):
         self.tw = parent
+        power_manager_off(True)
         self.actualSpeed = [600, 600]
         self.hack_states = [1, 1, 1, 1, 1, 1, 1, 1]
         self.butia = None
         self.pollthread = None
         self.pollrun = True
         self.battery_value = ERROR
+        self.battery_color = COLOR_NOTPRESENT[:]
         self.old_battery_color = COLOR_NOTPRESENT[:]
         self.bobot = None
         self.butia = None
+        self.use_cc = False
         self.match_list = []
         self.modules_changed = []
         self.list_connected_device_module = []
@@ -361,6 +364,7 @@ class Butia(Plugin):
             self.butia.close()
         if self.bobot:
             self.bobot.kill()
+        power_manager_off(False)
 
     ################################ Refresh process ################################
 
@@ -370,18 +374,19 @@ class Butia(Plugin):
         self.check_for_device_change(True)
 
     def batteryColor(self):
-        if (self.battery_value == ERROR):
-            if not(self.list_connected_device_module == []):
-                return ["#FF0000","#808080"]
-            else:
-                return COLOR_NOTPRESENT[:]
+        if self.use_cc:
+            return ["#FFA500","#808080"]
+        if self.battery_value == ERROR:
+            return COLOR_NOTPRESENT[:]
+        elif (self.battery_value == 255) or (self.battery_value < 74):
+            return ["#FF0000","#808080"]
         elif ((self.battery_value < 254) and (self.battery_value >= 74)):
             return ["#FFA500","#808080"]
-        else:
-            return ["#FF0000","#808080"]
 
     def staticBlocksColor(self):
-        if (self.battery_value == ERROR) or (self.battery_value < 74):
+        if self.use_cc:
+            return COLOR_PRESENT[:]
+        if (self.battery_value == 255) or (self.battery_value < 74):
             return COLOR_NOTPRESENT[:]
         else:
             return COLOR_PRESENT[:]
@@ -424,6 +429,13 @@ class Butia(Plugin):
 
         return dict(match_list)
 
+    def cc_module_present(self, l):
+        for t in l:
+            module = t[1]
+            if module == 'shld_cc':
+                return True
+        return False
+
     def change_butia_palette_colors(self, force_refresh, change_statics_blocks, boards_present):
 
         COLOR_STATIC = self.staticBlocksColor()
@@ -461,13 +473,13 @@ class Butia(Plugin):
                                         blk.set_visibility(False)
 
                                 label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
-                                value = blk_index
-                                board = 0
+                                value = str(blk_index)
+                                board = '0'
                                 special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
                             else:
                                 val = self.match_dict[s]
-                                value = int(val[0])
-                                board = int(val[1])
+                                value = val[0]
+                                board = val[1]
                                 label = label_name_from_device_id[blk_name] + ':' + val[0] + ' ' + _('Butia')
                                 if boards_present > 1:
                                     label = label + ' ' + val[1]
@@ -478,7 +490,7 @@ class Butia(Plugin):
 
                             if module == 'led':
                                 self.tw.lc.def_prim(blk.name, 1, 
-                                lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x, z))
+                                lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x,z))
                             else:
                                 self.tw.lc.def_prim(blk.name, 0, 
                                 lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
@@ -512,6 +524,11 @@ class Butia(Plugin):
             self.list_connected_device_module = []
             boards_present = 0
 
+        if self.cc_module_present(self.list_connected_device_module):
+            self.use_cc = True
+        else:
+            self.use_cc = False
+
         self.battery_value = self.batterychargeButia()
         self.battery_color = self.batteryColor()
         
@@ -543,15 +560,22 @@ class Butia(Plugin):
         left = int(left)
         right = int(right)
         if left > 0:
-            sentLeft = 0
+            sentLeft = '0'
         else:
-            sentLeft = 1
+            sentLeft = '1'
         if right > 0:
-            sentRight = 0
+            sentRight = '0'
         else:
-            sentRight = 1
+            sentRight = '1'
         if self.butia:
-            self.butia.set2MotorSpeed(sentLeft, abs(left), sentRight, abs(right))
+            if self.use_cc:
+                if not(left == 0):
+                    left = '1'
+                if not(right == 0):
+                    right = '1'
+                self.butia.set2CCMotorSpeed(sentLeft, str(left), sentRight, str(right))
+            else:
+                self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
     def moveButia(self, left, right):
         self.set_vels(left, right)
@@ -584,49 +608,49 @@ class Butia(Plugin):
         else:
             return ERROR
 
-    def buttonButia(self, sensorid=0, boardid=0):
+    def buttonButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getButton(sensorid, boardid)
         else:
             return ERROR
 
-    def lightButia(self, sensorid=0, boardid=0):
+    def lightButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getLight(sensorid, boardid)
         else:
             return ERROR
 
-    def distanceButia(self, sensorid=0, boardid=0):
+    def distanceButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getDistance(sensorid, boardid)
         else:
             return ERROR
 
-    def grayButia(self, sensorid=0, boardid=0):
+    def grayButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getGray(sensorid, boardid)
         else:
             return ERROR
         
-    def temperatureButia(self, sensorid=0, boardid=0):
+    def temperatureButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getTemperature(sensorid, boardid)
         else:
             return ERROR
 
-    def resistanceButia(self, sensorid=0, boardid=0):
+    def resistanceButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getResistance(sensorid, boardid)
         else:
             return ERROR
 
-    def voltageButia(self, sensorid=0, boardid=0):
+    def voltageButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getVoltage(sensorid, boardid)
         else:
             return ERROR
 
-    def ledButia(self, value, sensorid=0, boardid=0):
+    def ledButia(self, value, sensorid='0', boardid='0'):
         if self.butia:
             value = int(value)
             if (value < 0) or (value > 1):
@@ -717,7 +741,7 @@ class Butia(Plugin):
         # Sure that bobot is running
         time.sleep(2)
 
-        self.butia = butiaAPI.robot()
+        self.butia = pybot_client.robot()
 
         self.pollthread=threading.Timer(2, self.bobot_poll)
         self.pollthread.start()
@@ -726,10 +750,10 @@ class Butia(Plugin):
         if self.pollrun:
             self.pollthread = threading.Timer(6, self.bobot_poll)
             if self.tw.activity.init_complete:
-                self.butia.refresh()
-                self.check_for_device_change(False)
                 if self.can_refresh:
+                    self.butia.refresh()
                     self.pollthread = threading.Timer(3, self.bobot_poll)
+                self.check_for_device_change(False)
             self.pollthread.start()
         else:
             debug_output("Ending butia poll")
