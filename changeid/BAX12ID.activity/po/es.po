@@ -18,8 +18,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: activity/activity.info:2
-msgid "Butia AX-12 ID"
-msgstr "Butia AX-12 ID"
+msgid "Butia AX12 ID"
+msgstr "Butia AX12 ID"
 
 #: activity/activity.info:8
 msgid "AX-12 ID Changer"
