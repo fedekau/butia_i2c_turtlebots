@@ -439,7 +439,9 @@ class Butia(Plugin):
 
         COLOR_STATIC = self.staticBlocksColor()
 
-        if boards_present > 0:
+        if self.use_cc:
+            COLOR_EXTRAS = COLOR_NOTPRESENT[:]
+        elif boards_present > 0:
             COLOR_EXTRAS = COLOR_PRESENT[:]
         else:
             COLOR_EXTRAS = COLOR_NOTPRESENT[:]
