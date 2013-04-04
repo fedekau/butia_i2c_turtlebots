@@ -12,7 +12,7 @@ export DH_VERBOSE=1
 build:
 	dh_testdir
 	dh_auto_configure
-	dh_auto_build
+	#dh_auto_build
 	dh_auto_test
 
 clean:
@@ -24,6 +24,9 @@ binary:
 	dh_testroot
 	dh_prep
 	dh_installdirs
+	dh_installudev   --name=usb4all       --priority 60
+	dh_installudev   --name=lego-nxt      --priority 60
+	dh_installudev   --name=lego-wedo     --priority 60
 	dh_auto_install
 	dh_install
 	dh_installdocs
@@ -40,11 +43,12 @@ binary:
 	dh_installmenu
 	dh_installmime
 	dh_installmodules
+	dh_python2 /usr/share/sugar/activities/TurtleBots.activity
 	dh_installlogcheck
 	dh_installlogrotate
 	dh_installpam
 	dh_installppp
-	dh_installudev
+	#dh_installudev
 	dh_installwm
 	dh_installxfonts
 	dh_bugfiles
