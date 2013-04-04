@@ -143,7 +143,7 @@ mktmpfolder:
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
 	(cd turtle-extras && ./merge.py turtlebots $(BUILDDIR))
-	cp turtle-extras/taextras.py $(BUILDDIR)
+	#cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
 

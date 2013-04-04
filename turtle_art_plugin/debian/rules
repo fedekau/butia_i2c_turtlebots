@@ -39,7 +39,7 @@ binary:
 	dh_installemacsen
 	dh_installifupdown
 	dh_installinfo
-	dh_python2
+	dh_python2 /usr/share/sugar/activities/TurtleBots.activity
 	dh_installinit
 	dh_installmenu
 	dh_installmime
