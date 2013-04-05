@@ -66,9 +66,11 @@ class robot(ButiaFunctions):
         self.lock.release()
         
         return ret
-          
-    # connect o reconnect the bobot
+
     def reconnect(self):
+        """
+        connect o reconnect the bobot
+        """
         self.close()
         try:
             self.client = socket.socket()
@@ -77,12 +79,16 @@ class robot(ButiaFunctions):
             return ERROR
         return 0
 
-    # ask bobot for refresh is state of devices connected
     def refresh(self):
+        """
+        ask bobot for refresh is state of devices connected
+        """
         self._doCommand('REFRESH')
 
-    # close the comunication with pybot
     def close(self):
+        """
+        close the comunication with pybot
+        """
         try:
             self.client.close()
             self.client = None
@@ -90,13 +96,10 @@ class robot(ButiaFunctions):
             return ERROR
         return 0
 
-    #######################################################################
-    ### Operations to the principal module
-    #######################################################################
-
-
-    # call the module 'modulename'
     def callModule(self, modulename, board_number, number, function, params = []):
+        """
+        call the module 'modulename'
+        """
         msg = 'CALL ' + modulename + '@' + str(board_number) + ':' + str(number) + ' ' + function
         if not(params == []):
             msg = msg + ' ' + ' '.join(params)
@@ -113,18 +116,25 @@ class robot(ButiaFunctions):
                     ret = ERROR
         return ret
 
-    # Close bobot service
     def closeService(self):
+        """
+        Close bobot service
+        """
         msg = 'QUIT'
         return self._doCommand(msg)
 
     def getButiaCount(self):
+        """
+        Gets the number of boards detected
+        """
         msg = 'BUTIA_COUNT'
         ret = self._doCommand(msg)
         return int(ret)
 
-    # returns a list of modules
     def getModulesList(self, normal=True):
+        """
+        returns a list of modules
+        """
         msg = 'LIST'
         l = []
         ret = self._doCommand(msg)
@@ -139,6 +149,9 @@ class robot(ButiaFunctions):
         return modules
 
     def _split_module(self, mbn):
+        """
+        Split a modulename: module@board:port to (number, modulename, board)
+        """
         board = '0'
         number = '0'
         if mbn.count('@') > 0:

@@ -69,30 +69,51 @@ class ButiaFunctions:
     ##################### Operations for ax.lua driver #########################
 
     def writeInfo(self, idMotor, regstart, value, board='0'):
+        """
+        Writes the motor: idMotor in the registry: regstart with value: value
+        """
         msg = [str(idMotor), str(regstart), str(value)]
         return self.callModule('ax', str(board), '0', 'writeInfo', msg)
 
     def readInfo(self, idMotor, regstart, lenght='1', board='0'):
+        """
+        Reads the motor: idMotor in the registry: regstart
+        """
         msg = [str(idMotor), str(regstart), str(length)]
         return self.callModule('ax', str(board), '0', 'writeInfo', msg)
 
     def wheelMode(self, idMotor='0', board='0'):
+        """
+        Sets the motor: idMotor in wheel mode (continuos rotation)
+        """
         msg = [str(idMotor)]
         return self.callModule('ax', str(board), '0', 'wheelMode', msg)
      
     def jointMode(self, idMotor='0', _min='0', _max='1023', board='0'):
+        """
+        Sets the motor: idMotor in servo mode
+        """
         msg = [str(idMotor), str(_min), str(_max)]
         return self.callModule('ax', str(board), '0', 'jointMode', msg)
 
     def setPosition(self, idMotor='0', pos='0', board='0'):
+        """
+        Sets the position: pos of the motor: idMotor
+        """
         msg = [str(idMotor), str(pos)]
         return self.callModule('ax', str(board), '0', 'setPosition', msg)
 
     def getPosition(self, idMotor='0', board='0'):
+        """
+        Gets the position of motor: idMotor
+        """
         msg = [str(idMotor)]
         return self.callModule('ax', str(board), '0', 'getPosition', msg)
 
     def setSpeed(self, idMotor='0', speed='0', board='0'):
+        """
+        Set the speed: speed to the motor: idMotor
+        """
         msg = [str(idMotor), str(speed)]
         return self.callModule('ax', str(board), '0', 'setSpeed', msg)
 
