@@ -70,31 +70,31 @@ class ButiaFunctions:
 
     def writeInfo(self, idMotor, regstart, value, board='0'):
         msg = [str(idMotor), str(regstart), str(value)]
-        return self.callModule('ax', str(board), '0', 'write_info', msg)
+        return self.callModule('ax', str(board), '0', 'writeInfo', msg)
 
     def readInfo(self, idMotor, regstart, lenght='1', board='0'):
         msg = [str(idMotor), str(regstart), str(length)]
-        return self.callModule('ax', str(board), '0', 'write_info', msg)
+        return self.callModule('ax', str(board), '0', 'writeInfo', msg)
 
     def wheelMode(self, idMotor='0', board='0'):
         msg = [str(idMotor)]
-        return self.callModule('ax', str(board), '0', 'wheel_mode', msg)
+        return self.callModule('ax', str(board), '0', 'wheelMode', msg)
      
     def jointMode(self, idMotor='0', _min='0', _max='1023', board='0'):
         msg = [str(idMotor), str(_min), str(_max)]
-        return self.callModule('ax', str(board), '0', 'joint_mode', msg)
-
-    def setSpeed(self, idMotor='0', speed='0', board='0'):
-        msg = [str(idMotor), str(speed)]
-        return self.callModule('ax', str(board), '0', 'set_speed', msg)
+        return self.callModule('ax', str(board), '0', 'jointMode', msg)
 
     def setPosition(self, idMotor='0', pos='0', board='0'):
         msg = [str(idMotor), str(pos)]
-        return self.callModule('ax', str(board), '0', 'set_position', msg)
+        return self.callModule('ax', str(board), '0', 'setPosition', msg)
 
     def getPosition(self, idMotor='0', board='0'):
         msg = [str(idMotor)]
-        return self.callModule('ax', str(board), '0', 'get_position', msg)
+        return self.callModule('ax', str(board), '0', 'getPosition', msg)
+
+    def setSpeed(self, idMotor='0', speed='0', board='0'):
+        msg = [str(idMotor), str(speed)]
+        return self.callModule('ax', str(board), '0', 'setSpeed', msg)
 
     ############################### General calls ##############################
      
