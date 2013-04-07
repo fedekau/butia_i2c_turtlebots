@@ -97,7 +97,8 @@ class Server():
                             elif r[0] == 'DESCRIBE':
                                 if len(r) >= 2:
                                     module = r[1]
-                                result = 'Not implemented yet'
+                                    funcs = self.robot._describe(module)
+                                    result = ','.join(funcs)
                             elif r[0] == 'CALL':
                                 if len(r) >= 3:
                                     board = 0

@@ -156,7 +156,10 @@ class robot(ButiaFunctions):
         number = '0'
         if mbn.count('@') > 0:
             modulename, bn = mbn.split('@')
-            board, number = bn.split(':')
+            if bn.count(':') > 0:
+                board, number = bn.split(':')
+            else:
+                board = bn
         else:
             if mbn.count(':') > 0:
                 modulename, number = mbn.split(':')

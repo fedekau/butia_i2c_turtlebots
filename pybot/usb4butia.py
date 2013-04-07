@@ -228,4 +228,41 @@ class USB4Butia(ButiaFunctions):
                 self._debug('ERROR:usb4butia:close', err)
         self._bb = []
 
- 
+    def _split_module(self, mbn):
+        """
+        Split a modulename: module@board:port to (number, modulename, board)
+        """
+        board = '0'
+        number = '0'
+        if mbn.count('@') > 0:
+            modulename, bn = mbn.split('@')
+            if bn.count(':') > 0:
+                board, number = bn.split(':')
+            else:
+                board = bn
+        else:
+            if mbn.count(':') > 0:
+                modulename, number = mbn.split(':')
+            else:
+                modulename = mbn
+        return (number, modulename, board)
+
+    def _describe(self, mod):
+        """
+        Describe the functions of a modulename
+        """
+        split = self._split_module(mod)
+        mod = split[1]
+        funcs = []
+        if self._drivers_loaded.has_key(mod):
+            driver = self._drivers_loaded[mod]
+            a = dir(driver)
+            flag = False
+            for p in a:
+                if p == '__package__':
+                    flag = True
+                if flag:
+                    funcs.append(p)
+            funcs.remove('__package__')
+        return funcs
+
