@@ -43,7 +43,7 @@ class USB4Butia(ButiaFunctions):
         self._modules = []
         self._get_all_drivers()
         self._chotox_mode = chotox
-        self.find_butias(get_modules)
+        self.refresh(get_modules)
 
     def _debug(self, message, err=''):
         if self._debug_flag:
@@ -54,37 +54,6 @@ class USB4Butia(ButiaFunctions):
         Gets the number of boards detected
         """
         return len(self._bb)
-
-    def find_butias(self, get_modules=True):
-        """
-        Search for connected USB4Butia boards and open it
-        """
-        devices_ports = []
-        devices = com_usb.find()
-        for dev in devices:
-            n = dev.device.dev.address
-            devices_ports.append(n)
-            if not(n in self._b_ports):
-                b = Baseboard(dev)
-                try:
-                    b.open_baseboard()
-                    self._bb.append(b)
-                    self._b_ports.append(n)
-                except Exception, err:
-                    self._debug('ERROR:usb4butia:find_butias', err)
-
-        for b in self._bb:
-            n = b.dev.device.dev.address
-            if not(n in devices_ports):
-                self._bb.remove(b)
-                self._b_ports.remove(n)
-                try:
-                    b.close_baseboard()
-                except:
-                    pass
-
-        if get_modules:
-            self.getModulesList()
 
     def getModulesList(self, normal=True):
         """
@@ -210,12 +179,36 @@ class USB4Butia(ButiaFunctions):
         """
         pass
 
-    def refresh(self):
+    def refresh(self, get_modules=True):
         """
-        Refresh: if no boards presents, search for them.. else, check if 
-        the boards continues present
+        Search for connected USB4Butia boards and open it
         """
-        self.find_butias(False)
+        devices_ports = []
+        devices = com_usb.find()
+        for dev in devices:
+            n = dev.device.dev.address
+            devices_ports.append(n)
+            if not(n in self._b_ports):
+                b = Baseboard(dev)
+                try:
+                    b.open_baseboard()
+                    self._bb.append(b)
+                    self._b_ports.append(n)
+                except Exception, err:
+                    self._debug('ERROR:usb4butia:refresh', err)
+
+        for b in self._bb:
+            n = b.dev.device.dev.address
+            if not(n in devices_ports):
+                self._bb.remove(b)
+                self._b_ports.remove(n)
+                try:
+                    b.close_baseboard()
+                except:
+                    pass
+
+        if get_modules:
+            self.getModulesList()
 
     def close(self):
         """
