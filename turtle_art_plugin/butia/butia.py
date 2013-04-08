@@ -667,8 +667,7 @@ class Butia(Plugin):
     def pinmodeButia(self, pin, mode):
         if self.butia:
             pin = int(pin)
-            pin = pin - 1
-            if (pin < 0) or (pin > 7):
+            if (pin < 1) or (pin > 8):
                 raise logoerror(ERROR_PIN_NUMBER)
             else:
                 if mode == _('INPUT'):
@@ -697,8 +696,7 @@ class Butia(Plugin):
     def setpinButia(self, pin, value):
         if self.butia:
             pin = int(pin)
-            pin = pin - 1
-            if (pin < 0) or (pin > 7):
+            if (pin < 1) or (pin > 8):
                 raise logoerror(ERROR_PIN_NUMBER)
             else:
                 if self.hack_states[pin] == 1:
@@ -715,8 +713,7 @@ class Butia(Plugin):
     def getpinButia(self, pin):
         if self.butia:
             pin = int(pin)
-            pin = pin - 1
-            if (pin < 0) or (pin > 7):
+            if (pin < 1) or (pin > 8):
                 raise logoerror(ERROR_PIN_NUMBER)
             else:
                 if self.hack_states[pin] == 0:
