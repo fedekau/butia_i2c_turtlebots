@@ -38,6 +38,35 @@ api.readInfo.call = function(id, regstart, lenght)
 	    return value
     end
 
+--- Send Raw Packet
+-- 
+api.sendPacket = {}
+api.sendPacket.parameters = {[1]={rname="data", rtype="string", min=0, max=1},[2]={rname="wait_resp", rtype="number", min=0, max=1, default=0}}
+api.sendPacket.returns = {[1]={rname="return", rtype="number", default=0}} --one return
+api.sendPacket.call = function (pack, wait_resp)
+        resp = string.char(wait_resp or 0) 
+        local payload = string.char(SEND_RAW)..resp..pack
+        device:send(payload)
+
+        local response = device:read(255)
+        if not response or #response<2 then return -1 end   --only opcode o nil
+
+        if tonumber(wait_resp) == 0 then return 0 end  --user is not waiting an answer
+
+        local timeout = string.byte(response,3)
+        if tonumber(timeout) == 1 then return "timeout!" end
+
+        --ax12 answer:
+        local size = string.byte(response,2)    --size
+        print("AX12 answer\n:::SIZE = "..size.."\n:::TIMEOUT = "..timeout.."\n")
+
+        local msg = '' --answer
+        for i=1,size do
+            msg = msg..(string.byte(response,(i+3))).." "
+        end
+        print(":::MESSAGE\n "..msg)
+        return msg
+    end
 
 --- Set wheel mode.
 --Set the motor to continuous rotation mode.

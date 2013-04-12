@@ -2,6 +2,7 @@
 RD_VERSION = 0x00
 WRITE_INFO = 0x01
 READ_INFO  = 0x02
+SEND_RAW = 0x03
 
 def getVersion(dev):
     dev.send([RD_VERSION])
@@ -22,6 +23,27 @@ def readInfo(dev, motor_id, regstart, lenght):
         return raw[1]
     else:
         return raw[1] + raw[2] * 256
+
+def sendPacket(dev, pack, wait_resp):
+    msg = [SEND_RAW, wait_resp]
+    msg = msg + pack
+    dev.send(msg)
+    raw = dev.read(255)
+    if len(raw) == 1:
+        return -1      # only opcode o nil
+    if wait_resp == 0:
+        return 0       # user is not waiting an answer
+    timeout = raw[3]
+    if timeout == 1:
+        return "timeout!"
+    size = raw[2]
+    print "AX12 answer\n:::SIZE = " + str(size) + "\n:::TIMEOUT = " + str(timeout)
+    msg = ''
+    for i in range(4,size):
+        msg = msg + str(raw[i]) + ' '
+    end
+    print ":::MESSAGE\n " + msg
+    return msg
 
 def wheelMode(dev, motor_id):
     msg = [WRITE_INFO, motor_id, 0x06, 0x00, 0x00]
