@@ -24,7 +24,8 @@ def readInfo(dev, motor_id, regstart, lenght):
     else:
         return raw[1] + raw[2] * 256
 
-def sendPacket(dev, pack, wait_resp):
+def sendPacket(dev, pack):
+    wait_resp = len(pack) + 2
     msg = [SEND_RAW, wait_resp]
     msg = msg + pack
     dev.send(msg)

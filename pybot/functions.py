@@ -82,11 +82,10 @@ class ButiaFunctions:
         msg = [str(idMotor), str(regstart), str(length)]
         return self.callModule('ax', str(board), '0', 'writeInfo', msg)
 
-    def sendPacket(self, pack, wait_resp):
+    def sendPacket(self, msg):
         """
         Send a raw packet to ax module
         """
-        msg = [pack, wait_resp]
         return self.callModule('ax', str(board), '0', 'sendPacket', msg)
 
     def wheelMode(self, idMotor='0', board='0'):
