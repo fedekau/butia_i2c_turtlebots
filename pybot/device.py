@@ -45,6 +45,8 @@ class Device():
         self.handler = handler
         if not(self.handler == None):
             self.handler_tosend = self.handler * 8
+        else:
+            self.handler_tosend = None
         self.functions = func
         self.debug = False
 
@@ -99,9 +101,13 @@ class Device():
 
         self._debug('device:module_open', raw)
 
-        self.handler = raw[4]
-        self.handler_tosend = self.handler * 8
-        return self.handler
+        if not(raw[4] == 255):
+            self.handler = raw[4]
+            self.handler_tosend = self.handler * 8
+            return self.handler
+        else:
+            self._debug('device:module_open:cannot open module:', self.name)
+            return 255
 
     def has_function(self, func):
         """
@@ -120,8 +126,10 @@ class Device():
             par = []
             for e in params:
                 par.append(int(e))
-
-            return f(self, *par)
+            if func == 'sendPacket':
+                return f(self, par)
+            else:
+                return f(self, *par)
 
     def to_ord(self, string):
         """
