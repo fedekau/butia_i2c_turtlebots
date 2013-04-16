@@ -44,15 +44,8 @@ api.read_info.call = function(id, regstart, lenght)
 api.sendPacket = {}
 api.sendPacket.parameters = {[1]={rname="data", rtype="string", min=0, max=1},[2]={rname="wait_resp", rtype="number", min=0, max=1, default=0}}
 api.sendPacket.returns = {[1]={rname="return", rtype="number", default=0}} --one return
-api.sendPacket.call = function (packet, wait_resp)
+api.sendPacket.call = function (pack, wait_resp)
         resp = string.char(wait_resp or 0) 
-        --           pack [0xFF,0xFF, ID,  LEN, INS, P1..PN,  CHKS]
---        pack = string.char(0xFF,0xFF,0xFE,0x04,0x03,0x03,0x05,0xF2) --changeid a 5
-        pack = string.char(0xFF,0xFF,0x05,0x02,0x01,0xF7) --ping a 5
---        pack = string.char(0xFF,0xFF,0x02,0x02,0x01,0xFA) --ping a 2
---        pack = string.char(0xFF,0xFF,0x01,0x04,0x02,0x00,0x03,0xF5) --model number and fw id1
---        pack = string.char(0xFF,0xFF,0x01,0x02,0x06,0xF6)   --reset id1
-
         local payload = string.char(SEND_RAW)..resp..pack
         device:send(payload)
 
@@ -61,14 +54,16 @@ api.sendPacket.call = function (packet, wait_resp)
 
         if tonumber(wait_resp) == 0 then return 0 end  --user is not waiting an answer
 
+        local timeout = string.byte(response,3)
+        if tonumber(timeout) == 1 then return "timeout!" end
+
         --ax12 answer:
         local size = string.byte(response,2)    --size
-        print("AX12 answer\n:::SIZE = "..size.."\n:::TIMEOUT = "..string.byte(response,3).."\n:::ERROR = "..string.byte(response,4))
+        print("AX12 answer\n:::SIZE = "..size.."\n:::TIMEOUT = "..timeout.."\n")
 
-        local msg = ' ' --answer
-        size = size+4
-        for i=5,size do
-            msg = msg..(string.byte(response,i)).." "
+        local msg = '' --answer
+        for i=1,size do
+            msg = msg..(string.byte(response,(i+3))).." "
         end
         print(":::MESSAGE\n "..msg)
         return msg
