@@ -119,7 +119,7 @@ def find():
             for dev in bus.devices:
                 if dev.idVendor == USB4ALL_VENDOR and dev.idProduct == USB4ALL_PRODUCT:
                     l.append(usb_device(dev))
-    except Exception, err:
+    except:
         pass
     return l
 

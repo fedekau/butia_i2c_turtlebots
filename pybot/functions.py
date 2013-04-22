@@ -75,14 +75,14 @@ class ButiaFunctions:
         msg = [str(idMotor), str(regstart), str(value)]
         return self.callModule('ax', str(board), '0', 'writeInfo', msg)
 
-    def readInfo(self, idMotor, regstart, lenght='1', board='0'):
+    def readInfo(self, idMotor, regstart, length='1', board='0'):
         """
         Reads the motor: idMotor in the registry: regstart
         """
         msg = [str(idMotor), str(regstart), str(length)]
         return self.callModule('ax', str(board), '0', 'writeInfo', msg)
 
-    def sendPacket(self, msg):
+    def sendPacket(self, msg, board='0'):
         """
         Send a raw packet to ax module
         """

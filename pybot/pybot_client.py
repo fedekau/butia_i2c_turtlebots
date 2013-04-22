@@ -23,8 +23,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import socket
-import string
-import math
 import threading
 import errno
 from functions import ButiaFunctions
@@ -36,14 +34,14 @@ PYBOT_PORT = 2009
 
 class robot(ButiaFunctions):
     
-    def __init__(self, host = PYBOT_HOST, port = PYBOT_PORT):
+    def __init__(self, host=PYBOT_HOST, port=PYBOT_PORT):
         """
         init the robot class
         """
-        self.lock = threading.Lock()
-        self.host = host
-        self.port = port
-        self.client = None
+        self._lock = threading.Lock()
+        self._host = host
+        self._port = port
+        self._client = None
         self.reconnect()
        
     def _doCommand(self, msg):
@@ -53,17 +51,17 @@ class robot(ButiaFunctions):
         """
         msg = msg + '\n'
         ret = ERROR
-        self.lock.acquire()
+        self._lock.acquire()
         try:     
-            self.client.send(msg) 
-            ret = self.client.recv(1024)
+            self._client.send(msg)
+            ret = self._client.recv(1024)
             ret = ret[:-1]
         except Exception, e:
             if hasattr(e, 'errno'):
                 if e.errno == errno.EPIPE:
                     self.reconnect()
             ret = ERROR
-        self.lock.release()
+        self._lock.release()
         
         return ret
 
@@ -73,8 +71,8 @@ class robot(ButiaFunctions):
         """
         self.close()
         try:
-            self.client = socket.socket()
-            self.client.connect((self.host, self.port))  
+            self._client = socket.socket()
+            self._client.connect((self._host, self._port))
         except:
             return ERROR
         return 0
@@ -90,8 +88,8 @@ class robot(ButiaFunctions):
         close the comunication with pybot
         """
         try:
-            self.client.close()
-            self.client = None
+            self._client.close()
+            self._client = None
         except:
             return ERROR
         return 0
@@ -140,13 +138,13 @@ class robot(ButiaFunctions):
         ret = self._doCommand(msg)
         if not (ret == '' or ret == ERROR):
             l = ret.split(',')
-        modules = []
-        if not(normal):
+        if normal:
+            return l
+        else:
+            modules = []
             for m in l:
                 modules.append(self._split_module(m))
-        else:
-            modules = l
-        return modules
+            return modules
 
     def _split_module(self, mbn):
         """
