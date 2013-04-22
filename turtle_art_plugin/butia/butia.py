@@ -55,7 +55,6 @@ modules_help['led'] = _("Turn LED on and off: 0 is off; 1 is on")
 modules_help['gray'] = _("returns the gray level")
 modules_help['button'] = _("returns 1 when the button is press and 0 otherwise")
 modules_help['light'] = _("returns the light level")
-modules_help['temperature'] = _("returns the temperature")
 modules_help['distance'] = _("returns the distance from the object in front of the sensor")
 modules_help['magneticinduction'] = _("returns 1 when the sensors detects a magnetic field, 0 otherwise")
 modules_help['resistanceB'] = _("returns the value of the resistance")
@@ -67,7 +66,6 @@ modules_name_from_device_id['led'] = 'led'
 modules_name_from_device_id['button'] = 'button'
 modules_name_from_device_id['gray'] = 'grey'
 modules_name_from_device_id['light'] = 'light'
-modules_name_from_device_id['temperature'] = 'temp'
 modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
 modules_name_from_device_id['voltageB'] = 'volt'
@@ -77,7 +75,6 @@ device_id_from_module_name['led'] = 'led'
 device_id_from_module_name['button'] = 'button'
 device_id_from_module_name['grey'] = 'gray'
 device_id_from_module_name['light'] = 'light'
-device_id_from_module_name['temp'] = 'temperature'
 device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
 device_id_from_module_name['volt'] = 'voltage'
@@ -87,12 +84,11 @@ label_name_from_device_id['led'] = _('LED')
 label_name_from_device_id['button'] = _('button')
 label_name_from_device_id['gray'] = _('gray')
 label_name_from_device_id['light'] = _('light')
-label_name_from_device_id['temperature'] = _('temperature')
 label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
 
-refreshable_block_list = ['light', 'gray', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB']
+refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
@@ -293,7 +289,6 @@ class Butia(Plugin):
         primitive_dictionary['lightButia'] = self.lightButia
         primitive_dictionary['grayButia'] = self.grayButia
         primitive_dictionary['buttonButia'] = self.buttonButia
-        primitive_dictionary['temperatureButia'] = self.temperatureButia
         primitive_dictionary['distanceButia'] = self.distanceButia
         primitive_dictionary['resistanceBButia'] = self.resistanceButia
         primitive_dictionary['voltageBButia'] = self.voltageButia
@@ -302,7 +297,7 @@ class Butia(Plugin):
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'gray', 'light', 'distance', 'temperature', 'resistanceB', 'voltageB']]
+                     ['box-style', ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB']]
                  ]:
 
             (blockstyle , listofmodules) = i
@@ -631,12 +626,6 @@ class Butia(Plugin):
     def grayButia(self, sensorid='0', boardid='0'):
         if self.butia:
             return self.butia.getGray(sensorid, boardid)
-        else:
-            return ERROR
-        
-    def temperatureButia(self, sensorid='0', boardid='0'):
-        if self.butia:
-            return self.butia.getTemperature(sensorid, boardid)
         else:
             return ERROR
 

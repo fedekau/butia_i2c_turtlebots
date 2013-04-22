@@ -67,14 +67,13 @@ class usb_device():
         """
         Close the comunication with the baseboard
         """
-        try:
-            if self.handle:
+        if self.handle:
+            try:
                 self.handle.releaseInterface()
-        except Exception, err:
-            self._debug('ERROR:com_usb:close_device', err)
-            raise
-        self.handle = None
-        self.device = None
+            except Exception, err:
+                self._debug('ERROR:com_usb:close_device', err)
+            self.handle = None
+            self.device = None
 
     def read(self, length):
         """
