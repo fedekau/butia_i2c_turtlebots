@@ -16,7 +16,6 @@ api.getVersion.call = function (data)
 	return devolver	
 end
 
-api={}
 api.reset = {}
 api.reset.parameters = {}
 api.reset.returns = {}
