@@ -26,12 +26,9 @@ NULL_BYTE = 0x00
 OPEN_COMMAND = 0x00
 CLOSE_COMMAND = 0x01
 HEADER_PACKET_SIZE = 0x06
-
 ADMIN_HANDLER_SEND_COMMAND = 0x00
-
 OPEN_RESPONSE_PACKET_SIZE = 5
 CLOSE_RESPONSE_PACKET_SIZE = 2
-
 READ_HEADER_SIZE = 3
 MAX_BYTES = 64
 
@@ -58,14 +55,8 @@ class Device():
         """
         Send to the device the specifiy call and parameters
         """
-        length = 0x04 + len(msg)
-        w = []
-        w.append(self.handler_tosend)
-        w.append(length)
-        w.append(NULL_BYTE)
-        w = w + msg
-
-        self.baseboard.dev.write(w)
+        w = [self.handler_tosend, 0x03 + len(msg), NULL_BYTE]
+        self.baseboard.dev.write(w + msg)
 
     def read(self, lenght):
         """
@@ -80,22 +71,15 @@ class Device():
         Open this device. Return the handler
         """
         module_name = self.to_ord(self.name)
-        module_name.append(0)
-        
-        open_packet_length = HEADER_PACKET_SIZE + len(module_name) 
+        module_name.append(NULL_BYTE)
 
-        module_in_endpoint  = 0x01
-        module_out_endpoint = 0x01
-
-        w = []
-        w.append(ADMIN_HANDLER_SEND_COMMAND)
-        w.append(open_packet_length)
+        w = [ADMIN_HANDLER_SEND_COMMAND]
+        w.append(HEADER_PACKET_SIZE + len(module_name))
         w.append(NULL_BYTE)
         w.append(OPEN_COMMAND)
-        w.append(module_in_endpoint)
-        w.append(module_out_endpoint)
-        w = w + module_name
-        self.baseboard.dev.write(w)
+        w.append(0x01)
+        w.append(0x01)
+        self.baseboard.dev.write(w + module_name)
 
         raw = self.baseboard.dev.read(OPEN_RESPONSE_PACKET_SIZE)
 

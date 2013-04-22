@@ -23,25 +23,25 @@
 
 
 NULL_BYTE = 0x00
-DEFAULT_PACKET_SIZE = 0x04
-GET_USER_MODULES_SIZE_COMMAND = 0x05
-GET_USER_MODULE_LINE_COMMAND = 0x06
-GET_HANDLER_SIZE_COMMAND = 0x0A
-GET_HANDLER_TYPE_COMMAND = 0x0B
-ADMIN_HANDLER_SEND_COMMAND = 0x00
-CLOSEALL_BASE_BOARD_COMMAND = 0x07
+
+ADMIN_MODULE_IN_ENDPOINT   = 0x01
+ADMIN_MODULE_OUT_ENDPOINT  = 0x81
+
+DEFAULT_PACKET_SIZE               = 0x04
+GET_USER_MODULES_SIZE_COMMAND     = 0x05
+GET_USER_MODULE_LINE_COMMAND      = 0x06
+GET_HANDLER_SIZE_COMMAND          = 0x0A
+GET_HANDLER_TYPE_COMMAND          = 0x0B
+ADMIN_HANDLER_SEND_COMMAND        = 0x00
+CLOSEALL_COMMAND                  = 0x07
+CLOSEALL_RESPONSE_PACKET_SIZE     = 0x05
 SWITCH_TO_BOOT_BASE_BOARD_COMMAND = 0x09
-RESET_BASE_BOARD_COMMAND = 0xFF
-
-ADMIN_MODULE_IN_ENDPOINT = 0x01
-ADMIN_MODULE_OUT_ENDPOINT = 0x81
-GET_USER_MODULE_LINE_PACKET_SIZE = 0x05
-
-GET_LINES_RESPONSE_PACKET_SIZE = 5
-GET_LINE_RESPONSE_PACKET_SIZE = 12
-GET_HANDLER_TYPE_PACKET_SIZE = 5
-GET_HANDLER_RESPONSE_PACKET_SIZE = 5
-CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE = 5
+RESET_BASE_BOARD_COMMAND          = 0xFF
+GET_USER_MODULE_LINE_PACKET_SIZE  = 0x05
+GET_LINES_RESPONSE_PACKET_SIZE    = 0x05
+GET_LINE_RESPONSE_PACKET_SIZE     = 0x0C
+GET_HANDLER_TYPE_PACKET_SIZE      = 0x05
+GET_HANDLER_RESPONSE_PACKET_SIZE  = 0x05
 
 ERROR = -1
 
@@ -159,35 +159,23 @@ class Baseboard():
         """
         Get the size of the list of user modules (listi)
         """
-        w = []
-        w.append(ADMIN_HANDLER_SEND_COMMAND)
-        w.append(DEFAULT_PACKET_SIZE)
-        w.append(NULL_BYTE)
+        w = [ADMIN_HANDLER_SEND_COMMAND, DEFAULT_PACKET_SIZE, NULL_BYTE]
         w.append(GET_USER_MODULES_SIZE_COMMAND)
         self.dev.write(w)
-
         raw = self.dev.read(GET_USER_MODULE_LINE_PACKET_SIZE)
-        
         self._debug('baseboard:get_user_modules_size', raw)
-
         return raw[4]
 
     def get_user_module_line(self, index):
         """
         Get the name of device with index: index (listi)
         """
-        w = []
-        w.append(ADMIN_HANDLER_SEND_COMMAND)
-        w.append(GET_USER_MODULE_LINE_PACKET_SIZE)
-        w.append(NULL_BYTE)
+        w = [ADMIN_HANDLER_SEND_COMMAND, GET_USER_MODULE_LINE_PACKET_SIZE, NULL_BYTE]
         w.append(GET_USER_MODULE_LINE_COMMAND)
         w.append(index)
         self.dev.write(w)
-
         raw = self.dev.read(GET_LINE_RESPONSE_PACKET_SIZE)
-
         self._debug('baseboard:get_user_module_line', raw)
-
         c = raw[4:len(raw)]
         t = ''
         for e in c:
@@ -199,45 +187,30 @@ class Baseboard():
         """
         Get the number of handlers opened
         """
-        w = []
-        w.append(ADMIN_HANDLER_SEND_COMMAND)
-        w.append(DEFAULT_PACKET_SIZE)
-        w.append(NULL_BYTE)
+        w = [ADMIN_HANDLER_SEND_COMMAND, DEFAULT_PACKET_SIZE, NULL_BYTE]
         w.append(GET_HANDLER_SIZE_COMMAND)
         self.dev.write(w)
-
         raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
-
         self._debug('baseboard:get_handler_size', raw)
-
         return raw[4]
 
     def get_handler_type(self, index):
         """
         Get the type of the handler: index (return listi index)
         """
-        w = []
-        w.append(ADMIN_HANDLER_SEND_COMMAND)
-        w.append(GET_HANDLER_TYPE_PACKET_SIZE)
-        w.append(NULL_BYTE)
+        w = [ADMIN_HANDLER_SEND_COMMAND, GET_HANDLER_TYPE_PACKET_SIZE, NULL_BYTE]
         w.append(GET_HANDLER_TYPE_COMMAND)
         w.append(index)
         self.dev.write(w)
-
         raw = self.dev.read(GET_HANDLER_RESPONSE_PACKET_SIZE)
-
         self._debug('baseboard:get_handler_type', raw)
-
         return raw[4]
 
     def switch_to_bootloader(self):
         """
         Admin module command to switch to bootloader
         """
-        w = []
-        w.append(ADMIN_HANDLER_SEND_COMMAND)
-        w.append(DEFAULT_PACKET_SIZE)
-        w.append(NULL_BYTE)
+        w = [ADMIN_HANDLER_SEND_COMMAND, DEFAULT_PACKET_SIZE, NULL_BYTE]
         w.append(SWITCH_TO_BOOT_BASE_BOARD_COMMAND)
         self.dev.write(w)
 
@@ -245,10 +218,7 @@ class Baseboard():
         """
         Admin module command to reset the board
         """
-        w = []
-        w.append(ADMIN_HANDLER_SEND_COMMAND)
-        w.append(DEFAULT_PACKET_SIZE)
-        w.append(NULL_BYTE)
+        w = [ADMIN_HANDLER_SEND_COMMAND, DEFAULT_PACKET_SIZE, NULL_BYTE]
         w.append(RESET_BASE_BOARD_COMMAND)
         self.dev.write(w)
 
@@ -256,17 +226,10 @@ class Baseboard():
         """
         Admin module command to force close all opened modules
         """
-        w = []
-        w.append(ADMIN_HANDLER_SEND_COMMAND)
-        w.append(DEFAULT_PACKET_SIZE)
-        w.append(NULL_BYTE)
-        w.append(CLOSEALL_BASE_BOARD_COMMAND)
+        w = [ADMIN_HANDLER_SEND_COMMAND, DEFAULT_PACKET_SIZE, NULL_BYTE]
+        w.append(CLOSEALL_COMMAND)
         self.dev.write(w)
-
-        raw = self.dev.read(CLOSEALL_BASE_BOARD_RESPONSE_PACKET_SIZE)
-
+        raw = self.dev.read(CLOSEALL_RESPONSE_PACKET_SIZE)
         self._debug('baseboard:force_close_all', raw)
-
         return raw[4]
-
 
