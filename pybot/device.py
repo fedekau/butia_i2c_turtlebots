@@ -62,7 +62,7 @@ class Device():
         """
         Read the device data
         """
-        raw = self.baseboard.dev.read(MAX_BYTES)
+        raw = self.baseboard.dev.read(0x03 + lenght)
         self._debug('device:read', raw)
         return raw[3:]
 
