@@ -124,12 +124,7 @@ def find():
     List all busses and returns a list of baseboards detected
     """
     l = []
-    try:
-        for bus in usb.busses():
-            for dev in bus.devices:
-                if dev.idVendor == USB4ALL_VENDOR and dev.idProduct == USB4ALL_PRODUCT:
-                    l.append(usb_device(dev))
-    except:
-        pass
+    for b in usb.core.find(find_all=True, idVendor=USB4ALL_VENDOR, idProduct=USB4ALL_PRODUCT):
+        l.append(usb_device(b))
     return l
 
