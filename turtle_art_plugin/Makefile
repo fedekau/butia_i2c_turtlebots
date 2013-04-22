@@ -136,6 +136,8 @@ mktmpfolder:
 	cp -rL mainline $(BUILDDIR)
 	rm -rf $(BUILDDIR)/.git
 	rm -f  $(BUILDDIR)/.gitignore
+	rm -f  $(BUILDDIR)/turtleblocks
+	rm -f  $(BUILDDIR)/turtleblocks.desktop
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity $(BUILDDIR)/
 	cp -rLf stagin/turtlebots.desktop $(BUILDDIR)/
