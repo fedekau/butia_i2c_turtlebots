@@ -49,14 +49,6 @@ class ButiaFunctions:
         msg = [str(leftSense), str(leftSpeed), str(rightSense), str(rightSpeed)]
         return self.callModule('motors', str(board), '0', 'setvel2mtr', msg)
 
-    def set2CCMotorSpeed(self, leftSense='0', leftSpeed='0', rightSense='0', rightSpeed='0', board='0'):
-        """
-        Set the speed of 2 CC motors. The sense is 0 or 1, and the speed is
-        0: off or 1: on
-        """
-        msg = [str(leftSense), str(leftSpeed), str(rightSense), str(rightSpeed)]
-        return self.callModule('shld_cc', str(board), '0', 'setvel2mtr', msg)
-     
     def setMotorSpeed(self, idMotor='0', sense='0', speed='0', board='0'):
         """
         Set the speed of one motor. idMotor = 0 for left motor and 1 for the
@@ -64,7 +56,6 @@ class ButiaFunctions:
         """
         msg = [str(idMotor), str(sense), str(speed)]
         return self.callModule('motors', str(board), '0', 'setvelmtr', msg)
-
 
     ##################### Operations for ax.lua driver #########################
 

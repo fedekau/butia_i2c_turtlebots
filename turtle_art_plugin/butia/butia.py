@@ -103,7 +103,6 @@ class Butia(Plugin):
         self.pollthread = None
         self.pollrun = True
         self.bobot = None
-        self.use_cc = False
         self.battery_value = ERROR
         self.battery_color = COLOR_NOTPRESENT[:]
         self.old_battery_color = COLOR_NOTPRESENT[:]
@@ -368,8 +367,6 @@ class Butia(Plugin):
         self.check_for_device_change(True)
 
     def batteryColor(self):
-        if self.use_cc:
-            return ["#FFA500","#808080"]
         if self.battery_value == ERROR:
             return COLOR_NOTPRESENT[:]
         elif (self.battery_value == 255) or (self.battery_value < 7.4):
@@ -378,8 +375,6 @@ class Butia(Plugin):
             return ["#FFA500","#808080"]
 
     def staticBlocksColor(self):
-        if self.use_cc:
-            return COLOR_PRESENT[:]
         if (self.battery_value == 255) or (self.battery_value < 7.4):
             return COLOR_NOTPRESENT[:]
         else:
@@ -423,20 +418,11 @@ class Butia(Plugin):
 
         return dict(match_list)
 
-    def cc_module_present(self, l):
-        for t in l:
-            module = t[1]
-            if module == 'shld_cc':
-                return True
-        return False
-
     def change_butia_palette_colors(self, force_refresh, change_statics_blocks, boards_present):
 
         COLOR_STATIC = self.staticBlocksColor()
 
-        if self.use_cc:
-            COLOR_EXTRAS = COLOR_NOTPRESENT[:]
-        elif boards_present > 0:
+        if boards_present > 0:
             COLOR_EXTRAS = COLOR_PRESENT[:]
         else:
             COLOR_EXTRAS = COLOR_NOTPRESENT[:]
@@ -521,11 +507,6 @@ class Butia(Plugin):
             self.list_connected_device_module = []
             boards_present = 0
 
-        if self.cc_module_present(self.list_connected_device_module):
-            self.use_cc = True
-        else:
-            self.use_cc = False
-
         self.battery_value = self.batterychargeButia()
         self.battery_color = self.batteryColor()
         
@@ -565,14 +546,7 @@ class Butia(Plugin):
         else:
             sentRight = '1'
         if self.butia:
-            if self.use_cc:
-                if not(left == 0):
-                    left = '1'
-                if not(right == 0):
-                    right = '1'
-                self.butia.set2CCMotorSpeed(sentLeft, str(left), sentRight, str(right))
-            else:
-                self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
+            self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
     def moveButia(self, left, right):
         self.set_vels(left, right)
