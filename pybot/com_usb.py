@@ -95,6 +95,17 @@ class usb_device():
             self._debug('ERROR:com_usb:write', err)
             raise
 
+    def get_address(self):
+        """
+        Get unique address for the usb
+        """
+        address = ERROR
+        try:
+            address = self.device.dev.address
+        except Exception, err:
+            self._debug('ERROR:com_usb:get_address', err)
+        return address
+
     def get_info(self):
         """
         Get the device info such as manufacturer, etc
