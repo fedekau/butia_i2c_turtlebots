@@ -21,8 +21,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-
 import usb
+from usb.legacy import Device
 
 USB4ALL_VENDOR        = 0x04d8
 USB4ALL_PRODUCT       = 0x000c
@@ -41,7 +41,7 @@ ERROR = -1
 class usb_device():
 
     def __init__(self, dev):
-        self.device = dev
+        self.device = Device(dev)
         self.handle = None
         self.debug = True
 
