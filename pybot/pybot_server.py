@@ -102,13 +102,11 @@ class Server():
                             elif r[0] == 'OPEN':
                                 if len(r) >= 2:
                                     module = r[1]
-                                    handler = self.robot.module_open(module)
-                                    result = str(handler)
+                                    result = self.robot.module_open(module)
                             elif r[0] == 'CLOSE':
                                 if len(r) >= 2:
                                     module = r[1]
-                                    handler = self.robot.module_close(module)
-                                    result = str(handler)
+                                    result = self.robot.module_close(module)
                             elif r[0] == 'CALL':
                                 if len(r) >= 3:
                                     split = self.robot._split_module(r[1])
