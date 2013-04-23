@@ -95,6 +95,13 @@ class Baseboard():
         if not(name in self.openables_loaded):
             self.openables_loaded.append(name)
 
+    def remove_openable_loaded(self, name):
+        """
+        Remove the name of device that was opened
+        """
+        if name in self.openables_loaded:
+            self.openables_loaded.remove(name)
+
     def get_openables_loaded(self):
         """
         Get the list of modules that was openened (no pnp)

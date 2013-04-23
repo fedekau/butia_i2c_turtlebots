@@ -40,7 +40,6 @@ class USB4Butia(ButiaFunctions):
         self._drivers_loaded = {}
         self._bb = []
         self._b_ports = []
-        self._modules = []
         self._get_all_drivers()
         self._chotox_mode = chotox
         self.refresh(get_modules)
@@ -59,9 +58,8 @@ class USB4Butia(ButiaFunctions):
         """
         Get the list of modules loaded in the board
         """
-        self._modules = []
+        modules = []
         n_boards = self.getButiaCount()
-
         self._debug('=Listing Devices')
         if not(self._chotox_mode):
             for i, b in enumerate(self._bb):
@@ -70,17 +68,21 @@ class USB4Butia(ButiaFunctions):
                     s = b.get_handler_size()
                     self._debug('===board', i)
                     for m in range(0, s + 1):
-                        module_name = listi[b.get_handler_type(m)]
-                        if n_boards > 1:
-                            complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                        t = b.get_handler_type(m)
+                        if not(t == 255):
+                            module_name = listi[t]
+                            if n_boards > 1:
+                                complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                            else:
+                                complete_name = module_name + ':' +  str(m)
+                            self._debug('=====module ' + module_name + (9 - len(module_name)) * ' ' + complete_name)
                         else:
-                            complete_name = module_name + ':' +  str(m)
-                        self._debug('=====module ' + module_name + (9 - len(module_name)) * ' ' + complete_name)
+                            module_name = 'port'
                         if not(module_name == 'port'):
                             if normal:
-                                self._modules.append(complete_name)
+                                modules.append(complete_name)
                             else:
-                                self._modules.append((str(m), module_name, str(i)))
+                                modules.append((str(m), module_name, str(i)))
                             if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
                                 d = Device(b, module_name, m, self._drivers_loaded[module_name])
                                 b.add_device(m, d)
@@ -101,10 +103,10 @@ class USB4Butia(ButiaFunctions):
                     module_name = 'port'
                 if devices.has_key(i) or (i < 7):
                     complete_name = module_name + ':' +  str(i)
-                    self._modules.append(complete_name)
+                    modules.append(complete_name)
                     self._debug('=====module ' + module_name + (9 - len(module_name)) * ' ' + complete_name)
 
-        return self._modules
+        return modules
 
     def _get_all_drivers(self):
         """
@@ -224,6 +226,23 @@ class USB4Butia(ButiaFunctions):
             except Exception, err:
                 self._debug('ERROR:usb4butia:close', err)
         self._bb = []
+
+    def module_close(self, modulename):
+        board = self._bb[0]
+        if modulename in self._openables:
+            if modulename in board.get_openables_loaded():
+                number = board.get_device_handler(modulename)
+                res = ERROR
+                try:
+                    res = board.devices[number].module_close()
+                    if res == 1:
+                        board.remove_openable_loaded(modulename)
+                except Exception, err:
+                    self._debug('ERROR:usb4butia:module_close', err)
+                return number
+        else:
+            self._debug('cannot close no openable modules')
+        return ERROR
 
     def _split_module(self, mbn):
         """

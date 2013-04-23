@@ -28,7 +28,7 @@ CLOSE_COMMAND = 0x01
 HEADER_PACKET_SIZE = 0x06
 ADMIN_HANDLER_SEND_COMMAND = 0x00
 OPEN_RESPONSE_PACKET_SIZE = 5
-CLOSE_RESPONSE_PACKET_SIZE = 2
+CLOSE_RESPONSE_PACKET_SIZE = 5
 READ_HEADER_SIZE = 3
 MAX_BYTES = 64
 
@@ -92,6 +92,12 @@ class Device():
         else:
             self._debug('device:module_open:cannot open module:', self.name)
             return 255
+
+    def module_close(self):
+        w = [ADMIN_HANDLER_SEND_COMMAND, 0x05, NULL_BYTE, CLOSE_COMMAND, self.handler]
+        self.baseboard.dev.write(w)
+        raw = self.baseboard.dev.read(CLOSE_RESPONSE_PACKET_SIZE)
+        return raw[4]
 
     def has_function(self, func):
         """
