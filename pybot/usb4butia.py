@@ -227,9 +227,34 @@ class USB4Butia(ButiaFunctions):
                 self._debug('ERROR:usb4butia:close', err)
         self._bb = []
 
-    def module_close(self, modulename):
-        board = self._bb[0]
+    def module_open(self, mod):
+        split = self._split_module(mod)
+        modulename = split[1]
         if modulename in self._openables:
+            b = int(split[2])
+            board = self._bb[b]
+            if not(modulename in board.get_openables_loaded()):
+                dev = Device(board, modulename, func=self._drivers_loaded[modulename])
+                number = dev.module_open()
+                if number == 255:
+                    self._debug('cannot open module', modulename)
+                    return ERROR
+                else:
+                    board.add_openable_loaded(modulename)
+                    board.add_device(number, dev)
+                    return number
+            else:
+                self._debug('Module %s already open' % modulename)
+        else:
+            self._debug('cannot open no openable module')
+        return ERROR
+
+    def module_close(self, mod):
+        split = self._split_module(mod)
+        modulename = split[1]
+        if modulename in self._openables:
+            b = int(split[2])
+            board = self._bb[b]
             if modulename in board.get_openables_loaded():
                 number = board.get_device_handler(modulename)
                 res = ERROR
@@ -241,7 +266,7 @@ class USB4Butia(ButiaFunctions):
                     self._debug('ERROR:usb4butia:module_close', err)
                 return number
         else:
-            self._debug('cannot close no openable modules')
+            self._debug('cannot close no openable module')
         return ERROR
 
     def _split_module(self, mbn):

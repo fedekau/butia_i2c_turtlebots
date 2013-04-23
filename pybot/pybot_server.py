@@ -99,6 +99,10 @@ class Server():
                                     module = r[1]
                                     funcs = self.robot._describe(module)
                                     result = ','.join(funcs)
+                            elif r[0] == 'OPEN':
+                                module = r[1]
+                                handler = self.robot.module_open(module)
+                                result = result + str(handler)
                             elif r[0] == 'CLOSE':
                                 module = r[1]
                                 handler = self.robot.module_close(module)
