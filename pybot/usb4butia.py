@@ -150,9 +150,9 @@ class USB4Butia(ButiaFunctions):
         with handler: number (only if the module is pnp, else, the parameter is
         None) with parameteres: params
         """
-        number = int(number)
-        board_number = int(board_number)
         try:
+            number = int(number)
+            board_number = int(board_number)
             board = self._bb[board_number]
             if board.devices.has_key(number) and (board.devices[number].name == modulename):
                 return board.devices[number].call_function(function, params)
