@@ -245,6 +245,7 @@ class USB4Butia(ButiaFunctions):
                     return number
             else:
                 self._debug('Module %s already open' % modulename)
+                return board.get_device_handler(modulename)
         else:
             self._debug('cannot open no openable module')
         return ERROR

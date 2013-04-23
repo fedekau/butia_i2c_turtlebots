@@ -100,29 +100,19 @@ class Server():
                                     funcs = self.robot._describe(module)
                                     result = ','.join(funcs)
                             elif r[0] == 'OPEN':
-                                module = r[1]
-                                handler = self.robot.module_open(module)
-                                result = result + str(handler)
+                                if len(r) >= 2:
+                                    module = r[1]
+                                    handler = self.robot.module_open(module)
+                                    result = str(handler)
                             elif r[0] == 'CLOSE':
-                                module = r[1]
-                                handler = self.robot.module_close(module)
-                                result = result + str(handler)
+                                if len(r) >= 2:
+                                    module = r[1]
+                                    handler = self.robot.module_close(module)
+                                    result = str(handler)
                             elif r[0] == 'CALL':
                                 if len(r) >= 3:
-                                    board = 0
-                                    number = 0
-                                    mbn = r[1]
-                                    if mbn.count('@') > 0:
-                                        modulename, bn = mbn.split('@')
-                                        board, number = bn.split(':')
-                                    else:
-                                        if mbn.count(':') > 0:
-                                            modulename, number = mbn.split(':')
-                                        else:
-                                            modulename = mbn
-                                    function = r[2]
-                                    par = r[3:]
-                                    result = self.robot.callModule(modulename, board, number, function, par)
+                                    split = self.robot._split_module(r[1])
+                                    result = self.robot.callModule(split[1], split[2], split[0], r[2], r[3:])
 
                         result = str(result)
                         try:
