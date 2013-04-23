@@ -160,6 +160,8 @@ class USB4Butia(ButiaFunctions):
                 return board.devices[number].call_function(function, params)
             else:
                 number = self._open_or_validate(modulename, board)
+                if number == ERROR:
+                    return ERROR
                 return board.devices[number].call_function(function, params)
         except Exception, err:
             self._debug('ERROR:usb4butia:callModule', err)
@@ -234,8 +236,6 @@ class USB4Butia(ButiaFunctions):
                     board.add_openable_loaded(modulename)
                     board.add_device(number, dev)
                     return number
-        else:
-            self._debug('cannot open no openable module')
         return ERROR
 
     def module_close(self, mod):
