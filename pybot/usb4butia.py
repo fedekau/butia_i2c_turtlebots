@@ -161,13 +161,13 @@ class USB4Butia(ButiaFunctions):
                     if modulename in board.get_openables_loaded():
                         number = board.get_device_handler(modulename)
                     else:
-                        board.add_openable_loaded(modulename)
                         dev = Device(board, modulename, func=self._drivers_loaded[modulename])
                         number = dev.module_open()
                         if number == 255:
                             self._debug('cannot open module', modulename)
                             return ERROR
                         else:
+                            board.add_openable_loaded(modulename)
                             board.add_device(number, dev)
                     return board.devices[number].call_function(function, params)
                 else:
