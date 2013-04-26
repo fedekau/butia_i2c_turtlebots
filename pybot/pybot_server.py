@@ -129,12 +129,8 @@ class Server():
 
 
 if __name__ == "__main__":
-    chotox = False
-    debug = False
-    if 'chotox' in argv:
-        chotox = True
-    if 'DEBUG' in argv:
-        debug = True
+    chotox = 'chotox' in argv
+    debug = 'DEBUG' in argv
     s = Server(debug, chotox)
     s.init_server()
 
