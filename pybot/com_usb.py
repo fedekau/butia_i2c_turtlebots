@@ -43,7 +43,7 @@ class usb_device():
     def __init__(self, dev):
         self.device = Device(dev)
         self.handle = None
-        self.debug = True
+        self.debug = False
 
     def _debug(self, message, err=''):
         if self.debug:

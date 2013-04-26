@@ -42,7 +42,9 @@ class USB4Butia(ButiaFunctions):
         self._b_ports = []
         self._get_all_drivers()
         self._chotox_mode = chotox
-        self.refresh(get_modules)
+        self.refresh()
+        if get_modules:
+            self.getModulesList(refresh=False)
 
     def _debug(self, message, err=''):
         if self._debug_flag:
@@ -54,10 +56,12 @@ class USB4Butia(ButiaFunctions):
         """
         return len(self._bb)
 
-    def getModulesList(self, normal=True):
+    def getModulesList(self, normal=True, refresh=True):
         """
         Get the list of modules loaded in the board
         """
+        if refresh:
+            self.refresh()
         modules = []
         n_boards = self.getButiaCount()
         self._debug('=Listing Devices')
@@ -155,6 +159,8 @@ class USB4Butia(ButiaFunctions):
         try:
             number = int(number)
             board_number = int(board_number)
+            if len(self._bb) < (board_number + 1):
+                return ERROR
             board = self._bb[board_number]
             if board.devices.has_key(number) and (board.devices[number].name == modulename):
                 return board.devices[number].call_function(function, params)
@@ -173,7 +179,7 @@ class USB4Butia(ButiaFunctions):
         """
         pass
 
-    def refresh(self, get_modules=True):
+    def refresh(self):
         """
         Search for connected USB4Butia boards and open it
         """
@@ -200,9 +206,6 @@ class USB4Butia(ButiaFunctions):
                     b.close_baseboard()
                 except:
                     pass
-
-        if get_modules:
-            self.getModulesList()
 
     def close(self):
         """
