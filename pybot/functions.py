@@ -57,7 +57,7 @@ class ButiaFunctions:
         msg = [str(idMotor), str(sense), str(speed)]
         return self.callModule('motors', str(board), '0', 'setvelmtr', msg)
 
-    def getMotorType(self):
+    def getMotorType(self, board='0'):
         """
         If AX-12 motors present returns 1. If there are a shield "cc" returns 2
         """
