@@ -61,7 +61,7 @@ extern "C" {
 */
 #define arMalloc(V,T,S)  \
 { if( ((V) = (T *)malloc( sizeof(T) * (S) )) == 0 ) \
-{printf("malloc error!!\n"); exit(1);} }
+{printf("malloc error!!\n");} }
 
 /* overhead ARToolkit type*/
 typedef char              ARInt8;
