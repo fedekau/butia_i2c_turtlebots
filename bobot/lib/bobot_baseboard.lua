@@ -67,7 +67,7 @@ local function load_modules(bb)
 	if not n_modules then return nil end
 	retry=0
 	bobot.debugprint ("Reading modules:", n_modules)
-	for i = 1, n_modules do
+	for i = 0, n_modules -1 do
 		local modulename=bb:get_user_module_line(i)
 		while modulename == nil and retry < MAX_RETRY do
 			bobot.debugprint("u4b:the module  returned a nil value, trying to recover...")
@@ -111,7 +111,7 @@ local function load_module_handlers(bb)
 	if (not n_module_handlers) or (n_module_handlers > 32) then return nil end
 	retry=0
 	bobot.debugprint ("Reading moduleshandlers:", n_module_handlers)
-	for i=1, n_module_handlers do
+	for i=0, n_module_handlers do
 		local t_handler = bb:get_handler_type(i)
 		while(t_handler == nil and retry < MAX_RETRY) do
 			bobot.debugprint("u4b:the module handler returned a nil value, trying to recover...")
@@ -120,15 +120,15 @@ local function load_module_handlers(bb)
 		end
 		if not t_handler then return nil end
 		if t_handler<255  then
-			local modulename=bb.modules[t_handler+1]
+			local modulename=bb.modules[t_handler]
 			local moduledev=bb.modules[modulename]
 			if type(moduledev)=='table' 
 			and not moduledev.handler then
-				moduledev.handler=i-1
+				moduledev.handler=i
 			elseif moduledev==true then 
 				--name=name.."@"..(i-1)
 				local d = bobot_device:new({
-					handler=i-1,
+					handler=i,
 					module=modulename,
 					--name=name, 
 					baseboard=bb,
@@ -228,7 +228,7 @@ end
 function BaseBoard:get_user_module_line(index)
 	--state & parameter sanity check
 	assert(type(index)=="number")
-	assert(index>0)	
+	-- assert(index>0)
 	assert(type(self.comms)=="table")
 
 
@@ -237,7 +237,7 @@ function BaseBoard:get_user_module_line(index)
 	-- In case of get_user_module_line command is atended by admin module in handler 0 and send operation is 000
 	local get_user_module_line_packet_length = string.char(GET_USER_MODULE_LINE_PACKET_SIZE)
 	local handler_packet = ADMIN_HANDLER_SEND_COMMAND .. get_user_module_line_packet_length .. NULL_BYTE
-	local admin_packet = GET_USER_MODULE_LINE_COMMAND .. string.char(index-1)
+	local admin_packet = GET_USER_MODULE_LINE_COMMAND .. string.char(index)
 	local get_user_module_line_packet  = handler_packet .. admin_packet
 
 	local write_res = comms.send(ADMIN_MODULE_IN_ENDPOINT, get_user_module_line_packet, TIMEOUT)
@@ -287,7 +287,7 @@ end
 function BaseBoard:get_handler_type(index) ------ NEW LISTI ------
 	--state & parameter sanity check
 	assert(type(index)=="number")
-	assert(index>0)	
+	--assert(index>0)
 	assert(type(self.comms)=="table")
 
 	local comms=self.comms
@@ -295,7 +295,7 @@ function BaseBoard:get_handler_type(index) ------ NEW LISTI ------
 	-- In case of get_handler_type command is atended by admin module in handler 0 and send operation is 000
 	local get_handler_type_packet_length = string.char(GET_HANDLER_TYPE_PACKET_SIZE) --GET_USER_MODULE_LINE_PACKET_SIZE
 	local handler_packet = ADMIN_HANDLER_SEND_COMMAND .. get_handler_type_packet_length .. NULL_BYTE
-	local admin_packet = GET_HANDLER_TYPE_COMMAND .. string.char(index-1)
+	local admin_packet = GET_HANDLER_TYPE_COMMAND .. string.char(index)
 	local get_handler_type_packet  = handler_packet .. admin_packet
 
 	local write_res = comms.send(ADMIN_MODULE_IN_ENDPOINT, get_handler_type_packet, TIMEOUT)
