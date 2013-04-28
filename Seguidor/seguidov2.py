@@ -63,6 +63,9 @@ class ClaseMain(threading.Thread):
             elif cod == "M":
                 print "motor"
                 self.mover()
+            elif cod == "V":
+                print "Vision"
+                self.ver_distancias()
             elif cod == "G":
                 print "grises"
                 salirG = False
@@ -103,6 +106,20 @@ class ClaseMain(threading.Thread):
                     #while self.butia.getGray(self.idIzq) < self.negroIzq and self.butia.getGray(self.idDer) < self.negroDer:
                         #self.butia.set2MotorSpeed("0","700", "0", "700")
 
+    def ver_distancias(self):
+        salir = False
+        while not salir:
+            cod = self.data.get_codigo()
+            if cod == "S":
+                salir = True
+            elif cod == "1":
+                print "Left dist: " + str(self.detect.getMarkerTrigDist("Left"))
+            elif cod == "2":
+                print "Right dist: " + str(self.detect.getMarkerTrigDist("Right"))
+            elif cod == "3":
+                print "Stop dist: " + str(self.detect.getMarkerTrigDist("Stop"))
+            elif cod == "4":
+                print "Yield dist: " + str(self.detect.getMarkerTrigDist("Yield"))
 
     def buscar_senial(self):
         print "entro"
@@ -142,51 +159,24 @@ class ClaseMain(threading.Thread):
     def girar_derecha(self):
         # giro hacia la izquieda hasta que el grisizquierda este en negro y el
         #gris izquierda en blanco
-        self.detect.isMarkerPresent("Stop")
-        self.detect.isMarkerPresent("Stop")
-        self.detect.isMarkerPresent("Stop")
         salir = False
-        #self.butia.set2MotorSpeed("0", "0", "0", "0")
-        #time.sleep(3)
-        #while self.butia.getGray(self.idDer) < self.negroDer and not salir :#and self.butia.getGray(self.idIzq)  > self.negroIzq and not salir:
-        #while self.detect.isMarkerPresment("Right") and not salir :
-            #cod = self.data.get_codigo()
-            #if cod == "S":
-                #salir = True
-            #self.butia.set2MotorSpeed("1", "400", "0", "400") #giro hacia la izquierda
-        #print "encontre negro"
-        while self.butia.getGray(self.idDer) > self.negroDer and not salir :#and self.butia.getGray(self.idIzq)  > self.negroIzq and not salir:
+        while self.butiabot.getGray(self.idDer) < self.negroDer and not salir :#and self.butiabot.getGray(self.idIzq)  > self.negroIzq and not salir:
             cod = self.data.get_codigo()
             if cod == "S":
                 salir = True
-            self.butia.set2MotorSpeed("1", "400", "0", "400") #giro hacia la izquierda
-        #self.butia.set2MotorSpeed("0", "0", "0", "0")
+            self.butiabot.set2MotorSpeed("1", "400", "0", "400") #giro hacia la izquierda
+        self.butiabot.set2MotorSpeed("0", "0", "0", "0")
 
+    def girar_izquierda(self):
+       salir = False
+       print "encontre negro"
+       while self.butiabot.getGray(self.idIzq) < self.negroIzq and not salir :#and self.butiabot.getGray(self.idIzq)  > self.negroIzq and not salir:
+           cod = self.data.get_codigo()
+           if cod == "S":
+               salir = True
+           self.butiabot.set2MotorSpeed("0", "400", "1", "400") #giro hacia la izquierda
+       self.butiabot.set2MotorSpeed("0", "0", "0", "0")
 
-
-    def girar_iquierda(self):
-        # giro hacia la izquieda hasta que el grisizquierda este en negro y el
-        #gris izquierda en blanco
-        #self.detect.isMarkerPresent("Stop")
-        #self.detect.isMarkerPresent("Stop")
-        #self.detect.isMarkerPresent("Stop")
-        salir = False
-        #self.butia.set2MotorSpeed("0", "0", "0", "0")
-        #time.sleep(3)
-        #while self.butia.getGray(self.idDer) < self.negroDer and not salir :#and self.butia.getGray(self.idIzq)  > self.negroIzq and not salir:
-        #while self.detect.isMarkerPresent("Left") and not salir :
-        #while self.detect.isMarkerPresent("Left") and not salir :
-            #cod = self.data.get_codigo()
-            #if cod == "S":
-                #salir = True
-            #self.butia.set2MotorSpeed("0", "400", "1", "400") #giro hacia la izquierda
-        print "encontre negro"
-        while self.butia.getGray(self.idIzq) > self.negroIzq and not salir :#and self.butia.getGray(self.idIzq)  > self.negroIzq and not salir:
-            cod = self.data.get_codigo()
-            if cod == "S":
-                salir = True
-            self.butia.set2MotorSpeed("0", "400", "1", "400") #giro hacia la izquierda
-        self.butia.set2MotorSpeed("0", "0", "0", "0")
 
 
     def corregir_izquierda(self):
