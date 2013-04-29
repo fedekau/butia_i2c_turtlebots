@@ -173,12 +173,6 @@ class USB4Butia(ButiaFunctions):
             self._debug('ERROR:usb4butia:callModule', err)
             return ERROR
 
-    def reconnect(self):
-        """
-        Not implemented
-        """
-        pass
-
     def refresh(self):
         """
         Search for connected USB4Butia boards and open it
@@ -219,6 +213,9 @@ class USB4Butia(ButiaFunctions):
         self._bb = []
 
     def module_open(self, mod):
+        """
+        Open the module mod
+        """
         split = self._split_module(mod)
         modulename = split[1]
         b = int(split[2])
@@ -226,6 +223,9 @@ class USB4Butia(ButiaFunctions):
         return self._open_or_validate(modulename, board)
 
     def _open_or_validate(self, modulename, board):
+        """
+        Open o check if modulename module is open in board: board
+        """
         if modulename in self._openables:
             if modulename in board.get_openables_loaded():
                 return board.get_device_handler(modulename)
@@ -242,6 +242,9 @@ class USB4Butia(ButiaFunctions):
         return ERROR
 
     def module_close(self, mod):
+        """
+        Close the module mod
+        """
         split = self._split_module(mod)
         modulename = split[1]
         if modulename in self._openables:
