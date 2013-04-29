@@ -1,13 +1,25 @@
 local device = _G
+local RD_VERSION=string.char(0x00)
 local WRITE_INFO = 0x01
 local READ_INFO  = 0x02
 local char000    = string.char(0,0,0)
 local mode='wheel'
 
+api={}
+api.getVersion = {}
+api.getVersion.parameters = {} -- no input parameters
+api.getVersion.returns = {[1]={rname="version", rtype="int"}}
+api.getVersion.call = function ()
+	device:send(RD_VERSION) -- operation code 0 = get version
+    local version_response = device:read(3) -- 3 bytes to read (opcode, data)
+    if not version_response or #version_response~=3 then return -1 end
+    local raw_val = (string.byte(version_response,2) or 0) + (string.byte(version_response,3) or 0)* 256
+    return raw_val
+end
+
 --- Write info
 -- write value in regstart to motor[id]
 -- byte id, byte regstart, int value
-api={}
 api.writeInfo = {}
 api.writeInfo.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="regstart", rtype="number", min=0, max=49},[3]={rname="value", rtype="number", min=0, max=65536}}
 api.writeInfo.returns = {[1]={rname="write_info_return", rtype="number"}} --one return
