@@ -566,10 +566,10 @@ class Butia(Plugin):
         self.set_vels(-self.actualSpeed[0], -self.actualSpeed[1])
 
     def leftButia(self):
-        self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
+        self.set_vels(-self.actualSpeed[0], self.actualSpeed[1])
 
     def rightButia(self):
-        self.set_vels(-self.actualSpeed[0], self.actualSpeed[1])
+        self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
 
     def stopButia(self):
         self.set_vels(0, 0)
