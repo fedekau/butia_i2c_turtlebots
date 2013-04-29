@@ -142,54 +142,54 @@ class ButiaFunctions:
 
     ############################### Sensors calls ###############################
 
-    def getButton(self, number, board='0'):
+    def getButton(self, port, board='0'):
         """
-        Gets the value of the button connected in port: number
+        Gets the value of the button connected in port
         """
-        return self.callModule('button', str(board), str(number), 'getValue')
+        return self.callModule('button', str(board), str(port), 'getValue')
     
-    def getLight(self, number, board='0'):
+    def getLight(self, port, board='0'):
         """
-        Gets the value of the light sensor connected in port: number
+        Gets the value of the light sensor connected in port
         """
-        return self.callModule('light', str(board), str(number), 'getValue')
+        return self.callModule('light', str(board), str(port), 'getValue')
 
-    def getDistance(self, number, board='0'):
+    def getDistance(self, port, board='0'):
         """
-        Gets the value of the distance sensor connected in port: number
+        Gets the value of the distance sensor connected in port
         """
-        return self.callModule('distanc', str(board), str(number), 'getValue')
+        return self.callModule('distanc', str(board), str(port), 'getValue')
 
-    def getGray(self, number, board='0'):
+    def getGray(self, port, board='0'):
         """
-        Gets the value of the gray sensor connected in port: number
+        Gets the value of the gray sensor connected in port
         """
-        return self.callModule('grey', str(board), str(number), 'getValue')
+        return self.callModule('grey', str(board), str(port), 'getValue')
 
-    def getTemperature(self, number, board='0'):
+    def getTemperature(self, port, board='0'):
         """
-        Gets the value of the temperature sensor connected in port: number
+        Gets the value of the temperature sensor connected in port
         """
-        return self.callModule('temp', str(board), str(number), 'getValue')
+        return self.callModule('temp', str(board), str(port), 'getValue')
 
-    def getResistance(self, number, board='0'):
+    def getResistance(self, port, board='0'):
         """
-        Gets the value of the resistance sensor connected in port: number
+        Gets the value of the resistance sensor connected in port
         """
-        return self.callModule('res', str(board), str(number), 'getValue')
+        return self.callModule('res', str(board), str(port), 'getValue')
 
-    def getVoltage(self, number, board='0'):
+    def getVoltage(self, port, board='0'):
         """
-        Gets the value of the voltage sensor connected in port: number
+        Gets the value of the voltage sensor connected in port
         """
-        return self.callModule('volt', str(board), str(number), 'getValue')
+        return self.callModule('volt', str(board), str(port), 'getValue')
 
-    def setLed(self, number, on_off, board='0'):
+    def setLed(self, port, on_off, board='0'):
         """
-        Sets on or off the LED connected in port: number (0 is off, 1 is on)
+        Sets on or off the LED connected in port (0 is off, 1 is on)
         """
         msg = [str(on_off)]
-        return self.callModule('led', str(board), str(number), 'turn', msg)
+        return self.callModule('led', str(board), str(port), 'turn', msg)
 
     ################################ Extras ################################
 
