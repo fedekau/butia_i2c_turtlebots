@@ -12,8 +12,28 @@ al correr levanta dos hilos uno para el manejo del butia (ClaseMain) y otra para
 
 """
 
-from pybot import pybot_client
-from library import patternsAPI
+#from pybot import pybot_client
+
+import sys
+import os.path
+
+if os.path.exists('/home/olpc/Activities/TurtleBots.activity/plugins/butia/pybot/usb4butia.py'):
+    sys.path.append("/home/olpc/Activities/TurtleBots.activity/plugins/butia")
+
+
+
+if os.path.exists("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library/patternsAPI.py"):
+    sys.path.append("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection")
+    from library import patternsAPI
+elif os.path.exists("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library/multiPatternDetectionAPI.py"): #para V19  y anteriores :S
+    sys.path.append("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library")
+    import multiPatternDetectionAPI as patternsAPI
+else:
+    from library import patternsAPI
+
+
+from pybot import usb4butia
+#from pybot import pybot_client
 import threading
 import time
 
@@ -43,13 +63,15 @@ class ClaseMain(threading.Thread):
         self.detect = patternsAPI.detection()
         self.detect.init()
         self.data = data
-        self.butia = pybot_client.robot()
+        #self.butia = pybot_client.robot()
+        self.butia = usb4butia.USB4Butia()
         self.idIzq = "4"
         self.idDer = "2"
         self.negroDer = 40000
         self.negroIzq = 30000
         self.distMinimalSignal = 500
         print str(self.detect.arMultiGetIdsMarker().split(";"))
+        #print str(self.butia.getModulesList())
         #self.detect.isMarkerPresent("Right")
 
 
