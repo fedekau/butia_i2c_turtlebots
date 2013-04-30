@@ -23,8 +23,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import socket
-import string
-import math
 import threading
 import errno
 from functions import ButiaFunctions
@@ -36,73 +34,74 @@ PYBOT_PORT = 2009
 
 class robot(ButiaFunctions):
     
-    def __init__(self, host = PYBOT_HOST, port = PYBOT_PORT):
+    def __init__(self, host=PYBOT_HOST, port=PYBOT_PORT):
         """
         init the robot class
         """
-        self.lock = threading.Lock()
-        self.host = host
-        self.port = port
-        self.client = None
+        self._lock = threading.Lock()
+        self._host = host
+        self._port = port
+        self._client = None
         self.reconnect()
        
-    def doCommand(self, msg):
+    def _doCommand(self, msg):
         """
         Executes a command in butia.
         @param msg message to be executed
         """
         msg = msg + '\n'
         ret = ERROR
-        self.lock.acquire()
+        self._lock.acquire()
         try:     
-            self.client.send(msg) 
-            ret = self.client.recv(1024)
+            self._client.send(msg)
+            ret = self._client.recv(1024)
             ret = ret[:-1]
         except Exception, e:
             if hasattr(e, 'errno'):
                 if e.errno == errno.EPIPE:
                     self.reconnect()
             ret = ERROR
-        self.lock.release()
+        self._lock.release()
         
         return ret
-          
-    # connect o reconnect the bobot
+
     def reconnect(self):
+        """
+        connect o reconnect the bobot
+        """
         self.close()
         try:
-            self.client = socket.socket()
-            self.client.connect((self.host, self.port))  
+            self._client = socket.socket()
+            self._client.connect((self._host, self._port))
         except:
             return ERROR
         return 0
 
-    # ask bobot for refresh is state of devices connected
     def refresh(self):
-        self.doCommand('REFRESH')
+        """
+        ask bobot for refresh is state of devices connected
+        """
+        self._doCommand('REFRESH')
 
-    # close the comunication with pybot
     def close(self):
+        """
+        close the comunication with pybot
+        """
         try:
-            self.client.close()
-            self.client = None
+            self._client.close()
+            self._client = None
         except:
             return ERROR
         return 0
 
-    #######################################################################
-    ### Operations to the principal module
-    #######################################################################
-
-
-    # call the module 'modulename'
-    def callModule(self, modulename, board_number, number, function, params = ''):
-        if number == '':
-            number = '0'
+    def callModule(self, modulename, board_number, number, function, params = []):
+        """
+        call the module 'modulename'
+        """
         msg = 'CALL ' + modulename + '@' + str(board_number) + ':' + str(number) + ' ' + function
-        if params != '':
-            msg += ' ' + params
-        ret = self.doCommand(msg)
+        if not(params == []):
+            msg = msg + ' ' + ' '.join(params)
+        ret = self._doCommand(msg)
         try:
             ret = int(ret)
         except:
@@ -115,37 +114,50 @@ class robot(ButiaFunctions):
                     ret = ERROR
         return ret
 
-    # Close bobot service
     def closeService(self):
+        """
+        Close bobot service
+        """
         msg = 'QUIT'
-        return self.doCommand(msg)
+        return self._doCommand(msg)
 
-    def get_butia_count(self):
+    def getButiaCount(self):
+        """
+        Gets the number of boards detected
+        """
         msg = 'BUTIA_COUNT'
-        ret = self.doCommand(msg)
+        ret = self._doCommand(msg)
         return int(ret)
 
-    # returns a list of modules
-    def get_modules_list(self, normal=True):
+    def getModulesList(self, normal=True):
+        """
+        returns a list of modules
+        """
         msg = 'LIST'
         l = []
-        ret = self.doCommand(msg)
+        ret = self._doCommand(msg)
         if not (ret == '' or ret == ERROR):
             l = ret.split(',')
-        modules = []
-        if not(normal):
-            for m in l:
-                modules.append(self.split_module(m))
+        if normal:
+            return l
         else:
-            modules = l
-        return modules
+            modules = []
+            for m in l:
+                modules.append(self._split_module(m))
+            return modules
 
-    def split_module(self, mbn):
+    def _split_module(self, mbn):
+        """
+        Split a modulename: module@board:port to (number, modulename, board)
+        """
         board = '0'
         number = '0'
         if mbn.count('@') > 0:
             modulename, bn = mbn.split('@')
-            board, number = bn.split(':')
+            if bn.count(':') > 0:
+                board, number = bn.split(':')
+            else:
+                board = bn
         else:
             if mbn.count(':') > 0:
                 modulename, number = mbn.split(':')

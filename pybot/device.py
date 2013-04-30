@@ -26,12 +26,9 @@ NULL_BYTE = 0x00
 OPEN_COMMAND = 0x00
 CLOSE_COMMAND = 0x01
 HEADER_PACKET_SIZE = 0x06
-
 ADMIN_HANDLER_SEND_COMMAND = 0x00
-
 OPEN_RESPONSE_PACKET_SIZE = 5
-CLOSE_RESPONSE_PACKET_SIZE = 2
-
+CLOSE_RESPONSE_PACKET_SIZE = 5
 READ_HEADER_SIZE = 3
 MAX_BYTES = 64
 
@@ -45,30 +42,28 @@ class Device():
         self.handler = handler
         if not(self.handler == None):
             self.handler_tosend = self.handler * 8
+        else:
+            self.handler_tosend = None
         self.functions = func
         self.debug = False
+
+    def _debug(self, message, err=''):
+        if self.debug:
+            print message, err
 
     def send(self, msg):
         """
         Send to the device the specifiy call and parameters
         """
-        length = 0x04 + len(msg)
-        w = []
-        w.append(self.handler_tosend)
-        w.append(length)
-        w.append(NULL_BYTE)
-        for p in msg:
-            w.append(p)
-
-        self.baseboard.dev.write(w)
+        w = [self.handler_tosend, 0x03 + len(msg), NULL_BYTE]
+        self.baseboard.dev.write(w + msg)
 
     def read(self, lenght):
         """
         Read the device data
         """
-        raw = self.baseboard.dev.read(MAX_BYTES)
-        if self.debug:
-            print 'device:module_rad return', raw
+        raw = self.baseboard.dev.read(0x03 + lenght)
+        self._debug('device:read', raw)
         return raw[3:]
 
     def module_open(self):
@@ -76,31 +71,33 @@ class Device():
         Open this device. Return the handler
         """
         module_name = self.to_ord(self.name)
-        module_name.append(0)
-        
-        open_packet_length = HEADER_PACKET_SIZE + len(module_name) 
+        module_name.append(NULL_BYTE)
 
-        module_in_endpoint  = 0x01
-        module_out_endpoint = 0x01
-
-        w = []
-        w.append(ADMIN_HANDLER_SEND_COMMAND)
-        w.append(open_packet_length)
+        w = [ADMIN_HANDLER_SEND_COMMAND]
+        w.append(HEADER_PACKET_SIZE + len(module_name))
         w.append(NULL_BYTE)
         w.append(OPEN_COMMAND)
-        w.append(module_in_endpoint)
-        w.append(module_out_endpoint)
-        w = w + module_name
-        self.baseboard.dev.write(w)
+        w.append(0x01)
+        w.append(0x01)
+        self.baseboard.dev.write(w + module_name)
 
         raw = self.baseboard.dev.read(OPEN_RESPONSE_PACKET_SIZE)
 
-        if self.debug:
-            print 'device:module_open return', raw
+        self._debug('device:module_open', raw)
 
-        self.handler = raw[4]
-        self.handler_tosend = self.handler * 8
-        return self.handler
+        if not(raw[4] == 255):
+            self.handler = raw[4]
+            self.handler_tosend = self.handler * 8
+            return self.handler
+        else:
+            self._debug('device:module_open:cannot open module:', self.name)
+            return 255
+
+    def module_close(self):
+        w = [ADMIN_HANDLER_SEND_COMMAND, 0x05, NULL_BYTE, CLOSE_COMMAND, self.handler]
+        self.baseboard.dev.write(w)
+        raw = self.baseboard.dev.read(CLOSE_RESPONSE_PACKET_SIZE)
+        return raw[4]
 
     def has_function(self, func):
         """
@@ -117,12 +114,12 @@ class Device():
             return f(self, params)
         else:
             par = []
-            if not(params == ''):
-                params = params.split(' ')
-                for e in params:
-                    par.append(int(e))
-
-            return f(self, *par)
+            for e in params:
+                par.append(int(e))
+            if func == 'sendPacket':
+                return f(self, par)
+            else:
+                return f(self, *par)
 
     def to_ord(self, string):
         """

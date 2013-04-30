@@ -55,7 +55,6 @@ modules_help['led'] = _("Turn LED on and off: 0 is off; 1 is on")
 modules_help['gray'] = _("returns the gray level")
 modules_help['button'] = _("returns 1 when the button is press and 0 otherwise")
 modules_help['light'] = _("returns the light level")
-modules_help['temperature'] = _("returns the temperature")
 modules_help['distance'] = _("returns the distance from the object in front of the sensor")
 modules_help['magneticinduction'] = _("returns 1 when the sensors detects a magnetic field, 0 otherwise")
 modules_help['resistanceB'] = _("returns the value of the resistance")
@@ -67,7 +66,6 @@ modules_name_from_device_id['led'] = 'led'
 modules_name_from_device_id['button'] = 'button'
 modules_name_from_device_id['gray'] = 'grey'
 modules_name_from_device_id['light'] = 'light'
-modules_name_from_device_id['temperature'] = 'temp'
 modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
 modules_name_from_device_id['voltageB'] = 'volt'
@@ -77,7 +75,6 @@ device_id_from_module_name['led'] = 'led'
 device_id_from_module_name['button'] = 'button'
 device_id_from_module_name['grey'] = 'gray'
 device_id_from_module_name['light'] = 'light'
-device_id_from_module_name['temp'] = 'temperature'
 device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
 device_id_from_module_name['volt'] = 'voltage'
@@ -87,12 +84,11 @@ label_name_from_device_id['led'] = _('LED')
 label_name_from_device_id['button'] = _('button')
 label_name_from_device_id['gray'] = _('gray')
 label_name_from_device_id['light'] = _('light')
-label_name_from_device_id['temperature'] = _('temperature')
 label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
 
-refreshable_block_list = ['light', 'gray', 'temperature', 'distance', 'button', 'led', 'resistanceB', 'voltageB']
+refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
@@ -106,12 +102,11 @@ class Butia(Plugin):
         self.butia = None
         self.pollthread = None
         self.pollrun = True
+        self.bobot = None
+        self.use_cc = False
         self.battery_value = ERROR
         self.battery_color = COLOR_NOTPRESENT[:]
         self.old_battery_color = COLOR_NOTPRESENT[:]
-        self.bobot = None
-        self.butia = None
-        self.use_cc = False
         self.match_list = []
         self.modules_changed = []
         self.list_connected_device_module = []
@@ -150,7 +145,7 @@ class Butia(Plugin):
                      style='box-style',
                      label=_('battery charge Butia'),
                      prim_name='batterychargeButia',
-                     help_string=_('returns the battery charge as a number between 0 and 255'))
+                     help_string=_('returns the battery charge in volts. If no motors present, it returns 255'))
         self.tw.lc.def_prim('batterychargeButia', 0, lambda self: primitive_dictionary['batterychargeButia']())
         special_block_colors['batterychargeButia'] = self.batteryColor()[:]
 
@@ -294,7 +289,6 @@ class Butia(Plugin):
         primitive_dictionary['lightButia'] = self.lightButia
         primitive_dictionary['grayButia'] = self.grayButia
         primitive_dictionary['buttonButia'] = self.buttonButia
-        primitive_dictionary['temperatureButia'] = self.temperatureButia
         primitive_dictionary['distanceButia'] = self.distanceButia
         primitive_dictionary['resistanceBButia'] = self.resistanceButia
         primitive_dictionary['voltageBButia'] = self.voltageButia
@@ -303,7 +297,7 @@ class Butia(Plugin):
         #physical robot the corresponding block appears in the pallete
 
         for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'gray', 'light', 'distance', 'temperature', 'resistanceB', 'voltageB']]
+                     ['box-style', ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB']]
                  ]:
 
             (blockstyle , listofmodules) = i
@@ -314,7 +308,6 @@ class Butia(Plugin):
                     if (m == 0):
                         isHidden = False
                         k = ''
-
                     module = j + str(k)
                     block_name = module + 'Butia'
                     
@@ -333,6 +326,7 @@ class Butia(Plugin):
                                  help_string=_(modules_help[j]),
                                  hidden=isHidden)
 
+                    k = m
                     if blockstyle == 'basic-style-1arg':
                         self.tw.lc.def_prim(block_name, 1, lambda self, w, x=k, y=j, z=0: primitive_dictionary[y + 'Butia'](w, x, z))
                     else:
@@ -378,15 +372,15 @@ class Butia(Plugin):
             return ["#FFA500","#808080"]
         if self.battery_value == ERROR:
             return COLOR_NOTPRESENT[:]
-        elif (self.battery_value == 255) or (self.battery_value < 74):
+        elif (self.battery_value == 255) or (self.battery_value < 7.4):
             return ["#FF0000","#808080"]
-        elif ((self.battery_value < 254) and (self.battery_value >= 74)):
+        elif ((self.battery_value < 254) and (self.battery_value >= 7.4)):
             return ["#FFA500","#808080"]
 
     def staticBlocksColor(self):
         if self.use_cc:
             return COLOR_PRESENT[:]
-        if (self.battery_value == 255) or (self.battery_value < 74):
+        if (self.battery_value == 255) or (self.battery_value < 7.4):
             return COLOR_NOTPRESENT[:]
         else:
             return COLOR_PRESENT[:]
@@ -429,18 +423,13 @@ class Butia(Plugin):
 
         return dict(match_list)
 
-    def cc_module_present(self, l):
-        for t in l:
-            module = t[1]
-            if module == 'shld_cc':
-                return True
-        return False
-
     def change_butia_palette_colors(self, force_refresh, change_statics_blocks, boards_present):
 
         COLOR_STATIC = self.staticBlocksColor()
 
-        if boards_present > 0:
+        if self.use_cc:
+            COLOR_EXTRAS = COLOR_NOTPRESENT[:]
+        elif boards_present > 0:
             COLOR_EXTRAS = COLOR_PRESENT[:]
         else:
             COLOR_EXTRAS = COLOR_NOTPRESENT[:]
@@ -471,9 +460,10 @@ class Butia(Plugin):
                                 if blk_index !='' :
                                     if blk.type == 'proto': # only make invisible the block in the palette not in the program area
                                         blk.set_visibility(False)
-
+                                    value = str(blk_index)
+                                else:
+                                    value = '0'
                                 label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
-                                value = str(blk_index)
                                 board = '0'
                                 special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
                             else:
@@ -518,17 +508,13 @@ class Butia(Plugin):
         old_list_connected_device_module = self.list_connected_device_module[:]
 
         if self.butia:
-            self.list_connected_device_module = self.butia.get_modules_list(False)
-            boards_present = self.butia.get_butia_count()
+            self.list_connected_device_module = self.butia.getModulesList(False)
+            boards_present = self.butia.getButiaCount()
         else:
             self.list_connected_device_module = []
             boards_present = 0
 
-        if self.cc_module_present(self.list_connected_device_module):
-            self.use_cc = True
-        else:
-            self.use_cc = False
-
+        self.cc_module_present()
         self.battery_value = self.batterychargeButia()
         self.battery_color = self.batteryColor()
         
@@ -568,14 +554,7 @@ class Butia(Plugin):
         else:
             sentRight = '1'
         if self.butia:
-            if self.use_cc:
-                if not(left == 0):
-                    left = '1'
-                if not(right == 0):
-                    right = '1'
-                self.butia.set2CCMotorSpeed(sentLeft, str(left), sentRight, str(right))
-            else:
-                self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
+            self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
     def moveButia(self, left, right):
         self.set_vels(left, right)
@@ -587,10 +566,10 @@ class Butia(Plugin):
         self.set_vels(-self.actualSpeed[0], -self.actualSpeed[1])
 
     def leftButia(self):
-        self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
+        self.set_vels(-self.actualSpeed[0], self.actualSpeed[1])
 
     def rightButia(self):
-        self.set_vels(-self.actualSpeed[0], self.actualSpeed[1])
+        self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
 
     def stopButia(self):
         self.set_vels(0, 0)
@@ -599,6 +578,13 @@ class Butia(Plugin):
         if (speed < 0) or (speed > MAX_SPEED):
             raise logoerror(ERROR_SPEED)
         self.actualSpeed = [speed, speed]
+
+    def cc_module_present(self):
+        if self.butia:
+            if 2 == self.butia.getMotorType():
+                self.use_cc = True
+            else:
+                self.use_cc = False
 
     ################################ Sensors calls ################################
 
@@ -631,12 +617,6 @@ class Butia(Plugin):
             return self.butia.getGray(sensorid, boardid)
         else:
             return ERROR
-        
-    def temperatureButia(self, sensorid='0', boardid='0'):
-        if self.butia:
-            return self.butia.getTemperature(sensorid, boardid)
-        else:
-            return ERROR
 
     def resistanceButia(self, sensorid='0', boardid='0'):
         if self.butia:
@@ -665,8 +645,7 @@ class Butia(Plugin):
     def pinmodeButia(self, pin, mode):
         if self.butia:
             pin = int(pin)
-            pin = pin - 1
-            if (pin < 0) or (pin > 7):
+            if (pin < 1) or (pin > 8):
                 raise logoerror(ERROR_PIN_NUMBER)
             else:
                 if mode == _('INPUT'):
@@ -695,8 +674,7 @@ class Butia(Plugin):
     def setpinButia(self, pin, value):
         if self.butia:
             pin = int(pin)
-            pin = pin - 1
-            if (pin < 0) or (pin > 7):
+            if (pin < 1) or (pin > 8):
                 raise logoerror(ERROR_PIN_NUMBER)
             else:
                 if self.hack_states[pin] == 1:
@@ -713,8 +691,7 @@ class Butia(Plugin):
     def getpinButia(self, pin):
         if self.butia:
             pin = int(pin)
-            pin = pin - 1
-            if (pin < 0) or (pin > 7):
+            if (pin < 1) or (pin > 8):
                 raise logoerror(ERROR_PIN_NUMBER)
             else:
                 if self.hack_states[pin] == 0:
@@ -751,7 +728,7 @@ class Butia(Plugin):
             self.pollthread = threading.Timer(6, self.bobot_poll)
             if self.tw.activity.init_complete:
                 if self.can_refresh:
-                    self.butia.refresh()
+                    #self.butia.refresh()
                     self.pollthread = threading.Timer(3, self.bobot_poll)
                 self.check_for_device_change(False)
             self.pollthread.start()

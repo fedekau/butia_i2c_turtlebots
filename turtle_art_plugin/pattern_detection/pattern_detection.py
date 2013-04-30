@@ -1,24 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 import os.path
-import logging
 
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary
 from TurtleArt.taconstants import MEDIA_SHAPES, NO_IMPORT, SKIN_PATHS, \
     EXPAND_SKIN, BLOCKS_WITH_SKIN
+SKIN_PATHS.append('plugins/pattern_detection/images')
 
 from gettext import gettext as _
 
-plugin_folder = 'pattern_detection'
-SKIN_PATHS.append('plugins/' + plugin_folder + '/images')
-sys.path.insert(0, os.path.abspath('./plugins/' + plugin_folder + '/library'))
-
-import multiPatternDetectionAPI as detectionAPI
-
+from library import patternsAPI
 
 class Pattern_detection(Plugin):
 
@@ -26,7 +20,7 @@ class Pattern_detection(Plugin):
         self._parent = parent
         self.detection = None
         self.isInit = False
-        self.detection = detectionAPI.detection()
+        self.detection = patternsAPI.detection()
 
     def setup(self):
 

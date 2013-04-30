@@ -21,8 +21,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-
 import usb
+from usb.legacy import Device
 
 USB4ALL_VENDOR        = 0x04d8
 USB4ALL_PRODUCT       = 0x000c
@@ -41,9 +41,13 @@ ERROR = -1
 class usb_device():
 
     def __init__(self, dev):
-        self.device = dev
+        self.device = Device(dev)
         self.handle = None
-        self.debug = True
+        self.debug = False
+
+    def _debug(self, message, err=''):
+        if self.debug:
+            print message, err
 
     def open_device(self):
         """
@@ -54,8 +58,7 @@ class usb_device():
             self.handle.setConfiguration(USB4ALL_CONFIGURATION)
             self.handle.claimInterface(USB4ALL_INTERFACE)
         except usb.USBError, err:
-            if self.debug:
-                print err
+            self._debug('ERROR:com_usb:open_device', err)
             self.handle = None
             raise
         return self.handle
@@ -64,15 +67,13 @@ class usb_device():
         """
         Close the comunication with the baseboard
         """
-        try:
-            if self.handle:
+        if self.handle:
+            try:
                 self.handle.releaseInterface()
-        except Exception, err:
-            if self.debug:
-                print err
-            raise
-        self.handle = None
-        self.device = None
+            except Exception, err:
+                self._debug('ERROR:com_usb:close_device', err)
+            self.handle = None
+            self.device = None
 
     def read(self, length):
         """
@@ -81,8 +82,7 @@ class usb_device():
         try:
             return self.handle.bulkRead(ADMIN_MODULE_OUT_ENDPOINT, length, TIMEOUT)
         except Exception, err:
-            if self.debug:
-                print 'Exception in read usb', err
+            self._debug('ERROR:com_usb:read', err)
             raise
  
     def write(self, data):
@@ -92,9 +92,19 @@ class usb_device():
         try:
             return self.handle.bulkWrite(ADMIN_MODULE_IN_ENDPOINT, data, TIMEOUT)
         except Exception, err:
-            if self.debug:
-                print 'Exception in write usb', err
+            self._debug('ERROR:com_usb:write', err)
             raise
+
+    def get_address(self):
+        """
+        Get unique address for the usb
+        """
+        address = ERROR
+        try:
+            address = self.device.dev.address
+        except Exception, err:
+            self._debug('ERROR:com_usb:get_address', err)
+        return address
 
     def get_info(self):
         """
@@ -106,8 +116,7 @@ class usb_device():
             sn = self.handle.getString(3, 255)
             return [names, copy, sn]
         except Exception, err:
-            if self.debug:
-                print 'Exception in get_info', err
+            self._debug('ERROR:com_usb:get_info', err)
             raise
 
 def find():
@@ -115,13 +124,7 @@ def find():
     List all busses and returns a list of baseboards detected
     """
     l = []
-    try:
-        for bus in usb.busses():
-            for dev in bus.devices:
-                if dev.idVendor == USB4ALL_VENDOR and dev.idProduct == USB4ALL_PRODUCT:
-                    l.append(usb_device(dev))
-    except Exception, err:
-        if self.debug:
-            print 'find gives the error:', err
+    for b in usb.core.find(find_all=True, idVendor=USB4ALL_VENDOR, idProduct=USB4ALL_PRODUCT):
+        l.append(usb_device(b))
     return l
 

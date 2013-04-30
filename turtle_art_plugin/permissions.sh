@@ -26,10 +26,7 @@ if [ "`id -u`" != "0" ] ; then
 fi 
 
 if [ -e /etc/group ] ; then 
-    # check if not exist lego group (create it if not...)
-    if [ "x`cat /etc/group | grep ^robots:`" = "x" ] ; then 
-         addgroup --system robots
-    fi
+    addgroup --system robots
     lusers=`cat /etc/passwd | grep "1[0-9]\{3\}" | sed "s/:.\+//"`
     echo "##########################################"
     echo "######### INSTALL PERMISSIONS  ###########"
@@ -37,8 +34,8 @@ if [ -e /etc/group ] ; then
     echo ""
     echo "This part set what users are in group 'robots'"
     echo "the group 'robots' allow users to use the robots: lego nxt,"
-    echo "lego wedo and butia"
-    echo "this script has detect the follow users in this machine:"
+    echo "lego wedo and butia."
+    echo "This script has detect the follow users in this machine:"
     echo "$lusers"
     echo ""
     echo "if this is correct just press ENTER"
@@ -50,9 +47,9 @@ if [ -e /etc/group ] ; then
     fi
     echo $lusers
     for i in $lusers ; do
-	adduser $i robots
+	    adduser $i robots
     done
-
+    udevadm control --reload-rules
 fi ;
 	
 

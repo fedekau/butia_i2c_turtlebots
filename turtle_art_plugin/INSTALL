@@ -69,8 +69,8 @@ Makefile suport the follow parameters:
 For more info contact "butia@fing.edu.uy"
 To submit a bug send a email whit subject: "BUG: $(SIMPLE_DESCRIPTION)"
 to email butia@fing.edu.uy, dont forget to include extender and detailed
-information in the body, sow we can actualy reproduce the bug!
-homepague: http://www.fing.edu.uy/inco/proyectos/butia
-wiki: http://www.fing.edu.uy/inco/proyectos/butia/mediawiki
+information in the body, to we can reproduce the bug!
+Homepage: http://www.fing.edu.uy/inco/proyectos/butia
+wiki: http://www.fing.edu.uy/inco/proyectos/butia/wiki
 
 

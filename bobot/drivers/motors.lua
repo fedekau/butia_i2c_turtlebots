@@ -1,5 +1,6 @@
 local device = _G
 local RD_VERSION=string.char(0x00)
+local TYPE=string.char(0x04)
 local SET_VEL_2MTR= 0x01 -- dos motores
 local SET_VEL_MTR = 0x02 -- un motor con vel y sentido
 local TEST_MOTORS = 0x03
@@ -14,6 +15,16 @@ api.getVersion.call = function ()
     if not version_response or #version_response~=3 then return -1 end
     local raw_val = (string.byte(version_response,2) or 0) + (string.byte(version_response,3) or 0)* 256
     return raw_val
+end
+
+api.getType = {}
+api.getType.parameters = {} -- no input parameters
+api.getType.returns = {[1]={rname="motorType", rtype="int"}}
+api.getType.call = function ()
+	device:send(TYPE) -- operation code 4 = get type motor connected
+    local response = device:read(2) -- 2 bytes to read (opcode, data)
+    if not response or #response~=2 then return -1 end
+    return (string.byte(response,2) or 0)
 end
 
 api.setvelmtr = {}

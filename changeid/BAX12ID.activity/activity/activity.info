@@ -1,5 +1,5 @@
 [Activity]
-name = Butia AX-12 ID
+name = Butia AX12 ID
 bundle_id = uy.edu.fing.butiaax12id
 exec = sugar-activity ButiaAX12ID.ButiaAX12ID
 icon = BAX12ID

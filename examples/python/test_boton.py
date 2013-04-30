@@ -1,12 +1,18 @@
-import butiaAPI
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Test button
+
+import sys
+sys.path.append('../../pybot')
+import pybot_client
 import time
 
-
-butiabot = butiaAPI.robot()
-modules = butiabot.get_modules_list()
-
+butia = pybot_client.robot()
+modules = butia.getModulesList()
 if modules == []:
     print 'No modules detected'
+else:
+    print modules
 
 number = 0
 for s in modules:
@@ -17,7 +23,7 @@ number = int(number)
 if number > 0:
     error = False
     while not error:
-        val = butiabot.getButton(number)
+        val = butia.getButton(number)
         if val == -1:
             error = True
         else:
@@ -26,4 +32,4 @@ if number > 0:
 else:
     print 'No button sensor was found'
 
-butiabot.closeService()
+butia.close()

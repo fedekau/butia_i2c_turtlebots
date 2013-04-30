@@ -1,8 +1,14 @@
-import butiaAPI
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Seguidor de linea
+
+import sys
+sys.path.append('../../pybot')
+import pybot_client
 import time
 
 #definicion de constantes
-VAL_LIMITE = 160 #valor limite para diferenciar entre un negro y un blanco
+VAL_LIMITE = 25000 #valor limite para diferenciar entre un negro y un blanco
 VENTANA = 10 #cuanto tiene que contar antes de girar hacia el otro lado
 INCSPEED = 30 #cuanto tiene que contar antes de aumentar la velocidad
 GIROIZQ = 0
@@ -23,9 +29,8 @@ BLANCO = 0
 NEGRO = 65536
 ERROR = -1
 
-butiabot = butiaAPI.robot()
-modules = butiabot.get_modules_list()
-
+butia = pybot_client.robot()
+modules = butia.getModulesList()
 if modules == []:
     print 'No modules detected'
 else:
@@ -38,12 +43,12 @@ for s in modules:
 number = int(number)
 
 print raw_input("Calibrando blanco, enter para continuar ")
-val = butiabot.getGray(number)
+val = butia.getGray(number)
 if not(val == ERROR):
     BLANCO = val
 
 print raw_input("Calibrando negro, enter para continuar ")
-val = butiabot.getGray(number)
+val = butia.getGray(number)
 if not(val == ERROR):
     NEGRO = val
 
@@ -53,7 +58,7 @@ print "Limit value: " + str(VAL_LIMITE)
 print raw_input("Enter para continuar...")
 
 while True:
-    val = butiabot.getGray(number) #leo el valor del sensor
+    val = butia.getGray(number) #leo el valor del sensor
     print val
     
     if val == ERROR:
@@ -65,12 +70,12 @@ while True:
         print aumentVel
         if aumentVel <= INCSPEED and estado != AVANLEN:        
             print "avanzo vel 800"
-            butiabot.set2MotorSpeed(0, 400, 0, 400)
+            butia.set2MotorSpeed(0, 400, 0, 400)
             estado = AVANLEN
         else:
             if aumentVel > INCSPEED and estado != AVANRAP:        
                 print "avanzo vel 800"
-                butiabot.set2MotorSpeed(0, 800, 0, 800)
+                butia.set2MotorSpeed(0, 800, 0, 800)
                 estado = AVANRAP
     else:
         aumentVel = 0 #reseteo la variable que controla la velocidad
@@ -81,12 +86,12 @@ while True:
             print "searching black line..."
             if lastFind == 0 and estado != GIRODER:
                 print "girando derecha"
-                butiabot.set2MotorSpeed(1, 300, 0, 300) #giro hacia la derecha
+                butia.set2MotorSpeed(1, 300, 0, 300) #giro hacia la derecha
                 estado = GIRODER
             else:
                 if lastFind == 1 and estado != GIROIZQ:
                     print "girando izquierda"
-                    butiabot.set2MotorSpeed(0, 300, 1, 300) #giro hacia la izquierda 
+                    butia.set2MotorSpeed(0, 300, 1, 300) #giro hacia la izquierda 
                     estado = GIROIZQ
             cont = cont + 1
             if cont > factor*VENTANA:
@@ -94,7 +99,7 @@ while True:
                 cont = 0
                 factor = factor*2
             print cont
-            val = butiabot.getGray(number) #leo el valor del sensor
+            val = butia.getGray(number) #leo el valor del sensor
             print val
             if val == ERROR:
                 val = VAL_LIMITE - 10        

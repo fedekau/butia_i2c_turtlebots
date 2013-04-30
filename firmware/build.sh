@@ -2,21 +2,20 @@
 
 CURRDIR=`pwd`
 
-rm -rf tmp
+rm -rf /tmp/staging
 rm -rf *.xo
-mkdir tmp
+mkdir /tmp/staging
 
-cp -Lr ButiaFirmware.activity -t tmp
+cp -Lr ButiaFirmware.activity -t /tmp/staging
 
-cd tmp/ButiaFirmware.activity
+cd /tmp/staging/ButiaFirmware.activity
+rm -rf locale
+git init
+git add *
+git commit -m 'all files'
 python setup.py build
+python setup.py dist_xo
 
 cd $CURRDIR
-cd tmp
-
-#a la antigua
-zip -r ButiaFirmware-3.xo ButiaFirmware.activity
-
-cd $CURRDIR
-mv tmp/*.xo .
+mv /tmp/staging/ButiaFirmware.activity/dist/*.xo .
 

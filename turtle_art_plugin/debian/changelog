@@ -1,3 +1,26 @@
+turtlebots (20-r0) unstable; urgency=low
+
+  * core: +based on TurtleBlocks v174+
+  * core: +compile package after install
+  * core: /udev rules level 60
+  * butia: /join usb4butia and pythonAPI
+  * butia: +add power manager behavior
+  * pybot: /uniformize functions call
+  * pybot: /getVolt Butia returns the voltage
+  * pybot: +add ax driver
+  * pybot: /fix some drivers calls
+  * pybot: +add sendPacket to ax driver
+  * pybot: /improve debug function
+  * pybot: /change drivers system
+  * pybot: +add basic chotox functionally
+  * pybot: +add basic describe
+  * pybot: /improve refresh function
+  * pybot: +validate open device
+  * nxt: /update nxt commit
+  * +new translations
+
+ -- Alan Aguiar <alanjas@hotmail.com>  Mon, 22 Apr 2013 02:05:54 -0300
+
 turtlebots (19-r0) unstable; urgency=low
 
   * core: +based on TurtleBlocks v173

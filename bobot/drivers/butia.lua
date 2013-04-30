@@ -3,10 +3,10 @@ local RD_VERSION = string.char(0x02) -- lee la versión del firmware de la placa
 local GET_VOLT = string.char(0x03) -- obtiene el voltage de la batería (Igual para 1.0 y 2.0)
 
 api={}
-api.read_ver = {}
-api.read_ver.parameters = {}
-api.read_ver.returns = {[1]={rname="data", rtype="string"}}
-api.read_ver.call = function (data)
+api.getVersion = {}
+api.getVersion.parameters = {}
+api.getVersion.returns = {[1]={rname="data", rtype="string"}}
+api.getVersion.call = function (data)
 	device:send(RD_VERSION)
     local devolver = -1
 	local ret = device:read(2)
@@ -17,15 +17,18 @@ api.read_ver.call = function (data)
 	return devolver	
 end
 
-api.get_volt = {}
-api.get_volt.parameters = {} -- no se envian parámetros
-api.get_volt.returns = {[1]={rname="volts", rtype="string"}} --nos devuelve el voltaje de las baterías
-api.get_volt.call = function ()
+api.getVolt = {}
+api.getVolt.parameters = {} -- no se envian parámetros
+api.getVolt.returns = {[1]={rname="volts", rtype="string"}} --nos devuelve el voltaje de las baterías
+api.getVolt.call = function ()
 	device:send(GET_VOLT) --envío el código de operación
 	local data_in = device:read(2) --leo 2 bytes, primero el código de operación y segundo el voltaje
-	local voltaje = string.byte(data_in or "00000000" , 2) --leo el segundo byte obtenido que es el que tiene el voltaje
-	--local resultado = string.char(math.floor(voltNum / 10),".",tonumber(volNum) % 256, " volts")	
-	return voltaje
+	local voltaje = string.byte(data_in or "00000000", 2) --leo el segundo byte obtenido que es el que tiene el voltaje
+    if voltaje == 255 then
+        return voltaje
+    else
+        return (voltaje / 10)
+    end
 end
 
 --[[

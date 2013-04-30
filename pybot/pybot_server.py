@@ -88,32 +88,29 @@ class Server():
                                     else:
                                         result = result + '\n' + str(addr[0]) + ', ' + str(addr[1]) 
                             elif r[0] == 'LIST':
-                                l = self.robot.get_modules_list()
+                                l = self.robot.getModulesList()
                                 result = ','.join(l)
                             elif r[0] == 'REFRESH':
                                 self.robot.refresh()
                             elif r[0] == 'BUTIA_COUNT':
-                                result = self.robot.get_butia_count()
+                                result = self.robot.getButiaCount()
                             elif r[0] == 'DESCRIBE':
                                 if len(r) >= 2:
                                     module = r[1]
-                                result = 'Not implemented yet'
+                                    funcs = self.robot._describe(module)
+                                    result = ','.join(funcs)
+                            elif r[0] == 'OPEN':
+                                if len(r) >= 2:
+                                    module = r[1]
+                                    result = self.robot.module_open(module)
+                            elif r[0] == 'CLOSE':
+                                if len(r) >= 2:
+                                    module = r[1]
+                                    result = self.robot.module_close(module)
                             elif r[0] == 'CALL':
                                 if len(r) >= 3:
-                                    board = 0
-                                    number = 0
-                                    mbn = r[1]
-                                    if mbn.count('@') > 0:
-                                        modulename, bn = mbn.split('@')
-                                        board, number = bn.split(':')
-                                    else:
-                                        if mbn.count(':') > 0:
-                                            modulename, number = mbn.split(':')
-                                        else:
-                                            modulename = mbn
-                                    function = r[2]
-                                    par = ' '.join(r[3:])
-                                    result = self.robot.callModule(modulename, board, number, function, par)
+                                    split = self.robot._split_module(r[1])
+                                    result = self.robot.callModule(split[1], split[2], split[0], r[2], r[3:])
 
                         result = str(result)
                         try:
@@ -132,13 +129,8 @@ class Server():
 
 
 if __name__ == "__main__":
-    if 'chotox' in argv:
-        chotox = True
-    else:
-        chotox = False
-    if 'DEBUG' in argv:
-        s = Server(True, chotox)
-    else:
-        s = Server(False, chotox)
+    chotox = 'chotox' in argv
+    debug = 'DEBUG' in argv
+    s = Server(debug, chotox)
     s.init_server()
 

@@ -2,6 +2,7 @@
 RD_VERSION = 0x00
 SET_VEL_2MTR = 0x01
 SET_VEL_MTR = 0x02
+GET_TYPE = 0x04
 
 def getVersion(dev):
     dev.send([RD_VERSION])
@@ -19,4 +20,9 @@ def setvelmtr(dev, motor_id, sentido, vel):
     dev.send(msg)
     raw = dev.read(1)
     return raw[0]
+
+def getType(dev):
+    dev.send([GET_TYPE])
+    raw = dev.read(2)
+    return raw[1]
 

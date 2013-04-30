@@ -1,18 +1,30 @@
 local device = _G
+local RD_VERSION=string.char(0x00)
 local WRITE_INFO = 0x01
 local READ_INFO  = 0x02
 local SEND_RAW = 0x03
 local char000    = string.char(0,0,0)
 local mode='wheel'
 
+api={}
+api.getVersion = {}
+api.getVersion.parameters = {} -- no input parameters
+api.getVersion.returns = {[1]={rname="version", rtype="int"}}
+api.getVersion.call = function ()
+	device:send(RD_VERSION) -- operation code 0 = get version
+    local version_response = device:read(3) -- 3 bytes to read (opcode, data)
+    if not version_response or #version_response~=3 then return -1 end
+    local raw_val = (string.byte(version_response,2) or 0) + (string.byte(version_response,3) or 0)* 256
+    return raw_val
+end
+
 --- Write info
 -- write value in regstart to motor[id]
 -- byte id, byte regstart, int value
-api={}
-api.write_info = {}
-api.write_info.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="regstart", rtype="number", min=0, max=49},[3]={rname="value", rtype="number", min=0, max=65536}}
-api.write_info.returns = {[1]={rname="write_info_return", rtype="number"}} --one return
-api.write_info.call = function (id, regstart, value)
+api.writeInfo = {}
+api.writeInfo.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="regstart", rtype="number", min=0, max=49},[3]={rname="value", rtype="number", min=0, max=65536}}
+api.writeInfo.returns = {[1]={rname="write_info_return", rtype="number"}} --one return
+api.writeInfo.call = function (id, regstart, value)
         id, regstart, value = tonumber(id), tonumber(regstart), tonumber(value)
         local write_info_payload = string.char(WRITE_INFO, id, regstart, math.floor(value / 256), value % 256) 
         device:send(write_info_payload)
@@ -26,10 +38,10 @@ api.write_info.call = function (id, regstart, value)
 -- byte id, byte regstart, byte lenght of regstart
 -- @return current value ar regstart
 -- 0..65535
-api.read_info = {}
-api.read_info.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="regstart", rtype="number", min=0, max=49},[3]={rname="lenght", rtype="number", default=1, min=1, max=2}}
-api.read_info.returns = {[1]={rname="value", rtype="number"}} --one return
-api.read_info.call = function(id, regstart, lenght)
+api.readInfo = {}
+api.readInfo.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="regstart", rtype="number", min=0, max=49},[3]={rname="lenght", rtype="number", default=1, min=1, max=2}}
+api.readInfo.returns = {[1]={rname="value", rtype="number"}} --one return
+api.readInfo.call = function(id, regstart, lenght)
         local lenght = lenght or 1
         local send_response = device:send(string.char(READ_INFO, id, regstart, lenght))
         local value = device:read(3) or char000
@@ -69,13 +81,12 @@ api.sendPacket.call = function (pack, wait_resp)
         return msg
     end
 
-
 --- Set wheel mode.
 --Set the motor to continuous rotation mode.
-api.wheel_mode = {}
-api.wheel_mode.parameters = {[1]={rname="id", rtype="number", min=0, max=255}}
-api.wheel_mode.returns = {}
-api.wheel_mode.call = function (id )
+api.wheelMode = {}
+api.wheelMode.parameters = {[1]={rname="id", rtype="number", min=0, max=255}}
+api.wheelMode.returns = {}
+api.wheelMode.call = function (id )
         id = tonumber(id)
 		local ret = device:send(string.char(WRITE_INFO,id,0x06,0x00,0x00))
         local write_info_response = device:read(1) or string.char(0,0)
@@ -89,10 +100,10 @@ api.wheel_mode.call = function (id )
 -- in the full servo coverage (0 - 300 degrees arc)
 -- @param min the minimum joint angle (defaults to 0)
 -- @param max the maximum joint angle (defaults to 300)
-api.joint_mode = {}
-api.joint_mode.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="minimo", rtype="number", min=0, max=1023},[3]={rname="maximo", rtype="number", min=0, max=1023}}
-api.joint_mode.returns = {}
-api.joint_mode.call = function (id ,minimo, maximo)
+api.jointMode = {}
+api.jointMode.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="minimo", rtype="number", min=0, max=1023},[3]={rname="maximo", rtype="number", min=0, max=1023}}
+api.jointMode.returns = {}
+api.jointMode.call = function (id ,minimo, maximo)
         id = tonumber(id)
         minimo=tonumber(minimo)
         maximo=tonumber(maximo)
@@ -108,10 +119,10 @@ api.joint_mode.call = function (id ,minimo, maximo)
 -- Set the target position for the motor's axle. Only works in
 -- joint mode.
 -- @param value Angle in degrees, in the 0 .. 300deg range.
-api.set_position = {}
-api.set_position.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="pos", rtype="number", min=0, max=1023}}
-api.set_position.returns = {}
-api.set_position.call = function (id, pos )
+api.setPosition = {}
+api.setPosition.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="pos", rtype="number", min=0, max=1023}}
+api.setPosition.returns = {}
+api.setPosition.call = function (id, pos )
         id = tonumber(id)
         pos = tonumber(pos)
         local ret = device:send(string.char(WRITE_INFO,id,0x1E,math.floor(pos / 256),pos % 256))
@@ -123,10 +134,10 @@ api.set_position.call = function (id, pos )
 -- Read the axle position from the motor.
 -- @return The angle in deg. The reading is only valid in the 
 -- 0 .. 300deg range
-api.get_position = {}
-api.get_position.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="pos", rtype="number", min=0, max=1023}}
-api.get_position.returns = {[1]={rname="motor_position", rtype="number"}} --one return
-api.get_position.call = function(id)
+api.getPosition = {}
+api.getPosition.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="pos", rtype="number", min=0, max=1023}}
+api.getPosition.returns = {[1]={rname="motor_position", rtype="number"}} --one return
+api.getPosition.call = function(id)
         local send_response = device:send(string.char(READ_INFO, id ,0x24, 2))
 		local value = device:read(3) or char000
         local h_value = string.byte(value, 2)
@@ -142,10 +153,10 @@ api.get_position.call = function(id)
 -- @param value If motor in joint mode, speed in deg/sec in the 1 .. 684 range 
 -- (0 means max available speed). 
 -- If in wheel mode, as a fraction of max torque (in the -1 .. 1 range).
-api.set_speed = {}
-api.set_speed.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="speed", rtype="number", min=-1, max=684}}
-api.set_speed.returns = {} --no return
-api.set_speed.call = function(id, speed)
+api.setSpeed = {}
+api.setSpeed.parameters = {[1]={rname="id", rtype="number", min=0, max=255},[2]={rname="speed", rtype="number", min=-1, max=684}}
+api.setSpeed.returns = {} --no return
+api.setSpeed.call = function(id, speed)
 	--if mode=='joint' then
 		-- 0 .. 684 deg/sec
 		local vel=math.floor(speed * 1.496)

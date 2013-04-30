@@ -34,84 +34,59 @@ ERROR = -1
 class USB4Butia(ButiaFunctions):
 
     def __init__(self, debug=False, get_modules=True, chotox=False):
-        self._debug = debug
+        self._debug_flag = debug
         self._hotplug = []
         self._openables = []
         self._drivers_loaded = {}
         self._bb = []
         self._b_ports = []
-        self._modules = []
         self._get_all_drivers()
-        self.chotox_mode = chotox
-        self.find_butias(get_modules)
+        self._chotox_mode = chotox
+        self.refresh()
+        if get_modules:
+            self.getModulesList(refresh=False)
 
-    def get_butia_count(self):
+    def _debug(self, message, err=''):
+        if self._debug_flag:
+            print message, err
+
+    def getButiaCount(self):
         """
         Gets the number of boards detected
         """
         return len(self._bb)
 
-    def find_butias(self, get_modules=True):
-        """
-        Search for connected USB4Butia boards and open it
-        """
-        devices_ports = []
-        devices = com_usb.find()
-        for dev in devices:
-            n = dev.device.dev.address
-            devices_ports.append(n)
-            if not(n in self._b_ports):
-                b = Baseboard(dev)
-                try:
-                    b.open_baseboard()
-                    self._bb.append(b)
-                    self._b_ports.append(n)
-                except:
-                    if self._debug:
-                        print 'error open baseboard'
-
-        for b in self._bb:
-            n = b.dev.device.dev.address
-            if not(n in devices_ports):
-                self._bb.remove(b)
-                self._b_ports.remove(n)
-                try:
-                    b.close_baseboard()
-                except:
-                    pass
-
-        if get_modules:
-            self.get_modules_list()
-
-    def get_modules_list(self, normal=True):
+    def getModulesList(self, normal=True, refresh=True):
         """
         Get the list of modules loaded in the board
         """
-        self._modules = []
-        n_boards = self.get_butia_count()
-
-        if self._debug:
-            print '=Listing Devices'
-        if not(self.chotox_mode):
+        if refresh:
+            self.refresh()
+        modules = []
+        n_boards = self.getButiaCount()
+        self._debug('=Listing Devices')
+        if not(self._chotox_mode):
             for i, b in enumerate(self._bb):
                 try:
                     listi = b.get_listi()
                     s = b.get_handler_size()
-                    if self._debug:
-                        print '===board', i
+                    self._debug('===board', i)
                     for m in range(0, s + 1):
-                        module_name = listi[b.get_handler_type(m)]
-                        if n_boards > 1:
-                            complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                        t = b.get_handler_type(m)
+                        if not(t == 255):
+                            module_name = listi[t]
+                            if n_boards > 1:
+                                complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                            else:
+                                complete_name = module_name + ':' +  str(m)
+                            self._debug('=====module ' + module_name + (9 - len(module_name)) * ' ' + complete_name)
                         else:
-                            complete_name = module_name + ':' +  str(m)
-                        if self._debug:
-                            print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
+                            module_name = 'port'
                         if not(module_name == 'port'):
                             if normal:
-                                self._modules.append(complete_name)
+                                modules.append(complete_name)
                             else:
-                                self._modules.append((str(m), module_name, str(i)))
+                                modules.append((str(m), module_name, str(i)))
                             if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
                                 d = Device(b, module_name, m, self._drivers_loaded[module_name])
                                 b.add_device(m, d)
@@ -121,12 +96,10 @@ class USB4Butia(ButiaFunctions):
                             if b.devices.has_key(m):
                                 b.devices.pop(m)
                 except Exception, err:
-                    if self._debug:
-                        print 'error module list', err
+                    self._debug('ERROR:usb4butia:get_modules_list', err)
         else:
             devices = {0:'admin', 2:'button', 4:'grey', 5:'distanc', 7:'pnp', 8:'motors'}
-            if self._debug:
-                print '===board', 0
+            self._debug('===board', 0)
             for i in range(10):
                 if devices.has_key(i):
                     module_name = devices[i]
@@ -134,11 +107,10 @@ class USB4Butia(ButiaFunctions):
                     module_name = 'port'
                 if devices.has_key(i) or (i < 7):
                     complete_name = module_name + ':' +  str(i)
-                    self._modules.append(complete_name)
-                    if self._debug:
-                        print '=====module', module_name, (8 - len(module_name)) * ' ', complete_name
+                    modules.append(complete_name)
+                    self._debug('=====module ' + module_name + (9 - len(module_name)) * ' ' + complete_name)
 
-        return self._modules
+        return modules
 
     def _get_all_drivers(self):
         """
@@ -146,8 +118,7 @@ class USB4Butia(ButiaFunctions):
         """
         # current folder
         path_drivers = os.path.join(os.path.dirname(__file__), 'drivers')
-        if self._debug:
-            print 'Searching drivers in: ', path_drivers
+        self._debug('Searching drivers in: ', str(path_drivers))
         # normal drivers
         tmp = os.listdir(path_drivers)
         tmp.sort()
@@ -170,63 +141,65 @@ class USB4Butia(ButiaFunctions):
         """
         Get a specify driver
         """
-        if self._debug:
-            print 'Loading driver %s...' % driver
+        self._debug('Loading driver %s...' % driver)
         abs_path = os.path.abspath(os.path.join(path, driver + '.py'))
         f = None
         try:
             f = imp.load_source(driver, abs_path)
             self._drivers_loaded[driver] = f
         except:
-            if self._debug:
-                print 'Cannot load %s' % driver, abs_path
+            self._debug('ERROR:usb4butia:_get_driver cannot load %s' % driver, abs_path)
         
-    def callModule(self, modulename, board_number, number, function, params = ''):
+    def callModule(self, modulename, board_number, number, function, params = []):
         """
         Call one function: function for module: modulename in board: board_name
         with handler: number (only if the module is pnp, else, the parameter is
         None) with parameteres: params
         """
-        if number == '':
-            number = 0
-        else:
-            number = int(number)
-        board_number = int(board_number)
         try:
+            number = int(number)
+            board_number = int(board_number)
+            if len(self._bb) < (board_number + 1):
+                return ERROR
             board = self._bb[board_number]
             if board.devices.has_key(number) and (board.devices[number].name == modulename):
                 return board.devices[number].call_function(function, params)
             else:
-                if modulename in self._openables:
-                    if modulename in board.get_openables_loaded():
-                        number = board.get_device_handler(modulename)
-                    else:
-                        board.add_openable_loaded(modulename)
-                        dev = Device(board, modulename, func=self._drivers_loaded[modulename])
-                        number = dev.module_open()
-                        board.add_device(number, dev)
-                    return board.devices[number].call_function(function, params)
-                else:
-                    if self._debug:
-                        print 'no open and no openable'
+                number = self._open_or_validate(modulename, board)
+                if number == ERROR:
                     return ERROR
+                return board.devices[number].call_function(function, params)
         except Exception, err:
-            if self._debug:
-                print 'error call module', err
+            self._debug('ERROR:usb4butia:callModule', err)
             return ERROR
-
-    def reconnect(self):
-        """
-        Not implemented
-        """
-        pass
 
     def refresh(self):
         """
-        Refresh: if no boards presents, search for them.. else, check if 
-        the boards continues present
+        Search for connected USB4Butia boards and open it
         """
-        self.find_butias(False)
+        devices_ports = []
+        devices = com_usb.find()
+        for dev in devices:
+            n = dev.get_address()
+            devices_ports.append(n)
+            if not(n in self._b_ports):
+                b = Baseboard(dev)
+                try:
+                    b.open_baseboard()
+                    self._bb.append(b)
+                    self._b_ports.append(n)
+                except Exception, err:
+                    self._debug('ERROR:usb4butia:refresh', err)
+
+        for b in self._bb:
+            n = b.dev.get_address()
+            if not(n in devices_ports):
+                self._bb.remove(b)
+                self._b_ports.remove(n)
+                try:
+                    b.close_baseboard()
+                except:
+                    pass
 
     def close(self):
         """
@@ -235,9 +208,97 @@ class USB4Butia(ButiaFunctions):
         for b in self._bb:
             try:
                 b.close_baseboard()
-            except:
-                if self._debug:
-                    print 'error in close baseboard'
+            except Exception, err:
+                self._debug('ERROR:usb4butia:close', err)
         self._bb = []
 
- 
+    def module_open(self, mod):
+        """
+        Open the module mod
+        """
+        split = self._split_module(mod)
+        modulename = split[1]
+        b = int(split[2])
+        board = self._bb[b]
+        return self._open_or_validate(modulename, board)
+
+    def _open_or_validate(self, modulename, board):
+        """
+        Open o check if modulename module is open in board: board
+        """
+        if modulename in self._openables:
+            if modulename in board.get_openables_loaded():
+                return board.get_device_handler(modulename)
+            else:
+                dev = Device(board, modulename, func=self._drivers_loaded[modulename])
+                number = dev.module_open()
+                if number == 255:
+                    self._debug('cannot open module', modulename)
+                    return ERROR
+                else:
+                    board.add_openable_loaded(modulename)
+                    board.add_device(number, dev)
+                    return number
+        return ERROR
+
+    def module_close(self, mod):
+        """
+        Close the module mod
+        """
+        split = self._split_module(mod)
+        modulename = split[1]
+        if modulename in self._openables:
+            b = int(split[2])
+            board = self._bb[b]
+            if modulename in board.get_openables_loaded():
+                number = board.get_device_handler(modulename)
+                res = ERROR
+                try:
+                    res = board.devices[number].module_close()
+                    if res == 1:
+                        board.remove_openable_loaded(modulename)
+                except Exception, err:
+                    self._debug('ERROR:usb4butia:module_close', err)
+                return number
+        else:
+            self._debug('cannot close no openable module')
+        return ERROR
+
+    def _split_module(self, mbn):
+        """
+        Split a modulename: module@board:port to (number, modulename, board)
+        """
+        board = '0'
+        number = '0'
+        if mbn.count('@') > 0:
+            modulename, bn = mbn.split('@')
+            if bn.count(':') > 0:
+                board, number = bn.split(':')
+            else:
+                board = bn
+        else:
+            if mbn.count(':') > 0:
+                modulename, number = mbn.split(':')
+            else:
+                modulename = mbn
+        return (number, modulename, board)
+
+    def _describe(self, mod):
+        """
+        Describe the functions of a modulename
+        """
+        split = self._split_module(mod)
+        mod = split[1]
+        funcs = []
+        if self._drivers_loaded.has_key(mod):
+            driver = self._drivers_loaded[mod]
+            a = dir(driver)
+            flag = False
+            for p in a:
+                if p == '__package__':
+                    flag = True
+                if flag:
+                    funcs.append(p)
+            funcs.remove('__package__')
+        return funcs
+

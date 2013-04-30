@@ -4,9 +4,9 @@
     Queries the api to detect the first defined marker
 """
 
-import multiPatternDetectionAPI
+import patternsAPI
 
-det = multiPatternDetectionAPI.detection()
+det = patternsAPI.detection()
 salida = det.arMultiGetIdsMarker()
 markers = salida.split(";")
 print "Markers: " + str(markers)

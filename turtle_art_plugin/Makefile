@@ -22,9 +22,9 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = 1670f1ba9fb4a5a08870ffbabe04f4754cfa8c2f
-EXTRAS_VERSION = bfad9de5b5abf8dfbc01cfa6e4784845b53f49e0
-NXT_VERSION = 633f56d238f9f235646f980c0a7ac190097a8232
+TURTLEBLOCKS_VERSION = 16a73277112613d9de622efb760f70a9864a1875
+EXTRAS_VERSION = 95adcf8dfcc88daa2a17e0610e9a64f2a58f1fc6
+NXT_VERSION = d11dd21d739415c236f94d3138359ac65cb1cd42
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 ARDUINO_VERSION = 48f70626f1425170b469009f9687edfa9fa1a02d
 PYUSB_VERSION = 163c93aaad39a4c0c9c9f21a652557f9fd71f6c9
@@ -136,6 +136,8 @@ mktmpfolder:
 	cp -rL mainline $(BUILDDIR)
 	rm -rf $(BUILDDIR)/.git
 	rm -f  $(BUILDDIR)/.gitignore
+	rm -f  $(BUILDDIR)/turtleblocks
+	rm -f  $(BUILDDIR)/turtleblocks.desktop
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity $(BUILDDIR)/
 	cp -rLf stagin/turtlebots.desktop $(BUILDDIR)/
@@ -143,11 +145,11 @@ mktmpfolder:
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
 	(cd turtle-extras && ./merge.py turtlebots $(BUILDDIR))
-	cp turtle-extras/taextras.py $(BUILDDIR)
+	#cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
 
-apply_hard_plugins: apply_localization walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
+apply_hard_plugins: apply_localization nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
 	cp -rLf butia               $(BUILDDIR)/plugins/
 	cp -rLf sumtia              $(BUILDDIR)/plugins/
 	cp -rLf followme            $(BUILDDIR)/plugins/
@@ -167,8 +169,11 @@ apply_hard_plugins: apply_localization walterGIT nxtGIT wedoGIT arduinoGIT pyusb
 	cp pyusb/ReleaseNotes.rst   $(BUILDDIR)/plugins/butia/pybot/usb
 	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
 	# put pattern_examples into turtle examples folder
-	#mkdir $(BUILDDIR)/samples/pattern_examples
 	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
+	# remove unnecessary .o files of pattern_detection
+	rm $(BUILDDIR)/plugins/pattern_detection/library/patterns/*.o
+	# remove ARTollkit binaries
+	rm -rf $(BUILDDIR)/plugins/pattern_detection/library/ARToolkit
 
 pattern_detection_compile:
 	$(MAKE) -C pattern_detection/library
@@ -185,7 +190,13 @@ apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT apply_localizati
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
-	#dist_xo no work in the tmp folder
+	# dist_xo no work in the tmp folder -> use /tmp
+	# workarround for double locale .mo files
+	(cd $(TMPBUILDDIR) && rm -rf locale)
+	(cd $(TMPBUILDDIR) && git init)
+	(cd $(TMPBUILDDIR) && git add *)
+	(cd $(TMPBUILDDIR) && git commit -m 'all files')
+	(cd $(TMPBUILDDIR) && python setup.py build)
 	(cd $(TMPBUILDDIR) && python setup.py dist_xo)
 	cp $(TMPBUILDDIR)/dist/*.xo .
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) clean-builddir
@@ -245,7 +256,7 @@ install-activity: xo
 
 install-xo: install-activity
 
-install: all install-permissions
+install: all
 	$(MAKE) prefix= install-rules
 	mkdir -p $(DESTDIR)$(activitiesdir)
 	cp -r $(BUILDDIR) $(DESTDIR)$(activitiesdir)/TurtleBots.activity
@@ -257,21 +268,20 @@ install: all install-permissions
 	$(INSTALL_DATA) $(BUILDDIR)/turtlebots.desktop $(DESTDIR)$(datadir)/applications/
 	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
 
-install-permissions:
-	if [ -e $(DESTDIR)/etc/group ] ; then \
-          addgroup --system robots ; \
-          ./permissions.sh ; \
-        fi ;
-
-
 install-strip: install
 	#strip $(DESTDIR) file...
 
 install-rules:
-	mkdir -p $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-lego-nxt.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-usb4all.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
-	$(INSTALL_DATA) rules/70-lego-wedo.rules $(DESTDIR)$(sysconfdir)/udev/rules.d
+	if [ -e $(DESTDIR)/lib/udev/rules.d/60-usb4all.rules ] ; then \
+		echo Rules already exists ; \
+	else \
+		cp `pwd`/rules/60-lego-nxt.rules $(DESTDIR)/lib/udev/rules.d; \
+		cp `pwd`/rules/60-usb4all.rules $(DESTDIR)/lib/udev/rules.d; \
+		cp `pwd`/rules/60-lego-wedo.rules $(DESTDIR)/lib/udev/rules.d; \
+	fi ;
+	if [ -e $(DESTDIR)/etc/group ] ; then \
+		./permissions.sh ; \
+	fi ;
 
 ############### UNInstall procedures #################
 
@@ -285,7 +295,7 @@ uninstall-dev: uninstall-activity
 uninstall-strip: uninstall
 	#unstrip $(DESTDIR) file... :-P
 
-uninstall: uninstall-permissions
+uninstall:
 	$(MAKE) prefix= uninstall-rules
 	rm -rf $(DESTDIR)$(activitiesdir)/TurtleBots.activity
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(activitiesdir)
@@ -295,20 +305,14 @@ uninstall: uninstall-permissions
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/applications
 	rm -f $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/turtlebots.svg
 	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
-	# not more needed - rm -rf $(DESTDIR)$(localedir)/es/LC_MESSAGES/org.laptop.TurtleArtButia.mo
-
-uninstall-permissions:
-	if [ -e $(DESTDIR)/etc/group ] ; then \
-          # remove group (actuali I dont knock how to remove group winout error if not exist) \
-          if (delgroup --system robots) ; then echo group removed... ; fi ; \
-        fi ;
 
 uninstall-rules:
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-nxt.rules
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-usb4all.rules
-	rm -f $(DESTDIR)$(sysconfdir)/udev/rules.d/70-lego-wedo.rules
-	rmdir -p --ignore-fail-on-non-empty $(DESTDIR)$(sysconfdir)/udev/rules.d
-
+	rm -f $(DESTDIR)/lib/udev/rules.d/60-lego-nxt.rules
+	rm -f $(DESTDIR)/lib/udev/rules.d/60-usb4all.rules
+	rm -f $(DESTDIR)/lib/udev/rules.d/60-lego-wedo.rules
+	if [ -e $(DESTDIR)/etc/group ] ; then \
+		if (delgroup --system robots) ; then echo group removed... ; fi ; \
+	fi ;
 
 ####### CLEAN STUFF ######
 

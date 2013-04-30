@@ -25,3 +25,6 @@ import sys
 # Make sure that can import all files
 sys.path.insert(0, os.path.dirname(__file__))
 
+# version = 0.turtlebots_version.secondary_number
+__version__ = '0.19.2'
+
