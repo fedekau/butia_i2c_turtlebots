@@ -142,7 +142,7 @@ class Baseboard():
                 self.listi[m] = name
         except:
             self.listi = {}
-            self._debug('ERROR: listi')
+            self._debug('ERROR:baseboard listi')
 
     def get_device_handler(self, name):
         """
