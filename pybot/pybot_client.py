@@ -94,7 +94,7 @@ class robot(ButiaFunctions):
             return ERROR
         return 0
 
-    def callModule(self, modulename, board_number, number, function, params = []):
+    def callModule(self, modulename, board_number, number, function, params = [], ret_type = int):
         """
         call the module 'modulename'
         """
@@ -103,15 +103,9 @@ class robot(ButiaFunctions):
             msg = msg + ' ' + ' '.join(params)
         ret = self._doCommand(msg)
         try:
-            ret = int(ret)
+            ret = ret_type(ret)
         except:
-            try:
-                ret = float(ret)
-            except:
-                try:
-                    ret = str(ret)
-                except:
-                    ret = ERROR
+            ret = ERROR
         return ret
 
     def closeService(self):

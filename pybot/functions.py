@@ -37,7 +37,7 @@ class ButiaFunctions:
         the return must be exactly of the data parameter
         """
         msg = [str(data)]
-        return self.callModule('lback', str(board), '0', 'send', msg)
+        return self.callModule('lback', str(board), '0', 'send', msg, ret_type=str)
 
     ############################## Movement calls ##############################
 
@@ -176,13 +176,13 @@ class ButiaFunctions:
         """
         Gets the value of the resistance sensor connected in port
         """
-        return self.callModule('res', str(board), str(port), 'getValue')
+        return self.callModule('res', str(board), str(port), 'getValue', ret_type=float)
 
     def getVoltage(self, port, board='0'):
         """
         Gets the value of the voltage sensor connected in port
         """
-        return self.callModule('volt', str(board), str(port), 'getValue')
+        return self.callModule('volt', str(board), str(port), 'getValue', ret_type=float)
 
     def setLed(self, port, on_off, board='0'):
         """
