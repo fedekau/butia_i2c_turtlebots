@@ -1,10 +1,12 @@
 turtlebots (20-r0) unstable; urgency=low
 
-  * core: +based on TurtleBlocks v174+
+  * core: +based on TurtleBlocks v175
   * core: +compile package after install
   * core: /udev rules level 60
   * butia: /join usb4butia and pythonAPI
   * butia: +add power manager behavior
+  * butia: +add getType motors behavior for refresh blocks
+  * butia: /correct right left motors call
   * pybot: /uniformize functions call
   * pybot: /getVolt Butia returns the voltage
   * pybot: +add ax driver
@@ -16,10 +18,20 @@ turtlebots (20-r0) unstable; urgency=low
   * pybot: +add basic describe
   * pybot: /improve refresh function
   * pybot: +validate open device
+  * pybot: /correct lenght on device send
+  * pybot: +add com_usb get_address function
+  * pybot: /improve time of com_usb find function
+  * pybot: /add openable if sucess open
+  * pybot: +add open and close command
+  * pybot: /remove unnecessary calls if handler is -1
+  * pybot: +add getType to motors driver
+  * pybot: /refresh devices when listing
+  * pybot: /fix type of volt and res sensor
   * nxt: /update nxt commit
+  * patterns: /remove unnnecessary libs in compile
   * +new translations
 
- -- Alan Aguiar <alanjas@hotmail.com>  Mon, 22 Apr 2013 02:05:54 -0300
+ -- Alan Aguiar <alanjas@hotmail.com>  Fri, 03 May 2013 14:50:08 -0300
 
 turtlebots (19-r0) unstable; urgency=low
 
