@@ -60,12 +60,12 @@ class USB4Butia(ButiaFunctions):
         """
         Get the list of modules loaded in the board
         """
-        if refresh:
-            self.refresh()
-        modules = []
-        n_boards = self.getButiaCount()
         self._debug('=Listing Devices')
         if not(self._chotox_mode):
+            if refresh:
+                self.refresh()
+            modules = []
+            n_boards = self.getButiaCount()
             for i, b in enumerate(self._bb):
                 try:
                     listi = b.get_listi()
@@ -143,10 +143,8 @@ class USB4Butia(ButiaFunctions):
         """
         self._debug('Loading driver %s...' % driver)
         abs_path = os.path.abspath(os.path.join(path, driver + '.py'))
-        f = None
         try:
-            f = imp.load_source(driver, abs_path)
-            self._drivers_loaded[driver] = f
+            self._drivers_loaded[driver] = imp.load_source(driver, abs_path)
         except:
             self._debug('ERROR:usb4butia:_get_driver cannot load %s' % driver, abs_path)
         

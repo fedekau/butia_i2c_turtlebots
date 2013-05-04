@@ -138,8 +138,7 @@ class Baseboard():
         try:
             s = self.get_user_modules_size()
             for m in range(s):
-                name = self.get_user_module_line(m)
-                self.listi[m] = name
+                self.listi[m] = self.get_user_module_line(m)
         except:
             self.listi = {}
             self._debug('ERROR:baseboard listi')

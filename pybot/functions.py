@@ -126,7 +126,7 @@ class ButiaFunctions:
         """
         Gets the battery level charge
         """
-        return self.callModule('butia', str(board), '0', 'getVolt')
+        return self.callModule('butia', str(board), '0', 'getVolt', ret_type=float)
 
     def getVersion(self, board='0'):
         """
