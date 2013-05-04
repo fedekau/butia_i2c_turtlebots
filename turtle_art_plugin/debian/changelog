@@ -27,11 +27,16 @@ turtlebots (20-r0) unstable; urgency=low
   * pybot: +add getType to motors driver
   * pybot: /refresh devices when listing
   * pybot: /fix type of volt and res sensor
+  * pybot: /battery returns a float again
+  * pybot: /chotox in separate module
+  * pybot: /more function in chotox mode
+  * pybot: +add basic client when no telnet
+  * pybot: +add testMotors function to motors driver
   * nxt: /update nxt commit
   * patterns: /remove unnnecessary libs in compile
   * +new translations
 
- -- Alan Aguiar <alanjas@hotmail.com>  Fri, 03 May 2013 14:50:08 -0300
+ -- Alan Aguiar <alanjas@hotmail.com>  Sat, 04 May 2013 18:11:45 -0300
 
 turtlebots (19-r0) unstable; urgency=low
 
