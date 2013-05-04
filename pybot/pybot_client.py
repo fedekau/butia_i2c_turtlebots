@@ -159,3 +159,14 @@ class robot(ButiaFunctions):
                 modulename = mbn
         return (number, modulename, board)
 
+if __name__ == "__main__":
+    c = robot()
+    run = True
+    while run:
+        m = raw_input("> ")
+        ret = c._doCommand(m)
+        print ret
+        if m == "QUIT":  
+            run = False
+    c.close()
+
