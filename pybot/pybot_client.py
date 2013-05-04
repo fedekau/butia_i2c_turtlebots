@@ -104,6 +104,8 @@ class robot(ButiaFunctions):
         ret = self._doCommand(msg)
         try:
             ret = ret_type(ret)
+            if ret == ERROR:
+                return ERROR
         except:
             ret = ERROR
         return ret
