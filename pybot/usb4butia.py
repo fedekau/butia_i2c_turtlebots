@@ -28,6 +28,7 @@ import com_usb
 from baseboard import Baseboard
 from device import Device
 from functions import ButiaFunctions
+import random
 
 ERROR = -1
 
@@ -54,17 +55,20 @@ class USB4Butia(ButiaFunctions):
         """
         Gets the number of boards detected
         """
-        return len(self._bb)
+        if not(self._chotox_mode):
+            return len(self._bb)
+        else:
+            return 1
 
     def getModulesList(self, normal=True, refresh=True):
         """
         Get the list of modules loaded in the board
         """
         self._debug('=Listing Devices')
+        modules = []
         if not(self._chotox_mode):
             if refresh:
                 self.refresh()
-            modules = []
             n_boards = self.getButiaCount()
             for i, b in enumerate(self._bb):
                 try:
@@ -154,22 +158,36 @@ class USB4Butia(ButiaFunctions):
         with handler: number (only if the module is pnp, else, the parameter is
         None) with parameteres: params
         """
-        try:
-            number = int(number)
-            board_number = int(board_number)
-            if len(self._bb) < (board_number + 1):
-                return ERROR
-            board = self._bb[board_number]
-            if board.devices.has_key(number) and (board.devices[number].name == modulename):
-                return board.devices[number].call_function(function, params)
-            else:
-                number = self._open_or_validate(modulename, board)
-                if number == ERROR:
+        if not(self._chotox_mode):
+            try:
+                number = int(number)
+                board_number = int(board_number)
+                if len(self._bb) < (board_number + 1):
                     return ERROR
-                return board.devices[number].call_function(function, params)
-        except Exception, err:
-            self._debug('ERROR:usb4butia:callModule', err)
-            return ERROR
+                board = self._bb[board_number]
+                if board.devices.has_key(number) and (board.devices[number].name == modulename):
+                    return board.devices[number].call_function(function, params)
+                else:
+                    number = self._open_or_validate(modulename, board)
+                    if number == ERROR:
+                        return ERROR
+                    return board.devices[number].call_function(function, params)
+            except Exception, err:
+                self._debug('ERROR:usb4butia:callModule', err)
+                return ERROR
+        else:
+            print modulename, function
+            if modulename == 'butia' and function == 'getVolt':
+                return 10.5
+            elif modulename == 'button':
+                return random.randrange(0, 2)
+            elif modulename == 'grey' or modulename == 'distanc':
+                return random.randrange(0, 65536)
+            elif modulename == 'motors' and function == 'getType':
+                return 1
+            else:
+                return ERROR
+                
 
     def refresh(self):
         """
