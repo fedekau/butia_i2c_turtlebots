@@ -25,6 +25,7 @@ import sys
 import select
 import socket
 import usb4butia
+import com_chotox
 
 argv = sys.argv[:]
 
@@ -44,7 +45,10 @@ class Server():
         self.socket.listen(MAX_CLIENTS)
         self.clients = {}
         self.chotox_mode = chotox
-        self.robot = usb4butia.USB4Butia(debug=self.debug, chotox=self.chotox_mode)
+        if self.chotox_mode:
+            self.robot = com_chotox.Chotox(debug=self.debug)
+        else:
+            self.robot = usb4butia.USB4Butia(debug=self.debug)
 
     def init_server(self):
 
