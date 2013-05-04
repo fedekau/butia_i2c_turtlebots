@@ -41,7 +41,7 @@ class Chotox(ButiaFunctions):
         self._drivers_loaded = {}
         self._get_all_drivers()
         self.devices = {0:'admin', 2:'button', 4:'grey', 5:'distanc', 7:'pnp'}
-        self._openables_loaded = ['pnp']
+        self._openables_loaded = ['admin', 'pnp']
         if get_modules:
             self.getModulesList(refresh=False)
 
@@ -62,7 +62,7 @@ class Chotox(ButiaFunctions):
         self._debug('=Listing Devices')
         modules = []
         self._debug('===board', 0)
-        for i in range(10):
+        for i in range(12):
             if self.devices.has_key(i):
                 module_name = self.devices[i]
             elif i < 7:
@@ -117,15 +117,26 @@ class Chotox(ButiaFunctions):
         None) with parameteres: params
         """
         self._open_or_validate(modulename, board_number)
-        print modulename, function
+
+        #print modulename, function
+
         if modulename == 'butia' and function == 'getVolt':
             return 10.5
-        elif modulename == 'button':
-            return random.randrange(0, 2)
-        elif modulename == 'grey' or modulename == 'distanc':
-            return random.randrange(0, 65536)
         elif modulename == 'motors' and function == 'getType':
             return 1
+
+        if function == 'getValue':
+            if modulename == 'button':
+                return random.randrange(0, 2)
+            elif modulename == 'grey' or modulename == 'distanc':
+                return random.randrange(0, 65536)
+            else:
+                return ERROR
+        elif function == 'getVersion':
+            if modulename == 'admin':
+                return 6
+            else:
+                return 1
         else:
             return ERROR
 
@@ -178,7 +189,7 @@ class Chotox(ButiaFunctions):
                 number = self._get_handler(modulename)
                 self.devices.pop(number)
                 self._openables_loaded.remove(modulename)
-                return number
+                return 1
         else:
             self._debug('cannot close no openable module')
         return ERROR

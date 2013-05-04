@@ -236,14 +236,13 @@ class USB4Butia(ButiaFunctions):
             board = self._bb[b]
             if modulename in board.get_openables_loaded():
                 number = board.get_device_handler(modulename)
-                res = ERROR
                 try:
                     res = board.devices[number].module_close()
                     if res == 1:
                         board.remove_openable_loaded(modulename)
+                        return res
                 except Exception, err:
                     self._debug('ERROR:usb4butia:module_close', err)
-                return number
         else:
             self._debug('cannot close no openable module')
         return ERROR
