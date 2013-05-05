@@ -188,8 +188,7 @@ class ButiaFunctions:
         """
         Sets on or off the LED connected in port (0 is off, 1 is on)
         """
-        msg = [str(on_off)]
-        return self.callModule('led', str(board), str(port), 'turn', msg)
+        return self.callModule('led', str(board), str(port), 'turn', [str(on_off)])
 
     ################################ Extras ################################
 
@@ -211,6 +210,5 @@ class ButiaFunctions:
         """
         Gets the value of hack pin configured as input. Returns 0 or 1
         """
-        msg = [str(pin)]
-        return self.callModule('hackp', str(board), '0', 'read', msg)
+        return self.callModule('hackp', str(board), '0', 'read', [str(pin)])
 

@@ -44,7 +44,7 @@ class robot(ButiaFunctions):
         self._client = None
         self.reconnect()
        
-    def _doCommand(self, msg):
+    def _doCommand(self, msg, ret_type = str):
         """
         Executes a command in butia.
         @param msg message to be executed
@@ -60,9 +60,16 @@ class robot(ButiaFunctions):
             if hasattr(e, 'errno'):
                 if e.errno == errno.EPIPE:
                     self.reconnect()
+            self._lock.release()
+            return ERROR
+        if ret == '-1' or ret == '':
             ret = ERROR
+        else:
+            try:
+                ret = ret_type(ret)
+            except:
+                ret = ERROR
         self._lock.release()
-        
         return ret
 
     def reconnect(self):
@@ -101,38 +108,27 @@ class robot(ButiaFunctions):
         msg = 'CALL ' + modulename + '@' + str(board_number) + ':' + str(number) + ' ' + function
         if not(params == []):
             msg = msg + ' ' + ' '.join(params)
-        ret = self._doCommand(msg)
-        try:
-            ret = ret_type(ret)
-            if ret == ERROR:
-                return ERROR
-        except:
-            ret = ERROR
-        return ret
+        return self._doCommand(msg, ret_type)
 
     def closeService(self):
         """
         Close bobot service
         """
-        msg = 'QUIT'
-        return self._doCommand(msg)
+        return self._doCommand('QUIT')
 
     def getButiaCount(self):
         """
         Gets the number of boards detected
         """
-        msg = 'BUTIA_COUNT'
-        ret = self._doCommand(msg)
-        return int(ret)
+        return self._doCommand('BUTIA_COUNT', int)
 
     def getModulesList(self, normal=True):
         """
         returns a list of modules
         """
-        msg = 'LIST'
         l = []
-        ret = self._doCommand(msg)
-        if not (ret == '' or ret == ERROR):
+        ret = self._doCommand('LIST')
+        if not(ret == ERROR):
             l = ret.split(',')
         if normal:
             return l
