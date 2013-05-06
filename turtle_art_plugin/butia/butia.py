@@ -97,9 +97,9 @@ class Butia(Plugin):
     def __init__(self, parent):
         self.tw = parent
         power_manager_off(True)
+        self.butia = pybot_client.robot(auto_connect=False)
         self.actualSpeed = [600, 600]
         self.hack_states = [1, 1, 1, 1, 1, 1, 1, 1]
-        self.butia = None
         self.pollthread = None
         self.pollrun = True
         self.bobot = None
@@ -353,9 +353,8 @@ class Butia(Plugin):
     def quit(self):
         self.pollrun = False
         self.pollthread.cancel()
-        if self.butia:
-            self.butia.closeService()
-            self.butia.close()
+        self.butia.closeService()
+        self.butia.close()
         if self.bobot:
             self.bobot.kill()
         power_manager_off(False)
@@ -363,8 +362,7 @@ class Butia(Plugin):
     ################################ Refresh process ################################
 
     def refreshButia(self):
-        if self.butia:
-            self.butia.refresh()
+        self.butia.refresh()
         self.check_for_device_change(True)
 
     def batteryColor(self):
@@ -506,14 +504,8 @@ class Butia(Plugin):
          then it change the color of the blocks corresponding to the device """
         
         old_list_connected_device_module = self.list_connected_device_module[:]
-
-        if self.butia:
-            self.list_connected_device_module = self.butia.getModulesList(False)
-            boards_present = self.butia.getButiaCount()
-        else:
-            self.list_connected_device_module = []
-            boards_present = 0
-
+        self.list_connected_device_module = self.butia.getModulesList(False)
+        boards_present = self.butia.getButiaCount()
         self.cc_module_present()
         self.battery_value = self.batterychargeButia()
         self.battery_color = self.batteryColor()
@@ -543,8 +535,6 @@ class Butia(Plugin):
     ################################ Movement calls ################################
 
     def set_vels(self, left, right):
-        left = int(left)
-        right = int(right)
         if left > 0:
             sentLeft = '0'
         else:
@@ -553,10 +543,21 @@ class Butia(Plugin):
             sentRight = '0'
         else:
             sentRight = '1'
-        if self.butia:
-            self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
+        self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
     def moveButia(self, left, right):
+        try:
+            left = int(left)
+        except:
+            left = ERROR
+        if (left < 0) or (left > MAX_SPEED):
+            raise logoerror(ERROR_SPEED)
+        try:
+            right = int(right)
+        except:
+            right = ERROR
+        if (right < 0) or (right > MAX_SPEED):
+            raise logoerror(ERROR_SPEED)
         self.set_vels(left, right)
 
     def forwardButia(self):
@@ -575,89 +576,71 @@ class Butia(Plugin):
         self.set_vels(0, 0)
 
     def speedButia(self, speed):
+        try:
+            speed = int(speed)
+        except:
+            speed = ERROR
         if (speed < 0) or (speed > MAX_SPEED):
             raise logoerror(ERROR_SPEED)
         self.actualSpeed = [speed, speed]
 
     def cc_module_present(self):
-        if self.butia:
-            if 2 == self.butia.getMotorType():
-                self.use_cc = True
-            else:
-                self.use_cc = False
+        if self.butia.getMotorType() == 2:
+            self.use_cc = True
+        else:
+            self.use_cc = False
 
     ################################ Sensors calls ################################
 
     def batterychargeButia(self):
-        if self.butia:
-            return self.butia.getBatteryCharge()
-        else:
-            return ERROR
+        return self.butia.getBatteryCharge()
 
     def buttonButia(self, sensorid='0', boardid='0'):
-        if self.butia:
-            return self.butia.getButton(sensorid, boardid)
-        else:
-            return ERROR
+        return self.butia.getButton(sensorid, boardid)
 
     def lightButia(self, sensorid='0', boardid='0'):
-        if self.butia:
-            return self.butia.getLight(sensorid, boardid)
-        else:
-            return ERROR
+        return self.butia.getLight(sensorid, boardid)
 
     def distanceButia(self, sensorid='0', boardid='0'):
-        if self.butia:
-            return self.butia.getDistance(sensorid, boardid)
-        else:
-            return ERROR
+        return self.butia.getDistance(sensorid, boardid)
 
     def grayButia(self, sensorid='0', boardid='0'):
-        if self.butia:
-            return self.butia.getGray(sensorid, boardid)
-        else:
-            return ERROR
+        return self.butia.getGray(sensorid, boardid)
 
     def resistanceButia(self, sensorid='0', boardid='0'):
-        if self.butia:
-            return self.butia.getResistance(sensorid, boardid)
-        else:
-            return ERROR
+        return self.butia.getResistance(sensorid, boardid)
 
     def voltageButia(self, sensorid='0', boardid='0'):
-        if self.butia:
-            return self.butia.getVoltage(sensorid, boardid)
-        else:
-            return ERROR
+        return self.butia.getVoltage(sensorid, boardid)
 
     def ledButia(self, value, sensorid='0', boardid='0'):
-        if self.butia:
+        try:
             value = int(value)
-            if (value < 0) or (value > 1):
-                raise logoerror(ERROR_PIN_VALUE)
-            else:
-                self.butia.setLed(sensorid, value, boardid)
+        except:
+            value = ERROR
+        if (value < 0) or (value > 1):
+            raise logoerror(ERROR_PIN_VALUE)
         else:
-            return ERROR
+            self.butia.setLed(sensorid, value, boardid)
 
     ################################ Extras ################################
 
     def pinmodeButia(self, pin, mode):
-        if self.butia:
+        try:
             pin = int(pin)
-            if (pin < 1) or (pin > 8):
-                raise logoerror(ERROR_PIN_NUMBER)
-            else:
-                if mode == _('INPUT'):
-                    self.hack_states[pin] = 1
-                    self.butia.modeHack(pin, 1)
-                elif mode == _('OUTPUT'):
-                    self.hack_states[pin] = 0
-                    self.butia.modeHack(pin, 0)
-                else:
-                    raise logoerror(ERROR_PIN_MODE)
+        except:
+            pin = ERROR
+        if (pin < 1) or (pin > 8):
+            raise logoerror(ERROR_PIN_NUMBER)
         else:
-            return ERROR
+            if mode == _('INPUT'):
+                self.hack_states[pin] = 1
+                self.butia.modeHack(pin, 1)
+            elif mode == _('OUTPUT'):
+                self.hack_states[pin] = 0
+                self.butia.modeHack(pin, 0)
+            else:
+                raise logoerror(ERROR_PIN_MODE)
 
     def highButia(self):
         return 1
@@ -672,54 +655,53 @@ class Butia(Plugin):
         return _('OUTPUT')
 
     def setpinButia(self, pin, value):
-        if self.butia:
+        try:
             pin = int(pin)
-            if (pin < 1) or (pin > 8):
-                raise logoerror(ERROR_PIN_NUMBER)
-            else:
-                if self.hack_states[pin] == 1:
-                    raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.'))
-                else:
-                    value = int(value)
-                    if (value < 0) or (value > 1):
-                        raise logoerror(ERROR_PIN_VALUE)
-                    else:
-                        self.butia.setHack(pin, value)
+        except:
+            pin = ERROR
+        if (pin < 1) or (pin > 8):
+            raise logoerror(ERROR_PIN_NUMBER)
         else:
-            return ERROR
+            if self.hack_states[pin] == 1:
+                raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.'))
+            else:
+                try:
+                    value = int(value)
+                except:
+                    value = ERROR
+                if (value < 0) or (value > 1):
+                    raise logoerror(ERROR_PIN_VALUE)
+                else:
+                    self.butia.setHack(pin, value)
 
     def getpinButia(self, pin):
-        if self.butia:
+        try:
             pin = int(pin)
-            if (pin < 1) or (pin > 8):
-                raise logoerror(ERROR_PIN_NUMBER)
-            else:
-                if self.hack_states[pin] == 0:
-                    raise logoerror(_('ERROR: The pin %s must be in INPUT mode.'))
-                else:
-                    return self.butia.getHack(pin)
+        except:
+            pin = ERROR
+        if (pin < 1) or (pin > 8):
+            raise logoerror(ERROR_PIN_NUMBER)
         else:
-            return ERROR
+            if self.hack_states[pin] == 0:
+                raise logoerror(_('ERROR: The pin %s must be in INPUT mode.'))
+            else:
+                return self.butia.getHack(pin)
 
     ################################ pybot and thread ################################
 
     def pybot_launch(self):
-
-        output = commands.getoutput('ps -ax | grep python')
-        if 'pybot_server.py' in output:
-            debug_output('Pybot is alive!')
-        else:
+        res = self.butia.reconnect()
+        if res == ERROR:
             try:
-                debug_output('creating Pybot server')
+                debug_output('Creating Pybot server')
                 self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./plugins/butia/pybot')
+                # Sure that bobot is running
+                time.sleep(1)
+                res = self.butia.reconnect()
             except:
                 debug_output('ERROR creating Pybot server')
-
-        # Sure that bobot is running
-        time.sleep(2)
-
-        self.butia = pybot_client.robot()
-
+        else:
+            debug_output('A bot is alive!')
         self.pollthread=threading.Timer(2, self.bobot_poll)
         self.pollthread.start()
 
@@ -728,7 +710,6 @@ class Butia(Plugin):
             self.pollthread = threading.Timer(6, self.bobot_poll)
             if self.tw.activity.init_complete:
                 if self.can_refresh:
-                    #self.butia.refresh()
                     self.pollthread = threading.Timer(3, self.bobot_poll)
                 self.check_for_device_change(False)
             self.pollthread.start()
