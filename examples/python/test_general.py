@@ -20,7 +20,7 @@ print butia.getFirmwareVersion()
 
 ret = butia.loopBack("hola")
 print 'I send: hola'
-print 'and get: ' + ret
+print 'and get: ' + str(ret)
 
 # BOTH MOTORS
 

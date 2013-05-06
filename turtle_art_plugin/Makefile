@@ -170,6 +170,8 @@ apply_hard_plugins: apply_localization nxtGIT wedoGIT arduinoGIT pyusbGIT patter
 	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
 	# put pattern_examples into turtle examples folder
 	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
+	# put butia examples into turtle examples folder
+	cp -rf ../examples/turtle   $(BUILDDIR)/samples/butia
 	# remove unnecessary .o files of pattern_detection
 	rm $(BUILDDIR)/plugins/pattern_detection/library/patterns/*.o
 	# remove ARTollkit binaries
