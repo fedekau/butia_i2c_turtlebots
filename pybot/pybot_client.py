@@ -34,7 +34,7 @@ PYBOT_PORT = 2009
 
 class robot(ButiaFunctions):
     
-    def __init__(self, host=PYBOT_HOST, port=PYBOT_PORT):
+    def __init__(self, host=PYBOT_HOST, port=PYBOT_PORT, auto_connect=True):
         """
         init the robot class
         """
@@ -42,7 +42,8 @@ class robot(ButiaFunctions):
         self._host = host
         self._port = port
         self._client = None
-        self.reconnect()
+        if auto_connect:
+            self.reconnect()
        
     def _doCommand(self, msg, ret_type = str):
         """
