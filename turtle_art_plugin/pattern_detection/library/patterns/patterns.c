@@ -19,7 +19,7 @@ ObjectData_T    *object;
 int             objectnum;
 
 int xsize, ysize;
-int	thresh = 150;
+int	thresh = 100;
 int count = 0;
 
 /*Camera refresh times  */
