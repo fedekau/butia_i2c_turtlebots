@@ -12,8 +12,28 @@ al correr levanta dos hilos uno para el manejo del butia (ClaseMain) y otra para
 
 """
 
-from pybot import pybot_client
-from library import patternsAPI
+#from pybot import pybot_client
+
+import sys
+import os.path
+
+if os.path.exists('/home/olpc/Activities/TurtleBots.activity/plugins/butia/pybot/usb4butia.py'):
+    sys.path.append("/home/olpc/Activities/TurtleBots.activity/plugins/butia")
+
+
+
+if os.path.exists("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library/patternsAPI.py"):
+    sys.path.append("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection")
+    from library import patternsAPI
+elif os.path.exists("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library/multiPatternDetectionAPI.py"): #para V19  y anteriores :S
+    sys.path.append("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library")
+    import multiPatternDetectionAPI as patternsAPI
+else:
+    from library import patternsAPI
+
+
+from pybot import usb4butia
+#from pybot import pybot_client
 import threading
 import time
 
@@ -43,13 +63,16 @@ class ClaseMain(threading.Thread):
         self.detect = patternsAPI.detection()
         self.detect.init()
         self.data = data
-        self.butia = pybot_client.robot()
+        #self.butia = pybot_client.robot()
+        self.butia = usb4butia.USB4Butia()
         self.idIzq = "4"
         self.idDer = "2"
-        self.negroDer = 40000
-        self.negroIzq = 30000
+        self.negroDer = 30000
+        self.negroIzq = 35000
         self.distMinimalSignal = 500
+        self.distSignalLeft = 500
         print str(self.detect.arMultiGetIdsMarker().split(";"))
+        #print str(self.butia.getModulesList())
         #self.detect.isMarkerPresent("Right")
 
 
@@ -95,7 +118,7 @@ class ClaseMain(threading.Thread):
                 #rutina que mira las marcas
                 self.buscar_senial()
                 #rutina de seguidor de lineas
-                self.butia.set2MotorSpeed("0","600", "0", "600")
+                self.butia.set2MotorSpeed("0","300", "0", "300")
                 if self.butia.getGray(self.idDer) > self.negroDer: #si derecha negro
                     self.corregir_izquierda()
                     print "corrijo izq"
@@ -123,13 +146,12 @@ class ClaseMain(threading.Thread):
 
     def buscar_senial(self):
         print "entro"
-        if self.detect.isMarkerPresent("Left") and self.detect.getMarkerTrigDist("Left") < self.distMinimalSignal:
-            print "estoy cerca de la senia iquierda"
-            self.girar_iquierda()
-        elif self.detect.isMarkerPresent("Left") and self.detect.getMarkerTrigDist("Left") < self.distMinimalSignal:
-            print "estoy cerca de la senia iquierda"
-            self.girar_iquierda()
-
+        if self.detect.isMarkerPresent("Right") and self.detect.getMarkerTrigDist("Right") < self.distSignalLeft:
+            print "estoy cerca de la senia derecha"
+            self.girar_derecha()
+        elif self.detect.isMarkerPresent("Left") and self.detect.getMarkerTrigDist("Left") < self.distSignalLeft:
+            print "estoy cerca de la senia izquierda"
+            self.girar_izquierda()
         elif self.detect.isMarkerPresent("Yield") and self.detect.getMarkerTrigDist("Yield") < self.distMinimalSignal:
             print "paro los X segundos"
             self.stopNgo()
@@ -160,22 +182,22 @@ class ClaseMain(threading.Thread):
         # giro hacia la izquieda hasta que el grisizquierda este en negro y el
         #gris izquierda en blanco
         salir = False
-        while self.butiabot.getGray(self.idDer) < self.negroDer and not salir :#and self.butiabot.getGray(self.idIzq)  > self.negroIzq and not salir:
+        while self.butia.getGray(self.idDer) < self.negroDer and not salir :#and self.butia.getGray(self.idIzq)  > self.negroIzq and not salir:
             cod = self.data.get_codigo()
             if cod == "S":
                 salir = True
-            self.butiabot.set2MotorSpeed("1", "400", "0", "400") #giro hacia la izquierda
-        self.butiabot.set2MotorSpeed("0", "0", "0", "0")
+            self.butia.set2MotorSpeed("1", "400", "0", "400") #giro hacia la izquierda
+        self.butia.set2MotorSpeed("0", "0", "0", "0")
 
     def girar_izquierda(self):
        salir = False
        print "encontre negro"
-       while self.butiabot.getGray(self.idIzq) < self.negroIzq and not salir :#and self.butiabot.getGray(self.idIzq)  > self.negroIzq and not salir:
+       while self.butia.getGray(self.idIzq) < self.negroIzq and not salir :#and self.butia.getGray(self.idIzq)  > self.negroIzq and not salir:
            cod = self.data.get_codigo()
            if cod == "S":
                salir = True
-           self.butiabot.set2MotorSpeed("0", "400", "1", "400") #giro hacia la izquierda
-       self.butiabot.set2MotorSpeed("0", "0", "0", "0")
+           self.butia.set2MotorSpeed("0", "400", "1", "400") #giro hacia la izquierda
+       self.butia.set2MotorSpeed("0", "0", "0", "0")
 
 
 
@@ -183,7 +205,7 @@ class ClaseMain(threading.Thread):
         # busco linea a la derecha
         salir = False
         #self.butia.set2MotorSpeed("0","0", "0", "0")
-        while self.butia.getGray(self.idDer)  > self.negroDer and not salir:
+        while self.butia.getGray(self.idDer)  < self.negroDer and not salir:
             cod = self.data.get_codigo()
             if cod =="S":
                 salir = True
@@ -194,7 +216,7 @@ class ClaseMain(threading.Thread):
         # busco linea a la izquierda
         #self.butia.set2MotorSpeed("0","0", "0", "0")
         salir = False
-        while self.butia.getGray(self.idIzq) > self.negroIzq and not salir:
+        while self.butia.getGray(self.idIzq) < self.negroIzq and not salir:
             cod = self.data.get_codigo()
             if cod =="S":
                 salir = True
