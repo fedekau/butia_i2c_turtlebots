@@ -67,7 +67,7 @@ class usb_device():
         Close the comunication with the baseboard
         """
         try:
-            util.release_interface(self.dev, USB4ALL_INTERFACE)
+            usb.util.release_interface(self.dev, USB4ALL_INTERFACE)
         except Exception, err:
             self._debug('ERROR:com_usb:close_device', err)
         self.dev = None
@@ -108,9 +108,9 @@ class usb_device():
         Get the device info such as manufacturer, etc
         """
         try:
-            names = util.get_string(self.dev, 255, 1, None).encode('ascii')
-            copy = util.get_string(self.dev, 255, 2, None).encode('ascii')
-            sn = util.get_string(self.dev, 255, 3, None).encode('ascii')
+            names = usb.util.get_string(self.dev, 255, 1, None).encode('ascii')
+            copy = usb.util.get_string(self.dev, 255, 2, None).encode('ascii')
+            sn = usb.util.get_string(self.dev, 255, 3, None).encode('ascii')
             return [names, copy, sn]
         except Exception, err:
             self._debug('ERROR:com_usb:get_info', err)
