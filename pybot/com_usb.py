@@ -43,7 +43,7 @@ class usb_device():
 
     def __init__(self, dev):
         self.dev = dev
-        self.debug = True
+        self.debug = False
 
     def _debug(self, message, err=''):
         if self.debug:
@@ -54,7 +54,7 @@ class usb_device():
         Open the baseboard, configure the interface
         """
         try:
-            if self.dev.is_kernel_driver_active(USB4ALL_INTERFACE) is True:
+            if self.dev.is_kernel_driver_active(USB4ALL_INTERFACE):
                 self.dev.detach_kernel_driver(USB4ALL_INTERFACE)
             self.dev.set_configuration(USB4ALL_CONFIGURATION)
             usb.util.claim_interface(self.dev, USB4ALL_INTERFACE)
