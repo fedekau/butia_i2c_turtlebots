@@ -663,7 +663,7 @@ class Butia(Plugin):
             raise logoerror(ERROR_PIN_NUMBER)
         else:
             if self.hack_states[pin] == 1:
-                raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.'))
+                raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.') % pin)
             else:
                 try:
                     value = int(value)
@@ -683,7 +683,7 @@ class Butia(Plugin):
             raise logoerror(ERROR_PIN_NUMBER)
         else:
             if self.hack_states[pin] == 0:
-                raise logoerror(_('ERROR: The pin %s must be in INPUT mode.'))
+                raise logoerror(_('ERROR: The pin %s must be in INPUT mode.') % pin)
             else:
                 return self.butia.getHack(pin)
 
