@@ -22,7 +22,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import usb
-from usb.legacy import Device
+import usb.backend.libusb1 as libusb1
+back_usb = libusb1.get_backend()
 
 USB4ALL_VENDOR        = 0x04d8
 USB4ALL_PRODUCT       = 0x000c
@@ -41,8 +42,7 @@ ERROR = -1
 class usb_device():
 
     def __init__(self, dev):
-        self.device = Device(dev)
-        self.handle = None
+        self.dev = dev
         self.debug = False
 
     def _debug(self, message, err=''):
@@ -54,33 +54,30 @@ class usb_device():
         Open the baseboard, configure the interface
         """
         try:
-            self.handle = self.device.open()
-            self.handle.setConfiguration(USB4ALL_CONFIGURATION)
-            self.handle.claimInterface(USB4ALL_INTERFACE)
+            if self.dev.is_kernel_driver_active(USB4ALL_INTERFACE):
+                self.dev.detach_kernel_driver(USB4ALL_INTERFACE)
+            self.dev.set_configuration(USB4ALL_CONFIGURATION)
+            usb.util.claim_interface(self.dev, USB4ALL_INTERFACE)
         except usb.USBError, err:
             self._debug('ERROR:com_usb:open_device', err)
-            self.handle = None
             raise
-        return self.handle
 
     def close_device(self):
         """
         Close the comunication with the baseboard
         """
-        if self.handle:
-            try:
-                self.handle.releaseInterface()
-            except Exception, err:
-                self._debug('ERROR:com_usb:close_device', err)
-            self.handle = None
-            self.device = None
+        try:
+            usb.util.release_interface(self.dev, USB4ALL_INTERFACE)
+        except Exception, err:
+            self._debug('ERROR:com_usb:close_device', err)
+        self.dev = None
 
-    def read(self, length):
+    def read(self, size):
         """
         Read from the device length bytes
         """
         try:
-            return self.handle.bulkRead(ADMIN_MODULE_OUT_ENDPOINT, length, TIMEOUT)
+            return self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, size, USB4ALL_INTERFACE, TIMEOUT)
         except Exception, err:
             self._debug('ERROR:com_usb:read', err)
             raise
@@ -90,7 +87,7 @@ class usb_device():
         Write in the device: data
         """
         try:
-            return self.handle.bulkWrite(ADMIN_MODULE_IN_ENDPOINT, data, TIMEOUT)
+            return self.dev.write(ADMIN_MODULE_IN_ENDPOINT, data, USB4ALL_INTERFACE, TIMEOUT)
         except Exception, err:
             self._debug('ERROR:com_usb:write', err)
             raise
@@ -101,7 +98,7 @@ class usb_device():
         """
         address = ERROR
         try:
-            address = self.device.dev.address
+            address = self.dev.address
         except Exception, err:
             self._debug('ERROR:com_usb:get_address', err)
         return address
@@ -111,9 +108,9 @@ class usb_device():
         Get the device info such as manufacturer, etc
         """
         try:
-            names = self.handle.getString(1, 255)
-            copy = self.handle.getString(2, 255)
-            sn = self.handle.getString(3, 255)
+            names = usb.util.get_string(self.dev, 255, 1, None).encode('ascii')
+            copy = usb.util.get_string(self.dev, 255, 2, None).encode('ascii')
+            sn = usb.util.get_string(self.dev, 255, 3, None).encode('ascii')
             return [names, copy, sn]
         except Exception, err:
             self._debug('ERROR:com_usb:get_info', err)
@@ -124,7 +121,7 @@ def find():
     List all busses and returns a list of baseboards detected
     """
     l = []
-    for b in usb.core.find(find_all=True, idVendor=USB4ALL_VENDOR, idProduct=USB4ALL_PRODUCT):
+    for b in usb.core.find(find_all=True, backend=back_usb, idVendor=USB4ALL_VENDOR, idProduct=USB4ALL_PRODUCT):
         l.append(usb_device(b))
     return l
 
