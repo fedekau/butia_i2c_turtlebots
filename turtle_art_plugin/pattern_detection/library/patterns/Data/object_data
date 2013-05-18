@@ -5,7 +5,7 @@
 #** <centerX centerY>
 
 #number of patterns
-8
+9
 
 #Left sign
 Left
@@ -52,5 +52,11 @@ round.patt
 #Stop sign
 Stop
 stop.patt
+160
+0,0 0,0
+
+#Parking sign
+Parking
+parking.patt
 160
 0,0 0,0
