@@ -23,7 +23,8 @@
 import os
 import sys
 # Make sure that can import all files
-sys.path.insert(0, os.path.dirname(__file__))
+abs_path = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, abs_path)
 
 # version = 0.turtlebots_version.secondary_number
 __version__ = '0.19.4'
