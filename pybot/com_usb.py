@@ -22,8 +22,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import usb
-import usb.backend.libusb1 as libusb1
-back_usb = libusb1.get_backend()
 
 USB4ALL_VENDOR        = 0x04d8
 USB4ALL_PRODUCT       = 0x000c
@@ -121,7 +119,7 @@ def find():
     List all busses and returns a list of baseboards detected
     """
     l = []
-    for b in usb.core.find(find_all=True, backend=back_usb, idVendor=USB4ALL_VENDOR, idProduct=USB4ALL_PRODUCT):
+    for b in usb.core.find(find_all=True, idVendor=USB4ALL_VENDOR, idProduct=USB4ALL_PRODUCT):
         l.append(usb_device(b))
     return l
 
