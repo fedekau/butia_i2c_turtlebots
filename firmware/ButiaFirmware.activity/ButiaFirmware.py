@@ -1,23 +1,25 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
 
-import shlex
-import subprocess
-import sys, os
-import platform
-import time
+import os
 import gtk
+import platform
+import subprocess
+import time
+import ConfigParser
+import gettext
 from gettext import gettext as _
 
-from sugar.activity import activity
-from sugar.graphics.toolbarbox import ToolbarBox
-from sugar.graphics.toolbutton import ToolButton
-from sugar.activity.widgets import ActivityToolbarButton
-from sugar.activity.widgets import StopButton
-from sugar.graphics.toolbarbox import ToolbarButton
+try:
+    from sugar.activity import activity
+    from sugar.graphics.toolbarbox import ToolbarBox
+    from sugar.activity.widgets import ActivityToolbarButton
+    from sugar.activity.widgets import StopButton
+except Exception, err:
+    print 'No sugar', err
 
+import pybot
 from pybot import usb4butia
 
 firmware_hex = 'USB4Butia-6.hex'
@@ -34,9 +36,6 @@ class ButiaFirmware(activity.Activity):
  
 
     def build_toolbar(self):
-        # Creates the Toolbox. It contains the Activity Toolbar, which is the
-        # bar that appears on every Sugar window and contains essential
-        # functionalities, such as the 'Collaborate' and 'Close' buttons.
 
         toolbox = ToolbarBox()
 
@@ -61,8 +60,34 @@ class ButiaFirmware(activity.Activity):
 
 class Flash():
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         self.parent = parent
+
+    def get_translations(self):
+        file_activity_info = ConfigParser.ConfigParser()
+        activity_info_path = os.path.abspath('activity/activity.info')
+        file_activity_info.read(activity_info_path)
+        bundle_id = file_activity_info.get('Activity', 'bundle_id')
+        self.activity_name = file_activity_info.get('Activity', 'name')
+        path = os.path.abspath('locale')
+        gettext.bindtextdomain(bundle_id, path)
+        gettext.textdomain(bundle_id)
+        global _
+        _ = gettext.gettext
+
+    def build_window(self):
+        self.get_translations()
+        win = gtk.Window()
+        win.set_title(_('Butia Firmware Upgrader'))
+        win.connect('delete_event', self._quit)
+        canvas = self.build_canvas()
+        win.add(canvas)
+        win.show()
+        gtk.main()
+
+    def _quit(self, win, e):
+        gtk.main_quit()
+        exit()
         
     def build_canvas(self):
         #The canvas is the main section of every Sugar Window.
@@ -102,9 +127,6 @@ class Flash():
         if res == gtk.RESPONSE_OK:
             self.flash()
 
-        elif res ==  gtk.RESPONSE_CANCEL:
-            pass
-
     def check_message(self, widget=None):
         ver = self.get_version()
         if ver == -1:
@@ -114,7 +136,7 @@ class Flash():
             msg = _('The current Firmware is\n%s') % ver
             dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg)
         dialog.set_title(_('USB4Butia firmware version...'))
-        res = dialog.run()
+        dialog.run()
         dialog.destroy()
 
     def flash(self, show_dialogs=True):
@@ -153,7 +175,7 @@ class Flash():
                 except Exception, err:
                     print 'Error in fsusb (build version):', err
 
-                    print 'Trying --program option '
+                    print 'Trying --program option'
                     try:
                         proc = subprocess.Popen([path, '--program', firmware_hex])
                     except Exception, err:
@@ -218,11 +240,5 @@ class Flash():
 
 if __name__ == "__main__":
     f = Flash()
-    argv = sys.argv[1:]
-    if 'silent' in argv:
-        f.flash(False)
-    elif 'check_version' in argv:
-        f.check_message()
-    else:
-        f.warning_message()
+    f.build_window()
 
