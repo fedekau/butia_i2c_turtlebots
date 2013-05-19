@@ -22,7 +22,7 @@ except Exception, err:
 import pybot
 from pybot import usb4butia
 
-firmware_hex = 'USB4Butia-6.hex'
+firmware_hex = 'USB4Butia-7.hex'
 
 class ButiaFirmware(activity.Activity):
 
