@@ -695,9 +695,6 @@ class Butia(Plugin):
             try:
                 debug_output('Creating Pybot server')
                 self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./plugins/butia/pybot')
-                # Sure that bobot is running
-                time.sleep(1)
-                res = self.butia.reconnect()
             except:
                 debug_output('ERROR creating Pybot server')
         else:
