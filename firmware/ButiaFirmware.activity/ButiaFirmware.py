@@ -134,7 +134,7 @@ class Flash():
         dialog.run()
         dialog.destroy()
 
-    def flash(self, show_dialogs=True):
+    def flash(self):
         i = time.time()
         path = './fsusb/x32/fsusb'
         try:
@@ -147,8 +147,7 @@ class Flash():
         except:
             print 'Error getting platform info'
 
-        if show_dialogs:
-            dialog = self.initing()
+        dialog = self.initing()
 
         proc = None
         try:
@@ -187,21 +186,12 @@ class Flash():
             f = time.time()
             t = f - i
 
-        if show_dialogs:
-            dialog.destroy()
+        dialog.destroy()
 
         if proc and (proc.returncode == 0):
-            if show_dialogs:
-                self.sucess(int(t))
-            else:
-                msg = _('The upgrade ends successfully!\nThe process takes %s seconds') % t
-                print msg
+            self.sucess(int(t))
         else:
-            if show_dialogs:
-                self.unsucess(proc.returncode)
-            else:
-                msg = _('The upgrade fails. Try again.\nError: %s') % proc.returncode
-                print msg
+            self.unsucess(proc.returncode)
 
     def initing(self):
         msg = _('Burning USB4Butia board...')
