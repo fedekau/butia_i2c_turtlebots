@@ -11,8 +11,8 @@ def getVersion(dev):
 def getValue(dev):
     dev.send([GET_VALUE])
     raw = dev.read(2)
-    if not(raw == ERROR):
+    if not(raw[1] == 255):
         return (1 - raw[1])
     else:
-        return raw[1]
+        return ERROR
 
