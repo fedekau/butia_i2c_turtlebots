@@ -45,6 +45,7 @@ COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
 COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
 
 ERROR_SPEED = _('ERROR: The speed must be a value between 0 and 1023')
+ERROR_SPEED_ABS = _('ERROR: The speed must be a value between -1023 and 1023')
 ERROR_PIN_NUMBER = _('ERROR: The pin must be between 1 and 8')
 ERROR_PIN_VALUE = _('ERROR: The value must be 0 or 1, LOW or HIGH')
 ERROR_PIN_MODE = _('ERROR: The mode must be INPUT or OUTPUT.')
@@ -549,15 +550,15 @@ class Butia(Plugin):
         try:
             left = int(left)
         except:
-            left = ERROR
-        if (left < 0) or (left > MAX_SPEED):
-            raise logoerror(ERROR_SPEED)
+            left = 0
+        if (left < -MAX_SPEED) or (left > MAX_SPEED):
+            raise logoerror(ERROR_SPEED_ABS)
         try:
             right = int(right)
         except:
-            right = ERROR
-        if (right < 0) or (right > MAX_SPEED):
-            raise logoerror(ERROR_SPEED)
+            right = 0
+        if (right < -MAX_SPEED) or (right > MAX_SPEED):
+            raise logoerror(ERROR_SPEED_ABS)
         self.set_vels(left, right)
 
     def forwardButia(self):
