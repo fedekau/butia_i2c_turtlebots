@@ -136,62 +136,61 @@ class Flash():
 
     def flash(self):
         i = time.time()
-        path = './fsusb/x32/fsusb'
+
         try:
-            arq,so = platform.architecture()
-            if arq == '32bit':
-                print 'Use default 32bits fsusb'
-            else:
-                path = './fsusb/x64/fsusb'
-                print 'Use 64bits fsusb'
+            arq = platform.machine()
         except:
             print 'Error getting platform info'
 
+        if arq == 'x86_64':
+            path = './fsusb/x64/fsusb'
+            print 'Use 64bits fsusb'
+        elif arq.startswith('arm'):
+            path = './fsusb/ARM/fsusb'
+            print 'Use ARM fsusb'
+        else:
+            path = './fsusb/x32/fsusb'
+            print 'Use default 32bits fsusb'
+
         dialog = self.initing()
 
-        proc = None
+        print 'Trying --program option'
         try:
             proc = subprocess.Popen([path, '--force_program', self.firmware_hex])
         except Exception, err:
             print 'Error in fsusb --force_program:', err
-            # if fsusb is corrupted: 8 Exec format error
-            if err.errno == 8:
-                print 'Making fsusb binary'
-                try:
-                    proc = subprocess.Popen(['make'], cwd='./fsusb/src')
-                    proc.wait()
-                except Exception, err:
-                    print 'error in make fsusb:', err
+            error = err
+            proc = None
 
-                path = './fsusb/src/fsusb'
-                try:
-                    proc = subprocess.Popen([path, '--force_program', self.firmware_hex])
-                except Exception, err:
-                    print 'Error in fsusb (build version):', err
-
-                    print 'Trying --program option'
-                    try:
-                        proc = subprocess.Popen([path, '--program', self.firmware_hex])
-                    except Exception, err:
-                        print 'Error in fsusb --program:', err
+        if proc:
+            proc.wait()
+            if proc.returncode == 0:
+                f = time.time()
+                t = f - i
+                self.sucess(int(t))
             else:
-                print 'Trying --program option '
+                print 'Trying --program option'
                 try:
                     proc = subprocess.Popen([path, '--program', self.firmware_hex])
                 except Exception, err:
                     print 'Error in fsusb --program:', err
+                    error = err
+                    proc = None
 
-        if proc:
-            proc.wait()
-            f = time.time()
-            t = f - i
+                if proc:
+                    proc.wait()
+                    if (proc.returncode == 0) or (proc.returncode == 1):
+                        f = time.time()
+                        t = f - i
+                        self.sucess(int(t))
+                    else:
+                        self.unsucess(proc.returncode)
+                else:
+                    self.unsucess(error)
+        else:
+            self.unsucess(error)
 
         dialog.destroy()
-
-        if proc and (proc.returncode == 0):
-            self.sucess(int(t))
-        else:
-            self.unsucess(proc.returncode)
 
     def initing(self):
         msg = _('Burning USB4Butia board...')
