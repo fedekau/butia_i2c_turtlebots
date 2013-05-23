@@ -125,7 +125,7 @@ class Flash():
     def check_message(self, widget=None):
         ver = self.get_version()
         if ver == -1:
-            msg = _('Error reading Firmware version.\nTry again...')
+            msg = _('Error reading Firmware version.\nTry again or test USB connection...')
             dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg)
         else:
             msg = _('The current version of the Firmware\nis %s') % ver
