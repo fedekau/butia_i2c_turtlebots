@@ -152,7 +152,7 @@ class Flash():
 
         dialog = self.initing()
 
-        print 'Trying --program option'
+        print 'Trying --force_program option'
         try:
             proc = subprocess.Popen([path, '--force_program', self.firmware_hex])
         except Exception, err:
