@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 import os
 import gtk
 import platform
@@ -47,7 +46,6 @@ class ButiaFirmware(activity.Activity):
         stop_button.show()
         self.set_toolbox(toolbox)
         toolbox.show()
-
 
 class Flash():
 
@@ -163,11 +161,9 @@ class Flash():
             proc = None
 
         if proc:
-            proc.wait()
+            self.wait_proc(proc)
             if proc.returncode == 0:
-                f = time.time()
-                t = f - i
-                self.sucess(int(t))
+                self.sucess(int(time.time() - i))
             else:
                 print 'Trying --program option'
                 try:
@@ -176,13 +172,10 @@ class Flash():
                     print 'Error in fsusb --program:', err
                     error = err
                     proc = None
-
                 if proc:
-                    proc.wait()
+                    self.wait_proc(proc)
                     if (proc.returncode == 0) or (proc.returncode == 1):
-                        f = time.time()
-                        t = f - i
-                        self.sucess(int(t))
+                        self.sucess(int(time.time() - i))
                     else:
                         self.unsucess(proc.returncode)
                 else:
@@ -196,10 +189,29 @@ class Flash():
         msg = _('Burning USB4Butia board...')
         dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
         dialog.set_title(_('Burning...'))
+        self.pbar = gtk.ProgressBar()
+        content = dialog.get_content_area() 
+        content.add(self.pbar)
+        self.pbar.show()
         # Run es bloqueante
         #dialog.run()
         dialog.show()
         return dialog
+
+    def progress_timeout(self):
+        new_val = self.pbar.get_fraction() + 0.01
+        if new_val > 1.0:
+            new_val = 0.0
+        self.pbar.set_fraction(new_val)
+
+    def wait_proc(self, proc):
+        self.pbar.set_fraction(0.0)
+        while proc.poll() == None:
+            time.sleep(0.1)
+            self.progress_timeout()
+            while gtk.events_pending():
+                gtk.main_iteration()
+        self.pbar.set_fraction(1.0)
 
     def sucess(self, seconds):
         msg = _('The upgrade ends successfully!\nThe process takes %s seconds') % seconds
