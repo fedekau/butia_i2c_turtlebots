@@ -53,7 +53,7 @@ msgstr "Grabando la placa USB4Butiá..."
 
 #: ButiaFirmware.py:128
 msgid "Error reading Firmware version.\n"
-"Try again..."
+"Try again or test USB connection..."
 msgstr "Error leyendo la versión del Firmware.\n"
 "Intenta nuevamente..."
 
