@@ -1,6 +1,6 @@
 turtlebots (20-r0) unstable; urgency=low
 
-  * core: +based on TurtleBlocks v176+
+  * core: +based on TurtleBlocks v178
   * core: +compile package after install
   * core: /udev rules level 60
   * butia: /join usb4butia and pythonAPI
