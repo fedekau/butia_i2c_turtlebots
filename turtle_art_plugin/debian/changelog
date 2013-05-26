@@ -1,13 +1,16 @@
 turtlebots (20-r0) unstable; urgency=low
 
-  * core: +based on TurtleBlocks v178
+  * core: +based on TurtleBlocks v179
   * core: +compile package after install
   * core: /udev rules level 60
+  * core: /gramar error in description of the deb package
   * butia: /join usb4butia and pythonAPI
   * butia: +add power manager behavior
   * butia: +add getType motors behavior for refresh blocks
   * butia: /correct right left motors call
   * butia: -remove self.butia validation
+  * butia: -remove duplicated reconnect
+  * butia: /fix move_butia speed parameters
   * pybot: /uniformize functions call
   * pybot: /getVolt Butia returns the voltage
   * pybot: +add ax driver
@@ -37,12 +40,14 @@ turtlebots (20-r0) unstable; urgency=low
   * pybot: /possibility of no auto-connect the client
   * pybot: /works with device directly
   * pybot: /disable debug in com_usb
+  * pybot: /update pybot button driver
   * nxt: /update nxt commit
   * patterns: -remove unnnecessary libs in compile
   * patterns: -remove unnnecessary prints
+  * wedo: /uses same pyusb than pybot
   * +new translations
 
- -- Alan Aguiar <alanjas@hotmail.com>  Tue, 21 May 2013 15:51:17 -0300
+ -- Alan Aguiar <alanjas@hotmail.com>  Sun, 26 May 2013 11:50:57 -0300
 
 turtlebots (19-r0) unstable; urgency=low
 
