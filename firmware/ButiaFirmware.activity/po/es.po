@@ -21,68 +21,68 @@ msgstr ""
 msgid "Butia Firmware"
 msgstr "Butiá Firmware"
 
-#: ButiaFirmware.py:74
+#: ButiaFirmware.py:72
 msgid "Butia Firmware Upgrader"
 msgstr "Actualizador del Firmware Butiá"
 
-#: ButiaFirmware.py:97
+#: ButiaFirmware.py:95
 msgid "Check version"
 msgstr "Verificar versión"
 
-#: ButiaFirmware.py:102
+#: ButiaFirmware.py:100
 msgid "Burn Firmware"
 msgstr "Grabar Firmware"
 
-#: ButiaFirmware.py:114
+#: ButiaFirmware.py:112
 #, python-format
 msgid "You will upgrade to the USB4Butia v%s firmware.\n"
 msgstr "Vas a actualizar el firmware de la USB4Butiá a v%s.\n"
 
-#: ButiaFirmware.py:115
+#: ButiaFirmware.py:113
 msgid "Not disconnect the board and not close this activity.\n"
 msgstr "No desconectes la placa y no cierres la actividad.\n"
 
-#: ButiaFirmware.py:116
+#: ButiaFirmware.py:114
 msgid "You want to continue?"
-msgstr "¿Desea continuar?"
+msgstr "¿Deseas continuar?"
 
-#: ButiaFirmware.py:118 ButiaFirmware.py:207 ButiaFirmware.py:218
-#: ButiaFirmware.py:225
+#: ButiaFirmware.py:116 ButiaFirmware.py:189 ButiaFirmware.py:219
+#: ButiaFirmware.py:226
 msgid "Burning USB4Butia board..."
 msgstr "Grabando la placa USB4Butiá..."
 
-#: ButiaFirmware.py:128
+#: ButiaFirmware.py:126
 msgid "Error reading Firmware version.\n"
 "Try again or test USB connection..."
 msgstr "Error leyendo la versión del Firmware.\n"
-"Intenta nuevamente..."
+"Intenta nuevamente o verifica la conexión USB..."
 
-#: ButiaFirmware.py:131
+#: ButiaFirmware.py:129
 #, python-format
 msgid "The current version of the Firmware\n"
 "is %s"
 msgstr "La versión actual del Firmware\n"
 "es %s"
 
-#: ButiaFirmware.py:133
+#: ButiaFirmware.py:131
 msgid "USB4Butia firmware version..."
 msgstr "Versión del firmware de la USB4Butiá..."
 
-#: ButiaFirmware.py:197 ButiaFirmware.py:216
+#: ButiaFirmware.py:191
+msgid "Burning..."
+msgstr "Grabando..."
+
+#: ButiaFirmware.py:217
 #, python-format
 msgid "The upgrade ends successfully!\n"
 "The process takes %s seconds"
 msgstr "¡El proceso de actualización terminó exitosamente!\n"
 "El proceso tardó %s segundos"
 
-#: ButiaFirmware.py:203 ButiaFirmware.py:223
+#: ButiaFirmware.py:224
 #, python-format
 msgid "The upgrade fails. Try again.\n"
 "Error: %s"
 msgstr "La actualización falló. Intente nuevamente.\n"
 "Error: %s"
-
-#: ButiaFirmware.py:209
-msgid "Burning..."
-msgstr "Grabando..."
 
