@@ -42,7 +42,7 @@ ERROR = -1   # default return value in case of error
 MAX_SPEED = 1023   # max velocity for AX-12 - 10 bits -
 MAX_SENSOR_PER_TYPE = 6
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
-COLOR_PRESENT = ["#00FF00","#008000"] #FIXME change for another tone of gray to avoid confusion with some similar blocks or the turtle
+COLOR_PRESENT = ["#00FF00","#008000"]
 
 ERROR_SPEED = _('ERROR: The speed must be a value between 0 and 1023')
 ERROR_SPEED_ABS = _('ERROR: The speed must be a value between -1023 and 1023')
@@ -52,14 +52,13 @@ ERROR_PIN_MODE = _('ERROR: The mode must be INPUT or OUTPUT.')
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
-modules_help['led'] = _("Turn LED on and off: 0 is off; 1 is on")
-modules_help['gray'] = _("returns the gray level")
-modules_help['button'] = _("returns 1 when the button is press and 0 otherwise")
-modules_help['light'] = _("returns the light level")
-modules_help['distance'] = _("returns the distance from the object in front of the sensor")
-modules_help['magneticinduction'] = _("returns 1 when the sensors detects a magnetic field, 0 otherwise")
-modules_help['resistanceB'] = _("returns the value of the resistance")
-modules_help['voltageB'] = _("returns the value of the voltage")
+modules_help['led'] = _("turns LED on and off: 1 means on, 0 means off")
+modules_help['gray'] = _("returns the gray level as a value between 0 and 65536")
+modules_help['button'] = _("returns 1 when the button is pressed and 0 otherwise")
+modules_help['light'] = _("returns the light level as a value between 0 and 65536")
+modules_help['distance'] = _("returns the distance as a value between 0 and 65536")
+modules_help['resistanceB'] = _("returns the resistance value in ohms")
+modules_help['voltageB'] = _("returns the voltage value in volts")
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 modules_name_from_device_id = {} 
