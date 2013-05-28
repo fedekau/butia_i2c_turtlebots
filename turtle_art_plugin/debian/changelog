@@ -4,6 +4,7 @@ turtlebots (20-r0) unstable; urgency=low
   * core: +compile package after install
   * core: /udev rules level 60
   * core: /gramar error in description of the deb package
+  * core: +python-pygame as dependency
   * butia: /join usb4butia and pythonAPI
   * butia: +add power manager behavior
   * butia: +add getType motors behavior for refresh blocks
@@ -47,7 +48,7 @@ turtlebots (20-r0) unstable; urgency=low
   * wedo: /uses same pyusb than pybot
   * +new translations
 
- -- Alan Aguiar <alanjas@hotmail.com>  Sun, 26 May 2013 11:50:57 -0300
+ -- Alan Aguiar <alanjas@hotmail.com>  Tue, 28 May 2013 18:38:03 -0300
 
 turtlebots (19-r0) unstable; urgency=low
 
