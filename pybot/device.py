@@ -40,10 +40,9 @@ class Device():
         self.baseboard = baseboard
         self.name = name
         self.handler = handler
+        self.shifted = None
         if not(self.handler == None):
-            self.handler_tosend = self.handler * 8
-        else:
-            self.handler_tosend = None
+            self.shifted = self.handler * 8
         self.functions = func
         self.debug = False
 
@@ -55,8 +54,9 @@ class Device():
         """
         Send to the device the specifiy call and parameters
         """
-        w = [self.handler_tosend, 0x03 + len(msg), NULL_BYTE]
-        self.baseboard.dev.write(w + msg)
+        w = [self.shifted, 0x03 + len(msg), NULL_BYTE] + msg
+        self._debug('device:send', w)
+        self.baseboard.dev.write(w)
 
     def read(self, lenght):
         """
@@ -87,7 +87,7 @@ class Device():
 
         if not(raw[4] == 255):
             self.handler = raw[4]
-            self.handler_tosend = self.handler * 8
+            self.shifted = self.handler * 8
             return self.handler
         else:
             self._debug('device:module_open:cannot open module:', self.name)
