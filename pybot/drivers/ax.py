@@ -26,23 +26,20 @@ def readInfo(dev, motor_id, regstart, lenght):
 
 def sendPacket(dev, pack):
     wait_resp = len(pack) + 2
-    msg = [SEND_RAW, wait_resp]
-    msg = msg + pack
+    msg = [SEND_RAW, wait_resp] + pack
     dev.send(msg)
     raw = dev.read(255)
     if len(raw) == 1:
         return -1      # only opcode o nil
-    if wait_resp == 0:
-        return 0       # user is not waiting an answer
-    timeout = raw[3]
+    timeout = raw[2]
+    print 'timeout'
     if timeout == 1:
         return "timeout!"
-    size = raw[2]
+    size = raw[1]
     print "AX12 answer\n:::SIZE = " + str(size) + "\n:::TIMEOUT = " + str(timeout)
     msg = ''
-    for i in range(4,size):
+    for i in range(3,size+3):
         msg = msg + str(raw[i]) + ' '
-    end
     print ":::MESSAGE\n " + msg
     return msg
 

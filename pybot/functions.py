@@ -83,7 +83,7 @@ class ButiaFunctions:
         """
         Send a raw packet to ax module
         """
-        return self.callModule('ax', str(board), '0', 'sendPacket', msg)
+        return self.callModule('ax', str(board), '0', 'sendPacket', msg, ret_type=str)
 
     def wheelMode(self, idMotor='0', board='0'):
         """
