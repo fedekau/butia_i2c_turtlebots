@@ -180,20 +180,14 @@ class USB4Butia(ButiaFunctions):
             if not(n in devices_ports):
                 self._bb.remove(b)
                 self._b_ports.remove(n)
-                try:
-                    b.close_baseboard()
-                except:
-                    pass
+                b.close_baseboard()
 
     def close(self):
         """
         Closes all open baseboards
         """
         for b in self._bb:
-            try:
-                b.close_baseboard()
-            except Exception, err:
-                self._debug('ERROR:usb4butia:close', err)
+            b.close_baseboard()
         self._bb = []
 
     def module_open(self, mod):
