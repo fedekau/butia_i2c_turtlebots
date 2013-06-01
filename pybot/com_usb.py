@@ -55,7 +55,6 @@ class usb_device():
             if self.dev.is_kernel_driver_active(USB4ALL_INTERFACE):
                 self.dev.detach_kernel_driver(USB4ALL_INTERFACE)
             self.dev.set_configuration(USB4ALL_CONFIGURATION)
-            usb.util.claim_interface(self.dev, USB4ALL_INTERFACE)
         except usb.USBError, err:
             self._debug('ERROR:com_usb:open_device', err)
             raise
@@ -65,7 +64,7 @@ class usb_device():
         Close the comunication with the baseboard
         """
         try:
-            usb.util.release_interface(self.dev, USB4ALL_INTERFACE)
+            self.dev.__del__()
         except Exception, err:
             self._debug('ERROR:com_usb:close_device', err)
         self.dev = None
@@ -94,11 +93,11 @@ class usb_device():
         """
         Get unique address for the usb
         """
-        address = ERROR
         try:
             address = self.dev.address
         except Exception, err:
             self._debug('ERROR:com_usb:get_address', err)
+            return ERROR
         return address
 
     def get_info(self):
