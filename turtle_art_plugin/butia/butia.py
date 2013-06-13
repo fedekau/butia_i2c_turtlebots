@@ -383,6 +383,14 @@ class Butia(Plugin):
         else:
             return COLOR_PRESENT[:]
 
+    def extrasBlocksColor(self):
+        if self.use_cc:
+            return COLOR_NOTPRESENT[:]
+        elif boards_present > 0:
+            return COLOR_PRESENT[:]
+        else:
+            return COLOR_NOTPRESENT[:]
+
     def block_2_index_and_name(self, block_name):
         """ Splits block_name in name and index, 
         returns a tuple (name,index)
@@ -425,12 +433,7 @@ class Butia(Plugin):
 
         COLOR_STATIC = self.staticBlocksColor()
 
-        if self.use_cc:
-            COLOR_EXTRAS = COLOR_NOTPRESENT[:]
-        elif boards_present > 0:
-            COLOR_EXTRAS = COLOR_PRESENT[:]
-        else:
-            COLOR_EXTRAS = COLOR_NOTPRESENT[:]
+        COLOR_EXTRAS = self.extrasBlocksColor()
 
         self.match_dict = self.make_match_dict(self.list_connected_device_module)
 
@@ -629,21 +632,22 @@ class Butia(Plugin):
     ################################ Extras ################################
 
     def pinmodeButia(self, pin, mode):
-        try:
-            pin = int(pin)
-        except:
-            pin = ERROR
-        if (pin < 1) or (pin > 8):
-            raise logoerror(ERROR_PIN_NUMBER)
-        else:
-            if mode == _('INPUT'):
-                self.hack_states[pin] = 1
-                self.butia.modeHack(pin, 1)
-            elif mode == _('OUTPUT'):
-                self.hack_states[pin] = 0
-                self.butia.modeHack(pin, 0)
+        if not(self.use_cc):
+            try:
+                pin = int(pin)
+            except:
+                pin = ERROR
+            if (pin < 1) or (pin > 8):
+                raise logoerror(ERROR_PIN_NUMBER)
             else:
-                raise logoerror(ERROR_PIN_MODE)
+                if mode == _('INPUT'):
+                    self.hack_states[pin] = 1
+                    self.butia.modeHack(pin, 1)
+                elif mode == _('OUTPUT'):
+                    self.hack_states[pin] = 0
+                    self.butia.modeHack(pin, 0)
+                else:
+                    raise logoerror(ERROR_PIN_MODE)
 
     def highButia(self):
         return 1
@@ -658,37 +662,39 @@ class Butia(Plugin):
         return _('OUTPUT')
 
     def setpinButia(self, pin, value):
-        try:
-            pin = int(pin)
-        except:
-            pin = ERROR
-        if (pin < 1) or (pin > 8):
-            raise logoerror(ERROR_PIN_NUMBER)
-        else:
-            if self.hack_states[pin] == 1:
-                raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.') % pin)
+        if not(self.use_cc):
+            try:
+                pin = int(pin)
+            except:
+                pin = ERROR
+            if (pin < 1) or (pin > 8):
+                raise logoerror(ERROR_PIN_NUMBER)
             else:
-                try:
-                    value = int(value)
-                except:
-                    value = ERROR
-                if (value < 0) or (value > 1):
-                    raise logoerror(ERROR_PIN_VALUE)
+                if self.hack_states[pin] == 1:
+                    raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.') % pin)
                 else:
-                    self.butia.setHack(pin, value)
+                    try:
+                        value = int(value)
+                    except:
+                        value = ERROR
+                    if (value < 0) or (value > 1):
+                        raise logoerror(ERROR_PIN_VALUE)
+                    else:
+                        self.butia.setHack(pin, value)
 
     def getpinButia(self, pin):
-        try:
-            pin = int(pin)
-        except:
-            pin = ERROR
-        if (pin < 1) or (pin > 8):
-            raise logoerror(ERROR_PIN_NUMBER)
-        else:
-            if self.hack_states[pin] == 0:
-                raise logoerror(_('ERROR: The pin %s must be in INPUT mode.') % pin)
+        if not(self.use_cc):
+            try:
+                pin = int(pin)
+            except:
+                pin = ERROR
+            if (pin < 1) or (pin > 8):
+                raise logoerror(ERROR_PIN_NUMBER)
             else:
-                return self.butia.getHack(pin)
+                if self.hack_states[pin] == 0:
+                    raise logoerror(_('ERROR: The pin %s must be in INPUT mode.') % pin)
+                else:
+                    return self.butia.getHack(pin)
 
     ################################ pybot and thread ################################
 
