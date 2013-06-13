@@ -53,12 +53,12 @@ ERROR_PIN_MODE = _('ERROR: The mode must be INPUT or OUTPUT.')
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
 modules_help['led'] = _("turns LED on and off: 1 means on, 0 means off")
-modules_help['gray'] = _("returns the gray level as a value between 0 and 65536")
+modules_help['gray'] = _("returns the gray level as a value between 0 and 65535")
 modules_help['button'] = _("returns 1 when the button is pressed and 0 otherwise")
-modules_help['light'] = _("returns the light level as a value between 0 and 65536")
-modules_help['distance'] = _("returns the distance as a value between 0 and 65536")
-modules_help['resistanceB'] = _("returns the resistance value in ohms")
-modules_help['voltageB'] = _("returns the voltage value in volts")
+modules_help['light'] = _("returns the light level as a value between 0 and 65535")
+modules_help['distance'] = _("returns the distance as a value between 0 and 65535")
+modules_help['resistanceB'] = _("returns the resistance value (ohms)")
+modules_help['voltageB'] = _("returns the voltage value (volts)")
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 modules_name_from_device_id = {} 
