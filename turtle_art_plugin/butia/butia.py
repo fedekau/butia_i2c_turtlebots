@@ -593,7 +593,10 @@ class Butia(Plugin):
     ################################ Sensors calls ################################
 
     def batterychargeButia(self):
-        return self.butia.getBatteryCharge()
+        if self.use_cc:
+            return 255
+        else:
+            return self.butia.getBatteryCharge()
 
     def buttonButia(self, sensorid='0', boardid='0'):
         return self.butia.getButton(sensorid, boardid)
