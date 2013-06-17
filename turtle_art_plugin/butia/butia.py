@@ -107,6 +107,7 @@ class Butia(Plugin):
         self.bobot = None
         self.use_cc = False
         self.m_d = {}
+        self.match_dict = {}
         self.battery_value = ERROR
         self.battery_color = COLOR_NOTPRESENT[:]
         self.old_battery_color = COLOR_NOTPRESENT[:]
@@ -370,27 +371,24 @@ class Butia(Plugin):
     def update_colors(self):
         if self.butia.getMotorType() == 2:
             self.use_cc = True
-            self.battery_value = 255
+            self.battery_color = BATTERY_ORANGE[:]
+            self.statics_color = COLOR_PRESENT[:]
+            self.extras_color = COLOR_NOTPRESENT[:]
         else:
             self.use_cc = False
             self.battery_value = self.butia.getBatteryCharge()
-
-        if self.use_cc:
-            self.battery_color = BATTERY_ORANGE[:]
-            self.statics_color = COLOR_PRESENT[:]
-            self.extras_color = COLOR_NOTPRESENT[:]
-        elif self.battery_value == ERROR:
-            self.battery_color = COLOR_NOTPRESENT[:]
-            self.statics_color = COLOR_NOTPRESENT[:]
-            self.extras_color = COLOR_NOTPRESENT[:]
-        elif (self.battery_value == 255) or (self.battery_value < 7.4):
-            self.battery_color = BATTERY_RED[:]
-            self.statics_color = COLOR_NOTPRESENT[:]
-            self.extras_color = COLOR_PRESENT[:]
-        elif (self.battery_value < 254) and (self.battery_value >= 7.4):
-            self.battery_color = BATTERY_ORANGE[:]
-            self.statics_color = COLOR_PRESENT[:]
-            self.extras_color = COLOR_PRESENT[:]
+            if self.battery_value == ERROR:
+                self.battery_color = COLOR_NOTPRESENT[:]
+                self.statics_color = COLOR_NOTPRESENT[:]
+                self.extras_color = COLOR_NOTPRESENT[:]
+            elif (self.battery_value == 255) or (self.battery_value < 7.4):
+                self.battery_color = BATTERY_RED[:]
+                self.statics_color = COLOR_NOTPRESENT[:]
+                self.extras_color = COLOR_PRESENT[:]
+            elif (self.battery_value < 254) and (self.battery_value >= 7.4):
+                self.battery_color = BATTERY_ORANGE[:]
+                self.statics_color = COLOR_PRESENT[:]
+                self.extras_color = COLOR_PRESENT[:]
 
     def block_2_index_and_name(self, block_name):
         """ Splits block_name in name and index, 
@@ -404,31 +402,29 @@ class Butia(Plugin):
 
     def set_to_list(self, s):
         l = list(s)
-        r = []
+        self.modules_changed = []
         for e in l:
             if e[1] in device_id_from_module_name:
-                r.append(e[1])
-        return r
+                self.modules_changed.append(e[1])
 
     def make_match_dict(self, l):
         for d in device_id_from_module_name.keys():
             self.m_d[d] = 0
-        match_list = []
+        _list = []
         for t in l:
             module = t[1]
             if module in device_id_from_module_name:
                 n = self.m_d[module]
                 self.m_d[module] = self.m_d[module] + 1
                 if n == 0:
-                    match_list.append((module, (t[0], t[2])))
+                    _list.append((module, (t[0], t[2])))
                 else:
-                    match_list.append((module + str(n), (t[0], t[2])))
-
-        return dict(match_list)
+                    _list.append((module + str(n), (t[0], t[2])))
+        self.match_dict = dict(_list)
 
     def change_butia_palette_colors(self, force_refresh, change_statics_blocks, boards_present):
 
-        self.match_dict = self.make_match_dict(self.list_connected_device_module)
+        self.make_match_dict(self.list_connected_device_module)
 
         for blk in self.tw.block_list.list:
             #NOTE: blocks types: proto, block, trash, deleted
@@ -514,7 +510,7 @@ class Butia(Plugin):
                 set_new_device_module = set_connected_device_module.difference(set_old_connected_device_module)
                 set_old_device_module = set_old_connected_device_module.difference(set_connected_device_module)
                 set_changed_device_module = set_new_device_module.union(set_old_device_module)
-                self.modules_changed = self.set_to_list(set_changed_device_module)
+                self.set_to_list(set_changed_device_module)
             else:
                 self.modules_changed = []
 
