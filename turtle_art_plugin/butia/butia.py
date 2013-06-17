@@ -43,6 +43,8 @@ MAX_SPEED = 1023   # max velocity for AX-12 - 10 bits -
 MAX_SENSOR_PER_TYPE = 6
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"] 
 COLOR_PRESENT = ["#00FF00","#008000"]
+BATTERY_RED = ["#FF0000","#808080"]
+BATTERY_ORANGE = ["#FFA500","#808080"]
 
 ERROR_SPEED = _('ERROR: The speed must be a value between 0 and 1023')
 ERROR_SPEED_ABS = _('ERROR: The speed must be a value between -1023 and 1023')
@@ -104,9 +106,12 @@ class Butia(Plugin):
         self.pollrun = True
         self.bobot = None
         self.use_cc = False
+        self.m_d = {}
         self.battery_value = ERROR
         self.battery_color = COLOR_NOTPRESENT[:]
         self.old_battery_color = COLOR_NOTPRESENT[:]
+        self.statics_color = COLOR_NOTPRESENT[:]
+        self.extras_color = COLOR_NOTPRESENT[:]
         self.match_list = []
         self.modules_changed = []
         self.list_connected_device_module = []
@@ -362,31 +367,30 @@ class Butia(Plugin):
         self.butia.refresh()
         self.check_for_device_change(True)
 
-    def batteryColor(self):
+    def update_colors(self):
+        if self.butia.getMotorType() == 2:
+            self.use_cc = True
+            self.battery_value = 255
+        else:
+            self.use_cc = False
+            self.battery_value = self.butia.getBatteryCharge()
+
         if self.use_cc:
-            return ["#FFA500","#808080"]
-        if self.battery_value == ERROR:
-            return COLOR_NOTPRESENT[:]
+            self.battery_color = BATTERY_ORANGE[:]
+            self.statics_color = COLOR_PRESENT[:]
+            self.extras_color = COLOR_NOTPRESENT[:]
+        elif self.battery_value == ERROR:
+            self.battery_color = COLOR_NOTPRESENT[:]
+            self.statics_color = COLOR_NOTPRESENT[:]
+            self.extras_color = COLOR_NOTPRESENT[:]
         elif (self.battery_value == 255) or (self.battery_value < 7.4):
-            return ["#FF0000","#808080"]
-        elif ((self.battery_value < 254) and (self.battery_value >= 7.4)):
-            return ["#FFA500","#808080"]
-
-    def staticBlocksColor(self):
-        if self.use_cc:
-            return COLOR_PRESENT[:]
-        if (self.battery_value == 255) or (self.battery_value < 7.4):
-            return COLOR_NOTPRESENT[:]
-        else:
-            return COLOR_PRESENT[:]
-
-    def extrasBlocksColor(self):
-        if self.use_cc:
-            return COLOR_NOTPRESENT[:]
-        elif boards_present > 0:
-            return COLOR_PRESENT[:]
-        else:
-            return COLOR_NOTPRESENT[:]
+            self.battery_color = BATTERY_RED[:]
+            self.statics_color = COLOR_NOTPRESENT[:]
+            self.extras_color = COLOR_PRESENT[:]
+        elif (self.battery_value < 254) and (self.battery_value >= 7.4):
+            self.battery_color = BATTERY_ORANGE[:]
+            self.statics_color = COLOR_PRESENT[:]
+            self.extras_color = COLOR_PRESENT[:]
 
     def block_2_index_and_name(self, block_name):
         """ Splits block_name in name and index, 
@@ -406,13 +410,9 @@ class Butia(Plugin):
                 r.append(e[1])
         return r
 
-    def complete_dict(self):
-        self.m_d = {}
+    def make_match_dict(self, l):
         for d in device_id_from_module_name.keys():
             self.m_d[d] = 0
-
-    def make_match_dict(self, l):
-        self.complete_dict()
         match_list = []
         for t in l:
             module = t[1]
@@ -428,10 +428,6 @@ class Butia(Plugin):
 
     def change_butia_palette_colors(self, force_refresh, change_statics_blocks, boards_present):
 
-        COLOR_STATIC = self.staticBlocksColor()
-
-        COLOR_EXTRAS = self.extrasBlocksColor()
-
         self.match_dict = self.make_match_dict(self.list_connected_device_module)
 
         for blk in self.tw.block_list.list:
@@ -442,11 +438,11 @@ class Butia(Plugin):
                         if (blk.name == 'batterychargeButia'):
                             special_block_colors[blk.name] = self.battery_color[:]
                         else:
-                            special_block_colors[blk.name] = COLOR_STATIC[:]
+                            special_block_colors[blk.name] = self.statics_color[:]
                         blk.refresh()
                 elif (blk.name in extras_block_list):
                     if change_statics_blocks:
-                        special_block_colors[blk.name] = COLOR_EXTRAS[:]
+                        special_block_colors[blk.name] = self.extras_color[:]
                         blk.refresh()
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
@@ -506,9 +502,8 @@ class Butia(Plugin):
         old_list_connected_device_module = self.list_connected_device_module[:]
         self.list_connected_device_module = self.butia.getModulesList(False)
         boards_present = self.butia.getButiaCount()
-        self.cc_module_present()
-        self.battery_value = self.batterychargeButia()
-        self.battery_color = self.batteryColor()
+
+        self.update_colors()
         
         if force_refresh:
             self.change_butia_palette_colors(True, True, boards_present)
@@ -583,12 +578,6 @@ class Butia(Plugin):
         if (speed < 0) or (speed > MAX_SPEED):
             raise logoerror(ERROR_SPEED)
         self.actualSpeed = [speed, speed]
-
-    def cc_module_present(self):
-        if self.butia.getMotorType() == 2:
-            self.use_cc = True
-        else:
-            self.use_cc = False
 
     ################################ Sensors calls ################################
 
