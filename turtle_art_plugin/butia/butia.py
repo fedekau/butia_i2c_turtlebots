@@ -126,9 +126,6 @@ class Butia(Plugin):
 
         palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'), init_on_start=True)
 
-        self.battery_value = self.batterychargeButia()
-        COLOR_STATIC = self.staticBlocksColor()
-
         #add block about movement of butia, this blocks don't allow multiple instances
 
         primitive_dictionary['refreshButia'] = self.refreshButia
@@ -147,7 +144,7 @@ class Butia(Plugin):
                      prim_name='batterychargeButia',
                      help_string=_('returns the battery charge in volts. If no motors present, it returns 255'))
         self.tw.lc.def_prim('batterychargeButia', 0, lambda self: primitive_dictionary['batterychargeButia']())
-        special_block_colors['batterychargeButia'] = self.batteryColor()[:]
+        special_block_colors['batterychargeButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',
@@ -157,7 +154,7 @@ class Butia(Plugin):
                      default=[600],
                      help_string=_('set the speed of the Butia motors'))
         self.tw.lc.def_prim('speedButia', 1, lambda self, x: primitive_dictionary['speedButia'](x))
-        special_block_colors['speedButia'] = COLOR_STATIC[:]
+        special_block_colors['speedButia'] = COLOR_NOTPRESENT[:]
         
         primitive_dictionary['moveButia'] = self.moveButia
         palette.add_block('moveButia',
@@ -167,7 +164,7 @@ class Butia(Plugin):
                      default=[600, 600],
                      help_string=_('moves the Butia motors at the specified speed'))
         self.tw.lc.def_prim('moveButia', 2, lambda self, x, y: primitive_dictionary['moveButia'](x, y))
-        special_block_colors['moveButia'] = COLOR_STATIC[:]
+        special_block_colors['moveButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['stopButia'] = self.stopButia
         palette.add_block('stopButia',
@@ -176,7 +173,7 @@ class Butia(Plugin):
                      prim_name='stopButia',
                      help_string=_('stop the Butia robot'))
         self.tw.lc.def_prim('stopButia', 0, lambda self: primitive_dictionary['stopButia']())
-        special_block_colors['stopButia'] = COLOR_STATIC[:]
+        special_block_colors['stopButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['forwardButia'] = self.forwardButia
         palette.add_block('forwardButia',
@@ -185,7 +182,7 @@ class Butia(Plugin):
                      prim_name='forwardButia',
                      help_string=_('move the Butia robot forward'))
         self.tw.lc.def_prim('forwardButia', 0, lambda self: primitive_dictionary['forwardButia']())
-        special_block_colors['forwardButia'] = COLOR_STATIC[:]
+        special_block_colors['forwardButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['leftButia'] = self.leftButia
         palette.add_block('leftButia',
@@ -194,7 +191,7 @@ class Butia(Plugin):
                      prim_name='leftButia',
                      help_string=_('turn the Butia robot at left'))
         self.tw.lc.def_prim('leftButia', 0, lambda self: primitive_dictionary['leftButia']())
-        special_block_colors['leftButia'] = COLOR_STATIC[:]
+        special_block_colors['leftButia'] = COLOR_NOTPRESENT[:]
         
         primitive_dictionary['rightButia'] = self.rightButia
         palette.add_block('rightButia',
@@ -203,7 +200,7 @@ class Butia(Plugin):
                      prim_name='rightButia',
                      help_string=_('turn the Butia robot at right'))
         self.tw.lc.def_prim('rightButia', 0, lambda self: primitive_dictionary['rightButia']())
-        special_block_colors['rightButia'] = COLOR_STATIC[:]
+        special_block_colors['rightButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['backwardButia'] = self.backwardButia
         palette.add_block('backwardButia',
@@ -212,7 +209,7 @@ class Butia(Plugin):
                      prim_name='backwardButia',
                      help_string=_('move the Butia robot backward'))
         self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
-        special_block_colors['backwardButia'] = COLOR_STATIC[:]
+        special_block_colors['backwardButia'] = COLOR_NOTPRESENT[:]
 
         # Extra palette
         palette2 = make_palette('butia-extra', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot extra blocks'), init_on_start=True)
@@ -225,7 +222,7 @@ class Butia(Plugin):
                   default=[1],
                   prim_name='pinmodeButia')
         self.tw.lc.def_prim('pinmodeButia', 2, lambda self, x, y: primitive_dictionary['pinmodeButia'](x, y))
-        special_block_colors['pinmodeButia'] = COLOR_STATIC[:]
+        special_block_colors['pinmodeButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['setpinButia'] = self.setpinButia
         palette2.add_block('setpinButia',
@@ -235,7 +232,7 @@ class Butia(Plugin):
                      default=[1, 0],
                      help_string=_('set a hack pin to 0 or 1'))
         self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
-        special_block_colors['setpinButia'] = COLOR_STATIC[:]
+        special_block_colors['setpinButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['getpinButia'] = self.getpinButia
         palette2.add_block('getpinButia',
@@ -245,7 +242,7 @@ class Butia(Plugin):
                      default=1,
                      help_string=_('read the value of a hack pin'))
         self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
-        special_block_colors['getpinButia'] = COLOR_STATIC[:]
+        special_block_colors['getpinButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['inputButia'] = self.inputButia
         palette2.add_block('inputButia',
@@ -254,7 +251,7 @@ class Butia(Plugin):
                   help_string=_('Configure hack port for digital input.'),
                   prim_name='inputButia')
         self.tw.lc.def_prim('inputButia', 0, lambda self: primitive_dictionary['inputButia']())
-        special_block_colors['inputButia'] = COLOR_STATIC[:]
+        special_block_colors['inputButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['highButia'] = self.highButia
         palette2.add_block('highButia',
@@ -263,7 +260,7 @@ class Butia(Plugin):
                   help_string=_('Set HIGH value for digital port.'),
                   prim_name='highButia')
         self.tw.lc.def_prim('highButia', 0, lambda self: primitive_dictionary['highButia']())
-        special_block_colors['highButia'] = COLOR_STATIC[:]
+        special_block_colors['highButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['lowButia'] = self.lowButia
         palette2.add_block('lowButia',
@@ -272,7 +269,7 @@ class Butia(Plugin):
                   help_string=_('Set LOW value for digital port.'),
                   prim_name='lowButia')
         self.tw.lc.def_prim('lowButia', 0, lambda self: primitive_dictionary['lowButia']())
-        special_block_colors['lowButia'] = COLOR_STATIC[:]
+        special_block_colors['lowButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['outputButia'] = self.outputButia
         palette2.add_block('outputButia',
@@ -281,7 +278,7 @@ class Butia(Plugin):
                   help_string=_('Configure hack port for digital output.'),
                   prim_name='outputButia')
         self.tw.lc.def_prim('outputButia', 0, lambda self: primitive_dictionary['outputButia']())
-        special_block_colors['outputButia'] = COLOR_STATIC[:]
+        special_block_colors['outputButia'] = COLOR_NOTPRESENT[:]
 
 
         #add every function in the code 
