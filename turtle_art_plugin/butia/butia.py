@@ -424,7 +424,7 @@ class Butia(Plugin):
         self.match_dict = dict(_list)
 
     def change_butia_palette_colors(self, force_refresh, change_statics_blocks, change_extras_blocks, boards_present):
-
+        print 'adentro'
         self.make_match_dict(self.list_connected_device_module)
 
         for blk in self.tw.block_list.list:
@@ -436,6 +436,11 @@ class Butia(Plugin):
                             special_block_colors[blk.name] = self.battery_color[:]
                         else:
                             special_block_colors[blk.name] = self.statics_color[:]
+                        if (blk.name == 'moveButia') or (blk.name == 'speedButia') or (blk.name == 'batterychargeButia'):
+                            if self.use_cc:
+                                blk.set_visibility(False)
+                            else:
+                                blk.set_visibility(True)
                         blk.refresh()
                 elif (blk.name in extras_block_list):
                     if change_extras_blocks:
