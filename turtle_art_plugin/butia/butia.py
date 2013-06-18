@@ -113,6 +113,7 @@ class Butia(Plugin):
         self.old_battery_color = COLOR_NOTPRESENT[:]
         self.statics_color = COLOR_NOTPRESENT[:]
         self.extras_color = COLOR_NOTPRESENT[:]
+        self.old_extras_color = COLOR_NOTPRESENT[:]
         self.match_list = []
         self.modules_changed = []
         self.list_connected_device_module = []
@@ -373,7 +374,7 @@ class Butia(Plugin):
             self.use_cc = True
             self.battery_color = BATTERY_ORANGE[:]
             self.statics_color = COLOR_PRESENT[:]
-            self.extras_color = COLOR_NOTPRESENT[:]
+            self.extras_color = None
         else:
             self.use_cc = False
             self.battery_value = self.butia.getBatteryCharge()
@@ -422,7 +423,7 @@ class Butia(Plugin):
                     _list.append((module + str(n), (t[0], t[2])))
         self.match_dict = dict(_list)
 
-    def change_butia_palette_colors(self, force_refresh, change_statics_blocks, boards_present):
+    def change_butia_palette_colors(self, force_refresh, change_statics_blocks, change_extras_blocks, boards_present):
 
         self.make_match_dict(self.list_connected_device_module)
 
@@ -437,8 +438,12 @@ class Butia(Plugin):
                             special_block_colors[blk.name] = self.statics_color[:]
                         blk.refresh()
                 elif (blk.name in extras_block_list):
-                    if change_statics_blocks:
-                        special_block_colors[blk.name] = self.extras_color[:]
+                    if change_extras_blocks:
+                        if self.use_cc:
+                            blk.set_visibility(False)
+                        else:
+                            special_block_colors[blk.name] = self.extras_color[:]
+                            blk.set_visibility(True)
                         blk.refresh()
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
@@ -520,8 +525,14 @@ class Butia(Plugin):
             else:
                 change_statics_blocks = False
 
-            if not(self.modules_changed == []) or change_statics_blocks:
-                self.change_butia_palette_colors(False, change_statics_blocks, boards_present)
+            if not(self.extras_color == self.old_extras_color):
+                change_extras_blocks = True
+                self.old_extras_color = self.extras_color
+            else:
+                change_extras_blocks = False
+
+            if not(self.modules_changed == []) or change_statics_blocks or change_extras_blocks:
+                self.change_butia_palette_colors(False, change_statics_blocks, change_extras_blocks, boards_present)
 
     ################################ Movement calls ################################
 
