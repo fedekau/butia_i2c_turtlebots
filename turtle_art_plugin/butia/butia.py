@@ -424,7 +424,7 @@ class Butia(Plugin):
         self.match_dict = dict(_list)
 
     def change_butia_palette_colors(self, force_refresh, change_statics_blocks, change_extras_blocks, boards_present):
-        print 'adentro'
+
         self.make_match_dict(self.list_connected_device_module)
 
         for blk in self.tw.block_list.list:
@@ -512,7 +512,7 @@ class Butia(Plugin):
         self.update_colors()
         
         if force_refresh:
-            self.change_butia_palette_colors(True, True, boards_present)
+            self.change_butia_palette_colors(True, True, True, boards_present)
         else:
             if not(old_list_connected_device_module == self.list_connected_device_module):
                 set_old_connected_device_module = set(old_list_connected_device_module)
