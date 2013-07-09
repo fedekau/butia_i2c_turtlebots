@@ -44,6 +44,8 @@ binary:
 	dh_installmime
 	dh_installmodules
 	dh_python2 /usr/share/sugar/activities/TurtleBots.activity
+	# en debhelper viejos
+	#dh_pycentral /usr/share/sugar/activities/TurtleBots.activity
 	dh_installlogcheck
 	dh_installlogrotate
 	dh_installpam
