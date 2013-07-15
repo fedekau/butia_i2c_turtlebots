@@ -32,8 +32,8 @@ libs/lua-5.1.4/src/lua
 libs/lua-5.1.4/src/luac
 
 ## temporary folder for TortugArteButia
-turtle_art_plugin/tmp
-turtle_art_plugin/*.tar.gz
+turtlebots/tmp
+turtlebots/*.tar.gz
 
 
 # Also is posible to ignore all subdirectory or files in that directory
@@ -42,8 +42,8 @@ turtle_art_plugin/*.tar.gz
 butialo/staging/**/*
 
 #ignore generate files of pattern
-turtle_art_plugin/pattern_detection/library/patterns/libPatterns.so
-turtle_art_plugin/pattern_detection/library/patterns/patternsTest
+turtlebots/pattern_detection/library/patterns/libPatterns.so
+turtlebots/pattern_detection/library/patterns/patternsTest
 newPatterns/NewPatterns.activity/MANIFEST
 
 #ignore locale folders
