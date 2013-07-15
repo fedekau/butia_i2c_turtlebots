@@ -34,7 +34,7 @@ from fnmatch import fnmatch
 from ConfigParser import ConfigParser
 
 
-IGNORE_DIRS = ['dist', '.git', 'debian', '.pc']
+IGNORE_DIRS = ['dist', '.git', 'debian', '.pc', 'locale']
 IGNORE_FILES = ['.gitignore', 'MANIFEST', '*.pyc', '*~', '*.bak', 'pseudo.po']
 
 
@@ -180,8 +180,12 @@ class Packager(object):
                               IGNORE_DIRS, IGNORE_FILES)
 
         # pylint: disable=E1103
-        return [path.strip() for path in stdout.strip('\n').split('\n')]
+        files = [path.strip() for path in stdout.strip('\n').split('\n')]
 
+        # remove possible unnecesary tracked files
+        for pattern in IGNORE_FILES:
+            files = [f for f in files if not fnmatch(f, pattern)]
+        return files
 
 class XOPackager(Packager):
 
