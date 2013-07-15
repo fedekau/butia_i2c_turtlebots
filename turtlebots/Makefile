@@ -141,13 +141,14 @@ mktmpfolder:
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity $(BUILDDIR)/
 	cp -rLf stagin/turtlebots.desktop $(BUILDDIR)/
+	cp -rLf stagin/bundlebuilder.py $(BUILDDIR)/
 
 apply_localization: walterGIT mktmpfolder extrasGIT
 	# let's add localization (if is not already in taextras.py)
 	(cd turtle-extras && ./merge.py turtlebots $(BUILDDIR))
 	#cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
-	(cd $(BUILDDIR) && python setup.py build)
+	(cd $(BUILDDIR) && python bundlebuilder.py build)
 
 apply_hard_plugins: apply_localization nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
 	cp -rLf butia               $(BUILDDIR)/plugins/
@@ -198,15 +199,15 @@ xo:
 	(cd $(TMPBUILDDIR) && git init)
 	(cd $(TMPBUILDDIR) && git add *)
 	(cd $(TMPBUILDDIR) && git commit -m 'all files')
-	(cd $(TMPBUILDDIR) && python setup.py build)
-	(cd $(TMPBUILDDIR) && python setup.py dist_xo)
+	(cd $(TMPBUILDDIR) && python bundlebuilder.py build)
+	(cd $(TMPBUILDDIR) && python bundlebuilder.py dist_xo)
 	cp $(TMPBUILDDIR)/dist/*.xo .
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) clean-builddir
 
 dev: apply_sym_plugins
 	rm -rf ~/Activities/TurtleBots.activity
 	mkdir -p ~/Activities
-	(cd $(BUILDDIR) && python setup.py dev)
+	(cd $(BUILDDIR) && python bundlebuilder.py dev)
 
 
 ################ Plugins #############
