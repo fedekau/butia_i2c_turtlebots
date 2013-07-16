@@ -1,3 +1,9 @@
+turtlebots (20-ubuntu7) precise; urgency=low
+
+  * core: -remove sugar-toolkit depend
+
+ -- AlanJAS <alanjas@hotmail.com>  Tue, 16 Jul 2013 17:26:29 -0300
+
 turtlebots (20-r0) unstable; urgency=low
 
   * core: +based on TurtleBlocks v179
