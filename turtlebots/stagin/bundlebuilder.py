@@ -94,7 +94,7 @@ class Config(object):
             print 'Activity bundle does not specify a name'
 
         if cp.has_option('Activity', 'bundle_id'):
-            self._bundle_id = cp.get('Activity', 'bundle_id')
+            self.bundle_id = cp.get('Activity', 'bundle_id')
         else:
             print 'Activity bundle does not specify a bundle id'
 
