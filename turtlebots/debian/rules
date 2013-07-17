@@ -20,13 +20,13 @@ clean:
 	dh_auto_clean
 	dh_clean
 
-binary:
+install:
 	dh_testroot
 	dh_prep
 	dh_installdirs
-	dh_installudev   --name=usb4all       --priority 60
-	dh_installudev   --name=lego-nxt      --priority 60
-	dh_installudev   --name=lego-wedo     --priority 60
+	dh_installudev    --name=usb4all    --priority 60
+	dh_installudev    --name=lego-nxt   --priority 60
+	dh_installudev    --name=lego-wedo  --priority 60
 	dh_auto_install
 	dh_install
 	dh_installdocs
@@ -70,4 +70,10 @@ binary:
 	dh_md5sums
 	dh_builddeb
 
-.PHONY: build clean binary
+binary-indep: build install
+
+binary-arch: build install
+
+binary: binary-indep binary-arch
+
+.PHONY: build clean binary binary-indep binary-arch
