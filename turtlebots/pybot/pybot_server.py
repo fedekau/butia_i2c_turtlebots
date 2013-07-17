@@ -29,7 +29,6 @@ import com_chotox
 
 argv = sys.argv[:]
 
-PYBOT_HOST = 'localhost'
 PYBOT_PORT = 2009
 BUFSIZ = 1024
 MAX_CLIENTS = 4
@@ -41,7 +40,7 @@ class Server():
         self.debug = debug
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind((PYBOT_HOST, PYBOT_PORT))
+        self.socket.bind(("", PYBOT_PORT))
         self.socket.listen(MAX_CLIENTS)
         self.clients = {}
         self.chotox_mode = chotox
