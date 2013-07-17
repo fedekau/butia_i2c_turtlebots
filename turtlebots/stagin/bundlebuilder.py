@@ -22,8 +22,6 @@
 import operator
 import os
 import sys
-import zipfile
-import tarfile
 import shutil
 import subprocess
 import re
@@ -198,6 +196,7 @@ class XOPackager(Packager):
                                          self.config.xo_name)
 
     def package(self):
+        import zipfile
         bundle_zip = zipfile.ZipFile(self.package_path, 'w',
                                      zipfile.ZIP_DEFLATED)
 
@@ -222,6 +221,7 @@ class SourcePackager(Packager):
                                          self.config.tar_name)
 
     def package(self):
+        import tarfile
         tar = tarfile.open(self.package_path, 'w:bz2')
         for f in self.get_files_in_git():
             tar.add(os.path.join(self.config.source_dir, f),
