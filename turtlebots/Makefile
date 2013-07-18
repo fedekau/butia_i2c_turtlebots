@@ -127,6 +127,8 @@ arduinoGIT: arduino/.git
 pyusbGIT: pyusb/.git
 	$(MAKE) SUBMODULE=pyusb SUBMODULEVER=$(PYUSB_VERSION) checkoutsm
 
+sourceGIT: walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT pyusbGIT
+	echo sourceGIT
 
 ################ Construction...
 
@@ -144,14 +146,14 @@ mktmpfolder:
 	cp -rLf stagin/turtlebots.desktop $(BUILDDIR)/
 	cp -rLf stagin/bundlebuilder.py $(BUILDDIR)/setup.py
 
-apply_localization: walterGIT mktmpfolder extrasGIT
+apply_localization: sourceGIT mktmpfolder
 	# let's add localization (if is not already in taextras.py)
 	(cd turtle-extras && ./merge.py turtlebots $(BUILDDIR))
 	#cp turtle-extras/taextras.py $(BUILDDIR)
 	# fix localization (compile .po)
 	(cd $(BUILDDIR) && python setup.py build)
 
-apply_hard_plugins: apply_localization nxtGIT wedoGIT arduinoGIT pyusbGIT pattern_detection_compile
+apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp -rLf butia               $(BUILDDIR)/plugins/
 	cp -rLf sumtia              $(BUILDDIR)/plugins/
 	cp -rLf followme            $(BUILDDIR)/plugins/
@@ -173,7 +175,7 @@ apply_hard_plugins: apply_localization nxtGIT wedoGIT arduinoGIT pyusbGIT patter
 	# put pattern_examples into turtle examples folder
 	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
 	# put butia examples into turtle examples folder
-	cp -rf ../examples/turtle   $(BUILDDIR)/samples/butia
+	cp -rf examples/turtle   $(BUILDDIR)/samples/butia
 	# remove unnecessary .o files of pattern_detection
 	rm $(BUILDDIR)/plugins/pattern_detection/library/patterns/*.o
 	# remove ARTollkit binaries
@@ -182,7 +184,7 @@ apply_hard_plugins: apply_localization nxtGIT wedoGIT arduinoGIT pyusbGIT patter
 pattern_detection_compile:
 	$(MAKE) -C pattern_detection/library
 
-apply_sym_plugins: walterGIT nxtGIT wedoGIT arduinoGIT pyusbGIT apply_localization pattern_detection_compile
+apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia             $(BUILDDIR)/plugins/butia
 	ln -s `pwd`/sumtia            $(BUILDDIR)/plugins/sumtia
