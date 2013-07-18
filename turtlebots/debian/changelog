@@ -1,4 +1,4 @@
-turtlebots (20-ubuntu7) precise; urgency=low
+turtlebots (20-ubuntu15~precise) precise; urgency=low
 
   * core: -remove sugar-toolkit depend
 
