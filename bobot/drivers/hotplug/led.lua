@@ -28,5 +28,6 @@ api.turn.call = function (value)
     if value == nil or value ~= 0 and value ~= 1 then return -1 end
     local msg = string.char(TURN, value)
     device:send(msg)
-	return 0
+    raw_val = device:read(1)
+    return raw_val
 end
