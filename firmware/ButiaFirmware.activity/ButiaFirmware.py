@@ -139,6 +139,7 @@ class Flash():
             arq = platform.machine()
         except:
             print 'Error getting platform info'
+            arq = 'x86_64'
 
         if arq == 'x86_64':
             path = './fsusb/x64/fsusb'
