@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include "fsusb.h"
 #include <string.h>
+#include <unistd.h>
 
 picdem_handle *usbdev = NULL;
 
@@ -315,7 +316,8 @@ int reset(){
 
 int program_file_and_reset(char *file){
   program_file(file);
-  reset(usbdev); 
+  reset(usbdev);
+  return 0;
 }
 
 int main(int argc, char *argv[])

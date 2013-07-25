@@ -1,0 +1,124 @@
+turtlebots (20-ubuntu15~precise) precise; urgency=low
+
+  * core: -remove sugar-toolkit depend
+
+ -- AlanJAS <alanjas@hotmail.com>  Tue, 16 Jul 2013 17:26:29 -0300
+
+turtlebots (20-r0) unstable; urgency=low
+
+  * core: +based on TurtleBlocks v179
+  * core: +compile package after install
+  * core: /udev rules level 60
+  * core: /gramar error in description of the deb package
+  * core: +python-pygame as dependency
+  * butia: /join usb4butia and pythonAPI
+  * butia: +add power manager behavior
+  * butia: +add getType motors behavior for refresh blocks
+  * butia: /correct right left motors call
+  * butia: -remove self.butia validation
+  * butia: -remove duplicated reconnect
+  * butia: /fix move_butia speed parameters
+  * pybot: /uniformize functions call
+  * pybot: /getVolt Butia returns the voltage
+  * pybot: +add ax driver
+  * pybot: /fix some drivers calls
+  * pybot: +add sendPacket to ax driver
+  * pybot: /improve debug function
+  * pybot: /change drivers system
+  * pybot: +add basic chotox functionally
+  * pybot: +add basic describe
+  * pybot: /improve refresh function
+  * pybot: +validate open device
+  * pybot: /correct lenght on device send
+  * pybot: +add com_usb get_address function
+  * pybot: /improve time of com_usb find function
+  * pybot: /add openable if sucess open
+  * pybot: +add open and close command
+  * pybot: /remove unnecessary calls if handler is -1
+  * pybot: +add getType to motors driver
+  * pybot: /refresh devices when listing
+  * pybot: /fix type of volt and res sensor
+  * pybot: /battery returns a float again
+  * pybot: /chotox in separate module
+  * pybot: /more function in chotox mode
+  * pybot: +add basic client when no telnet
+  * pybot: +add testMotors function to motors driver
+  * pybot: /validate type in _doCommand function
+  * pybot: /possibility of no auto-connect the client
+  * pybot: /works with device directly
+  * pybot: /disable debug in com_usb
+  * pybot: /update pybot button driver
+  * nxt: /update nxt commit
+  * patterns: -remove unnnecessary libs in compile
+  * patterns: -remove unnnecessary prints
+  * wedo: /uses same pyusb than pybot
+  * +new translations
+
+ -- Alan Aguiar <alanjas@hotmail.com>  Tue, 28 May 2013 18:38:03 -0300
+
+turtlebots (19-r0) unstable; urgency=low
+
+  * core: +based on TurtleBlocks v173
+  * add Arduino plugin
+  * add pattern detection plugin
+  * butia: /uses Pybot instead Bobot
+  * butia: +add compatibility with XO-1.75 (ARM)
+  * butia: /fix some bugs on refresh blocks
+  * butia: +new drivers
+  * +new translations
+
+ -- Alan Aguiar <alanjas@hotmail.com>  Wed, 06 Mar 2013 17:19:52 -0200
+
+turtlebots (18-r1) unstable; urgency=low
+
+  * Release for MG2 compatibility
+
+ -- Guillermo Reisch <greisch@fing.edu.uy>  Thu, 15 Jan 2013 14:13:47 -0200
+
+turtlebots (18-r0) unstable; urgency=low
+
+  * core: +based on TurtleBlocks v168+
+  * core: +More traslations
+  * butia: +add extra palette for Butia
+  * butia: +add LED driver and function
+  * butia: +add moveButia block
+  * butia: -remove deprecated distance blocks - turnXdegree
+  * nxt: /allow multi-devices control
+  * nxt: /uses nxt with light and greyscale sensors
+  * nxt: /light sensor fix
+  * nxt: -no search for devices at init
+  * followme: /refresh followme blocks now always in green
+  * butia: /add get and write functions to hackpins of USB4Butia
+  * core: /change rules name and priority
+  * butia: /restructuring butia.py code
+  * butia: /allow 6 sensors of same type
+  * butia: /fix return function for voltage and resistance
+  * core: /new Makefile for TurtleBots
+  * butia: /Bobot only support USB for Butia 2.0
+  * butia: -remove compatibility with Butia 1.0
+  * nxt: /motor_pos fixed
+  * nxt: /allow multi-devices control
+  * nxt: /uses nxt with light and greyscale sensors
+  * nxt: /light sensor fix
+  * followme: /re-scan for cameras each time you use a FollowMe block
+  * followme: /no turn on the camera at startup, only if it is used
+  * core: /fix problem with speak block
+
+ -- Guillermo Reisch <greisch@fing.edu.uy>  Sun, 06 Jan 2013 17:41:12 -0200
+
+turtlebots (17-r1) unstable; urgency=low
+
+  * Added udev rule for WEDO
+  * add configuration script to crate group robots
+  * more turtlebots 18 that 17, I don't care, jeje
+  * Added python-pygame as recommended (needed by followme)
+
+ -- Guillermo Reisch <greisch@fing.edu.uy>  Thu, 29 Nov 2012 17:01:15 -0200
+
+turtlebots (17-r0) unstable; urgency=low
+
+  * Initial Release.
+  * Fix Makefile to use whit debianhelper
+  * NO POST-INSTALL/REMOVE included!
+
+ -- Guillermo Reisch <greisch@fing.edu.uy>  Wed, 14 Nov 2012 19:37:02 -0200

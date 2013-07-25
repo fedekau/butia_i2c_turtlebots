@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import subprocess
 import commands
 import time
 import gtk
+import ConfigParser
+import gettext
 from pybot import pybot_client
 
 from sugar.activity import activity
@@ -23,9 +26,11 @@ class ButiaAX12ID(activity.Activity):
         self.max_participants = 1
         self.sel = -1
         self.build_toolbar()
-        self.build_canvas()
+        ax = AX12(self)
+        canvas = ax.build_canvas()
+        self.set_canvas(canvas)
         self.show_all()
-        self.pybot_launch()
+        
 
     def build_toolbar(self):
         # Creates the Toolbox. It contains the Activity Toolbar, which is the
@@ -51,7 +56,35 @@ class ButiaAX12ID(activity.Activity):
 
         self.set_toolbox(toolbox)
         toolbox.show()
-        
+
+class AX12():
+
+    def __init__(self, parent=None):
+        self.parent = parent
+        self.pybot_launch()
+
+    def build_window(self):
+        self.get_translations()
+        win = gtk.Window()
+        win.set_title(_('AX-12 ID Changer'))
+        win.connect('delete_event', self._quit)
+        canvas = self.build_canvas()
+        win.add(canvas)
+        win.show()
+        gtk.main()
+
+    def get_translations(self):
+        file_activity_info = ConfigParser.ConfigParser()
+        activity_info_path = os.path.abspath('activity/activity.info')
+        file_activity_info.read(activity_info_path)
+        bundle_id = file_activity_info.get('Activity', 'bundle_id')
+        self.activity_name = file_activity_info.get('Activity', 'name')
+        path = os.path.abspath('locale')
+        gettext.bindtextdomain(bundle_id, path)
+        gettext.textdomain(bundle_id)
+        global _
+        _ = gettext.gettext
+
     # aux function for combobox selection
     def changed_cb(self, combo):
         index = combo.get_active()
@@ -94,7 +127,7 @@ class ButiaAX12ID(activity.Activity):
             combo.append_text(str(i))
         combo.set_active(0)
         combo.connect('changed', self.changed_cb)        
-        self.connect("destroy", self.on_destroy)
+        #self.connect("destroy", self.on_destroy)
 
         #Button alignment 
         fbcidl.put(button_acceptl, 10, 5)
@@ -110,7 +143,7 @@ class ButiaAX12ID(activity.Activity):
         box.add(vbox)
         box.add(fim)
         box.show_all()
-        self.set_canvas(box)
+        return box
 
     def pybot_launch(self):
         output = commands.getoutput('ps -ax | grep python')
@@ -130,26 +163,29 @@ class ButiaAX12ID(activity.Activity):
     #main function, change id
     def change_id(self, idn, msg):
         msg = msg + _("Not disconnect the board and not close this activity.\nDo you want to continue?")
-        dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
+        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
         dialog.set_title(_('Changing motor ID...'))
         res = dialog.run()
         dialog.destroy()
         if res == gtk.RESPONSE_OK:
+            # broadcast to set ID (3)
             self.butia.writeInfo('254', '3', str(idn))
             time.sleep(1)
+            # turn LED on
             check = self.butia.writeInfo(str(idn), '25', '1')
             time.sleep(1)
+            # turn LED off
             self.butia.writeInfo(str(idn), '25', '0')
             #print check
-            if check == 1:
+            if check == 0:
                 msg1 = _('ID Change CORRECT.\nYour new motor ID is %s.') % str(idn)
-                dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
+                dialog1 = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
                 dialog1.set_title(_('Information'))
                 dialog1.run()
                 dialog1.destroy()
             else:
                 msg1 = _('ID Change ERROR\nPlease check board and motor connections.')
-                dialog1 = gtk.MessageDialog(self, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg1)
+                dialog1 = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg1)
                 dialog1.set_title(_('Information'))
                 dialog1.run()
                 dialog1.destroy()
@@ -168,7 +204,7 @@ class ButiaAX12ID(activity.Activity):
     def warning_messageID(self, widget):
         if self.sel == -1:
             msg = _('You must select an ID in the combo.')
-            dialog = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg)
+            dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg)
             dialog.set_title(_('Information'))
             dialog.run()
             dialog.destroy()
@@ -183,4 +219,12 @@ Your motor's new ID will be %s.\n")
         if self.butia:
             self.butia.closeService()
             self.butia.close()
+
+    def _quit(self, win, e):
+        gtk.main_quit()
+        exit()
+
+if __name__ == "__main__":
+    ax = AX12()
+    ax.build_window()
 

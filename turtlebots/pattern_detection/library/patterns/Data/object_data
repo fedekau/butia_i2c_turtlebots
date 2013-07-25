@@ -1,0 +1,62 @@
+#Format:
+#** <obj_name>
+#** <obj_pattern filename> relative to this file
+#** <marker_width> in MM
+#** <centerX centerY>
+
+#number of patterns
+9
+
+#Left sign
+Left
+left.patt
+160
+0,0 0,0
+
+#Right sign
+Right
+right.patt
+160
+0,0 0,0
+
+#Turn Right sign
+Turnright
+turnright.patt
+160
+0,0 0,0
+
+#Turn Left sign
+Turnleft
+turnleft.patt
+160
+0,0 0,0
+
+#Yield sign
+Yield
+yield.patt
+160
+0,0 0,0
+
+#Not Enter Sign
+NotEnter
+notenter.patt
+160
+0,0 0,0
+
+#Round turn sign
+Round
+round.patt
+160
+0,0 0,0
+
+#Stop sign
+Stop
+stop.patt
+160
+0,0 0,0
+
+#Parking sign
+Parking
+parking.patt
+160
+0,0 0,0
