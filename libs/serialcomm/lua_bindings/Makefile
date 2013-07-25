@@ -1,4 +1,4 @@
-LUA_SRC = ../../libs/lua-5.1.4/src/    #change with your lua sources folder
+LUA_SRC = ../../lua-5.1.4/src/    #change with your lua sources folder
 CC = gcc
 LD = gcc
 OPTS= -Wall -fPIC -D_GNU_SOURCE

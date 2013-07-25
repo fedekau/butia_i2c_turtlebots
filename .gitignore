@@ -19,9 +19,9 @@
 #### or simbolics link to .so in bobotxo
 
 ## .SO ignored because can be genereted from source
-lualibusb/libluausb.so
-serialcomm/serialcomm.so
-serialcomm/lua_bindings/lua_serialcomm.so
+libs/lualibusb/libluausb.so
+libs/serialcomm/serialcomm.so
+libs/serialcomm/lua_bindings/lua_serialcomm.so
 bobot/lib/libluausb.so
 bobot/lib/lua_serialcomm.so
 libs/luasocket-2.0.2/src/mime.so.1.0.2

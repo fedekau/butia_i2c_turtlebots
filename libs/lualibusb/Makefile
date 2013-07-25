@@ -1,5 +1,5 @@
-LIBUSB_SRC = ../libs/libusb-0.1.12  #change with your libusb sources folder
-LUA_SRC = ../libs/lua-5.1.4/src/    #change with your lua sources folder
+LIBUSB_SRC = ../libusb-0.1.12  #change with your libusb sources folder
+LUA_SRC = ../lua-5.1.4/src/    #change with your lua sources folder
 
 OPTS       = -Wall -fPIC -fno-stack-protector
 OBJS       = lualibusb.o
