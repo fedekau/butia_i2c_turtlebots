@@ -1,0 +1,5 @@
+[Plugin]
+name=butia
+palette=butia, butia-extra
+version=20
+

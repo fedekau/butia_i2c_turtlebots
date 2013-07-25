@@ -28,5 +28,5 @@ api.getValue.call = function ()
 	local sen_dig_response = device:read(2) -- 2 bytes to read (opcode, data)
     if not sen_dig_response or #sen_dig_response~=2 then return -1 end
 	local raw_val = string_byte(sen_dig_response, 2) or 0 -- keep data
-	return raw_val 
+	return 1 - tonumber(raw_val)
 end

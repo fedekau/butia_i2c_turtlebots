@@ -3,6 +3,7 @@ local device = _G
 local RD_VERSION=string.char(0x00)
 local GET_VALUE=string.char(0x01)
 local string_byte=string.byte
+local MAX=tonumber(65535)
 
 -- description: lets us know light module's version
 api={}
@@ -28,5 +29,5 @@ api.getValue.call = function ()
 	local sen_anl_response = device:read(3) -- operation code and data
 	if not sen_anl_response or #sen_anl_response~=3	then return -1 end
     local raw_val = (string_byte(sen_anl_response, 2) or 0) + (string_byte(sen_anl_response, 3) or 0)* 256
-	return raw_val
+	return MAX - tonumber(raw_val)
 end

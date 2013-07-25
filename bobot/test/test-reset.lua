@@ -22,8 +22,6 @@ end
 
 read_devices_list()
 local device_lback = devices["lback"]
-local device_temp = devices["temp"]
-local device_stmtr = devices["stmtr"]
 
 ----------
 print("=========1")
@@ -31,10 +29,7 @@ device_temp:open(1, 1)
 device_lback:open(1, 1)
 device_stmtr:open(1, 1)
 
-device_lback.api["send"].call("hola!")
-print("ret:", device_lback.api["read"].call())
---print("temp:", device_temp.api["get_temperature"].call())
-----------
+print("ret:", device_lback.api["send"].call("hola!"))
 
 --baseboard:close_all()
 baseboard:force_close_all()
@@ -46,10 +41,8 @@ device_temp:open(1, 1)
 device_lback:open(1, 1)
 device_stmtr:open(1, 1)
 
-device_lback.api["send"].call("hola!")
-print("ret:", device_lback.api["read"].call())
-print("temp:", device_temp.api["get_temperature"].call())
-----------
+
+print("ret:", device_lback.api["send"].call("hola!"))
 
 --baseboard:close_all()
 --baseboard:force_close_all()

@@ -1,8 +1,9 @@
 local device = _G
 local RD_VERSION=string.char(0x00)
-local SET_VEL_2MTR=0x01 -- código de op para mover dos motores con vel y sentido
-local TEST_MOTORS=string.char(0x02)
-local SET_VEL_MTR = 0x01 -- código de op para mover un motor con vel y sentido
+local TYPE=string.char(0x04)
+local SET_VEL_2MTR= 0x01 -- dos motores
+local SET_VEL_MTR = 0x02 -- un motor con vel y sentido
+local TEST_MOTORS = 0x03
 
 api={}
 api.getVersion = {}
@@ -16,7 +17,17 @@ api.getVersion.call = function ()
     return raw_val
 end
 
-api.setvelmtr = {} -- no impl en firmware
+api.getType = {}
+api.getType.parameters = {} -- no input parameters
+api.getType.returns = {[1]={rname="motorType", rtype="int"}}
+api.getType.call = function ()
+	device:send(TYPE) -- operation code 4 = get type motor connected
+    local response = device:read(2) -- 2 bytes to read (opcode, data)
+    if not response or #response~=2 then return -1 end
+    return (string.byte(response,2) or 0)
+end
+
+api.setvelmtr = {}
 api.setvelmtr.parameters = {[1]={rname="id", rtype="int"},[2]={rname="sentido", rtype="int"},[3]={rname="vel", rtype="int"}} --parametros, id sentido vel
 api.setvelmtr.returns = {[1]={rname="dato", rtype="int"}} --codigo de operación
 api.setvelmtr.call = function (id, sentido, vel)

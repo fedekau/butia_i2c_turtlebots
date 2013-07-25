@@ -2,26 +2,25 @@
 
 CURRDIR=`pwd`
 
-rm -rf staging/*
+rm -rf /tmp/staging
 rm -rf *.xo
+mkdir /tmp/staging
 
-cd ../bobot/lib
+cd ../butiaXO
 make
 
 cd $CURRDIR
-cp -Lr Butialo.activity -t staging
+cp -Lr Butialo.activity -t /tmp/staging
 
-cd staging/Butialo.activity/bobot/drivers/
-rm boot.lua buzzer.lua debug.lua ledA.lua ledR.lua ledV.lua \
-	leds.lua motorin.lua motorTm.lua move.lua puerta.lua sec.lua motor.lua \
-	stmtr.lua temp_lubot.lua display.lua
-
-cd $CURRDIR
-cd staging/Butialo.activity
-python setup.py fix_manifest
+cd /tmp/staging/Butialo.activity
+rm -rf locale
+git init
+git add *
+git commit -m 'all files'
+python setup.py build
 python setup.py dist_xo
 
 cd $CURRDIR
-mv staging/Butialo.activity/dist/*.xo .
+mv /tmp/staging/Butialo.activity/dist/*.xo .
 
 

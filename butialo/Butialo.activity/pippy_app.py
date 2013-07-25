@@ -74,14 +74,14 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         text_buffer = gtksourceview2.Buffer()
 
     def initialize_snippets_cb(self, Button):
-	self.model.clear()
+        self.model.clear()
         direntry = {"name": "Devices",
                     "path": "" }
         olditerdev = self.model.insert_before(None, None)
         self.model.set_value(olditerdev, 0, direntry)
         self.model.set_value(olditerdev, 1, direntry["name"])
 
-        root = os.popen("./lua parse_bobot_tree.lua")
+        root = os.popen("./bobot/lua parse_bobot_tree.lua")
         for d in root.readlines():
             d=d.strip()
 
@@ -387,8 +387,8 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
 
         #root = os.path.join(get_bundle_path(), 'data')
 
-	#initialize snippets 
-	self.initialize_snippets_cb(None)
+        #initialize snippets 
+        self.initialize_snippets_cb(None)
 
         # Source buffer
         import gtksourceview2
@@ -514,8 +514,8 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
         self.save()
         butialo_app_name = '%s/tmp/butialo_app.lua' % self.get_activity_root()
         self._write_text_buffer(butialo_app_name)
-        formatted = os.popen("./lua beaut.lua %s" % butialo_app_name)
-	#formatted = "./lua codeformatter.lua --file %s" % butialo_app_name
+        formatted = os.popen("./bobot/lua beaut.lua %s" % butialo_app_name)
+        #formatted = "./lua codeformatter.lua --file %s" % butialo_app_name
         global text_buffer
         text_buffer.set_text(formatted.read())
         self.metadata['title'] = _('%s Activity') % get_bundle_name()
@@ -595,7 +595,7 @@ class ButialoActivity(groupthink.sugar_tools.GroupActivity):
 
 	self._pid = self._vte.fork_command(
 	    argv=["/bin/sh", "-c",
-	          "./lua butialo.lua %s; sleep 1" % butialo_app_name],
+	          "./bobot/lua butialo.lua %s; sleep 1" % butialo_app_name],
 	    #envv=["PYTHONPATH=%s/library:%s" % (get_bundle_path(),
 	    #                                    os.getenv("PYTHONPATH", ""))],
 	    envv=[],

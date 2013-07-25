@@ -7,20 +7,25 @@ local host, port = "localhost", 2009
 
 local client = assert(socket.connect(host, port))
 client:settimeout(nil) --blocking
---client:settimeout(1)
 
 local function send(s)
-	--print("sending", s)
+--	print("sending", s)
 	client:send(s.."\n")
 	local ret = client:receive()
-	--print("ret:", ret)
+--	print("ret:", ret)
 	return ret
 end
-send("LIST")
+
+raw_val = send("LIST")
 socket.sleep(1)
-send("OPEN dist")
-socket.sleep(1)
-while true do
-	print (send("CALL dist getDistancia"))
-	socket.sleep(0.01)
+_, pos = string.find(raw_val, "distanc:")
+port = string.sub(raw_val,pos+1,pos+1)  -- get port number
+
+if pos then
+    while true do
+	    print (send("CALL distanc:"..port.." getValue"))
+	    socket.sleep(0.01)
+    end
+else
+     print("err::No dist connected.")
 end

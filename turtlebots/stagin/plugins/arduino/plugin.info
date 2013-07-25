@@ -1,0 +1,5 @@
+[Plugin]
+name=arduino
+palette=arduino
+version=20
+
