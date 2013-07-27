@@ -11,7 +11,7 @@ def send(dev, data):
     info = data[0]
     msg = [SEND_DATA] + dev.to_ord(info)
     dev.send(msg)
-    raw = dev.read(len(info) + 1)
+    raw = dev.read(len(msg))
     ret = ''
     for r in raw[1:]:
         if not(r == 0):
