@@ -300,44 +300,48 @@ class Butia(Plugin):
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
 
-        for i in [   ['basic-style-1arg', ['led']],
-                     ['box-style', ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB']]
-                 ]:
-
-            (blockstyle , listofmodules) = i
-            for j in listofmodules:
-                for m in range(MAX_SENSOR_PER_TYPE):
+        for j in ['led']:
+            for m in range(MAX_SENSOR_PER_TYPE):
+                if (m == 0):
+                    isHidden = False
+                    k = ''
+                else:
                     isHidden = True
                     k = m
-                    if (m == 0):
-                        isHidden = False
-                        k = ''
-                    module = j + str(k)
-                    block_name = module + 'Butia'
-                    
-                    if (j == 'resistanceB') or (j == 'voltageB'):
-                        palette2.add_block(block_name, 
-                                 style=blockstyle,
-                                 label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
-                                 prim_name= block_name,
-                                 help_string=_(modules_help[j]),
-                                 hidden=isHidden)
-                    else:
-                        palette.add_block(block_name, 
-                                 style=blockstyle,
-                                 label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
-                                 prim_name= block_name,
-                                 help_string=_(modules_help[j]),
-                                 hidden=isHidden)
+                module = j + str(k)
+                block_name = module + 'Butia'
+                palette.add_block(block_name, 
+                     style='basic-style-1arg',
+                     label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
+                     prim_name= block_name,
+                     default=1,
+                     help_string=_(modules_help[j]),
+                     hidden=isHidden)
+                self.tw.lc.def_prim(block_name, 1, lambda self, w, x=m, y=j, z=0: primitive_dictionary[y + 'Butia'](w, x, z))
+                special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
+        for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB']:
+            for m in range(MAX_SENSOR_PER_TYPE):
+                if (m == 0):
+                    isHidden = False
+                    k = ''
+                else:
+                    isHidden = True
                     k = m
-                    if blockstyle == 'basic-style-1arg':
-                        self.tw.lc.def_prim(block_name, 1, lambda self, w, x=k, y=j, z=0: primitive_dictionary[y + 'Butia'](w, x, z))
-                    else:
-                        self.tw.lc.def_prim(block_name, 0, lambda self, x=k, y=j, z=0: primitive_dictionary[y + 'Butia'](x, z))
-
-                    special_block_colors[block_name] = COLOR_NOTPRESENT[:]
-
+                module = j + str(k)
+                block_name = module + 'Butia'
+                if (j == 'resistanceB') or (j == 'voltageB'):
+                    pal = palette2
+                else:
+                    pal = palette
+                pal.add_block(block_name, 
+                     style='box-style',
+                     label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
+                     prim_name= block_name,
+                     help_string=_(modules_help[j]),
+                     hidden=isHidden)
+                self.tw.lc.def_prim(block_name, 0, lambda self, x=m, y=j, z=0: primitive_dictionary[y + 'Butia'](x, z))
+                special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
     ################################ Turtle calls ################################
 
@@ -702,11 +706,13 @@ class Butia(Plugin):
             try:
                 debug_output('Creating Pybot server')
                 self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./plugins/butia/pybot')
+                time.sleep(1)
+                self.butia.reconnect()
             except:
                 debug_output('ERROR creating Pybot server')
         else:
             debug_output('A bot is alive!')
-        self.pollthread=threading.Timer(2, self.bobot_poll)
+        self.pollthread=threading.Timer(1, self.bobot_poll)
         self.pollthread.start()
 
     def bobot_poll(self):

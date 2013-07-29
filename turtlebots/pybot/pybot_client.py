@@ -63,13 +63,10 @@ class robot(ButiaFunctions):
                     self.reconnect()
             self._lock.release()
             return ERROR
-        if ret == '-1' or ret == '':
+        try:
+            ret = ret_type(ret)
+        except:
             ret = ERROR
-        else:
-            try:
-                ret = ret_type(ret)
-            except:
-                ret = ERROR
         self._lock.release()
         return ret
 
@@ -82,6 +79,7 @@ class robot(ButiaFunctions):
             self._client = socket.socket()
             self._client.connect((self._host, self._port))
         except:
+            self._client = None
             return ERROR
         return 0
 
