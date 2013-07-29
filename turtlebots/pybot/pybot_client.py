@@ -79,7 +79,6 @@ class robot(ButiaFunctions):
             self._client = socket.socket()
             self._client.connect((self._host, self._port))
         except:
-            self._client = None
             return ERROR
         return 0
 
