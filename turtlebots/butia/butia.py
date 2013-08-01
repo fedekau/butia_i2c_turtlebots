@@ -372,7 +372,7 @@ class Butia(Plugin):
         palette2.add_block('castButia',
                   style='basic-style-3arg',
                   label=[_('CAST\n'), _('new name'), _('original'), _('f(x)=')],
-                  default=['', '', 'x'],
+                  default=[_('name'), '', 'x'],
                   help_string=_('Cast a new block'),
                   prim_name='castButia')
         self.tw.lc.def_prim('castButia', 3, lambda self, x, y, z: primitive_dictionary['castButia'](x, y, z))
@@ -862,8 +862,7 @@ class Butia(Plugin):
             self.module_c_name = new_name
             self.module_c_f = function
         else:
-            module_block = 'module_a'
-            print 'error', original
+            raise logoerror(_('ERROR: You must cast Module A, B or C'))
 
         for blk in self.tw.block_list.list:
             if (blk.type in ['proto', 'block']) and blk.name.endswith('Butia'):
