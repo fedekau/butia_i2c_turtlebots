@@ -24,6 +24,7 @@ import threading
 import re
 import subprocess
 import commands
+import gconf
 from pybot import pybot_client
 
 from TurtleArt.tapalette import special_block_colors
@@ -52,6 +53,8 @@ ERROR_PIN_NUMBER = _('ERROR: The pin must be between 1 and 8')
 ERROR_PIN_VALUE = _('ERROR: The value must be 0 or 1, LOW or HIGH')
 ERROR_PIN_MODE = _('ERROR: The mode must be INPUT or OUTPUT.')
 
+GCONF_CAST = '/desktop/sugar/activities/turtlebots/cast/'
+
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
 modules_help['led'] = _("turns LED on and off: 1 means on, 0 means off")
@@ -61,6 +64,9 @@ modules_help['light'] = _("returns the light level as a value between 0 and 6553
 modules_help['distance'] = _("returns the distance as a value between 0 and 65535")
 modules_help['resistanceB'] = _("returns the resistance value (ohms)")
 modules_help['voltageB'] = _("returns the voltage value (volts)")
+modules_help['module_a'] = _("custom module A")
+modules_help['module_b'] = _("custom module B")
+modules_help['module_c'] = _("custom module C")
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 modules_name_from_device_id = {} 
@@ -71,6 +77,9 @@ modules_name_from_device_id['light'] = 'light'
 modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
 modules_name_from_device_id['voltageB'] = 'volt'
+modules_name_from_device_id['module_a'] = 'moduleA'
+modules_name_from_device_id['module_b'] = 'moduleB'
+modules_name_from_device_id['module_c'] = 'moduleC'
 
 device_id_from_module_name = {} 
 device_id_from_module_name['led'] = 'led'
@@ -80,6 +89,9 @@ device_id_from_module_name['light'] = 'light'
 device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
 device_id_from_module_name['volt'] = 'voltage'
+device_id_from_module_name['moduleA'] = 'module_a'
+device_id_from_module_name['moduleB'] = 'module_b'
+device_id_from_module_name['moduleC'] = 'module_c'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -89,15 +101,19 @@ label_name_from_device_id['light'] = _('light')
 label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
+label_name_from_device_id['module_a'] = _('module a')
+label_name_from_device_id['module_b'] = _('module b')
+label_name_from_device_id['module_c'] = _('module c')
 
-refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB']
+refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'module_a', 'module_b', 'module_c']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
-extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
+extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia', 'const_aButia', 'const_bButia', 'const_cButia']
 
 class Butia(Plugin):
     
     def __init__(self, parent):
         self.tw = parent
+        self.gconf_client = gconf.client_get_default()
         power_manager_off(True)
         self.butia = pybot_client.robot(auto_connect=False)
         self.actualSpeed = [600, 600]
@@ -287,7 +303,6 @@ class Butia(Plugin):
         self.tw.lc.def_prim('outputButia', 0, lambda self: primitive_dictionary['outputButia']())
         special_block_colors['outputButia'] = COLOR_NOTPRESENT[:]
 
-
         #add every function in the code 
         primitive_dictionary['ledButia'] = self.ledButia
         primitive_dictionary['lightButia'] = self.lightButia
@@ -296,6 +311,9 @@ class Butia(Plugin):
         primitive_dictionary['distanceButia'] = self.distanceButia
         primitive_dictionary['resistanceBButia'] = self.resistanceButia
         primitive_dictionary['voltageBButia'] = self.voltageButia
+        primitive_dictionary['module_aButia'] = self.module_aButia
+        primitive_dictionary['module_bButia'] = self.module_bButia
+        primitive_dictionary['module_cButia'] = self.module_cButia
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
@@ -320,7 +338,7 @@ class Butia(Plugin):
                 self.tw.lc.def_prim(block_name, 1, lambda self, w, x=m, y=j, z=0: primitive_dictionary[y + 'Butia'](w, x, z))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
-        for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB']:
+        for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB', 'module_a', 'module_b', 'module_c']:
             for m in range(MAX_SENSOR_PER_TYPE):
                 if (m == 0):
                     isHidden = False
@@ -330,7 +348,7 @@ class Butia(Plugin):
                     k = m
                 module = j + str(k)
                 block_name = module + 'Butia'
-                if (j == 'resistanceB') or (j == 'voltageB'):
+                if (j in ['resistanceB', 'voltageB', 'module_a', 'module_b', 'module_c']):
                     pal = palette2
                 else:
                     pal = palette
@@ -342,6 +360,46 @@ class Butia(Plugin):
                      hidden=isHidden)
                 self.tw.lc.def_prim(block_name, 0, lambda self, x=m, y=j, z=0: primitive_dictionary[y + 'Butia'](x, z))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
+
+        # const blocks
+        primitive_dictionary['castButia'] = self.castButia
+        palette2.add_block('castButia',
+                  style='basic-style-3arg',
+                  label=[_('CAST\n'), _('new name'), _('original'), _('f(x)=')],
+                  default=['', '', 'x'],
+                  help_string=_('Cast a new block'),
+                  prim_name='castButia')
+        self.tw.lc.def_prim('castButia', 3, lambda self, x, y, z: primitive_dictionary['castButia'](x, y, z))
+        special_block_colors['castButia'] = COLOR_PRESENT[:]
+
+        primitive_dictionary['const_aButia'] = self.const_aButia
+        palette2.add_block('const_aButia',
+                  style='box-style',
+                  label=_('Module A'),
+                  help_string=_('generic Module A'),
+                  prim_name='const_aButia')
+        self.tw.lc.def_prim('const_aButia', 0, lambda self: primitive_dictionary['const_aButia']())
+        special_block_colors['const_aButia'] = COLOR_PRESENT[:]
+
+        primitive_dictionary['const_bButia'] = self.const_bButia
+        palette2.add_block('const_bButia',
+                  style='box-style',
+                  label=_('Module B'),
+                  help_string=_('generic Module B'),
+                  prim_name='const_bButia')
+        self.tw.lc.def_prim('const_bButia', 0, lambda self: primitive_dictionary['const_bButia']())
+        special_block_colors['const_bButia'] = COLOR_PRESENT[:]
+
+        primitive_dictionary['const_cButia'] = self.const_cButia
+        palette2.add_block('const_cButia',
+                  style='box-style',
+                  label=_('Module C'),
+                  help_string=_('generic Module C'),
+                  prim_name='const_cButia')
+        self.tw.lc.def_prim('const_cButia', 0, lambda self: primitive_dictionary['const_cButia']())
+        special_block_colors['const_cButia'] = COLOR_PRESENT[:]
+
+
 
     ################################ Turtle calls ################################
 
@@ -467,14 +525,22 @@ class Butia(Plugin):
                                     value = str(blk_index)
                                 else:
                                     value = '0'
-                                label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
+                                print blk_name, module
+                                if blk_name in ['module_a', 'module_b', 'module_c']:
+                                    label = self.getCastButia(blk_name) + ' ' + _('Butia')
+                                else:
+                                    label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
                                 board = '0'
                                 special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
                             else:
                                 val = self.match_dict[s]
                                 value = val[0]
                                 board = val[1]
-                                label = label_name_from_device_id[blk_name] + ':' + val[0] + ' ' + _('Butia')
+                                if blk_name in ['module_a', 'module_b', 'module_c']:
+                                    label = self.getCastButia(blk_name)
+                                else:
+                                    label = label_name_from_device_id[blk_name]
+                                label = label + ':' + val[0] + ' ' + _('Butia')
                                 if boards_present > 1:
                                     label = label + ' ' + val[1]
 
@@ -697,6 +763,82 @@ class Butia(Plugin):
                     raise logoerror(_('ERROR: The pin %s must be in INPUT mode.') % pin)
                 else:
                     return self.butia.getHack(pin)
+
+    ################################ Custom modules ################################
+
+    def const_aButia(self):
+        return _('Module A')
+
+    def const_bButia(self):
+        return _('Module B')
+
+    def const_cButia(self):
+        return _('Module C')
+
+    def module_aButia(self, sensorid=0, boardid=0):
+        return self.butia.getModuleA(sensorid, boardid)
+
+    def module_bButia(self, sensorid=0, boardid=0):
+        return self.butia.getModuleB(sensorid, boardid)
+
+    def module_cButia(self, sensorid=0, boardid=0):
+        return self.butia.getModuleC(sensorid, boardid)
+
+    def getCastButia(self, t):
+        if (t == 'module_a'):
+            return self.gconf_client.get_string(GCONF_CAST + 'moduleA')
+        elif (t == 'module_b'):
+            return self.gconf_client.get_string(GCONF_CAST + 'moduleB')
+        elif (t == 'module_c'):
+            return self.gconf_client.get_string(GCONF_CAST + 'moduleC')
+        else:
+            print 'wrong cast', t
+
+    def castButia(self, new_name, original, conversion):
+        print 'original', original
+        print 'new name', new_name
+        print 'conv', conversion
+
+
+        if original == _('Module A'):
+            module_block = 'module_a'
+            self.gconf_client.set_string(GCONF_CAST + 'moduleA', str(new_name))
+        elif original == _('Module B'):
+            module_block = 'module_b'
+            self.gconf_client.set_string(GCONF_CAST + 'moduleB', str(new_name))
+        elif original == _('Module C'):
+            module_block = 'module_c'
+            self.gconf_client.set_string(GCONF_CAST + 'moduleC', str(new_name))
+        else:
+            print 'error'
+
+        #refreshable_block_list
+
+        for blk in self.tw.block_list.list:
+            if (blk.type in ['proto', 'block']) and blk.name.endswith('Butia'):
+                blk_name, blk_index = self.block_2_index_and_name(blk.name)
+
+                if (blk_name == module_block):
+                    #print 'adentro', blk_name, blk_index
+                    label = new_name + ' ' + _('Butia')
+
+                    if blk.type == 'proto':
+                        if blk_index == '0':
+                            blk.set_visibility(True)
+
+                    #el refresh lo pone en verde
+                    #special_block_colors[blk.name] = COLOR_PRESENT[:]
+
+
+                    blk.spr.set_label(label)
+                    block_names[blk.name][0] = label
+                    blk.refresh()
+
+        try:
+            index = palette_name_to_index('butia-extra')
+            self.tw.regenerate_palette(index)
+        except:
+            pass
 
     ################################ pybot and thread ################################
 

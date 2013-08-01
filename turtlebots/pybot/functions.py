@@ -212,3 +212,23 @@ class ButiaFunctions:
         """
         return self.callModule('hackp', str(board), '0', 'read', [str(pin)])
 
+    ############################# Generic modules #############################
+
+    def getModuleA(self, port, board='0'):
+        """
+        Gets the value of the generic sensor ModuleA connected in port
+        """
+        return self.callModule('moduleA', str(board), str(port), 'getValue')
+
+    def getModuleB(self, port, board='0'):
+        """
+        Gets the value of the generic sensor ModuleB connected in port
+        """
+        return self.callModule('moduleB', str(board), str(port), 'getValue')
+
+    def getModuleC(self, port, board='0'):
+        """
+        Gets the value of the generic sensor ModuleC connected in port
+        """
+        return self.callModule('moduleC', str(board), str(port), 'getValue')
+
