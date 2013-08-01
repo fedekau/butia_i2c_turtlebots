@@ -122,6 +122,12 @@ class Butia(Plugin):
         self.pollrun = True
         self.bobot = None
         self.use_cc = False
+        self.module_a_name = 'module a'
+        self.module_b_name = 'module b'
+        self.module_c_name = 'module c'
+        self.module_a_f = 'x'
+        self.module_b_f = 'x'
+        self.module_c_f = 'x'
         self.m_d = {}
         self.match_dict = {}
         self.battery_value = ERROR
@@ -776,43 +782,77 @@ class Butia(Plugin):
         return _('Module C')
 
     def module_aButia(self, sensorid=0, boardid=0):
-        return self.butia.getModuleA(sensorid, boardid)
+        x = self.butia.getModuleA(sensorid, boardid)
+        return eval(self.module_a_f)
 
     def module_bButia(self, sensorid=0, boardid=0):
-        return self.butia.getModuleB(sensorid, boardid)
+        x = self.butia.getModuleB(sensorid, boardid)
+        return eval(self.module_b_f)
 
     def module_cButia(self, sensorid=0, boardid=0):
-        return self.butia.getModuleC(sensorid, boardid)
+        x = self.butia.getModuleC(sensorid, boardid)
+        return eval(self.module_c_f)
 
     def getCastButia(self, t):
         if (t == 'module_a'):
-            return self.gconf_client.get_string(GCONF_CAST + 'moduleA')
+            res = self.gconf_client.get_string(GCONF_CAST + 'moduleA')
+            if res == None:
+                res = 'module a'
+            self.module_a_name = res
+            res = self.gconf_client.get_string(GCONF_CAST + 'moduleA_f')
+            if res == None:
+                res = 'x'
+            self.module_a_f = res
+            return self.module_a_name
         elif (t == 'module_b'):
-            return self.gconf_client.get_string(GCONF_CAST + 'moduleB')
+            res = self.gconf_client.get_string(GCONF_CAST + 'moduleB')
+            if res == None:
+                res = 'module b'
+            self.module_b_name = res
+            res = self.gconf_client.get_string(GCONF_CAST + 'moduleB_f')
+            if res == None:
+                res = 'x'
+            self.module_b_f = res
+            return self.module_b_name
         elif (t == 'module_c'):
-            return self.gconf_client.get_string(GCONF_CAST + 'moduleC')
+            res = self.gconf_client.get_string(GCONF_CAST + 'moduleC')
+            if res == None:
+                res = 'module c'
+            self.module_c_name = res
+            res = self.gconf_client.get_string(GCONF_CAST + 'moduleC_f')
+            if res == None:
+                res = 'x'
+            self.module_c_f = res
+            return self.module_c_name
         else:
             print 'wrong cast', t
 
-    def castButia(self, new_name, original, conversion):
-        print 'original', original
-        print 'new name', new_name
-        print 'conv', conversion
-
+    def castButia(self, new_name, original, function):
+        new_name = str(new_name)
+        function = str(function)
 
         if original == _('Module A'):
             module_block = 'module_a'
-            self.gconf_client.set_string(GCONF_CAST + 'moduleA', str(new_name))
+            self.gconf_client.set_string(GCONF_CAST + 'moduleA', new_name)
+            self.gconf_client.set_string(GCONF_CAST + 'moduleA_f', function)
+            self.module_a_name = new_name
+            self.module_a_f = function
         elif original == _('Module B'):
             module_block = 'module_b'
-            self.gconf_client.set_string(GCONF_CAST + 'moduleB', str(new_name))
+            self.gconf_client.set_string(GCONF_CAST + 'moduleB', new_name)
+            self.gconf_client.set_string(GCONF_CAST + 'moduleB_f', function)
+            self.module_b_name = new_name
+            self.module_b_f = function
         elif original == _('Module C'):
             module_block = 'module_c'
-            self.gconf_client.set_string(GCONF_CAST + 'moduleC', str(new_name))
+            self.gconf_client.set_string(GCONF_CAST + 'moduleC', new_name)
+            self.gconf_client.set_string(GCONF_CAST + 'moduleC_f', function)
+            self.module_c_name = new_name
+            self.module_c_f = function
         else:
-            print 'error'
+            module_block = 'module_a'
+            print 'error', original
 
-        #refreshable_block_list
 
         for blk in self.tw.block_list.list:
             if (blk.type in ['proto', 'block']) and blk.name.endswith('Butia'):
@@ -839,6 +879,8 @@ class Butia(Plugin):
             self.tw.regenerate_palette(index)
         except:
             pass
+        #TODO: pensar algo mejor
+        self.list_connected_device_module = []
 
     ################################ pybot and thread ################################
 
