@@ -107,7 +107,7 @@ label_name_from_device_id['module_c'] = _('module c')
 
 refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'module_a', 'module_b', 'module_c']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
-extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia', 'const_aButia', 'const_bButia', 'const_cButia']
+extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
 class Butia(Plugin):
     
@@ -404,7 +404,6 @@ class Butia(Plugin):
                   prim_name='const_cButia')
         self.tw.lc.def_prim('const_cButia', 0, lambda self: primitive_dictionary['const_cButia']())
         special_block_colors['const_cButia'] = COLOR_PRESENT[:]
-
 
 
     ################################ Turtle calls ################################
