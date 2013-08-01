@@ -495,6 +495,8 @@ class Butia(Plugin):
 
         self.make_match_dict(self.list_connected_device_module)
 
+        self.getCastButia()
+
         for blk in self.tw.block_list.list:
             #NOTE: blocks types: proto, block, trash, deleted
             if (blk.type in ['proto', 'block']) and blk.name.endswith('Butia'):
@@ -531,19 +533,27 @@ class Butia(Plugin):
                                     value = str(blk_index)
                                 else:
                                     value = '0'
-                                print blk_name, module
-                                if blk_name in ['module_a', 'module_b', 'module_c']:
-                                    label = self.getCastButia(blk_name) + ' ' + _('Butia')
+                                if blk_name == 'module_a':
+                                    label = self.module_a_name
+                                elif blk_name == 'module_b':
+                                    label = self.module_b_name
+                                elif blk_name == 'module_c':
+                                    label = self.module_c_name
                                 else:
-                                    label = label_name_from_device_id[blk_name] + ' ' + _('Butia')
+                                    label = label_name_from_device_id[blk_name]
+                                label = label + ' ' + _('Butia')
                                 board = '0'
                                 special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
                             else:
                                 val = self.match_dict[s]
                                 value = val[0]
                                 board = val[1]
-                                if blk_name in ['module_a', 'module_b', 'module_c']:
-                                    label = self.getCastButia(blk_name)
+                                if blk_name == 'module_a':
+                                    label = self.module_a_name
+                                elif blk_name == 'module_b':
+                                    label = self.module_b_name
+                                elif blk_name == 'module_c':
+                                    label = self.module_c_name
                                 else:
                                     label = label_name_from_device_id[blk_name]
                                 label = label + ':' + val[0] + ' ' + _('Butia')
@@ -783,49 +793,52 @@ class Butia(Plugin):
 
     def module_aButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleA(sensorid, boardid)
-        return eval(self.module_a_f)
+        try:
+            return eval(self.module_a_f)
+        except:
+            raise logoerror(_('ERROR: Something wrong with function "%s"') % self.module_a_f)
 
     def module_bButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleB(sensorid, boardid)
-        return eval(self.module_b_f)
+        try:
+            return eval(self.module_b_f)
+        except:
+            raise logoerror(_('ERROR: Something wrong with function "%s"') % self.module_b_f)
 
     def module_cButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleC(sensorid, boardid)
-        return eval(self.module_c_f)
+        try:
+            return eval(self.module_c_f)
+        except:
+            raise logoerror(_('ERROR: Something wrong with function "%s"') % self.module_c_f)
 
-    def getCastButia(self, t):
-        if (t == 'module_a'):
-            res = self.gconf_client.get_string(GCONF_CAST + 'moduleA')
-            if res == None:
-                res = 'module a'
-            self.module_a_name = res
-            res = self.gconf_client.get_string(GCONF_CAST + 'moduleA_f')
-            if res == None:
-                res = 'x'
-            self.module_a_f = res
-            return self.module_a_name
-        elif (t == 'module_b'):
-            res = self.gconf_client.get_string(GCONF_CAST + 'moduleB')
-            if res == None:
-                res = 'module b'
-            self.module_b_name = res
-            res = self.gconf_client.get_string(GCONF_CAST + 'moduleB_f')
-            if res == None:
-                res = 'x'
-            self.module_b_f = res
-            return self.module_b_name
-        elif (t == 'module_c'):
-            res = self.gconf_client.get_string(GCONF_CAST + 'moduleC')
-            if res == None:
-                res = 'module c'
-            self.module_c_name = res
-            res = self.gconf_client.get_string(GCONF_CAST + 'moduleC_f')
-            if res == None:
-                res = 'x'
-            self.module_c_f = res
-            return self.module_c_name
-        else:
-            print 'wrong cast', t
+    def getCastButia(self):
+        res = self.gconf_client.get_string(GCONF_CAST + 'moduleA')
+        if res == None:
+            res = 'module a'
+        self.module_a_name = res
+        res = self.gconf_client.get_string(GCONF_CAST + 'moduleA_f')
+        if res == None:
+            res = 'x'
+        self.module_a_f = res
+
+        res = self.gconf_client.get_string(GCONF_CAST + 'moduleB')
+        if res == None:
+            res = 'module b'
+        self.module_b_name = res
+        res = self.gconf_client.get_string(GCONF_CAST + 'moduleB_f')
+        if res == None:
+            res = 'x'
+        self.module_b_f = res
+
+        res = self.gconf_client.get_string(GCONF_CAST + 'moduleC')
+        if res == None:
+            res = 'module c'
+        self.module_c_name = res
+        res = self.gconf_client.get_string(GCONF_CAST + 'moduleC_f')
+        if res == None:
+            res = 'x'
+        self.module_c_f = res
 
     def castButia(self, new_name, original, function):
         new_name = str(new_name)
@@ -853,13 +866,11 @@ class Butia(Plugin):
             module_block = 'module_a'
             print 'error', original
 
-
         for blk in self.tw.block_list.list:
             if (blk.type in ['proto', 'block']) and blk.name.endswith('Butia'):
                 blk_name, blk_index = self.block_2_index_and_name(blk.name)
 
                 if (blk_name == module_block):
-                    #print 'adentro', blk_name, blk_index
                     label = new_name + ' ' + _('Butia')
 
                     if blk.type == 'proto':
@@ -868,7 +879,6 @@ class Butia(Plugin):
 
                     #el refresh lo pone en verde
                     #special_block_colors[blk.name] = COLOR_PRESENT[:]
-
 
                     blk.spr.set_label(label)
                     block_names[blk.name][0] = label
