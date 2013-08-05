@@ -113,7 +113,7 @@ class Butia(Plugin):
     
     def __init__(self, parent):
         self.tw = parent
-        self.gconf_client = gconf.client_get_default()
+        self.init_gconf()
         power_manager_off(True)
         self.butia = pybot_client.robot(auto_connect=False)
         self.actualSpeed = [600, 600]
@@ -820,30 +820,50 @@ class Butia(Plugin):
         except:
             raise logoerror(_('ERROR: Something wrong with function "%s"') % self.module_c_f)
 
+    def init_gconf(self):
+        try:
+            self.gconf_client = gconf.client_get_default()
+        except Exception, err:
+            self.gconf_client = None
+            print err
+
+    def get_gconf(self, key):
+        try:
+            res = self.gconf_client.get_string(key)
+        except:
+            return None
+        return res
+
+    def set_gconf(self, key, value):
+        try:
+            self.gconf_client.set_string(key, value)
+        except:
+            pass
+
     def getCastButia(self):
-        res = self.gconf_client.get_string(GCONF_CAST + 'moduleA')
+        res = self.get_gconf(GCONF_CAST + 'moduleA')
         if res == None:
             res = 'module a'
         self.module_a_name = res
-        res = self.gconf_client.get_string(GCONF_CAST + 'moduleA_f')
+        res = self.get_gconf(GCONF_CAST + 'moduleA_f')
         if res == None:
             res = 'x'
         self.module_a_f = res
 
-        res = self.gconf_client.get_string(GCONF_CAST + 'moduleB')
+        res = self.get_gconf(GCONF_CAST + 'moduleB')
         if res == None:
             res = 'module b'
         self.module_b_name = res
-        res = self.gconf_client.get_string(GCONF_CAST + 'moduleB_f')
+        res = self.get_gconf(GCONF_CAST + 'moduleB_f')
         if res == None:
             res = 'x'
         self.module_b_f = res
 
-        res = self.gconf_client.get_string(GCONF_CAST + 'moduleC')
+        res = self.get_gconf(GCONF_CAST + 'moduleC')
         if res == None:
             res = 'module c'
         self.module_c_name = res
-        res = self.gconf_client.get_string(GCONF_CAST + 'moduleC_f')
+        res = self.get_gconf(GCONF_CAST + 'moduleC_f')
         if res == None:
             res = 'x'
         self.module_c_f = res
@@ -854,20 +874,20 @@ class Butia(Plugin):
 
         if original == _('Module A'):
             module_block = 'module_a'
-            self.gconf_client.set_string(GCONF_CAST + 'moduleA', new_name)
-            self.gconf_client.set_string(GCONF_CAST + 'moduleA_f', function)
+            self.set_gconf(GCONF_CAST + 'moduleA', new_name)
+            self.set_gconf(GCONF_CAST + 'moduleA_f', function)
             self.module_a_name = new_name
             self.module_a_f = function
         elif original == _('Module B'):
             module_block = 'module_b'
-            self.gconf_client.set_string(GCONF_CAST + 'moduleB', new_name)
-            self.gconf_client.set_string(GCONF_CAST + 'moduleB_f', function)
+            self.set_gconf(GCONF_CAST + 'moduleB', new_name)
+            self.set_gconf(GCONF_CAST + 'moduleB_f', function)
             self.module_b_name = new_name
             self.module_b_f = function
         elif original == _('Module C'):
             module_block = 'module_c'
-            self.gconf_client.set_string(GCONF_CAST + 'moduleC', new_name)
-            self.gconf_client.set_string(GCONF_CAST + 'moduleC_f', function)
+            self.set_gconf(GCONF_CAST + 'moduleC', new_name)
+            self.set_gconf(GCONF_CAST + 'moduleC_f', function)
             self.module_c_name = new_name
             self.module_c_f = function
         else:
