@@ -128,6 +128,7 @@ class Butia(Plugin):
         self.module_a_f = 'x'
         self.module_b_f = 'x'
         self.module_c_f = 'x'
+        self.getCastButia()
         self.m_d = {}
         self.match_dict = {}
         self.battery_value = ERROR
@@ -358,9 +359,17 @@ class Butia(Plugin):
                     pal = palette2
                 else:
                     pal = palette
+                if j == 'module_a':
+                    label = self.module_a_name
+                elif j == 'module_b':
+                    label = self.module_b_name
+                elif j == 'module_c':
+                    label = self.module_c_name
+                else:
+                    label = label_name_from_device_id[j] + str(k)
                 pal.add_block(block_name, 
                      style='box-style',
-                     label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
+                     label=(label + ' ' +  _('Butia')),
                      prim_name= block_name,
                      help_string=_(modules_help[j]),
                      hidden=isHidden)
