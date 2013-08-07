@@ -65,9 +65,9 @@ modules_help['distance'] = _("returns the distance as a value between 0 and 6553
 modules_help['resistanceB'] = _("returns the resistance value (ohms)")
 modules_help['voltageB'] = _("returns the voltage value (volts)")
 modules_help['temperature'] = _("returns the temperature value (celsius degree)")
-modules_help['module_a'] = _("custom module A")
-modules_help['module_b'] = _("custom module B")
-modules_help['module_c'] = _("custom module C")
+modules_help['module_a'] = _("custom module sensor A")
+modules_help['module_b'] = _("custom module sensor B")
+modules_help['module_c'] = _("custom module sensor C")
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 modules_name_from_device_id = {} 
