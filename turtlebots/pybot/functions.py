@@ -184,6 +184,12 @@ class ButiaFunctions:
         """
         return self.callModule('volt', str(board), str(port), 'getValue', ret_type=float)
 
+    def getTemperature(self, port, board='0'):
+        """
+        Gets the value of the temperature sensor connected in port
+        """
+        return self.callModule('temp', str(board), str(port), 'getValue', ret_type=float)
+
     def setLed(self, port, on_off, board='0'):
         """
         Sets on or off the LED connected in port (0 is off, 1 is on)

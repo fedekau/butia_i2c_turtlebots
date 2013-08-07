@@ -64,6 +64,7 @@ modules_help['light'] = _("returns the light level as a value between 0 and 6553
 modules_help['distance'] = _("returns the distance as a value between 0 and 65535")
 modules_help['resistanceB'] = _("returns the resistance value (ohms)")
 modules_help['voltageB'] = _("returns the voltage value (volts)")
+modules_help['temperature'] = _("returns the temperature value (celsius degree)")
 modules_help['module_a'] = _("custom module A")
 modules_help['module_b'] = _("custom module B")
 modules_help['module_c'] = _("custom module C")
@@ -77,6 +78,7 @@ modules_name_from_device_id['light'] = 'light'
 modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
 modules_name_from_device_id['voltageB'] = 'volt'
+modules_name_from_device_id['temperature'] = 'temp'
 modules_name_from_device_id['module_a'] = 'moduleA'
 modules_name_from_device_id['module_b'] = 'moduleB'
 modules_name_from_device_id['module_c'] = 'moduleC'
@@ -89,6 +91,7 @@ device_id_from_module_name['light'] = 'light'
 device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
 device_id_from_module_name['volt'] = 'voltage'
+device_id_from_module_name['temp'] = 'temperature'
 device_id_from_module_name['moduleA'] = 'module_a'
 device_id_from_module_name['moduleB'] = 'module_b'
 device_id_from_module_name['moduleC'] = 'module_c'
@@ -101,11 +104,12 @@ label_name_from_device_id['light'] = _('light')
 label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
+label_name_from_device_id['temperature'] = _('temperature')
 label_name_from_device_id['module_a'] = _('module a')
 label_name_from_device_id['module_b'] = _('module b')
 label_name_from_device_id['module_c'] = _('module c')
 
-refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'module_a', 'module_b', 'module_c']
+refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'temperature', 'module_a', 'module_b', 'module_c']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
@@ -254,16 +258,6 @@ class Butia(Plugin):
         self.tw.lc.def_prim('pinmodeButia', 2, lambda self, x, y: primitive_dictionary['pinmodeButia'](x, y))
         special_block_colors['pinmodeButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['setpinButia'] = self.setpinButia
-        palette2.add_block('setpinButia',
-                     style='basic-style-2arg',
-                     label=[_('write hack pin Butia'), _('pin'), _('value')],
-                     prim_name='setpinButia',
-                     default=[1, 0],
-                     help_string=_('set a hack pin to 0 or 1'))
-        self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
-        special_block_colors['setpinButia'] = COLOR_NOTPRESENT[:]
-
         primitive_dictionary['getpinButia'] = self.getpinButia
         palette2.add_block('getpinButia',
                      style='number-style-1arg',
@@ -273,6 +267,16 @@ class Butia(Plugin):
                      help_string=_('read the value of a hack pin'))
         self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
         special_block_colors['getpinButia'] = COLOR_NOTPRESENT[:]
+
+        primitive_dictionary['setpinButia'] = self.setpinButia
+        palette2.add_block('setpinButia',
+                     style='basic-style-2arg',
+                     label=[_('write hack pin Butia'), _('pin'), _('value')],
+                     prim_name='setpinButia',
+                     default=[1, 0],
+                     help_string=_('set a hack pin to 0 or 1'))
+        self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
+        special_block_colors['setpinButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['inputButia'] = self.inputButia
         palette2.add_block('inputButia',
@@ -318,6 +322,7 @@ class Butia(Plugin):
         primitive_dictionary['distanceButia'] = self.distanceButia
         primitive_dictionary['resistanceBButia'] = self.resistanceButia
         primitive_dictionary['voltageBButia'] = self.voltageButia
+        primitive_dictionary['temperatureButia'] = self.temperatureButia
         primitive_dictionary['module_aButia'] = self.module_aButia
         primitive_dictionary['module_bButia'] = self.module_bButia
         primitive_dictionary['module_cButia'] = self.module_cButia
@@ -345,7 +350,7 @@ class Butia(Plugin):
                 self.tw.lc.def_prim(block_name, 1, lambda self, w, x=m, y=j, z=0: primitive_dictionary[y + 'Butia'](w, x, z))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
-        for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB', 'module_a', 'module_b', 'module_c']:
+        for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB', 'temperature', 'module_a', 'module_b', 'module_c']:
             for m in range(MAX_SENSOR_PER_TYPE):
                 if (m == 0):
                     isHidden = False
@@ -355,7 +360,7 @@ class Butia(Plugin):
                     k = m
                 module = j + str(k)
                 block_name = module + 'Butia'
-                if (j in ['resistanceB', 'voltageB', 'module_a', 'module_b', 'module_c']):
+                if (j in ['resistanceB', 'voltageB', 'temperature', 'module_a', 'module_b', 'module_c']):
                     pal = palette2
                 else:
                     pal = palette
@@ -710,6 +715,9 @@ class Butia(Plugin):
 
     def voltageButia(self, sensorid='0', boardid='0'):
         return self.butia.getVoltage(sensorid, boardid)
+
+    def temperatureButia(self, sensorid='0', boardid='0'):
+        return self.butia.getTemperature(sensorid, boardid)
 
     def ledButia(self, value, sensorid='0', boardid='0'):
         try:
