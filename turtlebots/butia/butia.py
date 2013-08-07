@@ -812,14 +812,14 @@ class Butia(Plugin):
         try:
             return eval(self.module_a_f)
         except:
-            raise logoerror(_('ERROR: Something wrong with function "%s"') % self.module_a_f)
+            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.module_a_f)
 
     def module_bButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleB(sensorid, boardid)
         try:
             return eval(self.module_b_f)
         except:
-            raise logoerror(_('ERROR: Something wrong with function "%s"') % self.module_b_f)
+            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.module_b_f)
 
     def module_cButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleC(sensorid, boardid)
@@ -832,7 +832,7 @@ class Butia(Plugin):
         try:
             self.gconf_client = gconf.client_get_default()
         except Exception, err:
-            debug_output(_('ERROR: cannot init Gconf client: %s') % err)
+            debug_output(_('ERROR: cannot init GCONF client: %s') % err)
             self.gconf_client = None
             print err
 
