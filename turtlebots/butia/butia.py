@@ -826,12 +826,13 @@ class Butia(Plugin):
         try:
             return eval(self.module_c_f)
         except:
-            raise logoerror(_('ERROR: Something wrong with function "%s"') % self.module_c_f)
+            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.module_c_f)
 
     def init_gconf(self):
         try:
             self.gconf_client = gconf.client_get_default()
         except Exception, err:
+            debug_output(_('ERROR: cannot init Gconf client: %s') % err)
             self.gconf_client = None
             print err
 
@@ -933,14 +934,14 @@ class Butia(Plugin):
         res = self.butia.reconnect()
         if res == ERROR:
             try:
-                debug_output('Creating Pybot server')
+                debug_output(_('Creating PyBot server'))
                 self.bobot = subprocess.Popen(['python', 'pybot_server.py'], cwd='./plugins/butia/pybot')
                 time.sleep(1)
                 self.butia.reconnect()
             except:
-                debug_output('ERROR creating Pybot server')
+                debug_output(_('ERROR creating PyBot server'))
         else:
-            debug_output('A bot is alive!')
+            debug_output(_('PyBot is alive!'))
         self.pollthread=threading.Timer(1, self.bobot_poll)
         self.pollthread.start()
 
@@ -953,5 +954,5 @@ class Butia(Plugin):
                 self.check_for_device_change(False)
             self.pollthread.start()
         else:
-            debug_output("Ending butia poll")
+            debug_output(_("Ending butia polling"))
 
