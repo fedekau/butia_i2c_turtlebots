@@ -27,6 +27,9 @@ firmware: Contains the activity for update the firmware of Butia.
 
 changeid: Contains the activity for change the AX-12 motors ID.
 
+newPatterns: Activity to add/remove/change the patterns for the TurtleBots
+    plugin Patterns.
+
 usb4all: project usb4all, a firmware for PIC microcontrollers,
     compatible with butia.
 
