@@ -14,29 +14,21 @@ compile or the code itself in the case of python or lua code.
 bobot: Contains Bobot-server, a daemon responsible for
     communicating with the firmware installed in the Butia
     and exporting it's capabilities using TCP / IP
-    requirements-projects: serialcomm, lualibusb
+    requirements-projects: libs/serialcomm, libs/lualibusb
 
-turtle_art_plugin: Implements support of Butia in Turtle Blocks.
+turtlebots: Implements support of Butia in Turtle Blocks.
     Uses Turtle Blocks plugin system. In this folder there is a 
     shell script to make an .xo called TurtleBots, a 
     TurtleBlocks activity whit the logo changed and the Butia plugin 
     already instaled. It includes another plugins: FollowMe, Lego NxT,
     Lego WeDo. 
-    requirements-projects: bobotXO
 
 firmware: Contains the activity for update the firmware of Butia.
-    requirements-projects: arduino, avrdude
+
+changeid: Contains the activity for change the AX-12 motors ID.
 
 usb4all: project usb4all, a firmware for PIC microcontrollers,
     compatible with butia.
-
-API: implements bobot-server's API in several programming 
-    languages to control Butia
-
-serialcomm: library for using serial
-
-lualibusb: binding library for using libusb in lua
-    requirements-projects: libusb-dev
 
 ######### Other remotes projects/sources in git #######
 
@@ -45,7 +37,11 @@ libs/lua: lua source
 
 libs/libusb: libusb headers files
 
+libs/serialcomm: library for using serial
+
+libs/lualibusb: binding library for using libusb in lua
+    requirements-projects: libusb-dev
 
 
-### Last edited 2013/01/25 by Alan Aguiar <alanjas@hotmail.com> ###
+### Last edited 2013/8/17 by Alan Aguiar <alanjas@hotmail.com> ###
 
