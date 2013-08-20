@@ -108,16 +108,13 @@ class Device():
         Call specify func function with params parameters
         """
         f = getattr(self.functions, func)
-        if self.name == 'lback':
+        if func == 'sendPacket' or func == 'send':
             return f(self, params)
         else:
             par = []
             for e in params:
                 par.append(int(e))
-            if func == 'sendPacket':
-                return f(self, par)
-            else:
-                return f(self, *par)
+            return f(self, *par)
 
     def to_ord(self, string):
         """
@@ -129,4 +126,14 @@ class Device():
             if not(o == 0):
                 s.append(o)
         return s
+
+    def to_text(self, raw):
+        """
+        Useful function to convert ordinal Unicode into text
+        """
+        ret = ''
+        for r in raw:
+            if not(r == 0):
+                ret = ret + chr(r)
+        return ret
 
