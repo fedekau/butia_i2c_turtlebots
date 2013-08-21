@@ -120,7 +120,7 @@ class robot(ButiaFunctions):
         """
         return self._doCommand('BUTIA_COUNT', int)
 
-    def getModulesList(self, normal=True):
+    def getModulesList(self):
         """
         returns a list of modules
         """
@@ -128,13 +128,7 @@ class robot(ButiaFunctions):
         ret = self._doCommand('LIST')
         if not(ret == ERROR):
             l = ret.split(',')
-        if normal:
-            return l
-        else:
-            modules = []
-            for m in l:
-                modules.append(self._split_module(m))
-            return modules
+        return l
 
     def _split_module(self, mbn):
         """
