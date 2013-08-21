@@ -56,7 +56,7 @@ class USB4Butia(ButiaFunctions):
         """
         return len(self._bb)
 
-    def getModulesList(self, normal=True, refresh=True):
+    def getModulesList(self, refresh=True):
         """
         Get the list of modules loaded in the board
         """
@@ -72,20 +72,14 @@ class USB4Butia(ButiaFunctions):
                 self._debug('===board', i)
                 for m in range(0, s + 1):
                     t = b.get_handler_type(m)
-                    if not(t == 255):
-                        module_name = listi[t]
-                        if n_boards > 1:
-                            complete_name = module_name + '@' + str(i) + ':' +  str(m)
-                        else:
-                            complete_name = module_name + ':' +  str(m)
-                        self._debug('=====module ' + module_name + (9 - len(module_name)) * ' ' + complete_name)
+                    module_name = listi[t]
+                    if n_boards > 1:
+                        complete_name = module_name + '@' + str(i) + ':' +  str(m)
                     else:
-                        module_name = 'port'
+                        complete_name = module_name + ':' +  str(m)
+                    self._debug('=====module ' + module_name + (9 - len(module_name)) * ' ' + complete_name)
                     if not(module_name == 'port'):
-                        if normal:
-                            modules.append(complete_name)
-                        else:
-                            modules.append((str(m), module_name, str(i)))
+                        modules.append(complete_name)
                         if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
                             d = Device(b, module_name, m, self._drivers_loaded[module_name])
                             b.add_device(m, d)
