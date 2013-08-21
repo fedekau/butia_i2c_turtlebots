@@ -486,14 +486,16 @@ class Butia(Plugin):
         l = list(s)
         self.modules_changed = []
         for e in l:
-            if e[1] in device_id_from_module_name:
-                self.modules_changed.append(e[1])
+            t = self.butia._split_module(e)
+            if t[1] in device_id_from_module_name:
+                self.modules_changed.append(t[1])
 
-    def make_match_dict(self, l):
+    def make_match_dict(self):
         for d in device_id_from_module_name.keys():
             self.m_d[d] = 0
         _list = []
-        for t in l:
+        for m in self.list_connected_device_module:
+            t = self.butia._split_module(m)
             module = t[1]
             if module in device_id_from_module_name:
                 n = self.m_d[module]
@@ -506,7 +508,7 @@ class Butia(Plugin):
 
     def change_butia_palette_colors(self, force_refresh, change_statics_blocks, change_extras_blocks, boards_present):
 
-        self.make_match_dict(self.list_connected_device_module)
+        self.make_match_dict()
 
         self.getCastButia()
 
@@ -539,6 +541,16 @@ class Butia(Plugin):
                         module = modules_name_from_device_id[blk_name]
                         if (module in self.modules_changed) or force_refresh:
                             s = module + blk_index
+
+                            if blk_name == 'module_a':
+                                label = self.module_a_name
+                            elif blk_name == 'module_b':
+                                label = self.module_b_name
+                            elif blk_name == 'module_c':
+                                label = self.module_c_name
+                            else:
+                                label = label_name_from_device_id[blk_name]
+
                             if not(s in self.match_dict):
                                 if blk_index !='' :
                                     if blk.type == 'proto': # only make invisible the block in the palette not in the program area
@@ -546,14 +558,6 @@ class Butia(Plugin):
                                     value = str(blk_index)
                                 else:
                                     value = '0'
-                                if blk_name == 'module_a':
-                                    label = self.module_a_name
-                                elif blk_name == 'module_b':
-                                    label = self.module_b_name
-                                elif blk_name == 'module_c':
-                                    label = self.module_c_name
-                                else:
-                                    label = label_name_from_device_id[blk_name]
                                 label = label + ' ' + _('Butia')
                                 board = '0'
                                 special_block_colors[blk.name] = COLOR_NOTPRESENT[:]
@@ -561,18 +565,9 @@ class Butia(Plugin):
                                 val = self.match_dict[s]
                                 value = val[0]
                                 board = val[1]
-                                if blk_name == 'module_a':
-                                    label = self.module_a_name
-                                elif blk_name == 'module_b':
-                                    label = self.module_b_name
-                                elif blk_name == 'module_c':
-                                    label = self.module_c_name
-                                else:
-                                    label = label_name_from_device_id[blk_name]
                                 label = label + ':' + val[0] + ' ' + _('Butia')
                                 if boards_present > 1:
                                     label = label + ' ' + val[1]
-
                                 if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
                                     blk.set_visibility(True)
                                 special_block_colors[blk.name] = COLOR_PRESENT[:]
@@ -605,7 +600,7 @@ class Butia(Plugin):
          then it change the color of the blocks corresponding to the device """
         
         old_list_connected_device_module = self.list_connected_device_module[:]
-        self.list_connected_device_module = self.butia.getModulesList(False)
+        self.list_connected_device_module = self.butia.getModulesList()
         boards_present = self.butia.getButiaCount()
 
         self.update_colors()
