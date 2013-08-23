@@ -53,7 +53,7 @@ ERROR_PIN_NUMBER = _('ERROR: The pin must be between 1 and 8')
 ERROR_PIN_VALUE = _('ERROR: The value must be 0 or 1, LOW or HIGH')
 ERROR_PIN_MODE = _('ERROR: The mode must be INPUT or OUTPUT.')
 
-GCONF_CAST = '/desktop/sugar/activities/turtlebots/cast/'
+GCONF_CAST = '/desktop/sugar/activities/turtlebots/cast'
 
 #Dictionary for help string asociated to modules used for automatic generation of block instances
 modules_help = {} 
