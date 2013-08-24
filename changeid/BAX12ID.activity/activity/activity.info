@@ -3,6 +3,6 @@ name = Butia AX12 ID
 bundle_id = uy.edu.fing.butiaax12id
 exec = sugar-activity Activity.ButiaAX12ID
 icon = BAX12ID
-activity_version = 2
+activity_version = 3
 show_launcher = yes
 summary = AX-12 ID Changer
