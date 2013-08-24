@@ -105,13 +105,13 @@ class Flash():
             arq = platform.machine()
         except:
             print 'Error getting platform info'
-            arq = 'x86_64'
+            arq = 'i686'
 
         if arq == 'x86_64':
             path = './fsusb/x64/fsusb'
             print 'Use 64bits fsusb'
         elif arq.startswith('arm'):
-            path = './fsusb/ARM/fsusb'
+            path = './fsusb/arm/fsusb'
             print 'Use ARM fsusb'
         else:
             path = './fsusb/x32/fsusb'
