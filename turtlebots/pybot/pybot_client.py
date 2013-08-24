@@ -124,11 +124,11 @@ class robot(ButiaFunctions):
         """
         returns a list of modules
         """
-        l = []
         ret = self._doCommand('LIST')
-        if not(ret == ERROR):
-            l = ret.split(',')
-        return l
+        if (ret == ERROR) or (ret == ''):
+            return []
+        else:
+            return ret.split(',')
 
     def _split_module(self, mbn):
         """
@@ -148,6 +148,15 @@ class robot(ButiaFunctions):
             else:
                 modulename = mbn
         return (number, modulename, board)
+
+    def describe(self, mod):
+        """
+        Describe the functions of a modulename
+        """
+        split = self._split_module(mod)
+        mod = split[1]
+        ret = self._doCommand('DESCRIBE ' + mod)
+        return ret
 
 if __name__ == "__main__":
     c = robot()

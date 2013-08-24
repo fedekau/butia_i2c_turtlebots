@@ -254,7 +254,7 @@ class USB4Butia(ButiaFunctions):
                 modulename = mbn
         return (number, modulename, board)
 
-    def _describe(self, mod):
+    def describe(self, mod):
         """
         Describe the functions of a modulename
         """
