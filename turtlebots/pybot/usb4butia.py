@@ -72,22 +72,25 @@ class USB4Butia(ButiaFunctions):
                 self._debug('===board', i)
                 for m in range(0, s + 1):
                     t = b.get_handler_type(m)
-                    module_name = listi[t]
-                    if n_boards > 1:
-                        complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                    if (t == 255):
+                        self._debug('unknow module in port:%s' % m)
                     else:
-                        complete_name = module_name + ':' +  str(m)
-                    self._debug('=====module ' + module_name + (9 - len(module_name)) * ' ' + complete_name)
-                    if not(module_name == 'port'):
-                        modules.append(complete_name)
-                        if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
-                            d = Device(b, module_name, m, self._drivers_loaded[module_name])
-                            b.add_device(m, d)
-                            if module_name in self._openables:
-                                b.add_openable_loaded(module_name)
-                    else:
-                        if b.devices.has_key(m):
-                            b.devices.pop(m)
+                        module_name = listi[t]
+                        if n_boards > 1:
+                            complete_name = module_name + '@' + str(i) + ':' +  str(m)
+                        else:
+                            complete_name = module_name + ':' +  str(m)
+                        self._debug('=====module ' + module_name + (9 - len(module_name)) * ' ' + complete_name)
+                        if not(module_name == 'port'):
+                            modules.append(complete_name)
+                            if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
+                                d = Device(b, module_name, m, self._drivers_loaded[module_name])
+                                b.add_device(m, d)
+                                if module_name in self._openables:
+                                    b.add_openable_loaded(module_name)
+                        else:
+                            if b.devices.has_key(m):
+                                b.devices.pop(m)
             except Exception, err:
                 self._debug('ERROR:usb4butia:get_modules_list', err)
         return modules
@@ -234,6 +237,17 @@ class USB4Butia(ButiaFunctions):
         else:
             self._debug('cannot close no openable module')
         return ERROR
+
+    def getListi(self, board_number=0):
+        """
+        returns a list of instanciables modules
+        """
+        board_number = int(board_number)
+        if len(self._bb) < (board_number + 1):
+            return []
+        board = self._bb[board_number]
+        listi = board.get_listi()
+        return listi.values()
 
     def _split_module(self, mbn):
         """

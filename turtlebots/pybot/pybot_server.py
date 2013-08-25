@@ -93,6 +93,12 @@ class Server():
                             elif r[0] == 'LIST':
                                 l = self.robot.getModulesList()
                                 result = ','.join(l)
+                            elif r[0] == 'LISTI':
+                                board = 0
+                                if len(r) >= 2:
+                                    board = r[1]
+                                l = self.robot.getListi(board)
+                                result = ','.join(l)
                             elif r[0] == 'REFRESH':
                                 self.robot.refresh()
                             elif r[0] == 'BUTIA_COUNT':

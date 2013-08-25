@@ -194,6 +194,11 @@ class Chotox(ButiaFunctions):
             self._debug('cannot close no openable module')
         return ERROR
 
+    def getListi(self, board_number=0):
+        listi = ['admin', 'pnp', 'port', 'ax', 'button', 'hackp', 'motors', 'butia', 'led']
+        listi = listi + ['grey', 'light', 'res', 'volt', 'temp', 'distanc']
+        return listi
+
     def _split_module(self, mbn):
         """
         Split a modulename: module@board:port to (number, modulename, board)
@@ -213,7 +218,7 @@ class Chotox(ButiaFunctions):
                 modulename = mbn
         return (number, modulename, board)
 
-    def _describe(self, mod):
+    def describe(self, mod):
         """
         Describe the functions of a modulename
         """

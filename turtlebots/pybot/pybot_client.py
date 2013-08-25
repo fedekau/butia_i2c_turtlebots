@@ -130,6 +130,16 @@ class robot(ButiaFunctions):
         else:
             return ret.split(',')
 
+    def getListi(self, board_number=0):
+        """
+        returns a list of instanciables modules
+        """
+        ret = self._doCommand('LISTI ' + str(board_number))
+        if (ret == ERROR) or (ret == ''):
+            return []
+        else:
+            return ret.split(',')
+
     def _split_module(self, mbn):
         """
         Split a modulename: module@board:port to (number, modulename, board)
