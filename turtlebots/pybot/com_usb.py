@@ -63,10 +63,6 @@ class usb_device():
         """
         Close the comunication with the baseboard
         """
-        try:
-            self.dev.__del__()
-        except Exception, err:
-            self._debug('ERROR:com_usb:close_device', err)
         self.dev = None
 
     def read(self, size):
@@ -93,12 +89,10 @@ class usb_device():
         """
         Get unique address for the usb
         """
-        try:
-            address = self.dev.address
-        except Exception, err:
-            self._debug('ERROR:com_usb:get_address', err)
-            return ERROR
-        return address
+        if self.dev is not None:
+            return self.dev.address
+        else:
+            return None
 
     def get_info(self):
         """
