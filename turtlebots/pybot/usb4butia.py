@@ -151,6 +151,9 @@ class USB4Butia(ButiaFunctions):
                     return ERROR
                 return board.devices[number].call_function(function, params)
         except Exception, err:
+            if hasattr(err, 'errno'):
+                if (err.errno == 5) or (err.errno == 19):
+                    self.closeB(board)
             self._debug('ERROR:usb4butia:callModule', err)
             return ERROR
 
@@ -176,18 +179,26 @@ class USB4Butia(ButiaFunctions):
         for b in self._bb:
             n = b.dev.get_address()
             if not(n in devices_ports):
-                self._bb.remove(b)
-                b.close_baseboard()
-                if n in self._b_ports:
-                    self._b_ports.remove(n)
+                self.closeB(b)
+
+    def closeB(self, b):
+        try:
+            n = b.dev.get_address()
+            self._bb.remove(b)
+            b.close_baseboard()
+            if n in self._b_ports:
+                self._b_ports.remove(n)
+        except:
+            pass
 
     def close(self):
         """
         Closes all open baseboards
         """
         for b in self._bb:
-            b.close_baseboard()
+            self.closeB(b)
         self._bb = []
+        self._b_ports = []
 
     def module_open(self, mod):
         """
