@@ -162,22 +162,24 @@ class USB4Butia(ButiaFunctions):
         devices = com_usb.find()
         for dev in devices:
             n = dev.get_address()
-            devices_ports.append(n)
-            if not(n in self._b_ports):
-                b = Baseboard(dev)
-                try:
-                    b.open_baseboard()
-                    self._bb.append(b)
-                    self._b_ports.append(n)
-                except Exception, err:
-                    self._debug('ERROR:usb4butia:refresh', err)
+            if not(n == None):
+                devices_ports.append(n)
+                if not(n in self._b_ports):
+                    b = Baseboard(dev)
+                    try:
+                        b.open_baseboard()
+                        self._bb.append(b)
+                        self._b_ports.append(n)
+                    except Exception, err:
+                        self._debug('ERROR:usb4butia:refresh', err)
 
         for b in self._bb:
             n = b.dev.get_address()
             if not(n in devices_ports):
                 self._bb.remove(b)
-                self._b_ports.remove(n)
                 b.close_baseboard()
+                if n in self._b_ports:
+                    self._b_ports.remove(n)
 
     def close(self):
         """
