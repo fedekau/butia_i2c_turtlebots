@@ -108,13 +108,16 @@ class Device():
         Call specify func function with params parameters
         """
         f = getattr(self.functions, func)
-        if func == 'sendPacket' or func == 'send':
+        if func == 'send':
             return f(self, params)
         else:
             par = []
             for e in params:
                 par.append(int(e))
-            return f(self, *par)
+            if func == 'sendPacket':
+                return f(self, par)
+            else:
+                return f(self, *par)
 
     def to_ord(self, string):
         """

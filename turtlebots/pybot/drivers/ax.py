@@ -32,9 +32,9 @@ def sendPacket(dev, pack):
     if len(raw) == 1:
         return -1      # only opcode o nil
     timeout = raw[2]
-    print 'timeout'
+    print 'timeout', timeout
     if timeout == 1:
-        return "timeout!"
+        return -1
     size = raw[1]
     print "AX12 answer\n:::SIZE = " + str(size) + "\n:::TIMEOUT = " + str(timeout)
     msg = ''
