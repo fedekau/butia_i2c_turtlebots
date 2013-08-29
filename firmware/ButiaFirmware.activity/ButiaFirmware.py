@@ -18,7 +18,7 @@ class Flash():
     def __init__(self, parent=None):
         self.parent = parent
         self._version = 7
-        self.firmware_hex = 'USB4Butia-7.hex'
+        self.firmware_hex = 'USB4Butia-8.hex'
 
     def get_translations(self):
         file_activity_info = ConfigParser.ConfigParser()
