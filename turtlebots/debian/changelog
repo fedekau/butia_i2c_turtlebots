@@ -1,3 +1,9 @@
+turtlebots (21-ubuntu1~precise) precise; urgency=low
+
+  * core: some changes
+
+ -- AlanJAS <alanjas@hotmail.com>  Thu, 29 Aug 2013 21:45:51 -0300
+
 turtlebots (20-ubuntu15~precise) precise; urgency=low
 
   * core: -remove sugar-toolkit depend
