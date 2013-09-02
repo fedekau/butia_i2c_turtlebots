@@ -120,12 +120,12 @@ class Baseboard():
         """
         self.listi[number] = name
 
-    def get_listi(self):
+    def get_listi(self, force=False):
         """
         Get the listi: the list of modules present in the board that can be
         opened (or pnp module opens)
         """
-        if (self.listi == {}):
+        if (self.listi == {}) or force:
             self.generate_listi()
         return self.listi
 

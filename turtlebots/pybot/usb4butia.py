@@ -259,7 +259,7 @@ class USB4Butia(ButiaFunctions):
         if len(self._bb) < (board_number + 1):
             return []
         board = self._bb[board_number]
-        listi = board.get_listi()
+        listi = board.get_listi(True)
         return listi.values()
 
     def _split_module(self, mbn):
