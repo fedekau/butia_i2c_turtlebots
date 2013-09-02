@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: BAX 12ID.activity\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-03-29 11:32-0300\n"
-"PO-Revision-Date: 2013-03-29 11:32-0300\n"
+"PO-Revision-Date: 2013-09-02 11:32-0300\n"
 "Last-Translator: Alan Aguiar <alanjas@hotmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "Language: es\n"
@@ -21,32 +21,32 @@ msgstr ""
 msgid "Butia AX12 ID"
 msgstr "Butia AX12 ID"
 
-#: activity/activity.info:8
+#: ButiaAX12ID.py:24
 msgid "AX-12 ID Changer"
 msgstr "Cambia ID de motores AX-12"
 
-#: ButiaAX12ID.py:77 ButiaAX12ID.py:80
+#: ButiaAX12ID.py:65 ButiaAX12ID.py:68
 #, python-format
 msgid "Change ID (%s motor)"
 msgstr "Cambiar ID (motor %s)"
 
-#: ButiaAX12ID.py:77 ButiaAX12ID.py:159
+#: ButiaAX12ID.py:65 ButiaAX12ID.py:164
 msgid "LEFT"
 msgstr "IZQUIERDO"
 
-#: ButiaAX12ID.py:80 ButiaAX12ID.py:164
+#: ButiaAX12ID.py:68 ButiaAX12ID.py:169
 msgid "RIGHT"
 msgstr "DERECHO"
 
-#: ButiaAX12ID.py:83
+#: ButiaAX12ID.py:71
 msgid "Change ID (CUSTOM)"
 msgstr "Cambiar ID (PERSONALIZADO)"
 
-#: ButiaAX12ID.py:91
+#: ButiaAX12ID.py:79
 msgid "Select ID:"
 msgstr "Seleccione ID:"
 
-#: ButiaAX12ID.py:132
+#: ButiaAX12ID.py:119
 msgid ""
 "Not disconnect the board and not close this activity.\n"
 "Do you want to continue?"
@@ -54,7 +54,7 @@ msgstr ""
 "No desconecte la placa y no cierre esta actividad.\n"
 "¿Desea continuar?"
 
-#: ButiaAX12ID.py:134
+#: ButiaAX12ID.py:121
 msgid "Changing motor ID..."
 msgstr "Cambiando el ID del motor..."
 
@@ -67,11 +67,11 @@ msgstr ""
 "El Cambio de ID fue CORRECTO.\n"
 "Tu nuevo ID de motor es %s."
 
-#: ButiaAX12ID.py:147 ButiaAX12ID.py:153 ButiaAX12ID.py:172
+#: ButiaAX12ID.py:147 ButiaAX12ID.py:151 ButiaAX12ID.py:158 ButiaAX12ID.py:177
 msgid "Information"
 msgstr "Información"
 
-#: ButiaAX12ID.py:151
+#: ButiaAX12ID.py:149
 msgid ""
 "ID Change ERROR\n"
 "Please check board and motor connections."
@@ -79,18 +79,22 @@ msgstr ""
 "ERROR en el Cambio de ID.\n"
 "Por favor chequea la placa y la conexión con el motor."
 
-#: ButiaAX12ID.py:159 ButiaAX12ID.py:164
+#: ButiaAX12ID.py:156
+msgid "The ax module is not present. Please update the USB4Butia Firmware."
+msgstr "El moulo ax no está presente. Por favor actualiza el Firmware de la USB4Butiá."
+
+#: ButiaAX12ID.py:164 ButiaAX12ID.py:169
 #, python-format
 msgid ""
 "Please connect ONLY the %s motor to the board, and the power to this motor.\n"
 msgstr ""
 "Por favor solo conecta el motor %s a la placa y la alimentación al motor.\n"
 
-#: ButiaAX12ID.py:170
+#: ButiaAX12ID.py:175
 msgid "You must select an ID in the combo."
 msgstr "Debes seleccionar un ID en el combo."
 
-#: ButiaAX12ID.py:176
+#: ButiaAX12ID.py:181
 #, python-format
 msgid ""
 "Please connect to the board ONLY the motor or motors that you want to change "
