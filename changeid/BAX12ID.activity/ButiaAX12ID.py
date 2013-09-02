@@ -119,6 +119,8 @@ class AX12():
         msg = msg + _("Not disconnect the board and not close this activity.\nDo you want to continue?")
         dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK_CANCEL, msg)
         dialog.set_title(_('Changing motor ID...'))
+        mod_list = self.butia.getModulesList()
+        print 'Module list %s' % mod_list
         res = dialog.run()
         dialog.destroy()
         if res == gtk.RESPONSE_OK:
@@ -144,16 +146,19 @@ class AX12():
                 if check == 0:
                     msg1 = _('ID Change CORRECT.\nYour new motor ID is %s.') % str(idn)
                     dialog1 = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
-                    dialog1.set_title(_('Information'))
                 else:
                     msg1 = _('ID Change ERROR\nPlease check board and motor connections.')
                     dialog1 = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg1)
-                    dialog1.set_title(_('Information'))
+                dialog1.set_title(_('Information'))
                 dialog1.run()
                 dialog1.destroy()
             else:
-                print 'ax module is not present'
-                msg1 = _('The ax module is not present. Please update the USB4Butia Firmware.')
+                if (listi == []):
+                    print 'empty listi - usb4butia disconnected?'
+                    msg1 = _('We have an empty LISTI. That can means that board is disconnected. Check it.')
+                else:
+                    print 'ax module is not present'
+                    msg1 = _('The ax module is not present. Please update the USB4Butia Firmware.')
                 dialog1 = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg1)
                 dialog1.set_title(_('Information'))
                 dialog1.run()

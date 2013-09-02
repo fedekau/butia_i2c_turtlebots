@@ -30,11 +30,11 @@ msgstr "Cambia ID de motores AX-12"
 msgid "Change ID (%s motor)"
 msgstr "Cambiar ID (motor %s)"
 
-#: ButiaAX12ID.py:65 ButiaAX12ID.py:164
+#: ButiaAX12ID.py:65 ButiaAX12ID.py:168
 msgid "LEFT"
 msgstr "IZQUIERDO"
 
-#: ButiaAX12ID.py:68 ButiaAX12ID.py:169
+#: ButiaAX12ID.py:68 ButiaAX12ID.py:173
 msgid "RIGHT"
 msgstr "DERECHO"
 
@@ -58,7 +58,7 @@ msgstr ""
 msgid "Changing motor ID..."
 msgstr "Cambiando el ID del motor..."
 
-#: ButiaAX12ID.py:145
+#: ButiaAX12ID.py:147
 #, python-format
 msgid ""
 "ID Change CORRECT.\n"
@@ -66,10 +66,6 @@ msgid ""
 msgstr ""
 "El Cambio de ID fue CORRECTO.\n"
 "Tu nuevo ID de motor es %s."
-
-#: ButiaAX12ID.py:147 ButiaAX12ID.py:151 ButiaAX12ID.py:158 ButiaAX12ID.py:177
-msgid "Information"
-msgstr "Información"
 
 #: ButiaAX12ID.py:149
 msgid ""
@@ -79,22 +75,32 @@ msgstr ""
 "ERROR en el Cambio de ID.\n"
 "Por favor chequea la placa y la conexión con el motor."
 
-#: ButiaAX12ID.py:156
+#: ButiaAX12ID.py:151 ButiaAX12ID.py:162 ButiaAX12ID.py:181
+msgid "Information"
+msgstr "Información"
+
+#: ButiaAX12ID.py:157
+msgid ""
+"We have an empty LISTI. That can means that board is disconnected. Check it."
+msgstr ""
+"Tenemos un LISTI vacio. Eso puede significar que la placa está desconectada."
+
+#: ButiaAX12ID.py:160
 msgid "The ax module is not present. Please update the USB4Butia Firmware."
 msgstr "El moulo ax no está presente. Por favor actualiza el Firmware de la USB4Butiá."
 
-#: ButiaAX12ID.py:164 ButiaAX12ID.py:169
+#: ButiaAX12ID.py:168 ButiaAX12ID.py:173
 #, python-format
 msgid ""
 "Please connect ONLY the %s motor to the board, and the power to this motor.\n"
 msgstr ""
 "Por favor solo conecta el motor %s a la placa y la alimentación al motor.\n"
 
-#: ButiaAX12ID.py:175
+#: ButiaAX12ID.py:179
 msgid "You must select an ID in the combo."
 msgstr "Debes seleccionar un ID en el combo."
 
-#: ButiaAX12ID.py:181
+#: ButiaAX12ID.py:185
 #, python-format
 msgid ""
 "Please connect to the board ONLY the motor or motors that you want to change "
