@@ -81,8 +81,7 @@ class AX12():
         for i in range(0, 253):
             combo.append_text(str(i))
         combo.set_active(0)
-        combo.connect('changed', self.changed_cb)        
-        #self.connect("destroy", self.on_destroy)
+        combo.connect('changed', self.changed_cb)
 
         #Button alignment 
         fbcidl.put(button_acceptl, 10, 5)
@@ -123,23 +122,38 @@ class AX12():
         res = dialog.run()
         dialog.destroy()
         if res == gtk.RESPONSE_OK:
-            # broadcast to set ID (3)
-            self.butia.writeInfo('254', '3', str(idn))
-            time.sleep(1)
-            # turn LED on
-            check = self.butia.writeInfo(str(idn), '25', '1')
-            time.sleep(1)
-            # turn LED off
-            self.butia.writeInfo(str(idn), '25', '0')
-            #print check
-            if check == 0:
-                msg1 = _('ID Change CORRECT.\nYour new motor ID is %s.') % str(idn)
-                dialog1 = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
-                dialog1.set_title(_('Information'))
+            #get the listi
+            listi = self.butia.getListi()
+            print 'This USB4Butia have this modules: %s' % listi
+            if 'ax' in listi:
+                # broadcast to set ID (3)
+                print 'Broadcast to set ID number %s...' % str(idn)
+                check = self.butia.writeInfo('254', '3', str(idn))
+                print 'WriteInfo returns %s' % check
+                time.sleep(1)
+                # turn LED on
+                print 'Turn motor LED on...'
+                check = self.butia.writeInfo(str(idn), '25', '1')
+                print 'Turn motor LED on returns %s' % check
+                time.sleep(1)
+                # turn LED off
+                print 'Turn motor LED off...'
+                self.butia.writeInfo(str(idn), '25', '0')
+                print 'Turn motor LED off returns %s' % check
+                #print check
+                if check == 0:
+                    msg1 = _('ID Change CORRECT.\nYour new motor ID is %s.') % str(idn)
+                    dialog1 = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, msg1)
+                    dialog1.set_title(_('Information'))
+                else:
+                    msg1 = _('ID Change ERROR\nPlease check board and motor connections.')
+                    dialog1 = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg1)
+                    dialog1.set_title(_('Information'))
                 dialog1.run()
                 dialog1.destroy()
             else:
-                msg1 = _('ID Change ERROR\nPlease check board and motor connections.')
+                print 'ax module is not present'
+                msg1 = _('The ax module is not present. Please update the USB4Butia Firmware.')
                 dialog1 = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg1)
                 dialog1.set_title(_('Information'))
                 dialog1.run()
@@ -169,14 +183,13 @@ Your motor's new ID will be %s.\n")
             m = m % str(self.sel)
             self.change_id(str(self.sel), m)
 
-    def on_destroy(self, widget):
+    def _quit(self, win, e):
+        print 'Quit'
         gtk.main_quit()
         if self.butia:
+            print 'Closing PyBot...'
             self.butia.closeService()
             self.butia.close()
-
-    def _quit(self, win, e):
-        gtk.main_quit()
         exit()
 
 if __name__ == "__main__":
