@@ -80,6 +80,7 @@ class ClaseMain(threading.Thread):
         #self.negroDer = 30000
         #self.negroIzq = 40000
         self.distMinimalSignal = 500
+        self.distMinimalParking = 500
         self.distSignalTurn = 670
         print str(self.detect.arMultiGetIdsMarker().split(";"))
         #print str(self.butia.getModulesList())
@@ -148,7 +149,7 @@ class ClaseMain(threading.Thread):
             elif cod == "2":
                 print "Right dist: " + str(self.detect.getMarkerTrigDist("Right"))
             elif cod == "3":
-                print "Stop dist: " + str(self.detect.getMarkerTrigDist("Stop"))
+                print "Parking dist: " + str(self.detect.getMarkerTrigDist("Parking"))
             elif cod == "4":
                 print "Yield dist: " + str(self.detect.getMarkerTrigDist("Yield"))
 
@@ -160,12 +161,20 @@ class ClaseMain(threading.Thread):
         elif self.detect.isMarkerPresent("Left") and self.detect.getMarkerTrigDist("Left") < self.distSignalTurn:
             print "estoy cerca de la senia izquierda"
             self.girar_izquierda()
-        elif self.detect.isMarkerPresent("Yield") and self.detect.getMarkerTrigDist("Yield") < self.distMinimalSignal:
-            print "paro los X segundos"
-            self.stopNgo()
         elif self.detect.isMarkerPresent("Stop") and self.detect.getMarkerTrigDist("Stop") < self.distMinimalSignal:
+            print "paro los 3 segundos"
+            self.stopNgo()
+        elif self.detect.isMarkerPresent("Parking") and self.detect.getMarkerTrigDist("Parking") < self.distMinimalParking:
             self.stop()
+        elif self.detect.isMarkerPresent("NotEnter") and self.detect.getMarkerTrigDist("NotEnter") < self.distMinimalSignal:
+            self.giro180()
 
+    def giro180(self):
+        #salir = False
+        self.butia.set2MotorSpeed("0", "0", "0", "0")
+        self.butia.set2MotorSpeed("1","500", "0", "500")
+        time.sleep(3) #aprox los 180 grados
+        self.butia.set2MotorSpeed("0", "0", "0", "0")
 
     def stop(self):
         self.data.set_codigo("S")
