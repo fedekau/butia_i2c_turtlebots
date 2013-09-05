@@ -24,6 +24,7 @@
 
 import os
 import imp
+import inspect
 import com_usb
 from baseboard import Baseboard
 from device import Device
@@ -288,6 +289,7 @@ class USB4Butia(ButiaFunctions):
         split = self._split_module(mod)
         mod = split[1]
         funcs = []
+        d = {}
         if self._drivers_loaded.has_key(mod):
             driver = self._drivers_loaded[mod]
             a = dir(driver)
@@ -298,5 +300,12 @@ class USB4Butia(ButiaFunctions):
                 if flag:
                     funcs.append(p)
             funcs.remove('__package__')
-        return funcs
+            for f in funcs:
+                h = getattr(driver, f)
+                i = inspect.getargspec(h)
+                parameters = i[0]
+                if 'dev' in parameters:
+                    parameters.remove('dev')
+                d[f] = parameters
+        return d
 

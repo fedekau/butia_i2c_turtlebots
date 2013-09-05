@@ -106,8 +106,7 @@ class Server():
                             elif r[0] == 'DESCRIBE':
                                 if len(r) >= 2:
                                     module = r[1]
-                                    funcs = self.robot.describe(module)
-                                    result = ','.join(funcs)
+                                    result = self.robot.describe(module)
                             elif r[0] == 'OPEN':
                                 if len(r) >= 2:
                                     module = r[1]
