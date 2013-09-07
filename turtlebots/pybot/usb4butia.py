@@ -248,6 +248,10 @@ class USB4Butia(ButiaFunctions):
                         return res
                 except Exception, err:
                     self._debug('ERROR:usb4butia:module_close', err)
+                    return ERROR
+            else:
+                self._debug('cannot close no opened module')
+                return ERRROR
         else:
             self._debug('cannot close no openable module')
         return ERROR
