@@ -65,9 +65,9 @@ modules_help['distance'] = _("returns the distance as a value between 0 and 6553
 modules_help['resistanceB'] = _("returns the resistance value (ohms)")
 modules_help['voltageB'] = _("returns the voltage value (volts)")
 modules_help['temperature'] = _("returns the temperature value (celsius degree)")
-modules_help['module_a'] = _("custom module sensor A")
-modules_help['module_b'] = _("custom module sensor B")
-modules_help['module_c'] = _("custom module sensor C")
+modules_help['modSenA'] = _("custom module sensor A")
+modules_help['modSenB'] = _("custom module sensor B")
+modules_help['modSenC'] = _("custom module sensor C")
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 modules_name_from_device_id = {} 
@@ -79,9 +79,9 @@ modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
 modules_name_from_device_id['voltageB'] = 'volt'
 modules_name_from_device_id['temperature'] = 'temp'
-modules_name_from_device_id['module_a'] = 'moduleA'
-modules_name_from_device_id['module_b'] = 'moduleB'
-modules_name_from_device_id['module_c'] = 'moduleC'
+modules_name_from_device_id['modSenA'] = 'modSenA'
+modules_name_from_device_id['modSenB'] = 'modSenB'
+modules_name_from_device_id['modSenC'] = 'modSenC'
 
 device_id_from_module_name = {} 
 device_id_from_module_name['led'] = 'led'
@@ -92,9 +92,9 @@ device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
 device_id_from_module_name['volt'] = 'voltage'
 device_id_from_module_name['temp'] = 'temperature'
-device_id_from_module_name['moduleA'] = 'module_a'
-device_id_from_module_name['moduleB'] = 'module_b'
-device_id_from_module_name['moduleC'] = 'module_c'
+device_id_from_module_name['modSenA'] = 'modSenA'
+device_id_from_module_name['modSenB'] = 'modSenB'
+device_id_from_module_name['modSenC'] = 'modSenC'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -105,11 +105,11 @@ label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
 label_name_from_device_id['temperature'] = _('temperature')
-label_name_from_device_id['module_a'] = _('module a')
-label_name_from_device_id['module_b'] = _('module b')
-label_name_from_device_id['module_c'] = _('module c')
+label_name_from_device_id['modSenA'] = _('sensor a')
+label_name_from_device_id['modSenA'] = _('sensor b')
+label_name_from_device_id['modSenA'] = _('sensor c')
 
-refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'temperature', 'module_a', 'module_b', 'module_c']
+refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
 
@@ -126,12 +126,12 @@ class Butia(Plugin):
         self.pollrun = True
         self.bobot = None
         self.use_cc = False
-        self.module_a_name = 'module a'
-        self.module_b_name = 'module b'
-        self.module_c_name = 'module c'
-        self.module_a_f = 'x'
-        self.module_b_f = 'x'
-        self.module_c_f = 'x'
+        self.modsen_a_name = 'sensor a'
+        self.modsen_b_name = 'sensor b'
+        self.modsen_c_name = 'sensor c'
+        self.modsen_a_f = 'x'
+        self.modsen_b_f = 'x'
+        self.modsen_c_f = 'x'
         self.getCastButia()
         self.m_d = {}
         self.match_dict = {}
@@ -323,9 +323,9 @@ class Butia(Plugin):
         primitive_dictionary['resistanceBButia'] = self.resistanceButia
         primitive_dictionary['voltageBButia'] = self.voltageButia
         primitive_dictionary['temperatureButia'] = self.temperatureButia
-        primitive_dictionary['module_aButia'] = self.module_aButia
-        primitive_dictionary['module_bButia'] = self.module_bButia
-        primitive_dictionary['module_cButia'] = self.module_cButia
+        primitive_dictionary['modSenAButia'] = self.modSenAButia
+        primitive_dictionary['modSenBButia'] = self.modSenBButia
+        primitive_dictionary['modSenCButia'] = self.modSenCButia
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
@@ -350,7 +350,7 @@ class Butia(Plugin):
                 self.tw.lc.def_prim(block_name, 1, lambda self, w, x=m, y=j, z=0: primitive_dictionary[y + 'Butia'](w, x, z))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
-        for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB', 'temperature', 'module_a', 'module_b', 'module_c']:
+        for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC']:
             for m in range(MAX_SENSOR_PER_TYPE):
                 if (m == 0):
                     isHidden = False
@@ -360,16 +360,16 @@ class Butia(Plugin):
                     k = m
                 module = j + str(k)
                 block_name = module + 'Butia'
-                if (j in ['resistanceB', 'voltageB', 'temperature', 'module_a', 'module_b', 'module_c']):
+                if (j in ['resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC']):
                     pal = palette2
                 else:
                     pal = palette
-                if j == 'module_a':
-                    label = self.module_a_name
-                elif j == 'module_b':
-                    label = self.module_b_name
-                elif j == 'module_c':
-                    label = self.module_c_name
+                if j == 'modSenA':
+                    label = self.modsen_a_name
+                elif j == 'modSenB':
+                    label = self.modsen_b_name
+                elif j == 'modSenC':
+                    label = self.modsen_c_name
                 else:
                     label = label_name_from_device_id[j] + str(k)
                 pal.add_block(block_name, 
@@ -542,12 +542,12 @@ class Butia(Plugin):
                         if (module in self.modules_changed) or force_refresh:
                             s = module + blk_index
 
-                            if blk_name == 'module_a':
-                                label = self.module_a_name
-                            elif blk_name == 'module_b':
-                                label = self.module_b_name
-                            elif blk_name == 'module_c':
-                                label = self.module_c_name
+                            if blk_name == 'modSenA':
+                                label = self.modsen_a_name
+                            elif blk_name == 'modSenB':
+                                label = self.modsen_b_name
+                            elif blk_name == 'modSenC':
+                                label = self.modsen_c_name
                             else:
                                 label = label_name_from_device_id[blk_name]
 
@@ -802,26 +802,26 @@ class Butia(Plugin):
     def const_cButia(self):
         return _('Module C')
 
-    def module_aButia(self, sensorid=0, boardid=0):
+    def modSenAButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleA(sensorid, boardid)
         try:
-            return eval(self.module_a_f)
+            return eval(self.modsen_a_f)
         except:
-            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.module_a_f)
+            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_a_f)
 
-    def module_bButia(self, sensorid=0, boardid=0):
+    def modSenBButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleB(sensorid, boardid)
         try:
-            return eval(self.module_b_f)
+            return eval(self.modsen_b_f)
         except:
-            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.module_b_f)
+            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_b_f)
 
-    def module_cButia(self, sensorid=0, boardid=0):
+    def modSenCButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleC(sensorid, boardid)
         try:
-            return eval(self.module_c_f)
+            return eval(self.modsen_c_f)
         except:
-            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.module_c_f)
+            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_c_f)
 
     def init_gconf(self):
         try:
@@ -845,32 +845,32 @@ class Butia(Plugin):
             pass
 
     def getCastButia(self):
-        res = self.get_gconf(GCONF_CAST + 'moduleA')
+        res = self.get_gconf(GCONF_CAST + 'modSenA')
         if res == None:
             res = 'module a'
-        self.module_a_name = res
-        res = self.get_gconf(GCONF_CAST + 'moduleA_f')
+        self.modsen_a_name = res
+        res = self.get_gconf(GCONF_CAST + 'modSenA_f')
         if res == None:
             res = 'x'
-        self.module_a_f = res
+        self.modsen_a_f = res
 
-        res = self.get_gconf(GCONF_CAST + 'moduleB')
+        res = self.get_gconf(GCONF_CAST + 'modSenB')
         if res == None:
             res = 'module b'
-        self.module_b_name = res
-        res = self.get_gconf(GCONF_CAST + 'moduleB_f')
+        self.modsen_b_name = res
+        res = self.get_gconf(GCONF_CAST + 'modSenB_f')
         if res == None:
             res = 'x'
-        self.module_b_f = res
+        self.modsen_b_f = res
 
-        res = self.get_gconf(GCONF_CAST + 'moduleC')
+        res = self.get_gconf(GCONF_CAST + 'modSenC')
         if res == None:
             res = 'module c'
         self.module_c_name = res
-        res = self.get_gconf(GCONF_CAST + 'moduleC_f')
+        res = self.get_gconf(GCONF_CAST + 'modSenC_f')
         if res == None:
             res = 'x'
-        self.module_c_f = res
+        self.modsen_c_f = res
 
     def castButia(self, new_name, original, function):
         new_name = str(new_name)
@@ -878,22 +878,22 @@ class Butia(Plugin):
 
         if original == _('Module A'):
             module_block = 'module_a'
-            self.set_gconf(GCONF_CAST + 'moduleA', new_name)
-            self.set_gconf(GCONF_CAST + 'moduleA_f', function)
-            self.module_a_name = new_name
-            self.module_a_f = function
+            self.set_gconf(GCONF_CAST + 'modSenA', new_name)
+            self.set_gconf(GCONF_CAST + 'modSenA_f', function)
+            self.modsen_a_name = new_name
+            self.modsen_a_f = function
         elif original == _('Module B'):
             module_block = 'module_b'
-            self.set_gconf(GCONF_CAST + 'moduleB', new_name)
-            self.set_gconf(GCONF_CAST + 'moduleB_f', function)
-            self.module_b_name = new_name
-            self.module_b_f = function
+            self.set_gconf(GCONF_CAST + 'modSenB', new_name)
+            self.set_gconf(GCONF_CAST + 'modSenB_f', function)
+            self.modsen_b_name = new_name
+            self.modsen_b_f = function
         elif original == _('Module C'):
             module_block = 'module_c'
-            self.set_gconf(GCONF_CAST + 'moduleC', new_name)
-            self.set_gconf(GCONF_CAST + 'moduleC_f', function)
-            self.module_c_name = new_name
-            self.module_c_f = function
+            self.set_gconf(GCONF_CAST + 'modSenC', new_name)
+            self.set_gconf(GCONF_CAST + 'modSenC_f', function)
+            self.modsen_c_name = new_name
+            self.modsen_c_f = function
         else:
             raise logoerror(_('ERROR: You must cast Module A, B or C'))
 
