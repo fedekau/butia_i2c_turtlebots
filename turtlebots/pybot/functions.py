@@ -239,3 +239,21 @@ class ButiaFunctions:
         """
         return self.callModule('moduleC', str(board), str(port), 'getValue')
 
+    def setModuleA(self, port, on_off, board='0'):
+        """
+        Sets on or off the generic module A
+        """
+        return self.callModule('modSenA', str(board), str(port), 'turn', [str(on_off)])
+
+    def setModuleB(self, port, on_off, board='0'):
+        """
+        Sets on or off the generic module B
+        """
+        return self.callModule('modSenB', str(board), str(port), 'turn', [str(on_off)])
+
+    def setModuleC(self, port, on_off, board='0'):
+        """
+        Sets on or off the generic module C
+        """
+        return self.callModule('modSenC', str(board), str(port), 'turn', [str(on_off)])
+
