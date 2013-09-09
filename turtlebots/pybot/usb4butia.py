@@ -201,13 +201,15 @@ class USB4Butia(ButiaFunctions):
         self._bb = []
         self._b_ports = []
 
-    def module_open(self, mod):
+    def moduleOpen(self, mod):
         """
         Open the module mod
         """
         split = self._split_module(mod)
         modulename = split[1]
         b = int(split[2])
+        if len(self._bb) < (b + 1):
+            return ERROR
         board = self._bb[b]
         return self._open_or_validate(modulename, board)
 
@@ -220,7 +222,7 @@ class USB4Butia(ButiaFunctions):
                 return board.get_device_handler(modulename)
             else:
                 dev = Device(board, modulename, func=self._drivers_loaded[modulename])
-                number = dev.module_open()
+                number = dev.moduleOpen()
                 if number == 255:
                     self._debug('cannot open module', modulename)
                     return ERROR
@@ -230,7 +232,7 @@ class USB4Butia(ButiaFunctions):
                     return number
         return ERROR
 
-    def module_close(self, mod):
+    def moduleClose(self, mod):
         """
         Close the module mod
         """
@@ -238,16 +240,18 @@ class USB4Butia(ButiaFunctions):
         modulename = split[1]
         if modulename in self._openables:
             b = int(split[2])
+            if len(self._bb) < (b + 1):
+                return ERROR
             board = self._bb[b]
             if modulename in board.get_openables_loaded():
                 number = board.get_device_handler(modulename)
                 try:
-                    res = board.devices[number].module_close()
+                    res = board.devices[number].moduleClose()
                     if res == 1:
                         board.remove_openable_loaded(modulename)
                         return res
                 except Exception, err:
-                    self._debug('ERROR:usb4butia:module_close', err)
+                    self._debug('ERROR:usb4butia:moduleClose', err)
                     return ERROR
             else:
                 self._debug('cannot close no opened module')

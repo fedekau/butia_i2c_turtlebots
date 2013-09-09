@@ -168,6 +168,18 @@ class robot(ButiaFunctions):
         ret = self._doCommand('DESCRIBE ' + mod)
         return ret
 
+    def moduleOpen(self, mod):
+        """
+        Open the module mod
+        """
+        return self._doCommand('OPEN ' + mod, int)
+
+    def moduleClose(self, mod):
+        """
+        Close the module mod
+        """
+        return self._doCommand('CLOSE ' + mod, int)
+
 if __name__ == "__main__":
     c = robot()
     run = True

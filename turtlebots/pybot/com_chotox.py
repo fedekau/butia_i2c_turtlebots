@@ -152,7 +152,7 @@ class Chotox(ButiaFunctions):
         """
         pass
 
-    def module_open(self, mod):
+    def moduleOpen(self, mod):
         """
         Open the module mod
         """
@@ -177,7 +177,7 @@ class Chotox(ButiaFunctions):
                 return m
         return ERROR
 
-    def module_close(self, mod):
+    def moduleClose(self, mod):
         """
         Close the module mod
         """
