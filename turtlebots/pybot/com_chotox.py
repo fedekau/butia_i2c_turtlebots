@@ -24,6 +24,7 @@
 
 import os
 import imp
+import inspect
 import com_usb
 from baseboard import Baseboard
 from device import Device
@@ -159,7 +160,9 @@ class Chotox(ButiaFunctions):
         split = self._split_module(mod)
         modulename = split[1]
         b = int(split[2])
-        board = 0
+        if len(self._bb) < (b + 1):
+            return ERROR
+        board = self._bb[b]
         return self._open_or_validate(modulename, board)
 
     def _open_or_validate(self, modulename, board):
@@ -185,11 +188,22 @@ class Chotox(ButiaFunctions):
         modulename = split[1]
         if modulename in self._openables:
             b = int(split[2])
-            if modulename in self._openables_loaded:
-                number = self._get_handler(modulename)
-                self.devices.pop(number)
-                self._openables_loaded.remove(modulename)
-                return 1
+            if len(self._bb) < (b + 1):
+                return ERROR
+            board = self._bb[b]
+            if modulename in board.get_openables_loaded():
+                number = board.get_device_handler(modulename)
+                try:
+                    res = board.devices[number].moduleClose()
+                    if res == 1:
+                        board.remove_openable_loaded(modulename)
+                        return res
+                except Exception, err:
+                    self._debug('ERROR:usb4butia:moduleClose', err)
+                    return ERROR
+            else:
+                self._debug('cannot close no opened module')
+                return ERRROR
         else:
             self._debug('cannot close no openable module')
         return ERROR
@@ -225,6 +239,7 @@ class Chotox(ButiaFunctions):
         split = self._split_module(mod)
         mod = split[1]
         funcs = []
+        d = {}
         if self._drivers_loaded.has_key(mod):
             driver = self._drivers_loaded[mod]
             a = dir(driver)
@@ -235,7 +250,14 @@ class Chotox(ButiaFunctions):
                 if flag:
                     funcs.append(p)
             funcs.remove('__package__')
-        return funcs
+            for f in funcs:
+                h = getattr(driver, f)
+                i = inspect.getargspec(h)
+                parameters = i[0]
+                if 'dev' in parameters:
+                    parameters.remove('dev')
+                d[f] = parameters
+        return d
 
     def _get_handler(self, name):
         for e in self.devices:
