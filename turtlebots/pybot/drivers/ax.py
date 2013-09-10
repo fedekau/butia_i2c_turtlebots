@@ -75,7 +75,7 @@ def getPosition(dev, motor_id):
     return raw_angle * 0.29
 
 def setSpeed(dev, motor_id, speed):
-    vel = speed * 1.496
+    #vel = speed * 1.496
     msg = [WRITE_INFO, motor_id, 0x20, speed / 256, speed % 256]
     dev.send(msg)
     raw = dev.read(2)

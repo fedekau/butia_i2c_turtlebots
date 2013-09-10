@@ -23,7 +23,6 @@ import time
 import threading
 import re
 import subprocess
-import commands
 import gconf
 from pybot import pybot_client
 

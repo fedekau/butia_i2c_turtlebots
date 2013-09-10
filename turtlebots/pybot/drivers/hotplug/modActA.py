@@ -1,6 +1,6 @@
 
 RD_VERSION = 0x00
-GET_VALUE = 0x01
+TURN = 0x01
 
 def getVersion(dev):
     dev.send([RD_VERSION])
