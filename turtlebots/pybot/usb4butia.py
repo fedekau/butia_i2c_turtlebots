@@ -29,7 +29,6 @@ import com_usb
 from baseboard import Baseboard
 from device import Device
 from functions import ButiaFunctions
-import random
 
 ERROR = -1
 
@@ -255,7 +254,7 @@ class USB4Butia(ButiaFunctions):
                     return ERROR
             else:
                 self._debug('cannot close no opened module')
-                return ERRROR
+                return ERROR
         else:
             self._debug('cannot close no openable module')
         return ERROR

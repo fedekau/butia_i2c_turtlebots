@@ -167,12 +167,6 @@ class ButiaFunctions:
         """
         return self.callModule('grey', str(board), str(port), 'getValue')
 
-    def getTemperature(self, port, board='0'):
-        """
-        Gets the value of the temperature sensor connected in port
-        """
-        return self.callModule('temp', str(board), str(port), 'getValue')
-
     def getResistance(self, port, board='0'):
         """
         Gets the value of the resistance sensor connected in port

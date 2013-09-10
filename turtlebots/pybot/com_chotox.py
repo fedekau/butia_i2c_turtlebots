@@ -25,9 +25,6 @@
 import os
 import imp
 import inspect
-import com_usb
-from baseboard import Baseboard
-from device import Device
 from functions import ButiaFunctions
 import random
 
@@ -203,7 +200,7 @@ class Chotox(ButiaFunctions):
                     return ERROR
             else:
                 self._debug('cannot close no opened module')
-                return ERRROR
+                return ERROR
         else:
             self._debug('cannot close no openable module')
         return ERROR
