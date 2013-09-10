@@ -18,7 +18,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import gtk
-import sys, os
 import logging
 from gettext import gettext as _
 from plugins.plugin import Plugin
@@ -27,7 +26,6 @@ from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_blocks
 from TurtleArt.talogo import primitive_dictionary, logoerror
-from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tautils import convert
 from TurtleArt.tawindow import block_names
 pygame = None

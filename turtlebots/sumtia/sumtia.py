@@ -22,12 +22,9 @@
 
 import apiSumoUY
 import math
-import gobject
 
-from TurtleArt.tapalette import make_palette, palette_name_to_index
+from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary
-from TurtleArt.taconstants import BLACK, WHITE, CONSTANTS, BOX_COLORS
-from TurtleArt.tautils import debug_output
 
 from gettext import gettext as _
 
