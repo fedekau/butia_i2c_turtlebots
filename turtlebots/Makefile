@@ -24,10 +24,10 @@
 #versions to checkout before build
 TURTLEBLOCKS_VERSION = 061add8d0e3ea71d376a4a3f2e397f36ba02722c
 EXTRAS_VERSION = a2fe8f1a518d0991bc2d00c0405f12a8d7fa7c41
-NXT_VERSION = 7fda235ca99d46525ead95e94829114d047e09be
+NXT_VERSION = 3a7230edaeb21163e62e5a81e4d759bcf7a8cc4d
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
 ARDUINO_VERSION = ec0719f437b95db48938b7292eb065c674203e43
-PYUSB_VERSION = b80bb0ff6bf81180286eeab15779a4810a468b70
+PYUSB_VERSION = f0de580a8af34fc74031a22f235cbf457366b0f0
 
 SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
@@ -193,6 +193,8 @@ apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	ln -s `pwd`/wedo_plugin       $(BUILDDIR)/plugins/wedo_plugin
 	ln -s `pwd`/arduino           $(BUILDDIR)/plugins/arduino
 	ln -s `pwd`/pattern_detection $(BUILDDIR)/plugins/pattern_detection
+	rm -rf $(BUILDDIR)/plugins/nxt_plugin/usb
+	ln -s `pwd`/pyusb/usb         $(BUILDDIR)/plugins/nxt_plugin
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
