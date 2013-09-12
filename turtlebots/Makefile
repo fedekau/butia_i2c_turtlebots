@@ -163,6 +163,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp -rLf pattern_detection   $(BUILDDIR)/plugins/
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
+	rm -rf $(BUILDDIR)/plugins/nxt_plugin/usb
 	# remove arduino trash
 	rm -rf $(BUILDDIR)/plugins/arduino/.git
 	rm -f $(BUILDDIR)/plugins/arduino/.gitignore
@@ -172,6 +173,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp pyusb/README.rst         $(BUILDDIR)/plugins/butia/pybot/usb
 	cp pyusb/ReleaseNotes.rst   $(BUILDDIR)/plugins/butia/pybot/usb
 	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
+	cp -rLf $(BUILDDIR)/plugins/butia/pybot/usb $(BUILDDIR)/plugins/nxt_plugin/
 	# put pattern_examples into turtle examples folder
 	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
 	# put butia examples into turtle examples folder
@@ -193,8 +195,6 @@ apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	ln -s `pwd`/wedo_plugin       $(BUILDDIR)/plugins/wedo_plugin
 	ln -s `pwd`/arduino           $(BUILDDIR)/plugins/arduino
 	ln -s `pwd`/pattern_detection $(BUILDDIR)/plugins/pattern_detection
-	rm -rf $(BUILDDIR)/plugins/nxt_plugin/usb
-	ln -s `pwd`/pyusb/usb         $(BUILDDIR)/plugins/nxt_plugin
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
