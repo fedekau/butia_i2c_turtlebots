@@ -594,7 +594,7 @@ class Butia(Plugin):
                                     blk.set_visibility(True)
                                 special_block_colors[blk.name] = COLOR_PRESENT[:]
 
-                            if module == 'led':
+                            if module in ['led', 'modActA', 'modActB', 'modActC']:
                                 self.tw.lc.def_prim(blk.name, 1, 
                                 lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x,z))
                             else:
