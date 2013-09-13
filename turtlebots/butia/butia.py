@@ -64,12 +64,12 @@ modules_help['distance'] = _("returns the distance as a value between 0 and 6553
 modules_help['resistanceB'] = _("returns the resistance value (ohms)")
 modules_help['voltageB'] = _("returns the voltage value (volts)")
 modules_help['temperature'] = _("returns the temperature value (celsius degree)")
-modules_help['modSenA'] = _("custom module sensor A")
-modules_help['modSenB'] = _("custom module sensor B")
-modules_help['modSenC'] = _("custom module sensor C")
-modules_help['modActA'] = _("custom module actuator A")
-modules_help['modActB'] = _("custom module actuator B")
-modules_help['modActC'] = _("custom module actuator C")
+modules_help['modSenA'] = _("custom module %s") % _("sensor a")
+modules_help['modSenB'] = _("custom module %s") % _("sensor b")
+modules_help['modSenC'] = _("custom module %s") % _("sensor c")
+modules_help['modActA'] = _("custom module %s") % _("actuator a")
+modules_help['modActB'] = _("custom module %s") % _("actuator b")
+modules_help['modActC'] = _("custom module %s") % _("actuator c")
 
 #Dictionary for translating block name to module name used for automatic generation of block instances
 modules_name_from_device_id = {} 
@@ -412,7 +412,7 @@ class Butia(Plugin):
         palette3.add_block('const_sen_aButia',
                   style='box-style',
                   label=_('sensor a'),
-                  help_string=_('generic module sensor A'),
+                  help_string=_('generic module %s') % _('sensor a'),
                   prim_name='const_sen_aButia')
         self.tw.lc.def_prim('const_sen_aButia', 0, lambda self: primitive_dictionary['const_sen_aButia']())
         special_block_colors['const_sen_aButia'] = COLOR_PRESENT[:]
@@ -421,7 +421,7 @@ class Butia(Plugin):
         palette3.add_block('const_sen_bButia',
                   style='box-style',
                   label=_('sensor b'),
-                  help_string=_('generic module sensor B'),
+                  help_string=_('generic module %s') % _('sensor b'),
                   prim_name='const_sen_bButia')
         self.tw.lc.def_prim('const_sen_bButia', 0, lambda self: primitive_dictionary['const_sen_bButia']())
         special_block_colors['const_sen_bButia'] = COLOR_PRESENT[:]
@@ -430,7 +430,7 @@ class Butia(Plugin):
         palette3.add_block('const_sen_cButia',
                   style='box-style',
                   label=_('sensor c'),
-                  help_string=_('generic module sensor C'),
+                  help_string=_('generic module %s') % _('sensor c'),
                   prim_name='const_sen_cButia')
         self.tw.lc.def_prim('const_sen_cButia', 0, lambda self: primitive_dictionary['const_sen_cButia']())
         special_block_colors['const_sen_cButia'] = COLOR_PRESENT[:]
@@ -440,7 +440,7 @@ class Butia(Plugin):
         palette3.add_block('const_act_aButia',
                   style='box-style',
                   label=_('actuator a'),
-                  help_string=_('generic module actuator A'),
+                  help_string=_('generic module %s') % _('actuator a'),
                   prim_name='const_act_aButia')
         self.tw.lc.def_prim('const_act_aButia', 0, lambda self: primitive_dictionary['const_act_aButia']())
         special_block_colors['const_act_aButia'] = COLOR_PRESENT[:]
@@ -449,7 +449,7 @@ class Butia(Plugin):
         palette3.add_block('const_act_bButia',
                   style='box-style',
                   label=_('actuator b'),
-                  help_string=_('generic module actuator B'),
+                  help_string=_('generic module %s') % _('actuator b'),
                   prim_name='const_act_bButia')
         self.tw.lc.def_prim('const_act_bButia', 0, lambda self: primitive_dictionary['const_act_bButia']())
         special_block_colors['const_act_bButia'] = COLOR_PRESENT[:]
@@ -458,7 +458,7 @@ class Butia(Plugin):
         palette3.add_block('const_act_cButia',
                   style='box-style',
                   label=_('actuator c'),
-                  help_string=_('generic module actuator C'),
+                  help_string=_('generic module %s') % _('actuator c'),
                   prim_name='const_act_cButia')
         self.tw.lc.def_prim('const_act_cButia', 0, lambda self: primitive_dictionary['const_act_cButia']())
         special_block_colors['const_act_cButia'] = COLOR_PRESENT[:]
