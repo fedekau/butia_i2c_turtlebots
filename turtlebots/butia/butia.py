@@ -265,7 +265,7 @@ class Butia(Plugin):
         primitive_dictionary['pinmodeButia'] = self.pinmodeButia
         palette2.add_block('pinmodeButia',
                   style='basic-style-2arg',
-                  label=[_('hack pin mode'),_('pin'),_('mode')],
+                  label=[_('pin mode Butia'),_('pin'),_('mode')],
                   help_string=_('Select the pin function (INPUT, OUTPUT).'),
                   default=[1],
                   prim_name='pinmodeButia')
@@ -275,17 +275,17 @@ class Butia(Plugin):
         primitive_dictionary['getpinButia'] = self.getpinButia
         palette2.add_block('getpinButia',
                      style='number-style-1arg',
-                     label=[_('read hack pin Butia')],
+                     label=[_('read pin Butia')],
                      prim_name='getpinButia',
                      default=1,
-                     help_string=_('read the value of a hack pin'))
+                     help_string=_('read the value of a pin'))
         self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
         special_block_colors['getpinButia'] = COLOR_NOTPRESENT[:]
 
         primitive_dictionary['setpinButia'] = self.setpinButia
         palette2.add_block('setpinButia',
                      style='basic-style-2arg',
-                     label=[_('write hack pin Butia'), _('pin'), _('value')],
+                     label=[_('write pin Butia'), _('pin'), _('value')],
                      prim_name='setpinButia',
                      default=[1, 0],
                      help_string=_('set a hack pin to 0 or 1'))
@@ -296,7 +296,7 @@ class Butia(Plugin):
         palette2.add_block('inputButia',
                   style='box-style',
                   label=_('INPUT'),
-                  help_string=_('Configure hack port for digital input.'),
+                  help_string=_('Configure hack pin for digital input.'),
                   prim_name='inputButia')
         self.tw.lc.def_prim('inputButia', 0, lambda self: primitive_dictionary['inputButia']())
         special_block_colors['inputButia'] = COLOR_NOTPRESENT[:]
@@ -305,7 +305,7 @@ class Butia(Plugin):
         palette2.add_block('highButia',
                   style='box-style',
                   label=_('HIGH'),
-                  help_string=_('Set HIGH value for digital port.'),
+                  help_string=_('Set HIGH value for digital pin.'),
                   prim_name='highButia')
         self.tw.lc.def_prim('highButia', 0, lambda self: primitive_dictionary['highButia']())
         special_block_colors['highButia'] = COLOR_NOTPRESENT[:]
