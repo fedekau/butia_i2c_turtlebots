@@ -946,36 +946,27 @@ class Butia(Plugin):
         
         if original == _('Sensor A'):
             module_block = 'modSenA'
-            self.set_gconf(GCONF_CAST + 'modSenA', new_name)
             self.set_gconf(GCONF_CAST + 'modSenA_f', function)
-            label_name_from_device_id['modSenA'] = new_name
             self.modsen_a_f = function
         elif original == _('Sensor B'):
             module_block = 'modSenB'
-            self.set_gconf(GCONF_CAST + 'modSenB', new_name)
             self.set_gconf(GCONF_CAST + 'modSenB_f', function)
-            label_name_from_device_id['modSenB'] = new_name
             self.modsen_b_f = function
         elif original == _('Sensor C'):
             module_block = 'modSenB'
-            self.set_gconf(GCONF_CAST + 'modSenC', new_name)
             self.set_gconf(GCONF_CAST + 'modSenC_f', function)
-            label_name_from_device_id['modSenC'] = new_name
             self.modsen_c_f = function
         elif original == _('Actuator A'):
             module_block = 'modActA'
-            self.set_gconf(GCONF_CAST + 'modActA', new_name)
-            label_name_from_device_id['modActA'] = new_name
         elif original == _('Actuator B'):
             module_block = 'modActB'
-            self.set_gconf(GCONF_CAST + 'modActB', new_name)
-            label_name_from_device_id['modActB'] = new_name
         elif original == _('Actuator C'):
             module_block = 'modActC'
-            self.set_gconf(GCONF_CAST + 'modActC', new_name)
-            label_name_from_device_id['modActC'] = new_name
         else:
             raise logoerror(_('ERROR: You must cast Sensor or Actuator: A, B or C'))
+
+        self.set_gconf(GCONF_CAST + module_block, new_name)
+        label_name_from_device_id[module_block] = new_name
 
         for blk in self.tw.block_list.list:
             if (blk.type in ['proto', 'block']) and blk.name.endswith('Butia'):
