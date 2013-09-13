@@ -338,12 +338,15 @@ class Butia(Plugin):
         primitive_dictionary['modActBButia'] = self.modActBButia
         primitive_dictionary['modActCButia'] = self.modActCButia
 
+        # Cast palette
+        palette3 = make_palette('butia-cast', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot cast blocks'), init_on_start=True)
+
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
 
         for j in ['led', 'modActA', 'modActB', 'modActC']:
             if (j in ['modActA', 'modActB', 'modActC']):
-                pal = palette2
+                pal = palette3
             else:
                 pal = palette
             for m in range(MAX_SENSOR_PER_TYPE):
@@ -366,8 +369,10 @@ class Butia(Plugin):
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
         for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC']:
-            if (j in ['resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC']):
+            if (j in ['resistanceB', 'voltageB', 'temperature']):
                 pal = palette2
+            elif (j in ['modSenA', 'modSenB', 'modSenC']):
+                pal = palette3
             else:
                 pal = palette
             for m in range(MAX_SENSOR_PER_TYPE):
@@ -393,7 +398,7 @@ class Butia(Plugin):
 
         # cast blocks
         primitive_dictionary['castButia'] = self.castButia
-        palette2.add_block('castButia',
+        palette3.add_block('castButia',
                   style='basic-style-3arg',
                   label=[_('CAST\n'), _('new name'), _('original'), _('f(x)=')],
                   default=[_('name'), '', 'x'],
@@ -404,7 +409,7 @@ class Butia(Plugin):
 
         # const of sensors
         primitive_dictionary['const_sen_aButia'] = self.const_sen_aButia
-        palette2.add_block('const_sen_aButia',
+        palette3.add_block('const_sen_aButia',
                   style='box-style',
                   label=_('Sensor A'),
                   help_string=_('generic module sensor A'),
@@ -413,7 +418,7 @@ class Butia(Plugin):
         special_block_colors['const_sen_aButia'] = COLOR_PRESENT[:]
 
         primitive_dictionary['const_sen_bButia'] = self.const_sen_bButia
-        palette2.add_block('const_sen_bButia',
+        palette3.add_block('const_sen_bButia',
                   style='box-style',
                   label=_('Sensor B'),
                   help_string=_('generic module sensor B'),
@@ -422,7 +427,7 @@ class Butia(Plugin):
         special_block_colors['const_sen_bButia'] = COLOR_PRESENT[:]
 
         primitive_dictionary['const_sen_cButia'] = self.const_sen_cButia
-        palette2.add_block('const_sen_cButia',
+        palette3.add_block('const_sen_cButia',
                   style='box-style',
                   label=_('Sensor C'),
                   help_string=_('generic module sensor C'),
@@ -432,7 +437,7 @@ class Butia(Plugin):
 
         # const of actuators
         primitive_dictionary['const_act_aButia'] = self.const_act_aButia
-        palette2.add_block('const_act_aButia',
+        palette3.add_block('const_act_aButia',
                   style='box-style',
                   label=_('Actuator A'),
                   help_string=_('generic module actuator A'),
@@ -441,7 +446,7 @@ class Butia(Plugin):
         special_block_colors['const_act_aButia'] = COLOR_PRESENT[:]
 
         primitive_dictionary['const_act_bButia'] = self.const_act_bButia
-        palette2.add_block('const_act_bButia',
+        palette3.add_block('const_act_bButia',
                   style='box-style',
                   label=_('Actuator B'),
                   help_string=_('generic module actuator B'),
@@ -450,7 +455,7 @@ class Butia(Plugin):
         special_block_colors['const_act_bButia'] = COLOR_PRESENT[:]
 
         primitive_dictionary['const_act_cButia'] = self.const_act_cButia
-        palette2.add_block('const_act_cButia',
+        palette3.add_block('const_act_cButia',
                   style='box-style',
                   label=_('Actuator C'),
                   help_string=_('generic module actuator C'),
@@ -622,6 +627,12 @@ class Butia(Plugin):
 
         try:
             index = palette_name_to_index('butia-extra')
+            self.tw.regenerate_palette(index)
+        except:
+            pass
+
+        try:
+            index = palette_name_to_index('butia-cast')
             self.tw.regenerate_palette(index)
         except:
             pass
@@ -987,10 +998,11 @@ class Butia(Plugin):
                     blk.refresh()
 
         try:
-            index = palette_name_to_index('butia-extra')
+            index = palette_name_to_index('butia-cast')
             self.tw.regenerate_palette(index)
         except:
             pass
+
         #TODO: pensar algo mejor
         self.list_connected_device_module = []
 
