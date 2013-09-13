@@ -137,15 +137,9 @@ class Butia(Plugin):
         self.pollrun = True
         self.bobot = None
         self.use_cc = False
-        self.modsen_a_name = 'sensor a'
-        self.modsen_b_name = 'sensor b'
-        self.modsen_c_name = 'sensor c'
         self.modsen_a_f = 'x'
         self.modsen_b_f = 'x'
         self.modsen_c_f = 'x'
-        self.modact_a_name = 'actuator a'
-        self.modact_b_name = 'actuator b'
-        self.modact_c_name = 'actuator c'
         self.getCastButia()
         self.m_d = {}
         self.match_dict = {}
@@ -386,14 +380,8 @@ class Butia(Plugin):
                 module = j + str(k)
                 block_name = module + 'Butia'
                 
-                if j == 'modSenA':
-                    label = self.modsen_a_name
-                elif j == 'modSenB':
-                    label = self.modsen_b_name
-                elif j == 'modSenC':
-                    label = self.modsen_c_name
-                else:
-                    label = label_name_from_device_id[j] + str(k)
+                label = label_name_from_device_id[j] + str(k)
+
                 pal.add_block(block_name, 
                      style='box-style',
                      label=(label + ' ' +  _('Butia')),
@@ -564,14 +552,7 @@ class Butia(Plugin):
                         if (module in self.modules_changed) or force_refresh:
                             s = module + blk_index
 
-                            if blk_name == 'modSenA':
-                                label = self.modsen_a_name
-                            elif blk_name == 'modSenB':
-                                label = self.modsen_b_name
-                            elif blk_name == 'modSenC':
-                                label = self.modsen_c_name
-                            else:
-                                label = label_name_from_device_id[blk_name]
+                            label = label_name_from_device_id[blk_name]
 
                             if not(s in self.match_dict):
                                 if blk_index !='' :
@@ -876,11 +857,12 @@ class Butia(Plugin):
             pass
 
     def getCastButia(self):
+        global label_name_from_device_id
         # sensors
         res = self.get_gconf(GCONF_CAST + 'modSenA')
         if res == None:
-            res = 'sensor a'
-        self.modsen_a_name = res
+            res = _('sensor a')
+        label_name_from_device_id['modSenA'] = res
         res = self.get_gconf(GCONF_CAST + 'modSenA_f')
         if res == None:
             res = 'x'
@@ -888,8 +870,8 @@ class Butia(Plugin):
 
         res = self.get_gconf(GCONF_CAST + 'modSenB')
         if res == None:
-            res = 'sensor b'
-        self.modsen_b_name = res
+            res = _('sensor b')
+        label_name_from_device_id['modSenB'] = res
         res = self.get_gconf(GCONF_CAST + 'modSenB_f')
         if res == None:
             res = 'x'
@@ -897,8 +879,8 @@ class Butia(Plugin):
 
         res = self.get_gconf(GCONF_CAST + 'modSenC')
         if res == None:
-            res = 'sensor c'
-        self.module_c_name = res
+            res = _('sensor c')
+        label_name_from_device_id['modSenC'] = res
         res = self.get_gconf(GCONF_CAST + 'modSenC_f')
         if res == None:
             res = 'x'
@@ -907,20 +889,21 @@ class Butia(Plugin):
         # actuators
         res = self.get_gconf(GCONF_CAST + 'modActA')
         if res == None:
-            res = 'actuator a'
-        self.modact_a_name = res
+            res = _('actuator a')
+        label_name_from_device_id['modActA'] = res
 
         res = self.get_gconf(GCONF_CAST + 'modActB')
         if res == None:
-            res = 'actuator b'
-        self.modact_b_name = res
+            res = _('actuator b')
+        label_name_from_device_id['modActB'] = res
 
         res = self.get_gconf(GCONF_CAST + 'modActC')
         if res == None:
-            res = 'actuator c'
-        self.modact_c_name = res
+            res = _('actuator c')
+        label_name_from_device_id['modActC'] = res
 
     def castButia(self, new_name, original, function):
+        global label_name_from_device_id
         new_name = str(new_name)
         function = str(function)
 
@@ -928,19 +911,19 @@ class Butia(Plugin):
             module_block = 'module_a'
             self.set_gconf(GCONF_CAST + 'modSenA', new_name)
             self.set_gconf(GCONF_CAST + 'modSenA_f', function)
-            self.modsen_a_name = new_name
+            label_name_from_device_id['modSenA'] = new_name
             self.modsen_a_f = function
         elif original == _('Module B'):
             module_block = 'module_b'
             self.set_gconf(GCONF_CAST + 'modSenB', new_name)
             self.set_gconf(GCONF_CAST + 'modSenB_f', function)
-            self.modsen_b_name = new_name
+            label_name_from_device_id['modSenB'] = new_name
             self.modsen_b_f = function
         elif original == _('Module C'):
             module_block = 'module_c'
             self.set_gconf(GCONF_CAST + 'modSenC', new_name)
             self.set_gconf(GCONF_CAST + 'modSenC_f', function)
-            self.modsen_c_name = new_name
+            label_name_from_device_id['modSenC'] = new_name
             self.modsen_c_f = function
         else:
             raise logoerror(_('ERROR: You must cast Module A, B or C'))
