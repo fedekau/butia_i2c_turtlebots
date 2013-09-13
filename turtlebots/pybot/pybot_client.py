@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# ButiaAPI
+#
+# Client for pybot_server
+#
+# Copyright (c) 2012-2013 Alan Aguiar alanjas@hotmail.com
 # Copyright (c) 2009-2013 Butiá Team butia@fing.edu.uy 
 # Butia is a free and open robotic platform
 # www.fing.edu.uy/inco/proyectos/butia
