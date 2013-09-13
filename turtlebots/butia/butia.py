@@ -411,7 +411,7 @@ class Butia(Plugin):
         primitive_dictionary['const_sen_aButia'] = self.const_sen_aButia
         palette3.add_block('const_sen_aButia',
                   style='box-style',
-                  label=_('Sensor A'),
+                  label=_('sensor a'),
                   help_string=_('generic module sensor A'),
                   prim_name='const_sen_aButia')
         self.tw.lc.def_prim('const_sen_aButia', 0, lambda self: primitive_dictionary['const_sen_aButia']())
@@ -420,7 +420,7 @@ class Butia(Plugin):
         primitive_dictionary['const_sen_bButia'] = self.const_sen_bButia
         palette3.add_block('const_sen_bButia',
                   style='box-style',
-                  label=_('Sensor B'),
+                  label=_('sensor b'),
                   help_string=_('generic module sensor B'),
                   prim_name='const_sen_bButia')
         self.tw.lc.def_prim('const_sen_bButia', 0, lambda self: primitive_dictionary['const_sen_bButia']())
@@ -429,7 +429,7 @@ class Butia(Plugin):
         primitive_dictionary['const_sen_cButia'] = self.const_sen_cButia
         palette3.add_block('const_sen_cButia',
                   style='box-style',
-                  label=_('Sensor C'),
+                  label=_('sensor c'),
                   help_string=_('generic module sensor C'),
                   prim_name='const_sen_cButia')
         self.tw.lc.def_prim('const_sen_cButia', 0, lambda self: primitive_dictionary['const_sen_cButia']())
@@ -439,7 +439,7 @@ class Butia(Plugin):
         primitive_dictionary['const_act_aButia'] = self.const_act_aButia
         palette3.add_block('const_act_aButia',
                   style='box-style',
-                  label=_('Actuator A'),
+                  label=_('actuator a'),
                   help_string=_('generic module actuator A'),
                   prim_name='const_act_aButia')
         self.tw.lc.def_prim('const_act_aButia', 0, lambda self: primitive_dictionary['const_act_aButia']())
@@ -448,7 +448,7 @@ class Butia(Plugin):
         primitive_dictionary['const_act_bButia'] = self.const_act_bButia
         palette3.add_block('const_act_bButia',
                   style='box-style',
-                  label=_('Actuator B'),
+                  label=_('actuator b'),
                   help_string=_('generic module actuator B'),
                   prim_name='const_act_bButia')
         self.tw.lc.def_prim('const_act_bButia', 0, lambda self: primitive_dictionary['const_act_bButia']())
@@ -457,7 +457,7 @@ class Butia(Plugin):
         primitive_dictionary['const_act_cButia'] = self.const_act_cButia
         palette3.add_block('const_act_cButia',
                   style='box-style',
-                  label=_('Actuator C'),
+                  label=_('actuator c'),
                   help_string=_('generic module actuator C'),
                   prim_name='const_act_cButia')
         self.tw.lc.def_prim('const_act_cButia', 0, lambda self: primitive_dictionary['const_act_cButia']())
@@ -836,22 +836,22 @@ class Butia(Plugin):
     ################################ Custom modules ################################
 
     def const_sen_aButia(self):
-        return _('Sensor A')
+        return _('sensor a')
 
     def const_sen_bButia(self):
-        return _('Sensor B')
+        return _('sensor b')
 
     def const_sen_cButia(self):
-        return _('Sensor C')
+        return _('sensor c')
 
     def const_act_aButia(self):
-        return _('Actuator A')
+        return _('actuator a')
 
     def const_act_bButia(self):
-        return _('Actuator B')
+        return _('actuator b')
 
     def const_act_cButia(self):
-        return _('Actuator C')
+        return _('actuator c')
 
     def modSenAButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleA(sensorid, boardid)
@@ -955,23 +955,23 @@ class Butia(Plugin):
         new_name = str(new_name)
         function = str(function)
         
-        if original == _('Sensor A'):
+        if original == _('sensor a'):
             module_block = 'modSenA'
             self.set_gconf(GCONF_CAST + 'modSenA_f', function)
             self.modsen_a_f = function
-        elif original == _('Sensor B'):
+        elif original == _('sensor b'):
             module_block = 'modSenB'
             self.set_gconf(GCONF_CAST + 'modSenB_f', function)
             self.modsen_b_f = function
-        elif original == _('Sensor C'):
+        elif original == _('sensor c'):
             module_block = 'modSenB'
             self.set_gconf(GCONF_CAST + 'modSenC_f', function)
             self.modsen_c_f = function
-        elif original == _('Actuator A'):
+        elif original == _('actuator a'):
             module_block = 'modActA'
-        elif original == _('Actuator B'):
+        elif original == _('actuator b'):
             module_block = 'modActB'
-        elif original == _('Actuator C'):
+        elif original == _('actuator c'):
             module_block = 'modActC'
         else:
             raise logoerror(_('ERROR: You must cast Sensor or Actuator: A, B or C'))
