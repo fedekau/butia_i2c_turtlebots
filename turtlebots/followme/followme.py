@@ -19,6 +19,7 @@
 
 import gtk
 import logging
+from color_name import get_color_name
 from gettext import gettext as _
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
@@ -28,6 +29,7 @@ from TurtleArt.tapalette import palette_blocks
 from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.tautils import convert
 from TurtleArt.tawindow import block_names
+
 pygame = None
 try:
     import pygame
@@ -54,6 +56,7 @@ class Followme(Plugin):
         self.pixels_min = 10
         self.pixels = 0
         self.brightness = 128
+        self.color_dist = 9000
         self.use_average = True
         self.calibrations = {}
         self.mode = 'RGB'
@@ -98,6 +101,8 @@ class Followme(Plugin):
             self.tamanioc = self.cam.get_size()
             self.x_offset = int(self.tamanioc[0] / 2.0 - 5)
             self.y_offset = int(self.tamanioc[1] / 2.0 - 5)
+            self.x_m = int(self.tamanioc[0] / 2.0)
+            self.y_m = int(self.tamanioc[1] / 2.0)
 
     def stop_camera(self):
         if (self.cam_present and self.cam_on):
@@ -314,6 +319,26 @@ class Followme(Plugin):
         self.parent.lc.def_prim('mode_hsv', 0, lambda self:
                         primitive_dictionary['mode_hsv']())
 
+        primitive_dictionary['get_color'] = self.prim_get_color
+        palette.add_block('get_color',
+                        style='box-style',
+                        label=_('get color'),
+                        help_string=_('get the color of an object'),
+                        value_block=True,
+                        prim_name='get_color')
+        self.parent.lc.def_prim('get_color', 0, lambda self:
+                        primitive_dictionary['get_color']())
+
+        primitive_dictionary['color_dist'] = self.prim_color_dist
+        palette.add_block('color_dist',
+                        style='basic-style-1arg',
+                        label=_('color distance'),
+                        default=9000,
+                        help_string=_('set the distance to identify a color'),
+                        prim_name='color_dist')
+        self.parent.lc.def_prim('color_dist', 1, lambda self, x:
+                        primitive_dictionary['color_dist'](x))
+
     def stop(self):
         self.stop_camera()
 
@@ -424,13 +449,23 @@ class Followme(Plugin):
         else:
             self.use_average = True
 
+    def prim_get_color(self):
+        self.start_camera()
+        if self.cam_on:
+            self.capture = self.cam.get_image(self.capture)
+            color = self.capture.get_at((self.x_m, self.y_m))
+            return get_color_name(color, self.color_dist)
+        return -1
+
+    def prim_color_dist(self, x):
+        self.color_dist = x
+
     def calibrate(self):
         self.colorc = (255, 255, 255)
         self.start_camera()
         x = int((self.tamanioc[0] - 50) / 2.0)
         y = int((self.tamanioc[1] - 50) / 2.0)
-        x_m = int(self.tamanioc[0] / 2.0)
-        y_m = int(self.tamanioc[1] / 2.0)
+        
         if self.cam_on:
             self.screen = pygame.display.set_mode((1200,900))
             self.clock = pygame.time.Clock()
@@ -453,7 +488,7 @@ class Followme(Plugin):
                 if self.use_average:
                     self.colorc = pygame.transform.average_color(self.capture, rect)
                 else:
-                    self.colorc = self.capture.get_at((x_m, y_m))
+                    self.colorc = self.capture.get_at((self.x_m, self.y_m))
                 self.screen.fill(self.colorc, (self.tamanioc[0],self.tamanioc[1],100,100))
                 pygame.display.flip()
             self.screen = pygame.display.quit()
