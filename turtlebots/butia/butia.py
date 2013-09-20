@@ -855,6 +855,8 @@ class Butia(Plugin):
 
     def modSenAButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleA(sensorid, boardid)
+        if x == ERROR:
+            return ERROR
         try:
             return eval(self.modsen_a_f)
         except:
@@ -862,6 +864,8 @@ class Butia(Plugin):
 
     def modSenBButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleB(sensorid, boardid)
+        if x == ERROR:
+            return ERROR
         try:
             return eval(self.modsen_b_f)
         except:
@@ -869,6 +873,8 @@ class Butia(Plugin):
 
     def modSenCButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleC(sensorid, boardid)
+        if x == ERROR:
+            return ERROR
         try:
             return eval(self.modsen_c_f)
         except:
