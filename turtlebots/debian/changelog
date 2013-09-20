@@ -1,6 +1,125 @@
 turtlebots (21-r0) unstable; urgency=low
 
   * core: some changes
+  * if generic sensor return error no apply function
+  * basic followme color detect
+  * more translations
+  * update TB to v190+
+  * simplify some butia strings
+  * use low case name for generic sensors and actuators
+  * new cast palette
+  * update arduino plugin commit
+  * compact redundant code
+  * cast generic actuators
+  * simplify the save of cast names for refresh
+  * fix type of primitive in refresh for actuators
+  * some strings fixes
+  * preserve on CC motors useful move
+  * update copy
+  * change usb of nxt when apply hard links
+  * update pyusb and nxt_plugin commits
+  * fix module open
+  * more pyflakes cleans
+  * pyflakes on drivers
+  * pyflakes clean in pybot
+  * synchonize chotox with pybot
+  * add module open-close to client
+  * add debug message in pybot module close
+  * update pyusb
+  * add generic actuators a, b y c
+  * change butia.py to new modSen A, B y C
+  * describe shows parameters
+  * fix hackp read driver
+  * add generic sensor and actuators drivers
+  * add parameter to get fresh listi
+  * add list to refreh the board
+  * update translations
+  * more details on changeid
+  * Merge branch 'temp'
+  * changelog to debian r0
+  * update activity.info to v21
+  * fix sendPacket in ax
+  * some fixes in ax driver
+  * create closeB to easy manage of close baseboard
+  * update refresh function of usb4butia
+  * simplify close and get_adress
+  * add listi to others parts
+  * export describe in pybot client
+  * save in the same level cast in gconf
+  * update butia.py to new list
+  * update the client to new list
+  * remove unused special type of list
+  * add send to admin - add to_text device function
+  * remove old usefull debug print
+  * more things to readme
+  * update readme
+  * update TB and turtle-extras
+  * update TB and Turtle extras commits
+  * others minors strings changes
+  * fix i18n strings
+  * fix help of custom modules
+  * add temperature block
+  * update pyusb
+  * more specify dependencies
+  * more validations on gconf
+  * remeber cast since start
+  * validate cast block
+  * the cast blocks ever are green
+  * more checks in cast blocks
+  * use the function in cast
+  * basic module cast working
+  * fix lenght of getVersion of butia module
+  * not clean client help reconnect
+  * separate sensor creation
+  * add getVersion to pnp.lua
+  * fix possible error on lback
+  * fix paths change in Seguidor
+  * compact bobot libraries
+  * merge master into plugin_marcas
+  * update submodules
+  * fix led driver
+  * update nxt commit
+  * only one sourceGIT rule for all
+  * update changelog to ubuntu 15
+  * fix pybot problem on LAN networks
+  * less build dependencies
+  * fix rules for x64 build system
+  * move examples inside of turtlebots
+  * add gettext depend
+  * import when is necessary zipfile
+  * ubuntu 7 version
+  * add missing link
+  * fix setup.py build
+  * add again submodules
+  * add patch for possible duplicated .mo in sugar bundle
+  * replace setup.py instead add bundlebuilder
+  * remove sugar compile dependency
+  * fix debian control dependencies
+  * move pybot to turtlebots folder
+  * change turtle_art_plugin to turtlebots
+  * comment to remember old command
+  * reload rules after install rules scripts
+  * update extras with pbs fix
+  * update extras commit
+  * fix refresh with extra parameter
+  * update arduino plugin
+  * more extras strings
+  * remove speed blocks when cc shield is connected
+  * remove extras blocks when a shield is connected
+  * others improves
+  * unify colors functions
+  * eliminate getVolt at setup
+  * update turtle-extras commit
+  * minor string changes
+  * when cc disable all pin functions
+  * don't call getbattery on cc motors
+  * close_device no raises error - ever closes
+  * interface automatically managed
+  * fix driver ax again
+  * compact name of handler
+  * update the help of sensors
+  * update changelog
+  * add pygame as dependency
 
  -- AlanJAS <alanjas@hotmail.com>  Thu, 29 Aug 2013 21:45:51 -0300
 
