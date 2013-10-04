@@ -473,6 +473,7 @@ class Butia(Plugin):
                         prim_name='changeIpButia')
         self.tw.lc.def_prim('changeIpButia', 1, lambda self, x:
                         primitive_dictionary['changeIpButia'](x))
+        special_block_colors['changeIpButia'] = COLOR_PRESENT[:]
 
     ################################ Turtle calls ################################
 
