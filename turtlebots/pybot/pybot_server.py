@@ -23,6 +23,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import sys
+import imp
 import select
 import socket
 import usb4butia
@@ -34,11 +35,12 @@ PYBOT_PORT = 2009
 BUFSIZ = 1024
 MAX_CLIENTS = 4
 
-
 class Server():
 
     def __init__(self, debug=False, chotox=False):
         self.debug = debug
+        self.run = True
+        self.comms = imp.load_source('server_functions', 'server_functions.py')
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(("", PYBOT_PORT))
@@ -54,8 +56,7 @@ class Server():
 
         inputs = [self.socket]
 
-        run = True
-        while run:
+        while self.run:
 
             try:
                 inputready,outputready,exceptready = select.select(inputs, [], [])
@@ -73,53 +74,16 @@ class Server():
                     data = s.recv(BUFSIZ)
                     if data:
                         result = ''
-                        # remove end line characters if become from telnet
+
                         r = data.replace('\r', '')
                         r = r.replace('\n', '')
                         r = r.split(' ')
 
                         if len(r) > 0:
-                            if r[0] == 'QUIT':
-                                result = 'BYE'
-                                run = False
-                            elif r[0] == 'CLIENTS':
-                                first = True
-                                for c in self.clients:
-                                    addr = self.clients[c]
-                                    if first:
-                                        result = result + str(addr[0]) + ', ' + str(addr[1]) 
-                                        first = False
-                                    else:
-                                        result = result + '\n' + str(addr[0]) + ', ' + str(addr[1]) 
-                            elif r[0] == 'LIST':
-                                l = self.robot.getModulesList()
-                                result = ','.join(l)
-                            elif r[0] == 'LISTI':
-                                board = 0
-                                if len(r) >= 2:
-                                    board = r[1]
-                                l = self.robot.getListi(board)
-                                result = ','.join(l)
-                            elif r[0] == 'REFRESH':
-                                self.robot.refresh()
-                            elif r[0] == 'BUTIA_COUNT':
-                                result = self.robot.getButiaCount()
-                            elif r[0] == 'DESCRIBE':
-                                if len(r) >= 2:
-                                    module = r[1]
-                                    result = self.robot.describe(module)
-                            elif r[0] == 'OPEN':
-                                if len(r) >= 2:
-                                    module = r[1]
-                                    result = self.robot.moduleOpen(module)
-                            elif r[0] == 'CLOSE':
-                                if len(r) >= 2:
-                                    module = r[1]
-                                    result = self.robot.moduleClose(module)
-                            elif r[0] == 'CALL':
-                                if len(r) >= 3:
-                                    split = self.robot._split_module(r[1])
-                                    result = self.robot.callModule(split[1], split[2], split[0], r[2], r[3:])
+                            com = r[0]
+                            if hasattr(self.comms, com):
+                                f = getattr(self.comms, com)
+                                result = f(self, r)
 
                         result = str(result)
                         try:
@@ -135,7 +99,6 @@ class Server():
         print 'Closing server'
         self.socket.close()
         self.robot.close()
-
 
 if __name__ == "__main__":
     chotox = 'chotox' in argv
