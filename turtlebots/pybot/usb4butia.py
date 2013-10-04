@@ -303,11 +303,10 @@ class USB4Butia(ButiaFunctions):
             a = dir(driver)
             flag = False
             for p in a:
-                if p == '__package__':
-                    flag = True
                 if flag:
                     funcs.append(p)
-            funcs.remove('__package__')
+                if p == '__package__':
+                    flag = True
             for f in funcs:
                 h = getattr(driver, f)
                 i = inspect.getargspec(h)
