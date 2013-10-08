@@ -28,6 +28,7 @@ from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_blocks
 from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.tautils import convert
+from TurtleArt.tautils import debug_output
 from TurtleArt.tawindow import block_names
 
 pygame = None
@@ -46,7 +47,7 @@ _logger = logging.getLogger('turtleart-activity followme plugin')
 class Followme(Plugin):
 
     def __init__(self, parent):
-        self.parent = parent
+        self.tw = parent
         self.cam_on = False
         self.cam_present = False
         self.cam_init = False
@@ -154,9 +155,8 @@ class Followme(Plugin):
 
     def setup(self):
 
-        palette = make_palette('FollowMe', colors=COLOR_NOTPRESENT,
-                                help_string=_('FollowMe'))
-
+        debug_output('creating %s palette' % _('followme'), self.tw.running_sugar)
+        palette = make_palette('followme', COLOR_NOTPRESENT, _('FollowMe'))
 
         primitive_dictionary['followmerefresh'] = self._prim_followmerefresh
         palette.add_block('followmerefresh',
@@ -164,7 +164,7 @@ class Followme(Plugin):
                      label=_('refresh FollowMe'),
                      prim_name='followmerefresh',
                      help_string=_('Search for a connected camera.'))
-        self.parent.lc.def_prim('followmerefresh', 0, lambda self :
+        self.tw.lc.def_prim('followmerefresh', 0, lambda self :
                         primitive_dictionary['followmerefresh']())
         special_block_colors['followmerefresh'] = COLOR_PRESENT[:]
 
@@ -176,7 +176,7 @@ class Followme(Plugin):
                           string_or_number=True,
                           default='1',
                           help_string=_('store a personalized calibration'))
-        self.parent.lc.def_prim('savecalibrationN', 1,
+        self.tw.lc.def_prim('savecalibrationN', 1,
                              lambda self, x: primitive_dictionary['savecalibration'](
                 'calibration', x))
 
@@ -188,7 +188,7 @@ class Followme(Plugin):
                           string_or_number=True,
                           default='1',
                           help_string=_('return a personalized calibration'))
-        self.parent.lc.def_prim('calibrationN', 1,
+        self.tw.lc.def_prim('calibrationN', 1,
                              lambda self, x: primitive_dictionary['calibration']('calibration', x))
 
         primitive_dictionary['follow'] = self.prim_follow
@@ -197,7 +197,7 @@ class Followme(Plugin):
                         label=_('follow'),
                         help_string=_('follow a color or calibration'),
                         prim_name='follow')
-        self.parent.lc.def_prim('follow', 1, lambda self, x:
+        self.tw.lc.def_prim('follow', 1, lambda self, x:
                         primitive_dictionary['follow'](x))
 
         primitive_dictionary['brightness_f'] = self.prim_brightness
@@ -207,7 +207,7 @@ class Followme(Plugin):
                         default=128,
                         help_string=_('set the camera brightness as a value between 0 to 255.'),
                         prim_name='brightness_f')
-        self.parent.lc.def_prim('brightness_f', 1, lambda self, x:
+        self.tw.lc.def_prim('brightness_f', 1, lambda self, x:
                         primitive_dictionary['brightness_f'](x))
 
         primitive_dictionary['pixels_min'] = self.prim_pixels_min
@@ -217,7 +217,7 @@ class Followme(Plugin):
                         default=10,
                         help_string=_('set the minimal number of pixels to follow'),
                         prim_name='pixels_min')
-        self.parent.lc.def_prim('pixels_min', 1, lambda self, x:
+        self.tw.lc.def_prim('pixels_min', 1, lambda self, x:
                         primitive_dictionary['pixels_min'](x))
 
         primitive_dictionary['threshold'] = self.prim_threshold
@@ -227,7 +227,7 @@ class Followme(Plugin):
                         default=[25, 25, 25],
                         help_string=_('set a threshold for a RGB color'),
                         prim_name='threshold')
-        self.parent.lc.def_prim('threshold', 3, lambda self, x, y, z:
+        self.tw.lc.def_prim('threshold', 3, lambda self, x, y, z:
                         primitive_dictionary['threshold'](x, y, z))
 
         primitive_dictionary['camera_mode'] = self.prim_camera_mode
@@ -237,7 +237,7 @@ class Followme(Plugin):
                         default='RGB',
                         help_string=_('set the color mode of the camera: RGB; YUV or HSV'),
                         prim_name='camera_mode')
-        self.parent.lc.def_prim('camera_mode', 1, lambda self, x:
+        self.tw.lc.def_prim('camera_mode', 1, lambda self, x:
                         primitive_dictionary['camera_mode'](x))
 
         primitive_dictionary['brightness_w'] = self.calc_luminance
@@ -246,7 +246,7 @@ class Followme(Plugin):
                         label=_('get brightness'),
                         help_string=_('get the brightness of the ambient light'),
                         prim_name='brightness_w')
-        self.parent.lc.def_prim('brightness_w', 0, lambda self:
+        self.tw.lc.def_prim('brightness_w', 0, lambda self:
                         primitive_dictionary['brightness_w']())
 
         primitive_dictionary['average_color'] = self.prim_average_color
@@ -256,7 +256,7 @@ class Followme(Plugin):
                         default=1,
                         help_string=_('if set to 0 then color averaging is off during calibration; for other values it is on'),
                         prim_name='average_color')
-        self.parent.lc.def_prim('average_color', 1, lambda self, x:
+        self.tw.lc.def_prim('average_color', 1, lambda self, x:
                         primitive_dictionary['average_color'](x))
 
         primitive_dictionary['xposition'] = self.prim_xposition
@@ -266,7 +266,7 @@ class Followme(Plugin):
                         help_string=_('return x position'),
                         value_block=True,
                         prim_name='xposition')
-        self.parent.lc.def_prim('xposition', 0, lambda self:
+        self.tw.lc.def_prim('xposition', 0, lambda self:
                         primitive_dictionary['xposition']())
 
         primitive_dictionary['yposition'] = self.prim_yposition
@@ -276,7 +276,7 @@ class Followme(Plugin):
                         help_string=_('return y position'),
                         value_block=True,
                         prim_name='yposition')
-        self.parent.lc.def_prim('yposition', 0, lambda self:
+        self.tw.lc.def_prim('yposition', 0, lambda self:
                         primitive_dictionary['yposition']())
 
         primitive_dictionary['pixels'] = self.prim_pixels
@@ -286,7 +286,7 @@ class Followme(Plugin):
                         help_string=_('return the number of pixels of the biggest blob'),
                         value_block=True,
                         prim_name='pixels')
-        self.parent.lc.def_prim('pixels', 0, lambda self:
+        self.tw.lc.def_prim('pixels', 0, lambda self:
                         primitive_dictionary['pixels']())
 
         primitive_dictionary['mode_rgb'] = self.prim_mode_rgb
@@ -296,7 +296,7 @@ class Followme(Plugin):
                         help_string=_('set the color mode of the camera to RGB'),
                         value_block=True,
                         prim_name='mode_rgb')
-        self.parent.lc.def_prim('mode_rgb', 0, lambda self:
+        self.tw.lc.def_prim('mode_rgb', 0, lambda self:
                         primitive_dictionary['mode_rgb']())
 
         primitive_dictionary['mode_yuv'] = self.prim_mode_yuv
@@ -306,7 +306,7 @@ class Followme(Plugin):
                         help_string=_('set the color mode of the camera to YUV'),
                         value_block=True,
                         prim_name='mode_yuv')
-        self.parent.lc.def_prim('mode_yuv', 0, lambda self:
+        self.tw.lc.def_prim('mode_yuv', 0, lambda self:
                         primitive_dictionary['mode_yuv']())
 
         primitive_dictionary['mode_hsv'] = self.prim_mode_hsv
@@ -316,7 +316,7 @@ class Followme(Plugin):
                         help_string=_('set the color mode of the camera to HSV'),
                         value_block=True,
                         prim_name='mode_hsv')
-        self.parent.lc.def_prim('mode_hsv', 0, lambda self:
+        self.tw.lc.def_prim('mode_hsv', 0, lambda self:
                         primitive_dictionary['mode_hsv']())
 
         primitive_dictionary['get_color'] = self.prim_get_color
@@ -326,7 +326,7 @@ class Followme(Plugin):
                         help_string=_('get the color of an object'),
                         value_block=True,
                         prim_name='get_color')
-        self.parent.lc.def_prim('get_color', 0, lambda self:
+        self.tw.lc.def_prim('get_color', 0, lambda self:
                         primitive_dictionary['get_color']())
 
         primitive_dictionary['color_dist'] = self.prim_color_dist
@@ -336,18 +336,23 @@ class Followme(Plugin):
                         default=9000,
                         help_string=_('set the distance to identify a color'),
                         prim_name='color_dist')
-        self.parent.lc.def_prim('color_dist', 1, lambda self, x:
+        self.tw.lc.def_prim('color_dist', 1, lambda self, x:
                         primitive_dictionary['color_dist'](x))
+
+    ############################### Turtle signals ############################
+
+
+    def start(self):
+        pass
 
     def stop(self):
         self.stop_camera()
 
     def quit(self):
         self.stop_camera()
-            
-    def clear(self):
-        pass
 
+    ###########################################################################
+            
     def _prim_followmerefresh(self):
         self.camera_init()
         self.change_color_blocks()
@@ -378,7 +383,7 @@ class Followme(Plugin):
                 label_2 = 'V'
 
             #repaints program area blocks (proto) and palette blocks (block)
-            for blk in self.parent.block_list.list:
+            for blk in self.tw.block_list.list:
                 #NOTE: blocks types: proto, block, trash, deleted
                 if blk.type in ['proto', 'block']:
                     if (blk.name == 'threshold'):
@@ -393,7 +398,7 @@ class Followme(Plugin):
     def change_color_blocks(self):
         index = palette_name_to_index('FollowMe')
         followme_blocks = palette_blocks[index]
-        for block in self.parent.block_list.list:
+        for block in self.tw.block_list.list:
             if block.type in ['proto', 'block']:
                 if block.name in followme_blocks:
                     if self.cam_present or (block.name == 'followmerefresh'):
@@ -401,7 +406,7 @@ class Followme(Plugin):
                     else:
                         special_block_colors[block.name] = COLOR_NOTPRESENT[:]
                     block.refresh()
-        self.parent.show_toolbar_palette(index, regenerate=True, show=False)
+        self.tw.show_toolbar_palette(index, regenerate=True, show=False)
                 
     def prim_mode_rgb(self):
         return 'RGB'

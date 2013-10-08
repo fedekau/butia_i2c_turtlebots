@@ -6,6 +6,7 @@ import os.path
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import primitive_dictionary
+from TurtleArt.tautils import debug_output
 from TurtleArt.taconstants import MEDIA_SHAPES, NO_IMPORT, SKIN_PATHS, \
     EXPAND_SKIN, BLOCKS_WITH_SKIN
 SKIN_PATHS.append('plugins/pattern_detection/images')
@@ -17,16 +18,15 @@ from library import patternsAPI
 class Pattern_detection(Plugin):
 
     def __init__(self, parent):
-        self._parent = parent
+        self.tw = parent
         self.detection = None
         self.isInit = False
         self.detection = patternsAPI.detection()
 
     def setup(self):
 
-        palette = make_palette('pattern_detection',
-                     colors=["#00FF00","#008000"],
-                     help_string=_('Pattern detection'))
+        debug_output('creating %s palette' % _('pattern_detection'), self.tw.running_sugar)
+        palette = make_palette('pattern_detection', ["#00FF00","#008000"], _('Pattern detection'))
 
         primitive_dictionary['isPresent'] = self._isPresent
         palette.add_block('isPresent',
@@ -34,7 +34,7 @@ class Pattern_detection(Plugin):
                           label=_('Seeing signal'),
                           prim_name='isPresent',
                           help_string= _('Returns True if the signal is in front of the camera'))
-        self._parent.lc.def_prim('isPresent', 1,
+        self.tw.lc.def_prim('isPresent', 1,
                              lambda self, x: primitive_dictionary['isPresent'](x))
 
         primitive_dictionary['getMarkerTrigDist'] = self._getMarkerTrigDist
@@ -43,7 +43,7 @@ class Pattern_detection(Plugin):
                           label=_('Distance to signal'),
                           prim_name='getMarkerTrigDist',
                           help_string= _('Returns the distance of the siganl to the camera in milimeters'))
-        self._parent.lc.def_prim('getMarkerTrigDist', 1,
+        self.tw.lc.def_prim('getMarkerTrigDist', 1,
                              lambda self, x: primitive_dictionary['getMarkerTrigDist'](x))
 
 
@@ -54,17 +54,22 @@ class Pattern_detection(Plugin):
         for section_name in out.split(";"):
             self._add_signal_botton(palette, section_name, section_name)
 
-    def stop(self):
-        self._stop_cam()
+
+    ############################### Turtle signals ############################
+
+    def start(self):
+        pass
 
     def quit(self):
+        self._stop_cam()
+
+    def stop(self):
         self._stop_cam()
 
     def clear(self):
         self._stop_cam()
 
-    def start(self):
-        pass
+    ###########################################################################
 
     def _stop_cam(self):
         if self.isInit:
@@ -101,7 +106,7 @@ class Pattern_detection(Plugin):
                             default=block_name,
                             prim_name=block_name,
                             help_string= label)
-        self._parent.lc.def_prim(block_name, 0, lambda self: block_name)
+        self.tw.lc.def_prim(block_name, 0, lambda self: block_name)
 
     def _isPresent(self, valor):
         self._start_cam()

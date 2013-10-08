@@ -166,8 +166,8 @@ class Butia(Plugin):
 
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
-
-        palette = make_palette('butia', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot'), init_on_start=True)
+        debug_output('creating %s palette' % _('butia'), self.tw.running_sugar)
+        palette = make_palette('butia', COLOR_NOTPRESENT, _('Butia Robot'), init_on_start=True)
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
@@ -255,7 +255,8 @@ class Butia(Plugin):
         special_block_colors['backwardButia'] = COLOR_NOTPRESENT[:]
 
         # Extra palette
-        palette2 = make_palette('butia-extra', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot extra blocks'), init_on_start=True)
+        debug_output('creating %s palette' % _('butia-extra'), self.tw.running_sugar)
+        palette2 = make_palette('butia-extra', COLOR_NOTPRESENT, _('Butia Robot extra blocks'), init_on_start=True)
 
         primitive_dictionary['pinmodeButia'] = self.pinmodeButia
         palette2.add_block('pinmodeButia',
@@ -340,7 +341,8 @@ class Butia(Plugin):
         primitive_dictionary['modActCButia'] = self.modActCButia
 
         # Cast palette
-        palette3 = make_palette('butia-cast', colors=COLOR_NOTPRESENT, help_string=_('Butia Robot cast blocks'), init_on_start=True)
+        debug_output('creating %s palette' % _('butia-cast'), self.tw.running_sugar)
+        palette3 = make_palette('butia-cast', COLOR_NOTPRESENT, _('Butia Robot cast blocks'), init_on_start=True)
 
         #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
         #physical robot the corresponding block appears in the pallete
@@ -483,12 +485,6 @@ class Butia(Plugin):
     def stop(self):
         self.set_vels(0, 0)
         self.can_refresh = True
-
-    def goto_background(self):
-        pass
-
-    def return_to_foreground(self):
-        pass
 
     def quit(self):
         self.pollrun = False

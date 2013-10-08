@@ -7,6 +7,7 @@ from TurtleArt.tapalette import make_palette, special_block_colors
 from TurtleArt.talogo import primitive_dictionary, logoerror
 from TurtleArt.taconstants import BOX_COLORS
 from TurtleArt.tautils import convert
+from TurtleArt.tautils import debug_output
 
 from openni import *
 import threading
@@ -32,9 +33,8 @@ class Kinect(Plugin):
     self.paletteThread=None
 
   def setup(self):
-    palette = make_palette('kinect',  # the name of your palette
-                           colors=["#00FF00", "#00A000"],
-                           help_string=_('Palette of kinect sensor'))
+    debug_output('creating %s palette' % _('kinect'), self.tw.running_sugar)
+    palette = make_palette('kinect', ["#00FF00", "#00A000"], _('Palette of kinect sensor'))
 
     primitive_dictionary['xKinect'] = self._prim_xPos
     palette.add_block('xKinect',
