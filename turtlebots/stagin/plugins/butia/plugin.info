@@ -1,5 +1,4 @@
 [Plugin]
 name=butia
-palette=butia, butia-extra
-version=21
-
+palette=butia, butia-extra, butia-cast
+version=22

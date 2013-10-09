@@ -1,5 +1,4 @@
 [Plugin]
 name=arduino
 palette=arduino
-version=21
-
+version=22
