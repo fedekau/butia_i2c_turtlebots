@@ -629,19 +629,22 @@ class Butia(Plugin):
 
         try:
             index = palette_name_to_index('butia')
-            self.tw.regenerate_palette(index)
+            if index is not None:
+                self.tw.regenerate_palette(index)
         except:
             pass
 
         try:
             index = palette_name_to_index('butia-extra')
-            self.tw.regenerate_palette(index)
+            if index is not None:
+                self.tw.regenerate_palette(index)
         except:
             pass
 
         try:
             index = palette_name_to_index('butia-cast')
-            self.tw.regenerate_palette(index)
+            if index is not None:
+                self.tw.regenerate_palette(index)
         except:
             pass
 

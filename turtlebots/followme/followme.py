@@ -397,16 +397,17 @@ class Followme(Plugin):
 
     def change_color_blocks(self):
         index = palette_name_to_index('followme')
-        followme_blocks = palette_blocks[index]
-        for block in self.tw.block_list.list:
-            if block.type in ['proto', 'block']:
-                if block.name in followme_blocks:
-                    if self.cam_present or (block.name == 'followmerefresh'):
-                        special_block_colors[block.name] = COLOR_PRESENT[:]
-                    else:
-                        special_block_colors[block.name] = COLOR_NOTPRESENT[:]
-                    block.refresh()
-        self.tw.show_toolbar_palette(index, regenerate=True, show=False)
+        if index is not None:
+            followme_blocks = palette_blocks[index]
+            for block in self.tw.block_list.list:
+                if block.type in ['proto', 'block']:
+                    if block.name in followme_blocks:
+                        if self.cam_present or (block.name == 'followmerefresh'):
+                            special_block_colors[block.name] = COLOR_PRESENT[:]
+                        else:
+                            special_block_colors[block.name] = COLOR_NOTPRESENT[:]
+                        block.refresh()
+            self.tw.regenerate_palette(index)
                 
     def prim_mode_rgb(self):
         return 'RGB'
