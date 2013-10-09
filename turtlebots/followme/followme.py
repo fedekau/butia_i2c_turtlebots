@@ -396,7 +396,7 @@ class Followme(Plugin):
                         blk.refresh()
 
     def change_color_blocks(self):
-        index = palette_name_to_index('FollowMe')
+        index = palette_name_to_index('followme')
         followme_blocks = palette_blocks[index]
         for block in self.tw.block_list.list:
             if block.type in ['proto', 'block']:
