@@ -1,9 +1,11 @@
 turtlebots (22-r0) unstable; urgency=low
 
-  * new translations
   * uses PyUSB beta 1
+  * split pybot server file
   * uses TurtleBlocks v192+
   * Arduino plugin fixes
+  * NXT plugin fixes
+  * new translations
 
  -- AlanJAS <alanjas@hotmail.com>  Tue, 22 Oct 2013 14:53:48 -0200
 
