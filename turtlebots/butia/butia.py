@@ -206,7 +206,7 @@ class Butia(Plugin):
                      prim_name='batterychargeButia',
                      help_string=_('returns the battery charge in volts. If no motors present, it returns 255'))
         self.tw.lc.def_prim('batterychargeButia', 0,
-            Primitive(self.batterychargeButia, return_type=TYPE_FLOAT))
+            Primitive(self.batterychargeButia, TYPE_FLOAT))
         special_block_colors['batterychargeButia'] = COLOR_NOTPRESENT[:]
 
         palette.add_block('speedButia',
@@ -290,7 +290,7 @@ class Butia(Plugin):
                      default=1,
                      help_string=_('read the value of a pin'))
         self.tw.lc.def_prim('getpinButia', 1,
-            Primitive(self.getpinButia, arg_descs=[ArgSlot(TYPE_NUMBER)], return_type=TYPE_INT))
+            Primitive(self.getpinButia, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
         special_block_colors['getpinButia'] = COLOR_NOTPRESENT[:]
 
         palette2.add_block('setpinButia',
@@ -311,7 +311,7 @@ class Butia(Plugin):
                   help_string=_('Configure hack pin for digital input.'),
                   prim_name='inputButia')
         self.tw.lc.def_prim('inputButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('INPUT')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('INPUT')]))
         special_block_colors['inputButia'] = COLOR_NOTPRESENT[:]
 
         CONSTANTS['HIGH'] = 1
@@ -321,7 +321,7 @@ class Butia(Plugin):
                   help_string=_('Set HIGH value for digital pin.'),
                   prim_name='highButia')
         self.tw.lc.def_prim('highButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('HIGH')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('HIGH')]))
         special_block_colors['highButia'] = COLOR_NOTPRESENT[:]
 
         CONSTANTS['LOW'] = 0
@@ -331,7 +331,7 @@ class Butia(Plugin):
                   help_string=_('Set LOW value for digital port.'),
                   prim_name='lowButia')
         self.tw.lc.def_prim('lowButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('LOW')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('LOW')]))
         special_block_colors['lowButia'] = COLOR_NOTPRESENT[:]
 
         CONSTANTS['OUTPUT'] = _('OUTPUT')
@@ -341,7 +341,7 @@ class Butia(Plugin):
                   help_string=_('Configure hack port for digital output.'),
                   prim_name='outputButia')
         self.tw.lc.def_prim('outputButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('OUTPUT')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('OUTPUT')]))
         special_block_colors['outputButia'] = COLOR_NOTPRESENT[:]
 
         # Cast palette
@@ -402,7 +402,7 @@ class Butia(Plugin):
                      help_string=_(modules_help[j]),
                      hidden=isHidden)
                 self.tw.lc.def_prim(block_name, 0,
-                    Primitive(d[j + 'Butia'], return_type=TYPE_INT, arg_descs=[ConstantArg(k)]))
+                    Primitive(d[j + 'Butia'], TYPE_INT, [ConstantArg(k)]))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
         # cast blocks
@@ -424,7 +424,7 @@ class Butia(Plugin):
                   help_string=_('generic module %s') % _('sensor a'),
                   prim_name='const_sen_aButia')
         self.tw.lc.def_prim('const_sen_aButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('sensor a')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor a')]))
         special_block_colors['const_sen_aButia'] = COLOR_PRESENT[:]
 
         CONSTANTS['sensor b'] = _('sensor b')
@@ -434,7 +434,7 @@ class Butia(Plugin):
                   help_string=_('generic module %s') % _('sensor b'),
                   prim_name='const_sen_bButia')
         self.tw.lc.def_prim('const_sen_bButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('sensor b')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor b')]))
         special_block_colors['const_sen_bButia'] = COLOR_PRESENT[:]
 
         CONSTANTS['sensor c'] = _('sensor c')
@@ -444,7 +444,7 @@ class Butia(Plugin):
                   help_string=_('generic module %s') % _('sensor c'),
                   prim_name='const_sen_cButia')
         self.tw.lc.def_prim('const_sen_cButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('sensor c')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor c')]))
         special_block_colors['const_sen_cButia'] = COLOR_PRESENT[:]
 
         # const of actuators
@@ -455,7 +455,7 @@ class Butia(Plugin):
                   help_string=_('generic module %s') % _('actuator a'),
                   prim_name='const_act_aButia')
         self.tw.lc.def_prim('const_act_aButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('actuator a')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator a')]))
         special_block_colors['const_act_aButia'] = COLOR_PRESENT[:]
 
         CONSTANTS['actuator b'] = _('actuator b')
@@ -465,7 +465,7 @@ class Butia(Plugin):
                   help_string=_('generic module %s') % _('actuator b'),
                   prim_name='const_act_bButia')
         self.tw.lc.def_prim('const_act_bButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('actuator b')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator b')]))
         special_block_colors['const_act_bButia'] = COLOR_PRESENT[:]
 
         CONSTANTS['actuator c'] = _('actuator c')
@@ -475,7 +475,7 @@ class Butia(Plugin):
                   help_string=_('generic module %s') % _('actuator c'),
                   prim_name='const_act_cButia')
         self.tw.lc.def_prim('const_act_cButia', 0,
-            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('actuator c')]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator c')]))
         special_block_colors['const_act_cButia'] = COLOR_PRESENT[:]
 
         palette3.add_block('changeIpButia',
