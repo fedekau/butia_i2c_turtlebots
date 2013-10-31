@@ -29,9 +29,12 @@ from pybot import pybot_client
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import make_palette
-from TurtleArt.talogo import primitive_dictionary, logoerror
+from TurtleArt.talogo import logoerror
 from TurtleArt.tautils import debug_output, power_manager_off
+from TurtleArt.taconstants import CONSTANTS
 from TurtleArt.tawindow import block_names
+from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
+from TurtleArt.tatype import TYPE_INT, TYPE_FLOAT, TYPE_STRING, TYPE_NUMBER
 
 from plugins.plugin import Plugin
 
@@ -120,6 +123,9 @@ label_name_from_device_id['modActA'] = _('actuator a')
 label_name_from_device_id['modActB'] = _('actuator b')
 label_name_from_device_id['modActC'] = _('actuator c')
 
+#dict of every function in the code
+d = {}
+
 refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC', 'modActA', 'modActB', 'modActC']
 static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
 extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
@@ -162,7 +168,21 @@ class Butia(Plugin):
                                 (?:Butia)?			# an ocurrence of the "Butia" string, the first ? mark says that the group hasn't to be returned, the second that the group might or not be present 
                                 $				# end of the string, this regex must match all of the input
                         """, re.X) # Verbose definition, to include comments
-    
+        global d
+        d['ledButia'] = self.ledButia
+        d['lightButia'] = self.lightButia
+        d['grayButia'] = self.grayButia
+        d['buttonButia'] = self.buttonButia
+        d['distanceButia'] = self.distanceButia
+        d['resistanceBButia'] = self.resistanceButia
+        d['voltageBButia'] = self.voltageButia
+        d['temperatureButia'] = self.temperatureButia
+        d['modSenAButia'] = self.modSenAButia
+        d['modSenBButia'] = self.modSenBButia
+        d['modSenCButia'] = self.modSenCButia
+        d['modActAButia'] = self.modActAButia
+        d['modActBButia'] = self.modActBButia
+        d['modActCButia'] = self.modActCButia
 
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
@@ -171,174 +191,158 @@ class Butia(Plugin):
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
-        primitive_dictionary['refreshButia'] = self.refreshButia
         palette.add_block('refreshButia',
                      style='basic-style',
                      label=_('refresh Butia'),
                      prim_name='refreshButia',
                      help_string=_('refresh the state of the Butia palette and blocks'))
-        self.tw.lc.def_prim('refreshButia', 0, lambda self: primitive_dictionary['refreshButia']())
+        self.tw.lc.def_prim('refreshButia', 0,
+            Primitive(self.refreshButia))
         special_block_colors['refreshButia'] = COLOR_PRESENT[:]
 
-        primitive_dictionary['batterychargeButia'] = self.batterychargeButia
         palette.add_block('batterychargeButia',
                      style='box-style',
                      label=_('battery charge Butia'),
                      prim_name='batterychargeButia',
                      help_string=_('returns the battery charge in volts. If no motors present, it returns 255'))
-        self.tw.lc.def_prim('batterychargeButia', 0, lambda self: primitive_dictionary['batterychargeButia']())
+        self.tw.lc.def_prim('batterychargeButia', 0,
+            Primitive(self.batterychargeButia, return_type=TYPE_FLOAT))
         special_block_colors['batterychargeButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['speedButia'] = self.speedButia
         palette.add_block('speedButia',
                      style='basic-style-1arg',
                      label=[_('speed Butia')],
                      prim_name='speedButia',
                      default=[600],
                      help_string=_('set the speed of the Butia motors'))
-        self.tw.lc.def_prim('speedButia', 1, lambda self, x: primitive_dictionary['speedButia'](x))
+        self.tw.lc.def_prim('speedButia', 1,
+            Primitive(self.speedButia, arg_descs=[ArgSlot(TYPE_NUMBER)]))
         special_block_colors['speedButia'] = COLOR_NOTPRESENT[:]
         
-        primitive_dictionary['moveButia'] = self.moveButia
         palette.add_block('moveButia',
                      style='basic-style-2arg',
                      label=[_('move Butia'), _('left'), _('right')],
                      prim_name='moveButia',
                      default=[600, 600],
                      help_string=_('moves the Butia motors at the specified speed'))
-        self.tw.lc.def_prim('moveButia', 2, lambda self, x, y: primitive_dictionary['moveButia'](x, y))
+        self.tw.lc.def_prim('moveButia', 2,
+            Primitive(self.moveButia, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
         special_block_colors['moveButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['stopButia'] = self.stopButia
         palette.add_block('stopButia',
                      style='basic-style',
                      label=_('stop Butia'),
                      prim_name='stopButia',
                      help_string=_('stop the Butia robot'))
-        self.tw.lc.def_prim('stopButia', 0, lambda self: primitive_dictionary['stopButia']())
+        self.tw.lc.def_prim('stopButia', 0, Primitive(self.stopButia))
         special_block_colors['stopButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['forwardButia'] = self.forwardButia
         palette.add_block('forwardButia',
                      style='basic-style',
                      label=_('forward Butia'),
                      prim_name='forwardButia',
                      help_string=_('move the Butia robot forward'))
-        self.tw.lc.def_prim('forwardButia', 0, lambda self: primitive_dictionary['forwardButia']())
+        self.tw.lc.def_prim('forwardButia', 0, Primitive(self.forwardButia))
         special_block_colors['forwardButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['leftButia'] = self.leftButia
         palette.add_block('leftButia',
                      style='basic-style',
                      label=_('left Butia'),
                      prim_name='leftButia',
                      help_string=_('turn the Butia robot at left'))
-        self.tw.lc.def_prim('leftButia', 0, lambda self: primitive_dictionary['leftButia']())
+        self.tw.lc.def_prim('leftButia', 0, Primitive(self.leftButia))
         special_block_colors['leftButia'] = COLOR_NOTPRESENT[:]
         
-        primitive_dictionary['rightButia'] = self.rightButia
         palette.add_block('rightButia',
                      style='basic-style',
                      label=_('right Butia'),
                      prim_name='rightButia',
                      help_string=_('turn the Butia robot at right'))
-        self.tw.lc.def_prim('rightButia', 0, lambda self: primitive_dictionary['rightButia']())
+        self.tw.lc.def_prim('rightButia', 0, Primitive(self.rightButia))
         special_block_colors['rightButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['backwardButia'] = self.backwardButia
         palette.add_block('backwardButia',
                      style='basic-style',
                      label=_('backward Butia'),
                      prim_name='backwardButia',
                      help_string=_('move the Butia robot backward'))
-        self.tw.lc.def_prim('backwardButia', 0, lambda self: primitive_dictionary['backwardButia']())
+        self.tw.lc.def_prim('backwardButia', 0, Primitive(self.backwardButia))
         special_block_colors['backwardButia'] = COLOR_NOTPRESENT[:]
 
         # Extra palette
         debug_output('creating %s palette' % _('butia-extra'), self.tw.running_sugar)
         palette2 = make_palette('butia-extra', COLOR_NOTPRESENT, _('Butia Robot extra blocks'), init_on_start=True)
 
-        primitive_dictionary['pinmodeButia'] = self.pinmodeButia
         palette2.add_block('pinmodeButia',
                   style='basic-style-2arg',
                   label=[_('pin mode Butia'),_('pin'),_('mode')],
                   help_string=_('Select the pin function (INPUT, OUTPUT).'),
                   default=[1],
                   prim_name='pinmodeButia')
-        self.tw.lc.def_prim('pinmodeButia', 2, lambda self, x, y: primitive_dictionary['pinmodeButia'](x, y))
+        self.tw.lc.def_prim('pinmodeButia', 2,
+            Primitive(self.pinmodeButia, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_STRING)]))
         special_block_colors['pinmodeButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['getpinButia'] = self.getpinButia
         palette2.add_block('getpinButia',
                      style='number-style-1arg',
                      label=[_('read pin Butia')],
                      prim_name='getpinButia',
                      default=1,
                      help_string=_('read the value of a pin'))
-        self.tw.lc.def_prim('getpinButia', 1, lambda self, x: primitive_dictionary['getpinButia'](x))
+        self.tw.lc.def_prim('getpinButia', 1,
+            Primitive(self.getpinButia, arg_descs=[ArgSlot(TYPE_NUMBER)], return_type=TYPE_INT))
         special_block_colors['getpinButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['setpinButia'] = self.setpinButia
         palette2.add_block('setpinButia',
                      style='basic-style-2arg',
                      label=[_('write pin Butia'), _('pin'), _('value')],
                      prim_name='setpinButia',
                      default=[1, 0],
                      help_string=_('set a hack pin to 0 or 1'))
-        self.tw.lc.def_prim('setpinButia', 2, lambda self, x, y: primitive_dictionary['setpinButia'](x, y))
+        self.tw.lc.def_prim('setpinButia', 2,
+            Primitive(self.setpinButia, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
         special_block_colors['setpinButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['inputButia'] = self.inputButia
+        global CONSTANTS
+        CONSTANTS['INPUT'] = _('INPUT')
         palette2.add_block('inputButia',
                   style='box-style',
                   label=_('INPUT'),
                   help_string=_('Configure hack pin for digital input.'),
                   prim_name='inputButia')
-        self.tw.lc.def_prim('inputButia', 0, lambda self: primitive_dictionary['inputButia']())
+        self.tw.lc.def_prim('inputButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('INPUT')]))
         special_block_colors['inputButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['highButia'] = self.highButia
+        CONSTANTS['HIGH'] = 1
         palette2.add_block('highButia',
                   style='box-style',
                   label=_('HIGH'),
                   help_string=_('Set HIGH value for digital pin.'),
                   prim_name='highButia')
-        self.tw.lc.def_prim('highButia', 0, lambda self: primitive_dictionary['highButia']())
+        self.tw.lc.def_prim('highButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('HIGH')]))
         special_block_colors['highButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['lowButia'] = self.lowButia
+        CONSTANTS['LOW'] = 0
         palette2.add_block('lowButia',
                   style='box-style',
                   label=_('LOW'),
                   help_string=_('Set LOW value for digital port.'),
                   prim_name='lowButia')
-        self.tw.lc.def_prim('lowButia', 0, lambda self: primitive_dictionary['lowButia']())
+        self.tw.lc.def_prim('lowButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('LOW')]))
         special_block_colors['lowButia'] = COLOR_NOTPRESENT[:]
 
-        primitive_dictionary['outputButia'] = self.outputButia
+        CONSTANTS['OUTPUT'] = _('OUTPUT')
         palette2.add_block('outputButia',
                   style='box-style',
                   label=_('OUTPUT'),
                   help_string=_('Configure hack port for digital output.'),
                   prim_name='outputButia')
-        self.tw.lc.def_prim('outputButia', 0, lambda self: primitive_dictionary['outputButia']())
+        self.tw.lc.def_prim('outputButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('OUTPUT')]))
         special_block_colors['outputButia'] = COLOR_NOTPRESENT[:]
-
-        #add every function in the code 
-        primitive_dictionary['ledButia'] = self.ledButia
-        primitive_dictionary['lightButia'] = self.lightButia
-        primitive_dictionary['grayButia'] = self.grayButia
-        primitive_dictionary['buttonButia'] = self.buttonButia
-        primitive_dictionary['distanceButia'] = self.distanceButia
-        primitive_dictionary['resistanceBButia'] = self.resistanceButia
-        primitive_dictionary['voltageBButia'] = self.voltageButia
-        primitive_dictionary['temperatureButia'] = self.temperatureButia
-        primitive_dictionary['modSenAButia'] = self.modSenAButia
-        primitive_dictionary['modSenBButia'] = self.modSenBButia
-        primitive_dictionary['modSenCButia'] = self.modSenCButia
-        primitive_dictionary['modActAButia'] = self.modActAButia
-        primitive_dictionary['modActBButia'] = self.modActBButia
-        primitive_dictionary['modActCButia'] = self.modActCButia
 
         # Cast palette
         debug_output('creating %s palette' % _('butia-cast'), self.tw.running_sugar)
@@ -368,7 +372,8 @@ class Butia(Plugin):
                      default=1,
                      help_string=_(modules_help[j]),
                      hidden=isHidden)
-                self.tw.lc.def_prim(block_name, 1, lambda self, w, x=m, y=j, z=0: primitive_dictionary[y + 'Butia'](w, x, z))
+                self.tw.lc.def_prim(block_name, 1,
+                    Primitive(d[j + 'Butia'], arg_descs=[ArgSlot(TYPE_NUMBER), ConstantArg(k)]))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
         for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC']:
@@ -396,85 +401,91 @@ class Butia(Plugin):
                      prim_name= block_name,
                      help_string=_(modules_help[j]),
                      hidden=isHidden)
-                self.tw.lc.def_prim(block_name, 0, lambda self, x=m, y=j, z=0: primitive_dictionary[y + 'Butia'](x, z))
+                self.tw.lc.def_prim(block_name, 0,
+                    Primitive(d[j + 'Butia'], return_type=TYPE_INT, arg_descs=[ConstantArg(k)]))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
         # cast blocks
-        primitive_dictionary['castButia'] = self.castButia
         palette3.add_block('castButia',
                   style='basic-style-3arg',
                   label=[_('CAST\n'), _('new name'), _('original'), _('f(x)=')],
                   default=[_('name'), '', 'x'],
                   help_string=_('Cast a new block'),
                   prim_name='castButia')
-        self.tw.lc.def_prim('castButia', 3, lambda self, x, y, z: primitive_dictionary['castButia'](x, y, z))
+        self.tw.lc.def_prim('castButia', 3,
+            Primitive(self.castButia, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)]))
         special_block_colors['castButia'] = COLOR_PRESENT[:]
 
         # const of sensors
-        primitive_dictionary['const_sen_aButia'] = self.const_sen_aButia
+        CONSTANTS['sensor a'] = _('sensor a')
         palette3.add_block('const_sen_aButia',
                   style='box-style',
                   label=_('sensor a'),
                   help_string=_('generic module %s') % _('sensor a'),
                   prim_name='const_sen_aButia')
-        self.tw.lc.def_prim('const_sen_aButia', 0, lambda self: primitive_dictionary['const_sen_aButia']())
+        self.tw.lc.def_prim('const_sen_aButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('sensor a')]))
         special_block_colors['const_sen_aButia'] = COLOR_PRESENT[:]
 
-        primitive_dictionary['const_sen_bButia'] = self.const_sen_bButia
+        CONSTANTS['sensor b'] = _('sensor b')
         palette3.add_block('const_sen_bButia',
                   style='box-style',
                   label=_('sensor b'),
                   help_string=_('generic module %s') % _('sensor b'),
                   prim_name='const_sen_bButia')
-        self.tw.lc.def_prim('const_sen_bButia', 0, lambda self: primitive_dictionary['const_sen_bButia']())
+        self.tw.lc.def_prim('const_sen_bButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('sensor b')]))
         special_block_colors['const_sen_bButia'] = COLOR_PRESENT[:]
 
-        primitive_dictionary['const_sen_cButia'] = self.const_sen_cButia
+        CONSTANTS['sensor c'] = _('sensor c')
         palette3.add_block('const_sen_cButia',
                   style='box-style',
                   label=_('sensor c'),
                   help_string=_('generic module %s') % _('sensor c'),
                   prim_name='const_sen_cButia')
-        self.tw.lc.def_prim('const_sen_cButia', 0, lambda self: primitive_dictionary['const_sen_cButia']())
+        self.tw.lc.def_prim('const_sen_cButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('sensor c')]))
         special_block_colors['const_sen_cButia'] = COLOR_PRESENT[:]
 
         # const of actuators
-        primitive_dictionary['const_act_aButia'] = self.const_act_aButia
+        CONSTANTS['actuator a'] = _('actuator a')
         palette3.add_block('const_act_aButia',
                   style='box-style',
                   label=_('actuator a'),
                   help_string=_('generic module %s') % _('actuator a'),
                   prim_name='const_act_aButia')
-        self.tw.lc.def_prim('const_act_aButia', 0, lambda self: primitive_dictionary['const_act_aButia']())
+        self.tw.lc.def_prim('const_act_aButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('actuator a')]))
         special_block_colors['const_act_aButia'] = COLOR_PRESENT[:]
 
-        primitive_dictionary['const_act_bButia'] = self.const_act_bButia
+        CONSTANTS['actuator b'] = _('actuator b')
         palette3.add_block('const_act_bButia',
                   style='box-style',
                   label=_('actuator b'),
                   help_string=_('generic module %s') % _('actuator b'),
                   prim_name='const_act_bButia')
-        self.tw.lc.def_prim('const_act_bButia', 0, lambda self: primitive_dictionary['const_act_bButia']())
+        self.tw.lc.def_prim('const_act_bButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('actuator b')]))
         special_block_colors['const_act_bButia'] = COLOR_PRESENT[:]
 
-        primitive_dictionary['const_act_cButia'] = self.const_act_cButia
+        CONSTANTS['actuator c'] = _('actuator c')
         palette3.add_block('const_act_cButia',
                   style='box-style',
                   label=_('actuator c'),
                   help_string=_('generic module %s') % _('actuator c'),
                   prim_name='const_act_cButia')
-        self.tw.lc.def_prim('const_act_cButia', 0, lambda self: primitive_dictionary['const_act_cButia']())
+        self.tw.lc.def_prim('const_act_cButia', 0,
+            Primitive(CONSTANTS.get, return_type=TYPE_STRING, arg_descs=[ConstantArg('actuator c')]))
         special_block_colors['const_act_cButia'] = COLOR_PRESENT[:]
 
-        primitive_dictionary['changeIpButia'] = self.prim_change_ipButia
         palette3.add_block('changeIpButia',
                         style='basic-style-1arg',
                         label=_('Butia IP'),
                         default='localhost',
                         help_string=_('change the ip of butia robot'),
                         prim_name='changeIpButia')
-        self.tw.lc.def_prim('changeIpButia', 1, lambda self, x:
-                        primitive_dictionary['changeIpButia'](x))
+        self.tw.lc.def_prim('changeIpButia', 1,
+            Primitive(self.prim_change_ipButia, arg_descs=[ArgSlot(TYPE_STRING)]))
         special_block_colors['changeIpButia'] = COLOR_PRESENT[:]
 
     ################################ Turtle calls ################################
@@ -617,11 +628,11 @@ class Butia(Plugin):
                                 special_block_colors[blk.name] = COLOR_PRESENT[:]
 
                             if module in ['led', 'modActA', 'modActB', 'modActC']:
-                                self.tw.lc.def_prim(blk.name, 1, 
-                                lambda self, w, x=value, y=blk_name, z=board: primitive_dictionary[y + 'Butia'](w,x,z))
+                                self.tw.lc.def_prim(blk.name, 1,
+                                    Primitive(d[blk_name + 'Butia'], arg_descs=[ArgSlot(TYPE_NUMBER), ConstantArg(value), ConstantArg(board)]))
                             else:
-                                self.tw.lc.def_prim(blk.name, 0, 
-                                lambda self, x=value, y=blk_name, z=board: primitive_dictionary[y+ 'Butia'](x, z))
+                                self.tw.lc.def_prim(blk.name, 0,
+                                    Primitive(d[blk_name + 'Butia'], return_type=TYPE_INT, arg_descs=[ConstantArg(value), ConstantArg(board)]))
 
                             blk.spr.set_label(label)
                             block_names[blk.name][0] = label
@@ -746,28 +757,28 @@ class Butia(Plugin):
         else:
             return self.butia.getBatteryCharge()
 
-    def buttonButia(self, sensorid='0', boardid='0'):
-        return self.butia.getButton(sensorid, boardid)
+    def buttonButia(self, port='0', board='0'):
+        return self.butia.getButton(port, board)
 
-    def lightButia(self, sensorid='0', boardid='0'):
-        return self.butia.getLight(sensorid, boardid)
+    def lightButia(self, port='0', board='0'):
+        return self.butia.getLight(port, board)
 
-    def distanceButia(self, sensorid='0', boardid='0'):
-        return self.butia.getDistance(sensorid, boardid)
+    def distanceButia(self, port='0', board='0'):
+        return self.butia.getDistance(port, board)
 
-    def grayButia(self, sensorid='0', boardid='0'):
-        return self.butia.getGray(sensorid, boardid)
+    def grayButia(self, port='0', board='0'):
+        return self.butia.getGray(port, board)
 
-    def resistanceButia(self, sensorid='0', boardid='0'):
-        return self.butia.getResistance(sensorid, boardid)
+    def resistanceButia(self, port='0', board='0'):
+        return self.butia.getResistance(port, board)
 
-    def voltageButia(self, sensorid='0', boardid='0'):
-        return self.butia.getVoltage(sensorid, boardid)
+    def voltageButia(self, port='0', board='0'):
+        return self.butia.getVoltage(port, board)
 
-    def temperatureButia(self, sensorid='0', boardid='0'):
-        return self.butia.getTemperature(sensorid, boardid)
+    def temperatureButia(self, port='0', board='0'):
+        return self.butia.getTemperature(port, board)
 
-    def ledButia(self, value, sensorid='0', boardid='0'):
+    def ledButia(self, value, port='0', board='0'):
         try:
             value = int(value)
         except:
@@ -775,7 +786,7 @@ class Butia(Plugin):
         if (value < 0) or (value > 1):
             raise logoerror(ERROR_PIN_VALUE)
         else:
-            self.butia.setLed(sensorid, value, boardid)
+            self.butia.setLed(port, value, board)
 
     ################################ Extras ################################
 
@@ -796,18 +807,6 @@ class Butia(Plugin):
                     self.butia.modeHack(pin, 0)
                 else:
                     raise logoerror(ERROR_PIN_MODE)
-
-    def highButia(self):
-        return 1
-
-    def lowButia(self):
-        return 0
-
-    def inputButia(self):
-        return _('INPUT')
-
-    def outputButia(self):
-        return _('OUTPUT')
 
     def setpinButia(self, pin, value):
         if not(self.use_cc):
@@ -845,24 +844,6 @@ class Butia(Plugin):
                     return self.butia.getHack(pin)
 
     ################################ Custom modules ################################
-
-    def const_sen_aButia(self):
-        return _('sensor a')
-
-    def const_sen_bButia(self):
-        return _('sensor b')
-
-    def const_sen_cButia(self):
-        return _('sensor c')
-
-    def const_act_aButia(self):
-        return _('actuator a')
-
-    def const_act_bButia(self):
-        return _('actuator b')
-
-    def const_act_cButia(self):
-        return _('actuator c')
 
     def modSenAButia(self, sensorid=0, boardid=0):
         x = self.butia.getModuleA(sensorid, boardid)
