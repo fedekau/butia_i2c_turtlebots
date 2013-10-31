@@ -122,7 +122,7 @@ class Chotox(ButiaFunctions):
         if modulename == 'butia' and function == 'getVolt':
             return 10.5
         elif modulename == 'motors' and function == 'getType':
-            return 1
+            return 2
 
         if function == 'getValue':
             if modulename == 'button':
