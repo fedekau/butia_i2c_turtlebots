@@ -28,60 +28,58 @@
 
 import socket
 
+#tipos de mensajes
+OPE_UPDATE = "update"
+OPE_REPOSICIONAR = "position"
+OPE_START = "start"
+OPE_STOP = "stop"
+OPE_ACK = "ok"
+
+#estados del juego
+REPOSICIONAR = 0
+START = 1
+STOP = 2
+
+#default comunication parameters
+PORT_CLIENTE = 7001
+IP_SERVER = "127.0.0.1"
+PORT_SERVER = 8001
+
 class apiSumoUY:
-    cliente = None
-    
-    #default comunication parameters
-    port_cliente = 7001
-    ip_server = "127.0.0.1"
-    port_server = 8001
-    LARGO_MAX_MSG = 100
-
-    #atributos utilizados para intercambiar mensajes UDP con el servidor
-    #private DatagramSocket socket;
-    #private InetAddress serverIP;
-    #private int serverPort;
-
-    #posibles tipos de mensajes entre el servidor y el cliente
-    OPE_UPDATE = "update"
-    OPE_REPOSICIONAR = "position"
-    OPE_START = "start"
-    OPE_STOP = "stop"
-    OPE_ACK = "ok"
-
-    #estados del juego
-    REPOSICIONAR = 0
-    START = 1
-    STOP = 2
-
-    #estado actual del juego
-    estado = STOP
-
-    #posicion y puntaje de mi luchador
-    coorX = -1
-    coorY = -1
-    rot = -1
-    yukoP = 0
-
-    #posicion y puntaje del contrincante
-    coorXOp = -1
-    coorYOp = -1
-    rotOp = -1
-    yukoPOp = 0
-
-    #posicion en donde debe posicionarse mi luchador
-    coorXR = -1
-    coorYR = -1
-    rotR = -1
        
     def __init__(self):
-        pass
-    
-    def setPuertos(self, port_Cliente = 7001, ip_Server = "127.0.0.1", port_Server = 8001):
+        self.cliente = None
         
-        self.port_cliente = port_Cliente
-        self.ip_server = ip_Server
-        self.port_server = port_Server
+        #default comunication parameters
+        self.port_cliente = PORT_CLIENTE
+        self.ip_server = IP_SERVER
+        self.port_server = PORT_SERVER
+
+        #estado actual del juego
+        self.estado = STOP
+
+        #posicion y puntaje de mi luchador
+        self.coorX = -1
+        self.coorY = -1
+        self.rot = -1
+        self.yukoP = 0
+
+        #posicion y puntaje del contrincante
+        self.coorXOp = -1
+        self.coorYOp = -1
+        self.rotOp = -1
+        self.yukoPOp = 0
+
+        #posicion en donde debe posicionarse mi luchador
+        self.coorXR = -1
+        self.coorYR = -1
+        self.rotR = -1
+    
+    def setPuertos(self, port_cliente=PORT_CLIENTE, ip_server=IP_SERVER, port_server=PORT_SERVER):
+        
+        self.port_cliente = port_cliente
+        self.ip_server = ip_server
+        self.port_server = port_server
         
         print "SumoAPI: Puertos Seleccionados:"
         print self.port_cliente
@@ -93,65 +91,52 @@ class apiSumoUY:
             self.cliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self.cliente.bind((self.ip_server, self.port_cliente)) #puerto por donde voy a mandar mis comandos
         except:
-            print "SumoAPI: Error trying to connect..."    
-            #return -1        
+            print "SumoAPI: Error trying to connect..."
         
     def liberarRecursos(self):
-        #print "cerrando comunicacion..."    
         try:
             self.cliente.close() 
         except:
-            print "SumoAPI: Closing connection error..."    
+            print "SumoAPI: Closing connection error..."
         
     def enviarAck(self):
         msg = self.OPE_ACK + '*'
         try:
-            err = self.cliente.sendto(msg.encode("ascii"),(self.ip_server, self.port_server))
+            self.cliente.sendto(msg.encode("ascii"),(self.ip_server, self.port_server))
         except:
-            print "SumoAPI: Sending Ack error..."    
+            print "SumoAPI: Sending Ack error..."  
         
-    #listar modulos: devuelve la lista de los modulos disponibles en el firmware de la placa
     def enviarVelocidades(self, vel_izq = 0, vel_der = 0):
-        
-        #print "enviar velocidades\n"
         msg = "speed*" + str(int(vel_izq)) + "*" + str(int(vel_der)) + "*" 
         print msg
         try:
-            err = self.cliente.sendto(msg,(self.ip_server, self.port_server)) #verificar que es lo q devuelve la funcion
+            self.cliente.sendto(msg,(self.ip_server, self.port_server))
             return "ok"    
-        except:    
+        except:   
             print "SumoAPI: Sending speed error..."
-        #print err
-        #print msg
-        
         
     def getInformacion(self):
-        print "SumoAPI: get Information\n"
         try:
             mensaje, addr = self.cliente.recvfrom(1024)
             print mensaje
             #print addr        
             data = mensaje.split('*')
             opcode = data[0]
-            if opcode == self.OPE_REPOSICIONAR:
+            if opcode == OPE_REPOSICIONAR:
                 if (len(data) >= 4): 
-                    #print "me llego un reposicionar"
                     self.coorXR = int(data[1])
                     self.coorYR = int(data[2])
                     self.rotR   = int(data[3])
-                    self.estado = self.REPOSICIONAR
+                    self.estado = REPOSICIONAR
                     self.enviarAck()
-            elif opcode == self.OPE_START:
-                #print "me llego un start"
-                self.estado = self.START
+            elif opcode == OPE_START:
+                self.estado = START
                 self.enviarAck()            
-            elif opcode == self.OPE_STOP:
-                #print "me llego un stop"
-                self.estado = self.STOP
+            elif opcode == OPE_STOP:
+                self.estado = STOP
                 self.enviarAck()
-            elif opcode == self.OPE_UPDATE:
-                if (len(data) >= 9): 
-                    #print "me llego un update"
+            elif opcode == OPE_UPDATE:
+                if (len(data) >= 9):
                     self.coorX = int(data[1])
                     self.coorY = int(data[2])
                     self.rot   = int(data[3])
@@ -160,7 +145,6 @@ class apiSumoUY:
                     self.coorYOp = int(data[6])
                     self.rotOp   = int(data[7])
                     self.yukoPOp = int(data[8])
-            
             mensaje = None
             return 0
         except:
