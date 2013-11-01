@@ -84,12 +84,12 @@ modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
 modules_name_from_device_id['voltageB'] = 'volt'
 modules_name_from_device_id['temperature'] = 'temp'
-modules_name_from_device_id['modSenA'] = 'modSenA'
-modules_name_from_device_id['modSenB'] = 'modSenB'
-modules_name_from_device_id['modSenC'] = 'modSenC'
-modules_name_from_device_id['modActA'] = 'modActA'
-modules_name_from_device_id['modActB'] = 'modActB'
-modules_name_from_device_id['modActC'] = 'modActC'
+modules_name_from_device_id['SenA'] = 'modSenA'
+modules_name_from_device_id['SenB'] = 'modSenB'
+modules_name_from_device_id['SenC'] = 'modSenC'
+modules_name_from_device_id['ActA'] = 'modActA'
+modules_name_from_device_id['ActB'] = 'modActB'
+modules_name_from_device_id['ActC'] = 'modActC'
 
 device_id_from_module_name = {} 
 device_id_from_module_name['led'] = 'led'
@@ -100,12 +100,12 @@ device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
 device_id_from_module_name['volt'] = 'voltage'
 device_id_from_module_name['temp'] = 'temperature'
-device_id_from_module_name['modSenA'] = 'modSenA'
-device_id_from_module_name['modSenB'] = 'modSenB'
-device_id_from_module_name['modSenC'] = 'modSenC'
-device_id_from_module_name['modActA'] = 'modActA'
-device_id_from_module_name['modActB'] = 'modActB'
-device_id_from_module_name['modActC'] = 'modActC'
+device_id_from_module_name['modSenA'] = 'SenA'
+device_id_from_module_name['modSenB'] = 'SenB'
+device_id_from_module_name['modSenC'] = 'SenC'
+device_id_from_module_name['modActA'] = 'ActA'
+device_id_from_module_name['modActB'] = 'ActB'
+device_id_from_module_name['modActC'] = 'ActC'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -116,12 +116,12 @@ label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
 label_name_from_device_id['temperature'] = _('temperature')
-label_name_from_device_id['modSenA'] = _('sensor a')
-label_name_from_device_id['modSenB'] = _('sensor b')
-label_name_from_device_id['modSenC'] = _('sensor c')
-label_name_from_device_id['modActA'] = _('actuator a')
-label_name_from_device_id['modActB'] = _('actuator b')
-label_name_from_device_id['modActC'] = _('actuator c')
+label_name_from_device_id['SenA'] = _('sensor a')
+label_name_from_device_id['SenB'] = _('sensor b')
+label_name_from_device_id['SenC'] = _('sensor c')
+label_name_from_device_id['ActA'] = _('actuator a')
+label_name_from_device_id['ActB'] = _('actuator b')
+label_name_from_device_id['ActC'] = _('actuator c')
 
 #dict of every function in the code
 d = {}
@@ -133,6 +133,7 @@ extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 
 class Butia(Plugin):
     
     def __init__(self, parent):
+        Plugin.__init__(self)
         self.tw = parent
         self.init_gconf()
         power_manager_off(True)
@@ -169,20 +170,20 @@ class Butia(Plugin):
                                 $				# end of the string, this regex must match all of the input
                         """, re.X) # Verbose definition, to include comments
         global d
-        d['ledButia'] = self.ledButia
-        d['lightButia'] = self.lightButia
-        d['grayButia'] = self.grayButia
-        d['buttonButia'] = self.buttonButia
-        d['distanceButia'] = self.distanceButia
-        d['resistanceBButia'] = self.resistanceButia
-        d['voltageBButia'] = self.voltageButia
-        d['temperatureButia'] = self.temperatureButia
-        d['modSenAButia'] = self.modSenAButia
-        d['modSenBButia'] = self.modSenBButia
-        d['modSenCButia'] = self.modSenCButia
-        d['modActAButia'] = self.modActAButia
-        d['modActBButia'] = self.modActBButia
-        d['modActCButia'] = self.modActCButia
+        d['led'] = self.setLed
+        d['light'] = self.getLight
+        d['gray'] = self.getGray
+        d['button'] = self.getButton
+        d['distance'] = self.getDistance
+        d['resistanceB'] = self.getResistance
+        d['voltageB'] = self.getVoltage
+        d['temperature'] = self.getTemperature
+        d['modSenA'] = self.getSenA
+        d['modSenB'] = self.getSenB
+        d['modSenC'] = self.getSenC
+        d['modActA'] = self.setActA
+        d['modActB'] = self.setActB
+        d['modActC'] = self.setActC
 
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
@@ -197,7 +198,7 @@ class Butia(Plugin):
                      prim_name='refreshButia',
                      help_string=_('refresh the state of the Butia palette and blocks'))
         self.tw.lc.def_prim('refreshButia', 0,
-            Primitive(self.refreshButia))
+            Primitive(self.refresh))
         special_block_colors['refreshButia'] = COLOR_PRESENT[:]
 
         palette.add_block('batterychargeButia',
@@ -206,7 +207,7 @@ class Butia(Plugin):
                      prim_name='batterychargeButia',
                      help_string=_('returns the battery charge in volts. If no motors present, it returns 255'))
         self.tw.lc.def_prim('batterychargeButia', 0,
-            Primitive(self.batterychargeButia, TYPE_FLOAT))
+            Primitive(self.getBatteryCharge, TYPE_FLOAT))
         special_block_colors['batterychargeButia'] = COLOR_NOTPRESENT[:]
 
         palette.add_block('speedButia',
@@ -216,7 +217,7 @@ class Butia(Plugin):
                      default=[600],
                      help_string=_('set the speed of the Butia motors'))
         self.tw.lc.def_prim('speedButia', 1,
-            Primitive(self.speedButia, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+            Primitive(self.speed, arg_descs=[ArgSlot(TYPE_NUMBER)]))
         special_block_colors['speedButia'] = COLOR_NOTPRESENT[:]
         
         palette.add_block('moveButia',
@@ -226,7 +227,7 @@ class Butia(Plugin):
                      default=[600, 600],
                      help_string=_('moves the Butia motors at the specified speed'))
         self.tw.lc.def_prim('moveButia', 2,
-            Primitive(self.moveButia, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
+            Primitive(self.move, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
         special_block_colors['moveButia'] = COLOR_NOTPRESENT[:]
 
         palette.add_block('stopButia',
@@ -234,7 +235,8 @@ class Butia(Plugin):
                      label=_('stop Butia'),
                      prim_name='stopButia',
                      help_string=_('stop the Butia robot'))
-        self.tw.lc.def_prim('stopButia', 0, Primitive(self.stopButia))
+        self.tw.lc.def_prim('stopButia', 0,
+            Primitive(self.stop, arg_descs=[ConstantArg(True)]))
         special_block_colors['stopButia'] = COLOR_NOTPRESENT[:]
 
         palette.add_block('forwardButia',
@@ -242,7 +244,8 @@ class Butia(Plugin):
                      label=_('forward Butia'),
                      prim_name='forwardButia',
                      help_string=_('move the Butia robot forward'))
-        self.tw.lc.def_prim('forwardButia', 0, Primitive(self.forwardButia))
+        self.tw.lc.def_prim('forwardButia', 0,
+            Primitive(self.forward))
         special_block_colors['forwardButia'] = COLOR_NOTPRESENT[:]
 
         palette.add_block('leftButia',
@@ -250,7 +253,8 @@ class Butia(Plugin):
                      label=_('left Butia'),
                      prim_name='leftButia',
                      help_string=_('turn the Butia robot at left'))
-        self.tw.lc.def_prim('leftButia', 0, Primitive(self.leftButia))
+        self.tw.lc.def_prim('leftButia', 0,
+            Primitive(self.left))
         special_block_colors['leftButia'] = COLOR_NOTPRESENT[:]
         
         palette.add_block('rightButia',
@@ -258,7 +262,8 @@ class Butia(Plugin):
                      label=_('right Butia'),
                      prim_name='rightButia',
                      help_string=_('turn the Butia robot at right'))
-        self.tw.lc.def_prim('rightButia', 0, Primitive(self.rightButia))
+        self.tw.lc.def_prim('rightButia', 0,
+            Primitive(self.right))
         special_block_colors['rightButia'] = COLOR_NOTPRESENT[:]
 
         palette.add_block('backwardButia',
@@ -266,7 +271,8 @@ class Butia(Plugin):
                      label=_('backward Butia'),
                      prim_name='backwardButia',
                      help_string=_('move the Butia robot backward'))
-        self.tw.lc.def_prim('backwardButia', 0, Primitive(self.backwardButia))
+        self.tw.lc.def_prim('backwardButia', 0,
+            Primitive(self.backward))
         special_block_colors['backwardButia'] = COLOR_NOTPRESENT[:]
 
         # Extra palette
@@ -280,7 +286,7 @@ class Butia(Plugin):
                   default=[1],
                   prim_name='pinmodeButia')
         self.tw.lc.def_prim('pinmodeButia', 2,
-            Primitive(self.pinmodeButia, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_STRING)]))
+            Primitive(self.pinMode, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_STRING)]))
         special_block_colors['pinmodeButia'] = COLOR_NOTPRESENT[:]
 
         palette2.add_block('getpinButia',
@@ -290,7 +296,7 @@ class Butia(Plugin):
                      default=1,
                      help_string=_('read the value of a pin'))
         self.tw.lc.def_prim('getpinButia', 1,
-            Primitive(self.getpinButia, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
+            Primitive(self.getPin, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
         special_block_colors['getpinButia'] = COLOR_NOTPRESENT[:]
 
         palette2.add_block('setpinButia',
@@ -300,7 +306,7 @@ class Butia(Plugin):
                      default=[1, 0],
                      help_string=_('set a hack pin to 0 or 1'))
         self.tw.lc.def_prim('setpinButia', 2,
-            Primitive(self.setpinButia, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
+            Primitive(self.setPin, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
         special_block_colors['setpinButia'] = COLOR_NOTPRESENT[:]
 
         global CONSTANTS
@@ -373,7 +379,7 @@ class Butia(Plugin):
                      help_string=_(modules_help[j]),
                      hidden=isHidden)
                 self.tw.lc.def_prim(block_name, 1,
-                    Primitive(d[j + 'Butia'], arg_descs=[ArgSlot(TYPE_NUMBER), ConstantArg(k)]))
+                    Primitive(d[j], arg_descs=[ArgSlot(TYPE_NUMBER), ConstantArg(k)]))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
         for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC']:
@@ -392,17 +398,14 @@ class Butia(Plugin):
                     k = m
                 module = j + str(k)
                 block_name = module + 'Butia'
-                
-                label = label_name_from_device_id[j] + str(k)
-
                 pal.add_block(block_name, 
                      style='box-style',
-                     label=(label + ' ' +  _('Butia')),
+                     label=(label_name_from_device_id[j] + str(k) + ' ' +  _('Butia')),
                      prim_name= block_name,
                      help_string=_(modules_help[j]),
                      hidden=isHidden)
                 self.tw.lc.def_prim(block_name, 0,
-                    Primitive(d[j + 'Butia'], TYPE_INT, [ConstantArg(k)]))
+                    Primitive(d[j], TYPE_INT, [ConstantArg(k)]))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
         # cast blocks
@@ -493,9 +496,10 @@ class Butia(Plugin):
     def start(self):
         self.can_refresh = False
 
-    def stop(self):
+    def stop(self, butia=False):
         self.set_vels(0, 0)
-        self.can_refresh = True
+        if not(butia):
+            self.can_refresh = True
 
     def quit(self):
         self.pollrun = False
@@ -508,7 +512,7 @@ class Butia(Plugin):
 
     ################################ Refresh process ################################
 
-    def refreshButia(self):
+    def refresh(self):
         self.butia.refresh()
         self.check_for_device_change(True)
 
@@ -629,10 +633,10 @@ class Butia(Plugin):
 
                             if module in ['led', 'modActA', 'modActB', 'modActC']:
                                 self.tw.lc.def_prim(blk.name, 1,
-                                    Primitive(d[blk_name + 'Butia'], arg_descs=[ArgSlot(TYPE_NUMBER), ConstantArg(value), ConstantArg(board)]))
+                                    Primitive(d[blk_name], arg_descs=[ArgSlot(TYPE_NUMBER), ConstantArg(value), ConstantArg(board)]))
                             else:
                                 self.tw.lc.def_prim(blk.name, 0,
-                                    Primitive(d[blk_name + 'Butia'], return_type=TYPE_INT, arg_descs=[ConstantArg(value), ConstantArg(board)]))
+                                    Primitive(d[blk_name], return_type=TYPE_INT, arg_descs=[ConstantArg(value), ConstantArg(board)]))
 
                             blk.spr.set_label(label)
                             block_names[blk.name][0] = label
@@ -710,7 +714,7 @@ class Butia(Plugin):
             sentRight = '1'
         self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
 
-    def moveButia(self, left, right):
+    def move(self, left, right):
         try:
             left = int(left)
         except:
@@ -725,22 +729,20 @@ class Butia(Plugin):
             raise logoerror(ERROR_SPEED_ABS)
         self.set_vels(left, right)
 
-    def forwardButia(self):
+    def forward(self):
         self.set_vels(self.actualSpeed[0], self.actualSpeed[1])
 
-    def backwardButia(self):
+    def backward(self):
         self.set_vels(-self.actualSpeed[0], -self.actualSpeed[1])
 
-    def leftButia(self):
+    def left(self):
         self.set_vels(-self.actualSpeed[0], self.actualSpeed[1])
 
-    def rightButia(self):
+    def right(self):
         self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
 
-    def stopButia(self):
-        self.set_vels(0, 0)
-
-    def speedButia(self, speed):
+    def speed(self, speed):
+        print 'testtin'
         try:
             speed = int(speed)
         except:
@@ -751,34 +753,34 @@ class Butia(Plugin):
 
     ################################ Sensors calls ################################
 
-    def batterychargeButia(self):
+    def getBatteryCharge(self):
         if self.use_cc:
             return 255
         else:
             return self.butia.getBatteryCharge()
 
-    def buttonButia(self, port='0', board='0'):
+    def getButton(self, port='0', board='0'):
         return self.butia.getButton(port, board)
 
-    def lightButia(self, port='0', board='0'):
+    def getLight(self, port='0', board='0'):
         return self.butia.getLight(port, board)
 
-    def distanceButia(self, port='0', board='0'):
+    def getDistance(self, port='0', board='0'):
         return self.butia.getDistance(port, board)
 
-    def grayButia(self, port='0', board='0'):
+    def getGray(self, port='0', board='0'):
         return self.butia.getGray(port, board)
 
-    def resistanceButia(self, port='0', board='0'):
+    def getResistance(self, port='0', board='0'):
         return self.butia.getResistance(port, board)
 
-    def voltageButia(self, port='0', board='0'):
+    def getVoltage(self, port='0', board='0'):
         return self.butia.getVoltage(port, board)
 
-    def temperatureButia(self, port='0', board='0'):
+    def getTemperature(self, port='0', board='0'):
         return self.butia.getTemperature(port, board)
 
-    def ledButia(self, value, port='0', board='0'):
+    def setLed(self, value, port='0', board='0'):
         try:
             value = int(value)
         except:
@@ -790,7 +792,7 @@ class Butia(Plugin):
 
     ################################ Extras ################################
 
-    def pinmodeButia(self, pin, mode):
+    def pinMode(self, pin, mode):
         if not(self.use_cc):
             try:
                 pin = int(pin)
@@ -808,7 +810,7 @@ class Butia(Plugin):
                 else:
                     raise logoerror(ERROR_PIN_MODE)
 
-    def setpinButia(self, pin, value):
+    def setPin(self, pin, value):
         if not(self.use_cc):
             try:
                 pin = int(pin)
@@ -829,7 +831,7 @@ class Butia(Plugin):
                     else:
                         self.butia.setHack(pin, value)
 
-    def getpinButia(self, pin):
+    def getPin(self, pin):
         if not(self.use_cc):
             try:
                 pin = int(pin)
@@ -845,7 +847,7 @@ class Butia(Plugin):
 
     ################################ Custom modules ################################
 
-    def modSenAButia(self, sensorid=0, boardid=0):
+    def getSenA(self, sensorid=0, boardid=0):
         x = self.butia.getModuleA(sensorid, boardid)
         if x == ERROR:
             return ERROR
@@ -854,7 +856,7 @@ class Butia(Plugin):
         except:
             raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_a_f)
 
-    def modSenBButia(self, sensorid=0, boardid=0):
+    def getSenB(self, sensorid=0, boardid=0):
         x = self.butia.getModuleB(sensorid, boardid)
         if x == ERROR:
             return ERROR
@@ -863,7 +865,7 @@ class Butia(Plugin):
         except:
             raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_b_f)
 
-    def modSenCButia(self, sensorid=0, boardid=0):
+    def getSenC(self, sensorid=0, boardid=0):
         x = self.butia.getModuleC(sensorid, boardid)
         if x == ERROR:
             return ERROR
@@ -872,13 +874,13 @@ class Butia(Plugin):
         except:
             raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_c_f)
 
-    def modActAButia(self, value, sensorid=0, boardid=0):
+    def setActA(self, value, sensorid=0, boardid=0):
         self.butia.setModuleA(sensorid, value, boardid)
 
-    def modActBButia(self, value, sensorid=0, boardid=0):
+    def setActB(self, value, sensorid=0, boardid=0):
         self.butia.setModuleB(sensorid, value, boardid)
 
-    def modActCButia(self, value, sensorid=0, boardid=0):
+    def setActC(self, value, sensorid=0, boardid=0):
         self.butia.setModuleC(sensorid, value, boardid)
 
     def init_gconf(self):
