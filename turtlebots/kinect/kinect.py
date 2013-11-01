@@ -19,6 +19,7 @@ COLOR_PRESENT = ["#00FF00","#008000"]
 class Kinect(Plugin):
 
   def __init__(self, parent):
+    Plugin.__init__(self)
     self.parent = parent
     self.handPresent = False
     self.lastHandPresent = False

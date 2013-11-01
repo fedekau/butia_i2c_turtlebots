@@ -34,9 +34,9 @@ from plugins.plugin import Plugin
 class Sumtia(Plugin):
     
     def __init__(self, parent):
+        Plugin.__init__(self)
         self.tw = parent
         self.vel = 10
-
         self.api = apiSumoUY.apiSumoUY()
         self.api.setPuertos()
         self.api.conectarse() 

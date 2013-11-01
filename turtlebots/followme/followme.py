@@ -47,6 +47,7 @@ _logger = logging.getLogger('turtleart-activity followme plugin')
 class Followme(Plugin):
 
     def __init__(self, parent):
+        Plugin.__init__(self)
         self.tw = parent
         self.cam_on = False
         self.cam_present = False

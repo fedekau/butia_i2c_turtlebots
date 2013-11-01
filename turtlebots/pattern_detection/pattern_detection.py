@@ -18,6 +18,7 @@ from library import patternsAPI
 class Pattern_detection(Plugin):
 
     def __init__(self, parent):
+        Plugin.__init__(self)
         self.tw = parent
         self.detection = None
         self.isInit = False
