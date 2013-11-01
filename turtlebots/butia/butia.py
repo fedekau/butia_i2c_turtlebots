@@ -327,7 +327,7 @@ class Butia(Plugin):
                   help_string=_('Set HIGH value for digital pin.'),
                   prim_name='highButia')
         self.tw.lc.def_prim('highButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('HIGH')]))
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('HIGH')]))
         special_block_colors['highButia'] = COLOR_NOTPRESENT[:]
 
         CONSTANTS['LOW'] = 0
@@ -337,7 +337,7 @@ class Butia(Plugin):
                   help_string=_('Set LOW value for digital port.'),
                   prim_name='lowButia')
         self.tw.lc.def_prim('lowButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('LOW')]))
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('LOW')]))
         special_block_colors['lowButia'] = COLOR_NOTPRESENT[:]
 
         CONSTANTS['OUTPUT'] = _('OUTPUT')
