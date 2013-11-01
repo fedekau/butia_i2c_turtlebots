@@ -39,7 +39,7 @@ class Chotox(ButiaFunctions):
         self._openables = []
         self._drivers_loaded = {}
         self._get_all_drivers()
-        self.devices = {0:'admin', 2:'button', 4:'grey', 5:'distanc', 7:'pnp'}
+        self.devices = {0:'admin', 2:'modSenA', 4:'grey', 5:'distanc', 7:'pnp'}
         self._openables_loaded = ['admin', 'pnp']
         if get_modules:
             self.getModulesList(refresh=False)
