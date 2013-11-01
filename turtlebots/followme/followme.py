@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#
 # Copyright (c) 2011 Alan Aguiar, <alanjas@hotmail.com>
 # Copyright (c) 2011 Aylen Ricca, <ar18_90@hotmail.com>
 # Copyright (c) 2011 Rodrigo Dearmas, <piegrande46@hotmail.com>
@@ -26,10 +27,12 @@ from TurtleArt.tapalette import make_palette
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_blocks
-from TurtleArt.talogo import primitive_dictionary, logoerror
-from TurtleArt.tautils import convert
+from TurtleArt.talogo import logoerror
 from TurtleArt.tautils import debug_output
 from TurtleArt.tawindow import block_names
+from TurtleArt.taconstants import CONSTANTS
+from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg, or_
+from TurtleArt.tatype import TYPE_INT, TYPE_STRING, TYPE_NUMBER
 
 pygame = None
 try:
@@ -135,7 +138,7 @@ class Followme(Plugin):
         except:
             print _('Error in get mask')
 
-    def calc_luminance(self):
+    def luminance(self):
         self.start_camera()
         if self.cam_on:
             self.capture = self.cam.get_image(self.capture)
@@ -148,9 +151,7 @@ class Followme(Plugin):
                     r += color[0]
                     g += color[1]
                     b += color[2]
-
             return int((r * 0.3 + g * 0.6 + b * 0.1) / 100)
-
         else:
             return -1
 
@@ -159,192 +160,173 @@ class Followme(Plugin):
         debug_output('creating %s palette' % _('followme'), self.tw.running_sugar)
         palette = make_palette('followme', COLOR_NOTPRESENT, _('FollowMe'))
 
-        primitive_dictionary['followmerefresh'] = self._prim_followmerefresh
         palette.add_block('followmerefresh',
-                     style='basic-style',
-                     label=_('refresh FollowMe'),
-                     prim_name='followmerefresh',
-                     help_string=_('Search for a connected camera.'))
-        self.tw.lc.def_prim('followmerefresh', 0, lambda self :
-                        primitive_dictionary['followmerefresh']())
+                style='basic-style',
+                label=_('refresh FollowMe'),
+                prim_name='followmerefresh',
+                help_string=_('Search for a connected camera.'))
+        self.tw.lc.def_prim('followmerefresh', 0,
+            Primitive(self.refresh))
         special_block_colors['followmerefresh'] = COLOR_PRESENT[:]
 
-        primitive_dictionary['savecalibration'] = self._prim_savecalibration
-        palette.add_block('savecalibrationN',
-                          style='basic-style-1arg',
-                          label=_('calibration'),
-                          prim_name='savecalibrationN',
-                          string_or_number=True,
-                          default='1',
-                          help_string=_('store a personalized calibration'))
-        self.tw.lc.def_prim('savecalibrationN', 1,
-                             lambda self, x: primitive_dictionary['savecalibration'](
-                'calibration', x))
+        palette.add_block('savecalibration',
+                style='basic-style-1arg',
+                label=_('calibration'),
+                prim_name='savecalibration',
+                string_or_number=True,
+                default='1',
+                help_string=_('store a personalized calibration'))
+        self.tw.lc.def_prim('savecalibration', 1,
+            Primitive(self.savecalibration, arg_descs=or_([ArgSlot(TYPE_NUMBER)], [ArgSlot(TYPE_STRING)])))
 
-        primitive_dictionary['calibration'] = self._prim_calibration
-        palette.add_block('calibrationN',
-                          style='number-style-1strarg',
-                          label=_('calibration'),
-                          prim_name='calibrationN',
-                          string_or_number=True,
-                          default='1',
-                          help_string=_('return a personalized calibration'))
-        self.tw.lc.def_prim('calibrationN', 1,
-                             lambda self, x: primitive_dictionary['calibration']('calibration', x))
+        palette.add_block('calibration',
+                style='number-style-1strarg',
+                label=_('calibration'),
+                prim_name='calibration',
+                string_or_number=True,
+                default='1',
+                help_string=_('return a personalized calibration'))
+        self.tw.lc.def_prim('calibration', 1,
+            Primitive(self.calibration, arg_descs=or_([ArgSlot(TYPE_NUMBER)], [ArgSlot(TYPE_STRING)])))
 
-        primitive_dictionary['follow'] = self.prim_follow
         palette.add_block('follow',
-                        style='basic-style-1arg',
-                        label=_('follow'),
-                        help_string=_('follow a color or calibration'),
-                        prim_name='follow')
-        self.tw.lc.def_prim('follow', 1, lambda self, x:
-                        primitive_dictionary['follow'](x))
+                style='basic-style-1arg',
+                label=_('follow'),
+                help_string=_('follow a color or calibration'),
+                prim_name='follow')
+        self.tw.lc.def_prim('follow', 1,
+             Primitive(self.follow, arg_descs=or_([ArgSlot(TYPE_NUMBER)], [ArgSlot(TYPE_STRING)])))
 
-        primitive_dictionary['brightness_f'] = self.prim_brightness
         palette.add_block('brightness_f',
-                        style='basic-style-1arg',
-                        label=_('brightness'),
-                        default=128,
-                        help_string=_('set the camera brightness as a value between 0 to 255.'),
-                        prim_name='brightness_f')
-        self.tw.lc.def_prim('brightness_f', 1, lambda self, x:
-                        primitive_dictionary['brightness_f'](x))
+                style='basic-style-1arg',
+                label=_('brightness'),
+                default=128,
+                help_string=_('set the camera brightness as a value between 0 to 255.'),
+                prim_name='brightness_f')
+        self.tw.lc.def_prim('brightness_f', 1,
+            Primitive(self.brightness, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
-        primitive_dictionary['pixels_min'] = self.prim_pixels_min
         palette.add_block('pixels_min',
-                        style='basic-style-1arg',
-                        label=_('minimum pixels'),
-                        default=10,
-                        help_string=_('set the minimal number of pixels to follow'),
-                        prim_name='pixels_min')
-        self.tw.lc.def_prim('pixels_min', 1, lambda self, x:
-                        primitive_dictionary['pixels_min'](x))
+                style='basic-style-1arg',
+                label=_('minimum pixels'),
+                default=10,
+                help_string=_('set the minimal number of pixels to follow'),
+                prim_name='pixels_min')
+        self.tw.lc.def_prim('pixels_min', 1,
+            Primitive(self.pixels_min, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
-        primitive_dictionary['threshold'] = self.prim_threshold
         palette.add_block('threshold',
-                        style='basic-style-3arg',
-                        label=[(_('threshold') + '  ' + 'G'), 'R', 'B'],
-                        default=[25, 25, 25],
-                        help_string=_('set a threshold for a RGB color'),
-                        prim_name='threshold')
-        self.tw.lc.def_prim('threshold', 3, lambda self, x, y, z:
-                        primitive_dictionary['threshold'](x, y, z))
+                style='basic-style-3arg',
+                label=[(_('threshold') + '  ' + 'G'), 'R', 'B'],
+                default=[25, 25, 25],
+                help_string=_('set a threshold for a RGB color'),
+                prim_name='threshold')
+        self.tw.lc.def_prim('threshold', 3,
+            Primitive(self.threshold, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
 
-        primitive_dictionary['camera_mode'] = self.prim_camera_mode
         palette.add_block('camera_mode',
-                        style='basic-style-1arg',
-                        label=_('camera mode'),
-                        default='RGB',
-                        help_string=_('set the color mode of the camera: RGB; YUV or HSV'),
-                        prim_name='camera_mode')
-        self.tw.lc.def_prim('camera_mode', 1, lambda self, x:
-                        primitive_dictionary['camera_mode'](x))
+                style='basic-style-1arg',
+                label=_('camera mode'),
+                default='RGB',
+                help_string=_('set the color mode of the camera: RGB; YUV or HSV'),
+                prim_name='camera_mode')
+        self.tw.lc.def_prim('camera_mode', 1,
+             Primitive(self.camera_mode, arg_descs=[ArgSlot(TYPE_STRING)]))
 
-        primitive_dictionary['brightness_w'] = self.calc_luminance
         palette.add_block('brightness_w',
-                        style='box-style',
-                        label=_('get brightness'),
-                        help_string=_('get the brightness of the ambient light'),
-                        prim_name='brightness_w')
-        self.tw.lc.def_prim('brightness_w', 0, lambda self:
-                        primitive_dictionary['brightness_w']())
+                style='box-style',
+                label=_('get brightness'),
+                help_string=_('get the brightness of the ambient light'),
+                prim_name='brightness_w')
+        self.tw.lc.def_prim('brightness_w', 0,
+             Primitive(self.luminance, TYPE_INT))
 
-        primitive_dictionary['average_color'] = self.prim_average_color
         palette.add_block('average_color',
-                        style='basic-style-1arg',
-                        label=_('average color'),
-                        default=1,
-                        help_string=_('if set to 0 then color averaging is off during calibration; for other values it is on'),
-                        prim_name='average_color')
-        self.tw.lc.def_prim('average_color', 1, lambda self, x:
-                        primitive_dictionary['average_color'](x))
+                style='basic-style-1arg',
+                label=_('average color'),
+                default=1,
+                help_string=_('if set to 0 then color averaging is off during calibration; for other values it is on'),
+                prim_name='average_color')
+        self.tw.lc.def_prim('average_color', 1,
+             Primitive(self.average_color, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
-        primitive_dictionary['xposition'] = self.prim_xposition
         palette.add_block('xposition',
-                        style='box-style',
-                        label=_('x position'),
-                        help_string=_('return x position'),
-                        value_block=True,
-                        prim_name='xposition')
-        self.tw.lc.def_prim('xposition', 0, lambda self:
-                        primitive_dictionary['xposition']())
+                style='box-style',
+                label=_('x position'),
+                help_string=_('return x position'),
+                value_block=True,
+                prim_name='xposition')
+        self.tw.lc.def_prim('xposition', 0,
+            Primitive(self.xpos, TYPE_INT))
 
-        primitive_dictionary['yposition'] = self.prim_yposition
         palette.add_block('yposition',
-                        style='box-style',
-                        label=_('y position'),
-                        help_string=_('return y position'),
-                        value_block=True,
-                        prim_name='yposition')
-        self.tw.lc.def_prim('yposition', 0, lambda self:
-                        primitive_dictionary['yposition']())
+                style='box-style',
+                label=_('y position'),
+                help_string=_('return y position'),
+                value_block=True,
+                prim_name='yposition')
+        self.tw.lc.def_prim('yposition', 0,
+             Primitive(self.ypos, TYPE_INT))
 
-        primitive_dictionary['pixels'] = self.prim_pixels
         palette.add_block('pixels',
-                        style='box-style',
-                        label=_('pixels'),
-                        help_string=_('return the number of pixels of the biggest blob'),
-                        value_block=True,
-                        prim_name='pixels')
-        self.tw.lc.def_prim('pixels', 0, lambda self:
-                        primitive_dictionary['pixels']())
+                style='box-style',
+                label=_('pixels'),
+                help_string=_('return the number of pixels of the biggest blob'),
+                value_block=True,
+                prim_name='pixels')
+        self.tw.lc.def_prim('pixels', 0,
+            Primitive(self.getPixels, TYPE_INT))
 
-        primitive_dictionary['mode_rgb'] = self.prim_mode_rgb
+        global CONSTANTS
+        CONSTANTS['RGB'] = _('RGB')
         palette.add_block('mode_rgb',
-                        style='box-style',
-                        label=_('RGB'),
-                        help_string=_('set the color mode of the camera to RGB'),
-                        value_block=True,
-                        prim_name='mode_rgb')
-        self.tw.lc.def_prim('mode_rgb', 0, lambda self:
-                        primitive_dictionary['mode_rgb']())
+                style='box-style',
+                label=_('RGB'),
+                help_string=_('set the color mode of the camera to RGB'),
+                value_block=True,
+                prim_name='mode_rgb')
+        self.tw.lc.def_prim('mode_rgb', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('RGB')]))
 
-        primitive_dictionary['mode_yuv'] = self.prim_mode_yuv
+        CONSTANTS['YUV'] = _('YUV')
         palette.add_block('mode_yuv',
-                        style='box-style',
-                        label=_('YUV'),
-                        help_string=_('set the color mode of the camera to YUV'),
-                        value_block=True,
-                        prim_name='mode_yuv')
-        self.tw.lc.def_prim('mode_yuv', 0, lambda self:
-                        primitive_dictionary['mode_yuv']())
+                style='box-style',
+                label=_('YUV'),
+                help_string=_('set the color mode of the camera to YUV'),
+                value_block=True,
+                prim_name='mode_yuv')
+        self.tw.lc.def_prim('mode_yuv', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('YUV')]))
 
-        primitive_dictionary['mode_hsv'] = self.prim_mode_hsv
+        CONSTANTS['HSV'] = _('HSV')
         palette.add_block('mode_hsv',
-                        style='box-style',
-                        label=_('HSV'),
-                        help_string=_('set the color mode of the camera to HSV'),
-                        value_block=True,
-                        prim_name='mode_hsv')
-        self.tw.lc.def_prim('mode_hsv', 0, lambda self:
-                        primitive_dictionary['mode_hsv']())
+                style='box-style',
+                label=_('HSV'),
+                help_string=_('set the color mode of the camera to HSV'),
+                value_block=True,
+                prim_name='mode_hsv')
+        self.tw.lc.def_prim('mode_hsv', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('HSV')]))
 
-        primitive_dictionary['get_color'] = self.prim_get_color
         palette.add_block('get_color',
-                        style='box-style',
-                        label=_('get color'),
-                        help_string=_('get the color of an object'),
-                        value_block=True,
-                        prim_name='get_color')
-        self.tw.lc.def_prim('get_color', 0, lambda self:
-                        primitive_dictionary['get_color']())
+                style='box-style',
+                label=_('get color'),
+                help_string=_('get the color of an object'),
+                value_block=True,
+                prim_name='get_color')
+        self.tw.lc.def_prim('get_color', 0,
+            Primitive(self.get_color, TYPE_STRING))
 
-        primitive_dictionary['color_dist'] = self.prim_color_dist
         palette.add_block('color_dist',
-                        style='basic-style-1arg',
-                        label=_('color distance'),
-                        default=9000,
-                        help_string=_('set the distance to identify a color'),
-                        prim_name='color_dist')
-        self.tw.lc.def_prim('color_dist', 1, lambda self, x:
-                        primitive_dictionary['color_dist'](x))
+                style='basic-style-1arg',
+                label=_('color distance'),
+                default=9000,
+                help_string=_('set the distance to identify a color'),
+                prim_name='color_dist')
+        self.tw.lc.def_prim('color_dist', 1,
+             Primitive(self.get_color_dist, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
     ############################### Turtle signals ############################
-
-
-    def start(self):
-        pass
 
     def stop(self):
         self.stop_camera()
@@ -354,22 +336,20 @@ class Followme(Plugin):
 
     ###########################################################################
             
-    def _prim_followmerefresh(self):
+    def refresh(self):
         self.camera_init()
         self.change_color_blocks()
 
-    def prim_camera_mode(self, mode):
+    def camera_mode(self, mode):
         m = 'RGB'
         try:
             m = str(mode)
             m = m.upper()
         except:
             pass
-        
         if (m == 'RGB') or (m == 'YUV') or (m == 'HSV'):
             self.mode = m
             self.get_camera(self.mode)
-
             if (self.mode == 'RGB'):
                 label_0 = _('threshold') + '  ' + 'G'
                 label_1 = 'R'
@@ -382,8 +362,6 @@ class Followme(Plugin):
                 label_0 = _('threshold') + '  ' + 'S'
                 label_1 = 'H'
                 label_2 = 'V'
-
-            #repaints program area blocks (proto) and palette blocks (block)
             for blk in self.tw.block_list.list:
                 #NOTE: blocks types: proto, block, trash, deleted
                 if blk.type in ['proto', 'block']:
@@ -410,53 +388,42 @@ class Followme(Plugin):
                         block.refresh()
             self.tw.regenerate_palette(index)
                 
-    def prim_mode_rgb(self):
-        return 'RGB'
-
-    def prim_mode_yuv(self):
-        return 'YUV'
-
-    def prim_mode_hsv(self):
-        return 'HSV'
-
-    def prim_follow(self, x):
+    def follow(self, x):
         if type(x) == str:
             self.colorc = self.str_to_tuple(x)
         else:
             self.colorc = (255, 255, 255)
 
-    def prim_brightness(self, x):
+    def brightness(self, x):
         self.brightness = int(x)
         self.set_camera_flags()
             
-    def prim_threshold(self, R, G, B):
+    def threshold(self, R, G, B):
         R = int(R)
         G = int(G)
         B = int(B)
-
         if (R < 0) or (R > 255):
             R = 25
         if (G < 0) or (G > 255):
             G = 25
         if (B < 0) or (B > 255):
             B = 25
-
         self.threshold = (R, G, B)
     
-    def prim_pixels_min(self, x):
+    def pixels_min(self, x):
         if type(x) == float:
             x = int(x)
         if x < 0:
             x = 1
         self.pixels_min = x
 
-    def prim_average_color(self, x):
+    def average_color(self, x):
         if x == 0:
             self.use_average = False
         else:
             self.use_average = True
 
-    def prim_get_color(self):
+    def get_color(self):
         self.start_camera()
         if self.cam_on:
             self.capture = self.cam.get_image(self.capture)
@@ -464,7 +431,7 @@ class Followme(Plugin):
             return get_color_name(color, self.color_dist)
         return -1
 
-    def prim_color_dist(self, x):
+    def get_color_dist(self, x):
         self.color_dist = x
 
     def calibrate(self):
@@ -472,7 +439,6 @@ class Followme(Plugin):
         self.start_camera()
         x = int((self.tamanioc[0] - 50) / 2.0)
         y = int((self.tamanioc[1] - 50) / 2.0)
-        
         if self.cam_on:
             self.screen = pygame.display.set_mode((1200,900))
             self.clock = pygame.time.Clock()
@@ -499,10 +465,9 @@ class Followme(Plugin):
                 self.screen.fill(self.colorc, (self.tamanioc[0],self.tamanioc[1],100,100))
                 pygame.display.flip()
             self.screen = pygame.display.quit()
-    
         return (self.colorc[0], self.colorc[1], self.colorc[2])
 
-    def prim_xposition(self):
+    def xpos(self):
         res = -1
         self.start_camera()
         if self.cam_on:
@@ -516,7 +481,7 @@ class Followme(Plugin):
                     res = self.tamanioc[0] - centroid[0]
         return res
 
-    def prim_yposition(self):
+    def ypos(self):
         res = -1
         self.start_camera()
         if self.cam_on:
@@ -527,7 +492,7 @@ class Followme(Plugin):
                 res = self.tamanioc[1] - centroid[1]
         return res
 
-    def prim_pixels(self):
+    def getPixels(self):
         res = -1
         self.start_camera()
         if self.cam_on:
@@ -536,24 +501,13 @@ class Followme(Plugin):
             res = self.connected.count()
         return res
 
-    def _prim_savecalibration(self, name, x):
+    def savecalibration(self, name):
         c = self.calibrate()
-        if x is not None:
-            if type(convert(x, float, False)) == float:
-                if int(float(x)) == x:
-                    x = int(x)
-            name = name + str(x)
         s = str(c[0]) + ', ' + str(c[1]) + ', ' + str(c[2])
         self.calibrations[name] = s
         #self.tw.lc.update_label_value(name, val)
 
-
-    def _prim_calibration(self, name, x):
-        if x is not None:
-            if type(convert(x, float, False)) == float:
-                if int(float(x)) == x:
-                    x = int(x)
-            name = name + str(x)
+    def calibration(self, name):
         if self.calibrations.has_key(name):
             return self.calibrations[name]
         else:
