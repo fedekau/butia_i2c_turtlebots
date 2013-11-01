@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os.path
-
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
-from TurtleArt.talogo import primitive_dictionary
 from TurtleArt.tautils import debug_output
-from TurtleArt.taconstants import MEDIA_SHAPES, NO_IMPORT, SKIN_PATHS, \
-    EXPAND_SKIN, BLOCKS_WITH_SKIN
+from TurtleArt.taconstants import CONSTANTS
+from TurtleArt.taconstants import MEDIA_SHAPES, NO_IMPORT, SKIN_PATHS, EXPAND_SKIN, BLOCKS_WITH_SKIN
+from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
+from TurtleArt.tatype import TYPE_INT, TYPE_STRING
 SKIN_PATHS.append('plugins/pattern_detection/images')
 
 from gettext import gettext as _
@@ -20,7 +20,6 @@ class Pattern_detection(Plugin):
     def __init__(self, parent):
         Plugin.__init__(self)
         self.tw = parent
-        self.detection = None
         self.isInit = False
         self.detection = patternsAPI.detection()
 
@@ -29,24 +28,21 @@ class Pattern_detection(Plugin):
         debug_output('creating %s palette' % _('pattern_detection'), self.tw.running_sugar)
         palette = make_palette('pattern_detection', ["#00FF00","#008000"], _('Pattern detection'))
 
-        primitive_dictionary['isPresent'] = self._isPresent
         palette.add_block('isPresent',
-                          style='boolean-1arg-block-style',
-                          label=_('Seeing signal'),
-                          prim_name='isPresent',
-                          help_string= _('Returns True if the signal is in front of the camera'))
+                    style='boolean-1arg-block-style',
+                    label=_('Seeing signal'),
+                    prim_name='isPresent',
+                    help_string= _('Returns True if the signal is in front of the camera'))
         self.tw.lc.def_prim('isPresent', 1,
-                             lambda self, x: primitive_dictionary['isPresent'](x))
+            Primitive(self.isPresent, arg_descs=[ArgSlot(TYPE_STRING)]))
 
-        primitive_dictionary['getMarkerTrigDist'] = self._getMarkerTrigDist
-        palette.add_block('getMarkerTrigDist',
-                          style='number-style-1arg',
-                          label=_('Distance to signal'),
-                          prim_name='getMarkerTrigDist',
-                          help_string= _('Returns the distance of the siganl to the camera in milimeters'))
-        self.tw.lc.def_prim('getMarkerTrigDist', 1,
-                             lambda self, x: primitive_dictionary['getMarkerTrigDist'](x))
-
+        palette.add_block('getDist',
+                    style='number-style-1arg',
+                    label=_('Distance to signal'),
+                    prim_name='getDist',
+                    help_string= _('Returns the distance of the siganl to the camera in milimeters'))
+        self.tw.lc.def_prim('getDist', 1,
+            Primitive(self.getDist, TYPE_INT, [ArgSlot(TYPE_STRING)]))
 
         #TODO: Faltaria ver si levnta el objet_data segun el idioma
         #obtener identificadores del api y cargar botones con imagenes.
@@ -57,9 +53,6 @@ class Pattern_detection(Plugin):
 
 
     ############################### Turtle signals ############################
-
-    def start(self):
-        pass
 
     def quit(self):
         self._stop_cam()
@@ -82,7 +75,9 @@ class Pattern_detection(Plugin):
             self.detection.init()
             self.isInit = True
 
-    def _add_signal_botton(self, palette, block_name, label):
+    def _add_signal_botton(self, palette, block_name, help):
+        global CONSTANTS
+        CONSTANTS[block_name] = block_name
 
         #If icon exists, use it instead of just the label
         iconPath = os.path.abspath(os.path.join(os.path.dirname(__file__), 'images', block_name + 'off.svg'))
@@ -93,7 +88,7 @@ class Pattern_detection(Plugin):
                             label='',
                             default=block_name,
                             prim_name=block_name,
-                            help_string= label)
+                            help_string= help)
             BLOCKS_WITH_SKIN.append(block_name)
             NO_IMPORT.append(block_name)
             MEDIA_SHAPES.append(block_name)
@@ -106,14 +101,16 @@ class Pattern_detection(Plugin):
                             label=block_name,
                             default=block_name,
                             prim_name=block_name,
-                            help_string= label)
-        self.tw.lc.def_prim(block_name, 0, lambda self: block_name)
+                            help_string= help)
 
-    def _isPresent(self, valor):
+        self.tw.lc.def_prim(block_name, 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg(block_name)]))
+        
+    def isPresent(self, valor):
         self._start_cam()
         return (self.detection.isMarkerPresent(valor) == 1)
 
-    def _getMarkerTrigDist(self, valor):
+    def getDist(self, valor):
         self._start_cam()
         return self.detection.getMarkerTrigDist(valor)
 
