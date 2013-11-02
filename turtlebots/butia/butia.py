@@ -84,12 +84,12 @@ modules_name_from_device_id['distance'] = 'distanc'
 modules_name_from_device_id['resistanceB'] = 'res'
 modules_name_from_device_id['voltageB'] = 'volt'
 modules_name_from_device_id['temperature'] = 'temp'
-modules_name_from_device_id['SenA'] = 'modSenA'
-modules_name_from_device_id['SenB'] = 'modSenB'
-modules_name_from_device_id['SenC'] = 'modSenC'
-modules_name_from_device_id['ActA'] = 'modActA'
-modules_name_from_device_id['ActB'] = 'modActB'
-modules_name_from_device_id['ActC'] = 'modActC'
+modules_name_from_device_id['modSenA'] = 'modSenA'
+modules_name_from_device_id['modSenB'] = 'modSenB'
+modules_name_from_device_id['modSenC'] = 'modSenC'
+modules_name_from_device_id['modActA'] = 'modActA'
+modules_name_from_device_id['modActB'] = 'modActB'
+modules_name_from_device_id['modActC'] = 'modActC'
 
 device_id_from_module_name = {} 
 device_id_from_module_name['led'] = 'led'
@@ -100,12 +100,12 @@ device_id_from_module_name['distanc'] = 'distance'
 device_id_from_module_name['res'] = 'resistance'
 device_id_from_module_name['volt'] = 'voltage'
 device_id_from_module_name['temp'] = 'temperature'
-device_id_from_module_name['modSenA'] = 'SenA'
-device_id_from_module_name['modSenB'] = 'SenB'
-device_id_from_module_name['modSenC'] = 'SenC'
-device_id_from_module_name['modActA'] = 'ActA'
-device_id_from_module_name['modActB'] = 'ActB'
-device_id_from_module_name['modActC'] = 'ActC'
+device_id_from_module_name['modSenA'] = 'modSenA'
+device_id_from_module_name['modSenB'] = 'modSenB'
+device_id_from_module_name['modSenC'] = 'modSenC'
+device_id_from_module_name['modActA'] = 'modActA'
+device_id_from_module_name['modActB'] = 'modActB'
+device_id_from_module_name['modActC'] = 'modActC'
 
 label_name_from_device_id= {} 
 label_name_from_device_id['led'] = _('LED')
@@ -116,12 +116,12 @@ label_name_from_device_id['distance'] = _('distance')
 label_name_from_device_id['resistanceB'] = _('resistance')
 label_name_from_device_id['voltageB'] = _('voltage')
 label_name_from_device_id['temperature'] = _('temperature')
-label_name_from_device_id['SenA'] = _('sensor a')
-label_name_from_device_id['SenB'] = _('sensor b')
-label_name_from_device_id['SenC'] = _('sensor c')
-label_name_from_device_id['ActA'] = _('actuator a')
-label_name_from_device_id['ActB'] = _('actuator b')
-label_name_from_device_id['ActC'] = _('actuator c')
+label_name_from_device_id['modSenA'] = _('sensor a')
+label_name_from_device_id['modSenB'] = _('sensor b')
+label_name_from_device_id['modSenC'] = _('sensor c')
+label_name_from_device_id['modActA'] = _('actuator a')
+label_name_from_device_id['modActB'] = _('actuator b')
+label_name_from_device_id['modActC'] = _('actuator c')
 
 #dict of every function in the code
 d = {}
@@ -666,13 +666,10 @@ class Butia(Plugin):
     def check_for_device_change(self, force_refresh):
         """ if there exists new devices connected or disconections to the butia IO board, 
          then it change the color of the blocks corresponding to the device """
-        
         old_list_connected_device_module = self.list_connected_device_module[:]
         self.list_connected_device_module = self.butia.getModulesList()
         boards_present = self.butia.getButiaCount()
-
         self.update_colors()
-        
         if force_refresh:
             self.change_butia_palette_colors(True, True, True, boards_present)
         else:
@@ -685,19 +682,16 @@ class Butia(Plugin):
                 self.set_to_list(set_changed_device_module)
             else:
                 self.modules_changed = []
-
             if not(self.battery_color == self.old_battery_color):
                 change_statics_blocks = True
                 self.old_battery_color = self.battery_color
             else:
                 change_statics_blocks = False
-
             if not(self.extras_color == self.old_extras_color):
                 change_extras_blocks = True
                 self.old_extras_color = self.extras_color
             else:
                 change_extras_blocks = False
-
             if not(self.modules_changed == []) or change_statics_blocks or change_extras_blocks:
                 self.change_butia_palette_colors(False, change_statics_blocks, change_extras_blocks, boards_present)
 
@@ -742,7 +736,6 @@ class Butia(Plugin):
         self.set_vels(self.actualSpeed[0], -self.actualSpeed[1])
 
     def speed(self, speed):
-        print 'testtin'
         try:
             speed = int(speed)
         except:
@@ -889,7 +882,6 @@ class Butia(Plugin):
         except Exception, err:
             debug_output(_('ERROR: cannot init GCONF client: %s') % err)
             self.gconf_client = None
-            print err
 
     def get_gconf(self, key):
         try:
