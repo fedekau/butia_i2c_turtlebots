@@ -22,7 +22,7 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = 169a9e0b04aa92b53882f78e5827f0b1921468b8
+TURTLEBLOCKS_VERSION = ab11c18934d9f8f33e597cf7db0353859b63bef9
 EXTRAS_VERSION = 7aee296464bac91671de37a8c9d9c76271452d41
 NXT_VERSION = 5c7c094515fd4b98980dbb7ee626772374be68e8
 WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
@@ -177,7 +177,9 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	# put pattern_examples into turtle examples folder
 	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
 	# put butia examples into turtle examples folder
-	cp -rf examples/turtle   $(BUILDDIR)/samples/butia
+	cp -rf examples/turtle $(BUILDDIR)/samples/butia
+	# put arduino examples into turtle examples folder
+	mv $(BUILDDIR)/plugins/arduino/examples $(BUILDDIR)/samples/arduino
 	# remove unnecessary .o files of pattern_detection
 	rm $(BUILDDIR)/plugins/pattern_detection/library/patterns/*.o
 	# remove ARTollkit binaries
