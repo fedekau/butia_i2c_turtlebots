@@ -187,8 +187,8 @@ class Butia(Plugin):
 
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
-        debug_output('creating %s palette' % _('butia'), self.tw.running_sugar)
-        palette = make_palette('butia', COLOR_NOTPRESENT, _('Butia Robot'), init_on_start=True)
+        palette = make_palette('butia', COLOR_NOTPRESENT, _('Butia Robot'),
+                               init_on_start=True, translation=_('butia'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
@@ -276,8 +276,8 @@ class Butia(Plugin):
         special_block_colors['backwardButia'] = COLOR_NOTPRESENT[:]
 
         # Extra palette
-        debug_output('creating %s palette' % _('butia-extra'), self.tw.running_sugar)
-        palette2 = make_palette('butia-extra', COLOR_NOTPRESENT, _('Butia Robot extra blocks'), init_on_start=True)
+        palette2 = make_palette('butia-extra', COLOR_NOTPRESENT, _('Butia Robot extra blocks'),
+                                 init_on_start=True, translation=_('butia-extra'))
 
         palette2.add_block('pinmodeButia',
                   style='basic-style-2arg',
@@ -351,11 +351,8 @@ class Butia(Plugin):
         special_block_colors['outputButia'] = COLOR_NOTPRESENT[:]
 
         # Cast palette
-        debug_output('creating %s palette' % _('butia-cast'), self.tw.running_sugar)
-        palette3 = make_palette('butia-cast', COLOR_NOTPRESENT, _('Butia Robot cast blocks'), init_on_start=True)
-
-        #generic mecanism to add sensors that allows multiple instances, depending on the number of instances connected to the 
-        #physical robot the corresponding block appears in the pallete
+        palette3 = make_palette('butia-cast', COLOR_NOTPRESENT, _('Butia Robot cast blocks'),
+                                 init_on_start=True, translation=_('butia-cast'))
 
         for j in ['led', 'modActA', 'modActB', 'modActC']:
             if (j in ['modActA', 'modActB', 'modActC']):

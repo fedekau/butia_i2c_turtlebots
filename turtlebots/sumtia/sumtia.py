@@ -24,7 +24,6 @@ import apiSumoUY
 import math
 
 from TurtleArt.tapalette import make_palette
-from TurtleArt.tautils import debug_output
 from TurtleArt.taprimitive import Primitive, ArgSlot
 from TurtleArt.tatype import TYPE_INT, TYPE_NUMBER
 
@@ -41,11 +40,9 @@ class Sumtia(Plugin):
         self._inited = False
         self.api = apiSumoUY.apiSumoUY()
 
-    def setup(self):        
+    def setup(self):
 
-        """ Setup is called once, when the Turtle Window is created. """     
-        debug_output('creating %s palette' % _('sumtia'), self.tw.running_sugar)
-        palette = make_palette('sumtia', ["#00FF00","#008000"], _('SumBot'))
+        palette = make_palette('sumtia', ["#00FF00","#008000"], _('SumBot'), translation=_('sumtia'))
 
         palette.add_block('updateState',
                 style='basic-style',

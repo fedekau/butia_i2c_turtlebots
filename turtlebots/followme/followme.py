@@ -28,7 +28,6 @@ from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_blocks
 from TurtleArt.talogo import logoerror
-from TurtleArt.tautils import debug_output
 from TurtleArt.tawindow import block_names
 from TurtleArt.taconstants import CONSTANTS
 from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg, or_
@@ -157,8 +156,7 @@ class Followme(Plugin):
 
     def setup(self):
 
-        debug_output('creating %s palette' % _('followme'), self.tw.running_sugar)
-        palette = make_palette('followme', COLOR_NOTPRESENT, _('FollowMe'))
+        palette = make_palette('followme', COLOR_NOTPRESENT, _('FollowMe'), translation=_('followme'))
 
         palette.add_block('followmerefresh',
                 style='basic-style',

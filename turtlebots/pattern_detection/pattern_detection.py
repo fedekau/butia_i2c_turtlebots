@@ -4,7 +4,6 @@
 import os.path
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
-from TurtleArt.tautils import debug_output
 from TurtleArt.taconstants import CONSTANTS
 from TurtleArt.taconstants import MEDIA_SHAPES, NO_IMPORT, SKIN_PATHS, EXPAND_SKIN, BLOCKS_WITH_SKIN
 from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
@@ -25,8 +24,8 @@ class Pattern_detection(Plugin):
 
     def setup(self):
 
-        debug_output('creating %s palette' % _('pattern_detection'), self.tw.running_sugar)
-        palette = make_palette('pattern_detection', ["#00FF00","#008000"], _('Pattern detection'))
+        palette = make_palette('pattern_detection', ["#00FF00","#008000"], _('Pattern detection'),
+                                translation=_('pattern_detection'))
 
         palette.add_block('isPresent',
                     style='boolean-1arg-block-style',
@@ -44,7 +43,7 @@ class Pattern_detection(Plugin):
         self.tw.lc.def_prim('getDist', 1,
             Primitive(self.getDist, TYPE_INT, [ArgSlot(TYPE_STRING)]))
 
-        #TODO: Faltaria ver si levnta el objet_data segun el idioma
+        #TODO: Faltaria ver si levanta el objet_data segun el idioma
         #obtener identificadores del api y cargar botones con imagenes.
         out = self.detection.arMultiGetIdsMarker()
 

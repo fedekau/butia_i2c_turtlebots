@@ -34,8 +34,8 @@ class Kinect(Plugin):
     self.paletteThread=None
 
   def setup(self):
-    debug_output('creating %s palette' % _('kinect'), self.tw.running_sugar)
-    palette = make_palette('kinect', ["#00FF00", "#00A000"], _('Palette of kinect sensor'))
+    palette = make_palette('kinect', ["#00FF00", "#00A000"], _('Palette of kinect sensor'),
+                            translation=_('kinect'))
 
     primitive_dictionary['xKinect'] = self._prim_xPos
     palette.add_block('xKinect',
