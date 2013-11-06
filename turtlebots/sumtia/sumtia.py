@@ -38,9 +38,8 @@ class Sumtia(Plugin):
         Plugin.__init__(self)
         self.tw = parent
         self.vel = 10
+        self._inited = False
         self.api = apiSumoUY.apiSumoUY()
-        self.api.setPuertos()
-        self.api.conectarse() 
 
     def setup(self):        
 
@@ -197,10 +196,12 @@ class Sumtia(Plugin):
     ############################### Turtle signals ############################
 
     def stop(self):
-        self.api.enviarVelocidades(0,0)
+        if self._inited:
+            self.api.enviarVelocidades(0,0)
 
     def quit(self):
-        self.api.liberarRecursos()
+        if self._inited:
+            self.api.liberarRecursos()
 
     ###########################################################################
 
@@ -260,8 +261,9 @@ class Sumtia(Plugin):
                         math.pow(self.getY() - self.getOpY(), 2))
     
     def updateState(self):
-        err = self.api.getInformacion()
-        if err == -1:
-            print "Error getting information"
-
+        if not(self._inited):
+            self.api.setPuertos()
+            self.api.conectarse()
+            self._inited = True
+        self.api.getInformacion()
 

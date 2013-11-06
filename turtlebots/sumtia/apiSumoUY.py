@@ -90,6 +90,7 @@ class apiSumoUY:
         try:
             self.cliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self.cliente.bind((self.ip_server, self.port_cliente)) #puerto por donde voy a mandar mis comandos
+            self.cliente.settimeout(1)
         except:
             print "SumoAPI: Error trying to connect..."
         
@@ -108,7 +109,6 @@ class apiSumoUY:
         
     def enviarVelocidades(self, vel_izq = 0, vel_der = 0):
         msg = "speed*" + str(int(vel_izq)) + "*" + str(int(vel_der)) + "*" 
-        print msg
         try:
             self.cliente.sendto(msg,(self.ip_server, self.port_server))
             return "ok"    
@@ -118,8 +118,6 @@ class apiSumoUY:
     def getInformacion(self):
         try:
             mensaje, addr = self.cliente.recvfrom(1024)
-            print mensaje
-            #print addr        
             data = mensaje.split('*')
             opcode = data[0]
             if opcode == OPE_REPOSICIONAR:
