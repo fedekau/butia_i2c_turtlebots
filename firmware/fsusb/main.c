@@ -122,7 +122,7 @@ int scanpatch(mi_patch *p, scan_callback_t sc)
   int retval=0;
   int callback_ret;
 
-  for(b=0;b<=p->top - p->base;b+=64) {
+  for(b=64;b<=p->top - p->base;b+=64) {
     active=0;
     for(i=0;i<64 && b+i <= p->top - p->base;i++) {
       if(p->mask[i+b]) {
