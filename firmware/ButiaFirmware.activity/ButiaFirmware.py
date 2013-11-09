@@ -17,8 +17,9 @@ class Flash():
 
     def __init__(self, parent=None):
         self.parent = parent
-        self._version = 7
-        self.firmware_hex = 'USB4Butia-8.hex'
+        self._version = None
+        self.firmware_hex = None
+        self.get_hex()
 
     def get_translations(self):
         file_activity_info = ConfigParser.ConfigParser()
@@ -31,6 +32,27 @@ class Flash():
         gettext.textdomain(bundle_id)
         global _
         _ = gettext.gettext
+
+    def get_hex(self):
+        for f in os.listdir('.'):
+            if f.endswith('.hex') or f.endswith('.HEX'):
+                self.firmware_hex = f
+        if self.firmware_hex is None:
+            print _('Firmware hex not found')
+            self._no_firmware_message()
+            return
+        print _('Current firmware hex: %s') % self.firmware_hex
+        v = self.firmware_hex
+        n = v.find('-')
+        if not(n == -1):
+            v = v[n+1:]
+            v = v.strip('.hex')
+            try:
+                ver = int(v)
+            except:
+                return
+            self._version = ver
+            print _('Current firmware version: %s') % self._version
 
     def build_window(self):
         self.get_translations()
@@ -47,8 +69,6 @@ class Flash():
         exit()
         
     def build_canvas(self):
-        #The canvas is the main section of every Sugar Window.
-        # It fills all the area below the toolbox.
 
         box = gtk.VBox()
         img = gtk.Image()
@@ -73,8 +93,10 @@ class Flash():
         box.show()
         return box
 
-
     def warning_message(self, widget=None):
+        if self.firmware_hex is None:
+            self._no_firmware_message()
+            return
         msg = _('You will upgrade to the USB4Butia v%s firmware.\n') % self._version
         msg = msg + _('Not disconnect the board and not close this activity.\n')
         msg = msg + _('You want to continue?')
@@ -82,7 +104,6 @@ class Flash():
         dialog.set_title(_('Burning USB4Butia board...'))
         res = dialog.run()
         dialog.destroy()
-
         if res == gtk.RESPONSE_OK:
             self.flash()
 
@@ -200,6 +221,11 @@ class Flash():
         b.close()
         return version
 
+    def _no_firmware_message(self):
+        msg = _('Firmware hex not found')
+        dialog = gtk.MessageDialog(self.parent, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg)
+        dialog.run()
+        dialog.destroy()
 
 if __name__ == "__main__":
     f = Flash()
