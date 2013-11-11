@@ -61,7 +61,7 @@ class Chotox(ButiaFunctions):
         self._debug('=Listing Devices')
         modules = []
         self._debug('===board', 0)
-        for i in range(12):
+        for i in range(14):
             if self.devices.has_key(i):
                 module_name = self.devices[i]
             elif i < 7:
@@ -133,7 +133,7 @@ class Chotox(ButiaFunctions):
                 return ERROR
         elif function == 'getVersion':
             if modulename == 'admin':
-                return 6
+                return 7
             else:
                 return 1
         else:

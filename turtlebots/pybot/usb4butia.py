@@ -73,9 +73,7 @@ class USB4Butia(ButiaFunctions):
                 self._debug('===board', i)
                 for m in range(0, s + 1):
                     t = b.get_handler_type(m)
-                    if (t == 255):
-                        self._debug('unknow module in port:%s' % m)
-                    else:
+                    if not (t == 255):
                         module_name = listi[t]
                         if n_boards > 1:
                             complete_name = module_name + '@' + str(i) + ':' +  str(m)
@@ -246,7 +244,7 @@ class USB4Butia(ButiaFunctions):
             if modulename in board.get_openables_loaded():
                 number = board.get_device_handler(modulename)
                 try:
-                    res = board.devices[number].moduleClose()
+                    res = board.devices[number].module_close()
                     if res == 1:
                         board.remove_openable_loaded(modulename)
                         return res
