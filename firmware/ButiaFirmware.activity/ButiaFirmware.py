@@ -39,7 +39,7 @@ class Flash():
                 self.firmware_hex = f
         if self.firmware_hex is None:
             print _('Firmware hex not found')
-            self._no_firmware_message()
+            #self._no_firmware_message()
             return
         print _('Current firmware hex: %s') % self.firmware_hex
         v = self.firmware_hex
