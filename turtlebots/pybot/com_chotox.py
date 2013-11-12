@@ -107,6 +107,10 @@ class Chotox(USB4Butia):
                 return 7
             else:
                 return 1
+        elif function == 'send':
+            if len(params) > 0:
+                return params[0]
+            return ''
         else:
             return ERROR
 
