@@ -247,6 +247,7 @@ class USB4Butia(ButiaFunctions):
                     res = board.devices[number].module_close()
                     if res == 1:
                         board.remove_openable_loaded(modulename)
+                        board.devices.pop(number)
                         return res
                 except Exception, err:
                     self._debug('ERROR:usb4butia:moduleClose', err)
@@ -266,7 +267,7 @@ class USB4Butia(ButiaFunctions):
         if len(self._bb) < (board_number + 1):
             return []
         board = self._bb[board_number]
-        listi = board.get_listi(True)
+        listi = board.get_listi()
         return listi.values()
 
     def _split_module(self, mbn):
