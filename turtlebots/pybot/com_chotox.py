@@ -22,10 +22,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-
-import os
-import imp
-import inspect
 from usb4butia import USB4Butia
 from baseboard import Baseboard
 from device import Device
