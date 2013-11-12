@@ -50,15 +50,12 @@ class Chotox(USB4Butia):
         listi = listi + ['grey', 'light', 'res', 'volt', 'temp', 'distanc']
         for i, m in enumerate(listi):
             b.listi[i] = m
-        l = {0:'admin', 2:'modSenA', 4:'grey', 5:'distanc', 7:'pnp'}
-        for m in l:
-            module_name = l[m]
-            d = Device(b, module_name, m, self._drivers_loaded[module_name])
-            b.add_device(m, d)
-        openables_loaded = ['admin', 'pnp']
-        for m in openables_loaded:
-            b.add_openable_loaded(m)
-            
+        hotplug = {2:'modSenA', 4:'grey', 5:'distanc'}
+        for m in hotplug:
+            b.add_device(m, Device(b, hotplug[m], m, self._drivers_loaded[hotplug[m]]))
+        openables = {0:'admin', 7:'pnp'}
+        for m in openables:
+            b.add_device(m, Device(b, openables[m], m, self._drivers_loaded[openables[m]], True))
         self._bb.append(b)
 
     def getModulesList(self, normal=True, refresh=True):
@@ -146,8 +143,7 @@ class Chotox(USB4Butia):
                 return board.get_device_handler(modulename)
             else:
                 m = self._max_handler()
-                dev = Device(board, modulename, m, func=self._drivers_loaded[modulename])
-                board.add_openable_loaded(modulename)
+                dev = Device(board, modulename, m, self._drivers_loaded[modulename], True)
                 board.add_device(m, dev)
                 return m
         return ERROR
@@ -165,8 +161,7 @@ class Chotox(USB4Butia):
             board = self._bb[b]
             if modulename in board.get_openables_loaded():
                 number = board.get_device_handler(modulename)
-                board.remove_openable_loaded(modulename)
-                board.devices.pop(number)
+                board.remove_device(number)
                 return number
             else:
                 self._debug('cannot close no opened module')

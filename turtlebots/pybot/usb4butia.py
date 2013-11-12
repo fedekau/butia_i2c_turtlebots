@@ -83,13 +83,10 @@ class USB4Butia(ButiaFunctions):
                         if not(module_name == 'port'):
                             modules.append(complete_name)
                             if not(b.devices.has_key(m) and (b.devices[m].name == module_name)):
-                                d = Device(b, module_name, m, self._drivers_loaded[module_name])
+                                d = Device(b, module_name, m, self._drivers_loaded[module_name], module_name in self._openables)
                                 b.add_device(m, d)
-                                if module_name in self._openables:
-                                    b.add_openable_loaded(module_name)
                         else:
-                            if b.devices.has_key(m):
-                                b.devices.pop(m)
+                            b.remove_device(m)
             except Exception, err:
                 self._debug('ERROR:usb4butia:get_modules_list', err)
         return modules
@@ -219,13 +216,12 @@ class USB4Butia(ButiaFunctions):
             if modulename in board.get_openables_loaded():
                 return board.get_device_handler(modulename)
             else:
-                dev = Device(board, modulename, func=self._drivers_loaded[modulename])
+                dev = Device(board, modulename, None, self._drivers_loaded[modulename], True)
                 number = dev.module_open()
                 if number == 255:
                     self._debug('cannot open module', modulename)
                     return ERROR
                 else:
-                    board.add_openable_loaded(modulename)
                     board.add_device(number, dev)
                     return number
         return ERROR
@@ -246,8 +242,7 @@ class USB4Butia(ButiaFunctions):
                 try:
                     res = board.devices[number].module_close()
                     if res == 1:
-                        board.remove_openable_loaded(modulename)
-                        board.devices.pop(number)
+                        board.remove_device(number)
                         return res
                 except Exception, err:
                     self._debug('ERROR:usb4butia:moduleClose', err)

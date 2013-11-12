@@ -79,29 +79,29 @@ class Baseboard():
 
     def add_device(self, handler, device):
         """
-        Add a device with handler: handler to the dictionary
+        Add a device with handler of the dictionary
         """
         self.devices[handler] = device
+        if device.openable:
+            if not(device.name in self.openables_loaded):
+                self.openables_loaded.append(device.name)
+
+    def remove_device(self, handler):
+        """
+        Remove a device with handler of the dictionary
+        """
+        if self.devices.has_key(handler):
+            dev = self.devices.pop(handler)
+            if dev.openable:
+                if dev.name in self.openables_loaded:
+                    self.openables_loaded.remove(dev.name)
+            dev = None
 
     def reset_device_list(self):
         """
         Cleans the device dictionary
         """
         self.devices = {}
-
-    def add_openable_loaded(self, name):
-        """
-        Add the name of device that was opened to prevent open twice
-        """
-        if not(name in self.openables_loaded):
-            self.openables_loaded.append(name)
-
-    def remove_openable_loaded(self, name):
-        """
-        Remove the name of device that was opened
-        """
-        if name in self.openables_loaded:
-            self.openables_loaded.remove(name)
 
     def get_openables_loaded(self):
         """
@@ -114,12 +114,6 @@ class Baseboard():
         Reset the list of openables modules
         """
         self.openables_loaded = []
-
-    def add_to_listi(self, number, name):
-        """
-        Add a device to listi
-        """
-        self.listi[number] = name
 
     def get_listi(self, force=False):
         """
