@@ -20,6 +20,7 @@ class Pattern_detection(Plugin):
         Plugin.__init__(self)
         self.tw = parent
         self.isInit = False
+        self._path = os.path.dirname(__file__)
         self.detection = patternsAPI.detection()
 
     def setup(self):
@@ -74,18 +75,14 @@ class Pattern_detection(Plugin):
             self.detection.init()
             self.isInit = True
 
-    def _add_signal_botton(self, palette, block_name, help):
+    def _add_signal_botton(self, palette, block, help):
         global CONSTANTS
-        CONSTANTS[block_name] = block_name
-
-        #If icon exists, use it instead of just the label
-        iconPath = os.path.abspath(os.path.join(os.path.dirname(__file__), 'images', block_name + 'off.svg'))
-
+        CONSTANTS[block] = block
+        block_name = block + "Pat"
+        iconPath = os.path.abspath(os.path.join(self._path, 'images', block_name + 'off.svg'))
         if os.path.exists(iconPath):
             palette.add_block(block_name,
                             style='box-style-media',
-                            label='',
-                            default=block_name,
                             prim_name=block_name,
                             help_string= help)
             BLOCKS_WITH_SKIN.append(block_name)
@@ -97,13 +94,12 @@ class Pattern_detection(Plugin):
         else:
             palette.add_block(block_name,
                             style='box-style',
-                            label=block_name,
-                            default=block_name,
-                            prim_name=block_name,
-                            help_string= help)
-
+                            label=block,
+                            help_string=help,
+                            prim_name=block_name)
         self.tw.lc.def_prim(block_name, 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg(block_name)]))
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg(block)]))
+
         
     def isPresent(self, valor):
         self._start_cam()
