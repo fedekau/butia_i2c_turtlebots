@@ -37,7 +37,7 @@ ERROR = -1
 
 class Device():
 
-    def __init__(self, baseboard, name, handler=None, func=None):
+    def __init__(self, baseboard, name, handler=None, func=None, openable=False):
         self.baseboard = baseboard
         self.name = name
         self.handler = handler
@@ -45,6 +45,7 @@ class Device():
         if not(self.handler == None):
             self.shifted = self.handler * 8
         self.functions = func
+        self.openable = openable
         self.debug = False
 
     def _debug(self, message, err=''):
@@ -69,34 +70,36 @@ class Device():
         """
         Open this device. Return the handler
         """
-        module_name = self.to_ord(self.name)
-        module_name.append(NULL_BYTE)
+        if self.openable:
+            module_name = self.to_ord(self.name)
+            module_name.append(NULL_BYTE)
 
-        w = [ADMIN_HANDLER_SEND_COMMAND]
-        w.append(HEADER_PACKET_SIZE + len(module_name))
-        w.append(NULL_BYTE)
-        w.append(OPEN_COMMAND)
-        w.append(0x01)
-        w.append(0x01)
-        self.baseboard.dev.write(w + module_name)
+            w = [ADMIN_HANDLER_SEND_COMMAND]
+            w.append(HEADER_PACKET_SIZE + len(module_name))
+            w.append(NULL_BYTE)
+            w.append(OPEN_COMMAND)
+            w.append(0x01)
+            w.append(0x01)
+            self.baseboard.dev.write(w + module_name)
 
-        raw = self.baseboard.dev.read(OPEN_RESPONSE_PACKET_SIZE)
+            raw = self.baseboard.dev.read(OPEN_RESPONSE_PACKET_SIZE)
 
-        self._debug('device:module_open', raw)
+            self._debug('device:module_open', raw)
 
-        if not(raw[4] == 255):
-            self.handler = raw[4]
-            self.shifted = self.handler * 8
-            return self.handler
-        else:
-            self._debug('device:module_open:cannot open module:', self.name)
-            return 255
+            if not(raw[4] == 255):
+                self.handler = raw[4]
+                self.shifted = self.handler * 8
+                return self.handler
+        self._debug('device:module_open:cannot open module:', self.name)
+        return 255
 
     def module_close(self):
-        w = [ADMIN_HANDLER_SEND_COMMAND, 0x05, NULL_BYTE, CLOSE_COMMAND, self.handler]
-        self.baseboard.dev.write(w)
-        raw = self.baseboard.dev.read(CLOSE_RESPONSE_PACKET_SIZE)
-        return raw[4]
+        if self.openable:
+            w = [ADMIN_HANDLER_SEND_COMMAND, 0x05, NULL_BYTE, CLOSE_COMMAND, self.handler]
+            self.baseboard.dev.write(w)
+            raw = self.baseboard.dev.read(CLOSE_RESPONSE_PACKET_SIZE)
+            return raw[4]
+        return ERROR
 
     def has_function(self, func):
         """
