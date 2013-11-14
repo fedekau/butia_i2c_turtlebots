@@ -29,7 +29,7 @@ class ButiaFunctions:
         """
         Check if module: module_name is present
         """
-        module_list = self.get_modules_list()
+        module_list = self.getModulesList()
         return (module_name in module_list)
 
     def loopBack(self, data, board='0'):
