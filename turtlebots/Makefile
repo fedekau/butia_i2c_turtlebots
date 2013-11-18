@@ -26,7 +26,7 @@
 TURTLEBLOCKS_VERSION = 81fc3951b626d0e7166c6f6529c8bf446d0e4ab4
 EXTRAS_VERSION = 2f830f3aaf5684c02ab33eb444303c6c42071159
 NXT_VERSION = 3a177f35e2974f589e8a79e65ebbc7d6ff725843
-WEDO_VERSION = 67e4233bc4944253ca75de204c158bd36cafd997
+WEDO_VERSION = e754551cb3c752c601725d8bcf551f82611854cc
 ARDUINO_VERSION = 050c06066c60ffee49c6df7fd09a64096d171c47
 PYUSB_VERSION = 0546cad8980783c39f96db717005a550059b730f
 
@@ -155,13 +155,13 @@ apply_localization: sourceGIT mktmpfolder
 	(cd $(BUILDDIR) && python setup.py build)
 
 apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
-	cp -rLf butia               $(BUILDDIR)/plugins/
-	cp -rLf sumtia              $(BUILDDIR)/plugins/
-	cp -rLf followme            $(BUILDDIR)/plugins/
-	cp -rLf nxt_plugin          $(BUILDDIR)/plugins/
-	cp -rLf wedo_plugin         $(BUILDDIR)/plugins/
-	cp -rLf arduino             $(BUILDDIR)/plugins/
-	cp -rLf pattern_detection   $(BUILDDIR)/plugins/
+	cp -rLf butia                 $(BUILDDIR)/plugins/
+	cp -rLf sumtia                $(BUILDDIR)/plugins/
+	cp -rLf followme              $(BUILDDIR)/plugins/
+	cp -rLf nxt_plugin            $(BUILDDIR)/plugins/
+	cp -rLf WeDoMore/wedo_plugin  $(BUILDDIR)/plugins/
+	cp -rLf arduino               $(BUILDDIR)/plugins/
+	cp -rLf pattern_detection     $(BUILDDIR)/plugins/
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/usb
@@ -175,6 +175,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp pyusb/ReleaseNotes.rst   $(BUILDDIR)/plugins/butia/pybot/usb
 	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
 	cp -rLf $(BUILDDIR)/plugins/butia/pybot/usb $(BUILDDIR)/plugins/nxt_plugin/
+	cp -rLf $(BUILDDIR)/plugins/butia/pybot/usb $(BUILDDIR)/plugins/wedo_plugin/
 	# put pattern_examples into turtle examples folder
 	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
 	# put butia examples into turtle examples folder
@@ -191,13 +192,13 @@ pattern_detection_compile:
 
 apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
-	ln -s `pwd`/butia             $(BUILDDIR)/plugins/butia
-	ln -s `pwd`/sumtia            $(BUILDDIR)/plugins/sumtia
-	ln -s `pwd`/followme          $(BUILDDIR)/plugins/followme
-	ln -s `pwd`/nxt_plugin        $(BUILDDIR)/plugins/nxt_plugin
-	ln -s `pwd`/wedo_plugin       $(BUILDDIR)/plugins/wedo_plugin
-	ln -s `pwd`/arduino           $(BUILDDIR)/plugins/arduino
-	ln -s `pwd`/pattern_detection $(BUILDDIR)/plugins/pattern_detection
+	ln -s `pwd`/butia                  $(BUILDDIR)/plugins/butia
+	ln -s `pwd`/sumtia                 $(BUILDDIR)/plugins/sumtia
+	ln -s `pwd`/followme               $(BUILDDIR)/plugins/followme
+	ln -s `pwd`/nxt_plugin             $(BUILDDIR)/plugins/nxt_plugin
+	ln -s `pwd`/WeDoMore/wedo_plugin   $(BUILDDIR)/plugins/wedo_plugin
+	ln -s `pwd`/arduino                $(BUILDDIR)/plugins/arduino
+	ln -s `pwd`/pattern_detection      $(BUILDDIR)/plugins/pattern_detection
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins

@@ -1,1 +1,0 @@
-../WeDoMore/wedo_plugin/wedo_plugin.py
