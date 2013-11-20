@@ -137,7 +137,6 @@ class Butia(Plugin):
         self.tw = parent
         self.init_gconf()
         power_manager_off(True)
-        self.flagCIP = True
         self.butia = pybot_client.robot(auto_connect=False)
         self.actualSpeed = [600, 600]
         self.hack_states = [1, 1, 1, 1, 1, 1, 1, 1]
@@ -991,9 +990,7 @@ class Butia(Plugin):
     def prim_change_ipButia(self, ip):
         ip = ip.strip()
         if self._validate_ip(ip):
-            self.flagCIP = False
             self.butia = pybot_client.robot(host=ip)
-            self.flagCIP = True
         else:
             raise logoerror(_("ERROR: Invalid IP '%s'") % ip)
 
@@ -1022,11 +1019,12 @@ class Butia(Plugin):
 
     def bobot_poll(self):
         if self.pollrun:
-            self.pollthread = threading.Timer(6, self.bobot_poll)
-            if self.flagCIP and self.tw.get_init_complete():
+            time = 6
+            if self.tw.get_init_complete():
                 if self.can_refresh:
-                    self.pollthread = threading.Timer(3, self.bobot_poll)
+                    time = 3
                 self.check_for_device_change(False)
+            self.pollthread = threading.Timer(time, self.bobot_poll)
             self.pollthread.start()
         else:
             debug_output(_("Ending butia polling"))
