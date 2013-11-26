@@ -303,10 +303,13 @@ class USB4Butia(ButiaFunctions):
                     flag = True
             for f in funcs:
                 h = getattr(driver, f)
-                i = inspect.getargspec(h)
-                parameters = i[0]
-                if 'dev' in parameters:
-                    parameters.remove('dev')
-                d[f] = parameters
+                try:
+                    i = inspect.getargspec(h)
+                    parameters = i[0]
+                    if 'dev' in parameters:
+                        parameters.remove('dev')
+                    d[f] = parameters
+                except:
+                    pass
         return d
 
