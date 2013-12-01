@@ -32,20 +32,20 @@ def REFRESH(parent, r):
     return ''
 
 def OPEN(parent, r):
-    if len(r) == 2:
-        module = r[1]
+    if len(r) == 1:
+        module = r[0]
         return parent.robot.moduleOpen(module)
     return ''
 
 def CLOSE(parent, r):
-    if len(r) == 2:
-        module = r[1]
+    if len(r) == 1:
+        module = r[0]
         return parent.robot.moduleClose(module)
     return ''
 
 def DESCRIBE(parent, r):
-    if len(r) == 2:
-        module = r[1]
+    if len(r) == 1:
+        module = r[0]
         return parent.robot.describe(module)
     return ''
 
@@ -54,8 +54,8 @@ def BUTIA_COUNT(parent, r):
 
 def LISTI(parent, r):
     board = 0
-    if len(r) >= 2:
-        board = r[1]
+    if len(r) >= 1:
+        board = r[0]
     l = parent.robot.getListi(board)
     return ','.join(l)
 
@@ -71,9 +71,9 @@ def CLIENTS(parent, r):
     return '\n'.join(l)
 
 def CALL(parent, r):
-    if len(r) >= 3:
-        split = parent.robot._split_module(r[1])
-        return parent.robot.callModule(split[1], split[2], split[0], r[2], r[3:])
+    if len(r) >= 2:
+        split = parent.robot._split_module(r[0])
+        return parent.robot.callModule(split[1], split[2], split[0], r[1], r[2:])
     return ''
 
 def HELP(parent, r):

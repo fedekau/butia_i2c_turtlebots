@@ -28,5 +28,5 @@ abs_path = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, abs_path)
 
 # version = 0.turtlebots_version.secondary_number
-__version__ = '0.21.0'
+__version__ = '0.23.0'
 
