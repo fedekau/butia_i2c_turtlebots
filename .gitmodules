@@ -6,7 +6,7 @@
 	url = git://git.sugarlabs.org/nxt_plugin/mainline.git
 [submodule "turtlebots/WeDoMore"]
 	path = turtlebots/WeDoMore
-	url = git@github.com:AlanJAS/WeDoMore.git
+	url = git://github.com/AlanJAS/WeDoMore.git
 [submodule "turtlebots/turtle-extras"]
 	path = turtlebots/turtle-extras
 	url = git://git.sugarlabs.org/turtleart-extras/turtleart-extras.git
