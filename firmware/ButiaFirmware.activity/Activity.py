@@ -14,6 +14,7 @@ class ButiaFirmware(activity.Activity):
 
     def __init__(self, handle):
         activity.Activity.__init__(self, handle)
+        self.max_participants = 1
         self.build_toolbar()
         flash = Flash(self)
         self.set_canvas(flash.build_canvas())
