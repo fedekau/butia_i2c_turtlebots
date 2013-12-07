@@ -80,10 +80,8 @@ def HELP(parent, r):
     l = []
     flag = True
     a = dir(parent.comms)
-    for p in a:
-        if p == '__builtins__':
-            flag = False
-        if flag:
-            l.append(p)
+    if '__builtins__' in a:
+        i = a.index('__builtins__')
+        l = a[:i]
     return ', '.join(l)
 
