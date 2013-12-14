@@ -1,3 +1,15 @@
+turtlebots (23) unstable; urgency=low
+
+  * uses TurtleBlocks v194+
+  * Arduino plugin fixes
+  * NXT plugin fixes
+  * Change plugin Primitives to new system
+  * Use WeDo plugin from other source (Alan Aguiar)
+  * improve HELP command of PyBot
+  * new translations
+
+ -- AlanJAS <alanjas@hotmail.com>  Sat, 14 Dec 2013 21:35:04 -0200
+
 turtlebots (22-r0) unstable; urgency=low
 
   * uses PyUSB beta 1
