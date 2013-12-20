@@ -16,3 +16,6 @@
 [submodule "turtlebots/pyusb"]
 	path = turtlebots/pyusb
 	url = git://github.com/walac/pyusb.git
+[submodule "turtlebots/rodi"]
+	path = turtlebots/rodi
+	url = git://github.com/garyservin/rodi.git

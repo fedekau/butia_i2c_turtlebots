@@ -23,12 +23,13 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = db2c1e245779c71daaa71aa7ac22e279fa2c53b8
+TURTLEBLOCKS_VERSION = f1e42a195efb1f8172dfd8bcf87fb81c9fe4d9ee
 EXTRAS_VERSION = 87bb86375c9aa1b4a90c87370dd105a7421252b4
 NXT_VERSION = e5261e9b394e8820db21ed8cf1a71066d3db93a6
 WEDO_VERSION = a3534f0b648d83420471dc0e22de5c231d05760b
 ARDUINO_VERSION = a1b900c4a649c3a3364a4be0f7a3e65fb6ddf020
 PYUSB_VERSION = 1fde710917a2aa4335ad5db1744dd09af4e32f00
+RODI_VERSION = master
 
 SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
@@ -98,6 +99,9 @@ arduino/.git:
 pyusb/.git:
 	$(MAKE) first
 
+rodi/.git:
+	$(MAKE) first
+
 ############# checkout a version of submodule ##################
 SUBMODULE = mainline
 SUBMODULEVER = master
@@ -128,7 +132,10 @@ arduinoGIT: arduino/.git
 pyusbGIT: pyusb/.git
 	$(MAKE) SUBMODULE=pyusb SUBMODULEVER=$(PYUSB_VERSION) checkoutsm
 
-sourceGIT: walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT pyusbGIT
+rodiGIT: rodi/.git
+	$(MAKE) SUBMODULE=rodi SUBMODULEVER=$(RODI_VERSION) checkoutsm
+
+sourceGIT: walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT pyusbGIT rodiGIT
 	echo sourceGIT
 
 ################ Construction...
@@ -159,6 +166,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp -rLf sumtia                $(BUILDDIR)/plugins/
 	cp -rLf followme              $(BUILDDIR)/plugins/
 	cp -rLf nxt_plugin            $(BUILDDIR)/plugins/
+	cp -rLf rodi                  $(BUILDDIR)/plugins/
 	cp -rLf WeDoMore/wedo_plugin  $(BUILDDIR)/plugins/
 	cp -rLf arduino               $(BUILDDIR)/plugins/
 	cp -rLf pattern_detection     $(BUILDDIR)/plugins/
@@ -201,6 +209,7 @@ apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	ln -s `pwd`/WeDoMore/wedo_plugin   $(BUILDDIR)/plugins/wedo_plugin
 	ln -s `pwd`/arduino                $(BUILDDIR)/plugins/arduino
 	ln -s `pwd`/pattern_detection      $(BUILDDIR)/plugins/pattern_detection
+	ln -s `pwd`/rodi                   $(BUILDDIR)/plugins/rodi
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
@@ -259,7 +268,13 @@ plugin-marcas: apply_hard_plugins
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/pattern_detection.tar.gz .
 
-plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo plugin-marcas plugin-arduino
+plugin-rodi: apply_hard_plugins
+	cp stagin/plugins/rodi/plugin.info $(BUILDDIR)/plugins
+	cd $(BUILDDIR)/plugins && tar -czvf rodi_plugin.tar.gz rodi/* plugin.info
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/rodi_plugin.tar.gz .
+
+plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo plugin-marcas plugin-arduino plugin-rodi
 
 plugin-all: plugins
 
@@ -353,10 +368,10 @@ clean-plugins:
 # targets that not represent generated files
 .PHONY: all help \
  clean clean-tmp clean-builddir clean-xo clean-plugins \
- first walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT \
+ first walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT rodiGIT \
  mktmpfolder apply_hard_plugins apply_sym_plugins \
  genpot genpot_notraslated updatepo xo pyusbGIT \
  install install-strip \
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
- dev pattern_detection_compile plugin-arduino
+ dev pattern_detection_compile plugin-arduino plugin-rodi
