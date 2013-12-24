@@ -204,15 +204,6 @@ class Followme(Plugin):
         self.tw.lc.def_prim('brightness_f', 1,
             Primitive(self.brightness, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
-        palette.add_block('pixels_min',
-                style='basic-style-1arg',
-                label=_('minimum pixels'),
-                default=10,
-                help_string=_('set the minimal number of pixels to follow'),
-                prim_name='pixels_min')
-        self.tw.lc.def_prim('pixels_min', 1,
-            Primitive(self.pixels_min, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
         palette.add_block('threshold',
                 style='basic-style-3arg',
                 label=[(_('threshold') + '  ' + 'G'), 'R', 'B'],
@@ -323,6 +314,15 @@ class Followme(Plugin):
                 prim_name='color_dist')
         self.tw.lc.def_prim('color_dist', 1,
              Primitive(self.get_color_dist, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
+        palette.add_block('pixels_min',
+                style='basic-style-1arg',
+                label=_('minimum pixels'),
+                default=10,
+                help_string=_('set the minimal number of pixels to follow'),
+                prim_name='pixels_min')
+        self.tw.lc.def_prim('pixels_min', 1,
+            Primitive(self.pixels_min, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
     ############################### Turtle signals ############################
 
