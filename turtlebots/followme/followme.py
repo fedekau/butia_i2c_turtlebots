@@ -185,7 +185,7 @@ class Followme(Plugin):
                 default='1',
                 help_string=_('return a personalized calibration'))
         self.tw.lc.def_prim('calibration', 1,
-            Primitive(self.calibration, arg_descs=or_([ArgSlot(TYPE_NUMBER)], [ArgSlot(TYPE_STRING)])))
+            Primitive(self.calibration, TYPE_STRING, or_([ArgSlot(TYPE_NUMBER)], [ArgSlot(TYPE_STRING)])))
 
         palette.add_block('follow',
                 style='basic-style-1arg',
