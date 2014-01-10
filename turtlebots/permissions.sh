@@ -50,6 +50,7 @@ if [ -e /etc/group ] ; then
 	    adduser $i robots
     done
     udevadm control --reload-rules
+    service udev restart
 fi ;
 	
 
