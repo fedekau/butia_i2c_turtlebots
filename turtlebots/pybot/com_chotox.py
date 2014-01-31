@@ -44,6 +44,7 @@ class Chotox(USB4Butia):
         b = Baseboard(None)
         listi = ['admin', 'pnp', 'port', 'ax', 'button', 'hackp', 'motors', 'butia', 'led']
         listi = listi + ['grey', 'light', 'res', 'volt', 'temp', 'distanc']
+        listi = listi + ['modActA', 'modActB', 'modActC', 'modSenA', 'modSenB', 'modSenC']
         for i, m in enumerate(listi):
             b.listi[i] = m
         hotplug = {2:'modSenA', 4:'grey', 5:'distanc'}
