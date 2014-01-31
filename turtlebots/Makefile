@@ -23,10 +23,10 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = e108b6c2d4e6d108c1fa887066237e8a148a911a
-EXTRAS_VERSION = 6a0b78086fcfbf80e86e325840a4bb693b5d83fc
-NXT_VERSION = e5261e9b394e8820db21ed8cf1a71066d3db93a6
-WEDO_VERSION = a3534f0b648d83420471dc0e22de5c231d05760b
+TURTLEBLOCKS_VERSION = c55b60922025842357a22fc34bb6a241dc94d413
+EXTRAS_VERSION = 63414bbf7507f1977d199dcd309c284742f5b18e
+NXT_VERSION = 4ad2c83f1b44376bb8dfeac74d95bbb792a7c725
+WEDO_VERSION = 072d3f8153264201e2f98011d57c20d7badc6624
 ARDUINO_VERSION = a1b900c4a649c3a3364a4be0f7a3e65fb6ddf020
 PYUSB_VERSION = 1fde710917a2aa4335ad5db1744dd09af4e32f00
 RODI_VERSION = b1044c3114db6da11c79142714f994ed33c18be7
@@ -170,9 +170,12 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp -rLf WeDoMore/wedo_plugin  $(BUILDDIR)/plugins/
 	cp -rLf arduino               $(BUILDDIR)/plugins/
 	cp -rLf pattern_detection     $(BUILDDIR)/plugins/
+	# remove nxt trash
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/usb
+	# we add pybluez as dependency
+	rm -rf $(BUILDDIR)/plugins/nxt_plugin/nxt/bluetooth
 	# remove arduino trash
 	rm -rf $(BUILDDIR)/plugins/arduino/.git
 	rm -f $(BUILDDIR)/plugins/arduino/.gitignore
