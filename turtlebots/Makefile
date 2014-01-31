@@ -179,6 +179,9 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	# remove arduino trash
 	rm -rf $(BUILDDIR)/plugins/arduino/.git
 	rm -f $(BUILDDIR)/plugins/arduino/.gitignore
+	# remove rodi trash
+	rm -rf $(BUILDDIR)/plugins/rodi/.git
+	rm -f $(BUILDDIR)/plugins/rodi/.gitignore
 	# add pyusb extra information
 	cp pyusb/ACKNOWLEDGEMENTS   $(BUILDDIR)/plugins/butia/pybot/usb
 	cp pyusb/LICENSE            $(BUILDDIR)/plugins/butia/pybot/usb
