@@ -298,7 +298,7 @@ install: all
 	mkdir -p $(DESTDIR)$(bindir)
 	$(INSTALL) stagin/turtlebots $(DESTDIR)$(bindir)/
 	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
-	$(INSTALL_DATA) stagin/turtlebots.svg $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/
+	$(INSTALL_DATA) stagin/activity/turtlebots.svg $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/
 	mkdir -p $(DESTDIR)$(datadir)/applications
 	$(INSTALL_DATA) $(BUILDDIR)/turtlebots.desktop $(DESTDIR)$(datadir)/applications/
 	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
