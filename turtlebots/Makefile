@@ -196,6 +196,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	mv $(BUILDDIR)/plugins/pattern_detection/doc/turtleArtExamples $(BUILDDIR)/samples/pattern_examples
 	# put butia examples into turtle examples folder
 	cp -rf examples/turtle $(BUILDDIR)/samples/butia
+	cp -rf examples/followme $(BUILDDIR)/samples/
 	# put arduino examples into turtle examples folder
 	mv $(BUILDDIR)/plugins/arduino/examples $(BUILDDIR)/samples/arduino
 	# remove unnecessary .o files of pattern_detection
