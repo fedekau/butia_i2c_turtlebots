@@ -143,25 +143,6 @@ class robot(ButiaFunctions):
         else:
             return ret.split(',')
 
-    def _split_module(self, mbn):
-        """
-        Split a modulename: module@board:port to (number, modulename, board)
-        """
-        board = '0'
-        number = '0'
-        if mbn.count('@') > 0:
-            modulename, bn = mbn.split('@')
-            if bn.count(':') > 0:
-                board, number = bn.split(':')
-            else:
-                board = bn
-        else:
-            if mbn.count(':') > 0:
-                modulename, number = mbn.split(':')
-            else:
-                modulename = mbn
-        return (number, modulename, board)
-
     def describe(self, mod):
         """
         Describe the functions of a modulename
