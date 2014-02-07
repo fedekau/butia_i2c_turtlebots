@@ -374,9 +374,8 @@ clean-plugins:
 # targets that not represent generated files
 .PHONY: all help \
  clean clean-tmp clean-builddir clean-xo clean-plugins \
- first walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT rodiGIT \
- mktmpfolder apply_hard_plugins apply_sym_plugins \
- genpot genpot_notraslated updatepo xo pyusbGIT \
+ first walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT rodiGIT pyusbGIT \
+ xo mktmpfolder apply_hard_plugins apply_sym_plugins \
  install install-strip \
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
