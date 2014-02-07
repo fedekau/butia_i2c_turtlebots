@@ -24,6 +24,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import sys
 import socket
 import threading
 import errno
@@ -183,7 +184,14 @@ class robot(ButiaFunctions):
         return self._doCommand('CLOSE ' + mod, int)
 
 if __name__ == "__main__":
-    c = robot()
+    argv = sys.argv[:]
+    server_host = PYBOT_HOST
+    server_port = PYBOT_PORT
+    if len(argv) > 1:
+        server_host = argv[1]
+    if len(argv) > 2:
+        server_port = int(argv[2])
+    c = robot(server_host, server_port)
     run = True
     while run:
         m = raw_input("> ")
