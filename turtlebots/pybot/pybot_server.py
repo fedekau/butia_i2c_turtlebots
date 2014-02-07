@@ -29,8 +29,6 @@ import socket
 import usb4butia
 import com_chotox
 
-argv = sys.argv[:]
-
 PYBOT_PORT = 2009
 BUFSIZ = 1024
 MAX_CLIENTS = 4
@@ -97,6 +95,7 @@ class Server():
         self.robot.close()
 
 if __name__ == "__main__":
+    argv = sys.argv[:]
     chotox = 'chotox' in argv
     debug = 'DEBUG' in argv
     s = Server(debug, chotox)
