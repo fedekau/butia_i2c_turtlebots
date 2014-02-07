@@ -7,7 +7,7 @@ from TurtleArt.tapalette import make_palette
 from TurtleArt.taconstants import CONSTANTS
 from TurtleArt.taconstants import MEDIA_SHAPES, NO_IMPORT, SKIN_PATHS, EXPAND_SKIN, BLOCKS_WITH_SKIN
 from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
-from TurtleArt.tatype import TYPE_INT, TYPE_STRING
+from TurtleArt.tatype import TYPE_INT, TYPE_STRING, TYPE_BOOL
 SKIN_PATHS.append('plugins/pattern_detection/images')
 
 from gettext import gettext as _
@@ -34,7 +34,7 @@ class Pattern_detection(Plugin):
                     prim_name='isPresent',
                     help_string= _('Returns True if the signal is in front of the camera'))
         self.tw.lc.def_prim('isPresent', 1,
-            Primitive(self.isPresent, arg_descs=[ArgSlot(TYPE_STRING)]))
+            Primitive(self.isPresent, TYPE_BOOL, arg_descs=[ArgSlot(TYPE_STRING)]))
 
         palette.add_block('getDist',
                     style='number-style-1arg',
