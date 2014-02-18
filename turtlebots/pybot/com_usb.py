@@ -29,13 +29,10 @@ USB4ALL_PRODUCT       = 0x000c
 USB4ALL_CONFIGURATION = 1
 USB4ALL_INTERFACE     = 0
 
-ADMIN_MODULE_IN_ENDPOINT = 0x01
+ADMIN_MODULE_IN_ENDPOINT  = 0x01
 ADMIN_MODULE_OUT_ENDPOINT = 0x81
 
-READ_HEADER_SIZE      = 3
-
 TIMEOUT = 250
-
 ERROR = -1
 
 class usb_device():
@@ -71,7 +68,7 @@ class usb_device():
         Read from the device length bytes
         """
         try:
-            return self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, size, USB4ALL_INTERFACE, TIMEOUT)
+            return self.dev.read(ADMIN_MODULE_OUT_ENDPOINT, size, TIMEOUT)
         except Exception, err:
             self._debug('ERROR:com_usb:read', err)
             raise
@@ -81,7 +78,7 @@ class usb_device():
         Write in the device: data
         """
         try:
-            return self.dev.write(ADMIN_MODULE_IN_ENDPOINT, data, USB4ALL_INTERFACE, TIMEOUT)
+            return self.dev.write(ADMIN_MODULE_IN_ENDPOINT, data, TIMEOUT)
         except Exception, err:
             self._debug('ERROR:com_usb:write', err)
             raise
@@ -100,9 +97,9 @@ class usb_device():
         Get the device info such as manufacturer, etc
         """
         try:
-            names = usb.util.get_string(self.dev, 255, 1, None).encode('ascii')
-            copy = usb.util.get_string(self.dev, 255, 2, None).encode('ascii')
-            sn = usb.util.get_string(self.dev, 255, 3, None).encode('ascii')
+            names = usb.util.get_string(self.dev, 1).encode('ascii')
+            copy = usb.util.get_string(self.dev, 2).encode('ascii')
+            sn = usb.util.get_string(self.dev, 3).encode('ascii')
             return [names, copy, sn]
         except Exception, err:
             self._debug('ERROR:com_usb:get_info', err)
