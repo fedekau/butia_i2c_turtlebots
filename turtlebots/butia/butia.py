@@ -583,7 +583,7 @@ class Butia(Plugin):
                             special_block_colors[blk.name] = self.battery_color[:]
                         else:
                             special_block_colors[blk.name] = self.statics_color[:]
-                        if (blk.name == 'speedButia') or (blk.name == 'batterychargeButia'):
+                        if (blk.name == 'batterychargeButia'):
                             if self.use_cc:
                                 blk.set_visibility(False)
                             else:
