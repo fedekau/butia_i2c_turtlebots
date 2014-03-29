@@ -61,6 +61,7 @@ class usb_device():
         """
         Close the comunication with the baseboard
         """
+        self.dev.__del__()
         self.dev = None
 
     def read(self, size):
