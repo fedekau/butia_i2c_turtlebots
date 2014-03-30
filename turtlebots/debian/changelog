@@ -1,3 +1,35 @@
+turtlebots (24) unstable; urgency=low
+
+  * uses TurtleBlocks v200
+  * new translations
+  * force close bb
+  * add block for vel with cc motors
+  * update TB commit with v200
+  * update PyUSB to Beta 2
+  * update Rodi commit
+  * remove binaries of bluetooth
+  * update extras commit with wedo translations
+  * update NXT commit
+  * com_usb.py not use interface parameter in write/read
+  * update TB and WeDo commits
+  * only load patterns object data one time
+  * fix return type of pattern plugin
+  * add followme example
+  * update .phony of makefile
+  * move _split_module to common functions
+  * allow change client host and port from command line
+  * only uses argv in main call
+  * use same icon
+  * add generic modules to pybot chotox
+  * bluez for nxt
+  * fix permissions
+  * restart udev
+  * reorder one block in followme
+  * fix type in followme
+  * add rodi (juky) plugin
+
+ -- AlanJAS <alanjas@hotmail.com>  Sat, 29 Mar 2014 22:06:27 -0300
+
 turtlebots (23) unstable; urgency=low
 
   * uses TurtleBlocks v194+
