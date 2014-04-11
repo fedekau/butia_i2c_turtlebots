@@ -1,10 +1,9 @@
 turtlebots (24) unstable; urgency=low
 
-  * uses TurtleBlocks v200
+  * uses TurtleBlocks v201
   * new translations
   * force close bb
   * add block for vel with cc motors
-  * update TB commit with v200
   * update PyUSB to Beta 2
   * update Rodi commit
   * remove binaries of bluetooth
