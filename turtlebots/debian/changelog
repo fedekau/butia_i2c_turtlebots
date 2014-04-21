@@ -26,6 +26,7 @@ turtlebots (24) unstable; urgency=low
   * reorder one block in followme
   * fix type in followme
   * add rodi (juky) plugin
+  * add replace in control to prevent conflicts
 
  -- AlanJAS <alanjas@hotmail.com>  Sat, 29 Mar 2014 22:06:27 -0300
 
