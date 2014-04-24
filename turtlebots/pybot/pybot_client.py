@@ -164,21 +164,37 @@ class robot(ButiaFunctions):
         """
         return self._doCommand('CLOSE ' + mod, int)
 
+def show_help():
+    print "Open PyBot client in HOST and PORT."
+    print ""
+    print "Usage:"
+    print " pybot_client.py"
+    print " pybot_client.py [HOST]"
+    print " pybot_client.py [HOST] [PORT]"
+    print ""
+    print "Default values:"
+    print " HOST                      localhost"
+    print " PORT                      2009"
+    print ""
+
 if __name__ == "__main__":
     argv = sys.argv[:]
-    server_host = PYBOT_HOST
-    server_port = PYBOT_PORT
-    if len(argv) > 1:
-        server_host = argv[1]
-    if len(argv) > 2:
-        server_port = int(argv[2])
-    c = robot(server_host, server_port)
-    run = True
-    while run:
-        m = raw_input("> ")
-        ret = c._doCommand(m)
-        print ret
-        if m == "QUIT":  
-            run = False
-    c.close()
+    if ("-h" in argv) or ("--help" in argv):
+        show_help()
+    else:
+        server_host = PYBOT_HOST
+        server_port = PYBOT_PORT
+        if len(argv) > 1:
+            server_host = argv[1]
+        if len(argv) > 2:
+            server_port = int(argv[2])
+        c = robot(server_host, server_port)
+        run = True
+        while run:
+            m = raw_input("> ")
+            ret = c._doCommand(m)
+            print ret
+            if m == "QUIT":  
+                run = False
+        c.close()
 

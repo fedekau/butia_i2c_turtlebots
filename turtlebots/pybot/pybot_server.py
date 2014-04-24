@@ -95,21 +95,16 @@ class Server():
         self.robot.close()
 
 def show_help():
-    print "Open PyBot server in HOST and PORT."
+    print "Open PyBot server in PORT 2009"
     print ""
     print "Usage:"
-    print " pybot_server.py"
-    print " pybot_server.py [HOST]"
-    print " pybot_server.py [HOST] [PORT]"
-    print ""
-    print "Default values:"
-    print " HOST                      localhost"
-    print " PORT                      2009"
+    print " pybot_server.py [OPTIONS]"
     print ""
     print "Opciones:"
     print " -h, --help                 muestra esta ayuda"
     print " chotox                     simulador de robot"
     print " DEBUG                      habilita los mensajes de depuración"
+    print ""
 
 if __name__ == "__main__":
     argv = sys.argv[:]
