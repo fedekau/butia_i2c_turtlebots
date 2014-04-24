@@ -94,10 +94,30 @@ class Server():
         self.socket.close()
         self.robot.close()
 
+def show_help():
+    print "Open PyBot server in HOST and PORT."
+    print ""
+    print "Usage:"
+    print " pybot_server.py"
+    print " pybot_server.py [HOST]"
+    print " pybot_server.py [HOST] [PORT]"
+    print ""
+    print "Default values:"
+    print " HOST                      localhost"
+    print " PORT                      2009"
+    print ""
+    print "Opciones:"
+    print " -h, --help                 muestra esta ayuda"
+    print " chotox                     simulador de robot"
+    print " DEBUG                      habilita los mensajes de depuración"
+
 if __name__ == "__main__":
     argv = sys.argv[:]
     chotox = 'chotox' in argv
     debug = 'DEBUG' in argv
-    s = Server(debug, chotox)
-    s.init_server()
+    if ("-h" in argv) or ("--help" in argv):
+        show_help()
+    else:
+        s = Server(debug, chotox)
+        s.init_server()
 
