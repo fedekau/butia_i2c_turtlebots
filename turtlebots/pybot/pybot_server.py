@@ -108,11 +108,11 @@ def show_help():
 
 if __name__ == "__main__":
     argv = sys.argv[:]
-    chotox = 'chotox' in argv
-    debug = 'DEBUG' in argv
     if ("-h" in argv) or ("--help" in argv):
         show_help()
     else:
+        chotox = 'chotox' in argv
+        debug = 'DEBUG' in argv
         s = Server(debug, chotox)
         s.init_server()
 
