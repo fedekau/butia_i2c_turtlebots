@@ -1,6 +1,6 @@
 turtlebots (24) unstable; urgency=low
 
-  * uses TurtleBlocks v201
+  * uses TurtleBlocks v202+
   * new translations
   * force close bb
   * add block for vel with cc motors
@@ -27,6 +27,8 @@ turtlebots (24) unstable; urgency=low
   * fix type in followme
   * add rodi (juky) plugin
   * add replace in control to prevent conflicts
+  * add help command in pybot client and server
+  * 
 
  -- AlanJAS <alanjas@hotmail.com>  Sat, 29 Mar 2014 22:06:27 -0300
 
