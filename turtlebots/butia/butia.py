@@ -139,7 +139,9 @@ class Butia(Plugin):
         power_manager_off(True)
         self.butia = pybot_client.robot(auto_connect=False)
         self.actualSpeed = [600, 600]
-        self.hack_states = [1, 1, 1, 1, 1, 1, 1, 1]
+        self.hack_states = {}
+        for i in range(1, 9):
+            self.hack_states[i] = 1
         self.pollthread = None
         self.pollrun = True
         self.bobot = None
