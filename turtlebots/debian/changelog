@@ -1,3 +1,10 @@
+turtlebots (25) unstable; urgency=low
+
+  * uses TurtleBlocks v205
+  * fix hack pins range
+
+ -- AlanJAS <alanjas@hotmail.com>  Fri, 23 May 2014 21:24:44 -0300
+
 turtlebots (24) unstable; urgency=low
 
   * uses TurtleBlocks v202+
@@ -28,7 +35,6 @@ turtlebots (24) unstable; urgency=low
   * add rodi (juky) plugin
   * add replace in control to prevent conflicts
   * add help command in pybot client and server
-  * 
 
  -- AlanJAS <alanjas@hotmail.com>  Sat, 29 Mar 2014 22:06:27 -0300
 
