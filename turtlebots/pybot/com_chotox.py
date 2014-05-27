@@ -97,6 +97,8 @@ class Chotox(USB4Butia):
                 return random.randrange(0, 2)
             elif modulename == 'grey' or modulename == 'distanc':
                 return random.randrange(0, 65536)
+            elif modulename == 'modSenA':
+                return random.randrange(0, 65536)
             else:
                 return ERROR
         elif function == 'getVersion':
