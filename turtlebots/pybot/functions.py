@@ -218,39 +218,39 @@ class ButiaFunctions:
 
     def getModuleA(self, port, board='0'):
         """
-        Gets the value of the generic sensor ModuleA connected in port
+        Gets the value of the generic sensor A connected in port
         """
-        return self.callModule('moduleA', str(board), str(port), 'getValue')
+        return self.callModule('modSenA', str(board), str(port), 'getValue')
 
     def getModuleB(self, port, board='0'):
         """
-        Gets the value of the generic sensor ModuleB connected in port
+        Gets the value of the generic sensor B connected in port
         """
-        return self.callModule('moduleB', str(board), str(port), 'getValue')
+        return self.callModule('modSenB', str(board), str(port), 'getValue')
 
     def getModuleC(self, port, board='0'):
         """
-        Gets the value of the generic sensor ModuleC connected in port
+        Gets the value of the generic sensor C connected in port
         """
-        return self.callModule('moduleC', str(board), str(port), 'getValue')
+        return self.callModule('modSenC', str(board), str(port), 'getValue')
 
     def setModuleA(self, port, on_off, board='0'):
         """
-        Sets on or off the generic module A
+        Sets on or off the generic actuator module A
         """
-        return self.callModule('modSenA', str(board), str(port), 'turn', [str(on_off)])
+        return self.callModule('modActA', str(board), str(port), 'turn', [str(on_off)])
 
     def setModuleB(self, port, on_off, board='0'):
         """
-        Sets on or off the generic module B
+        Sets on or off the generic actuator module B
         """
-        return self.callModule('modSenB', str(board), str(port), 'turn', [str(on_off)])
+        return self.callModule('modActB', str(board), str(port), 'turn', [str(on_off)])
 
     def setModuleC(self, port, on_off, board='0'):
         """
-        Sets on or off the generic module C
+        Sets on or off the generic actuator module C
         """
-        return self.callModule('modSenC', str(board), str(port), 'turn', [str(on_off)])
+        return self.callModule('modActC', str(board), str(port), 'turn', [str(on_off)])
 
     ############################# Useful functions #############################
 
