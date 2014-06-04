@@ -50,6 +50,7 @@ case "$1" in
             adduser $i robots
         done
         udevadm control --reload-rules
+        service udev restart
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
