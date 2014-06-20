@@ -69,24 +69,29 @@ class Server():
                     inputs.append(client)
                     self.clients[client] = addr
                 else:
-                    data = s.recv(BUFSIZ)
-                    if data:
-                        result = ''
-                        r = data.replace('\r', '')
-                        r = r.replace('\n', '')
-                        r = r.split(' ')
-                        if len(r) > 0:
-                            com = r[0]
-                            if hasattr(self.comms, com):
-                                f = getattr(self.comms, com)
-                                result = f(self, r[1:])
-                        result = str(result)
-                        try:
-                            s.send(result + '\n')
-                        except:
-                            print 'Send fails'
-                    else:
-                        s.close()
+                    try:
+                        data = s.recv(BUFSIZ)
+                        if data:
+                            result = ''
+                            r = data.replace('\r', '')
+                            r = r.replace('\n', '')
+                            r = r.split(' ')
+                            if len(r) > 0:
+                                com = r[0]
+                                if hasattr(self.comms, com):
+                                    f = getattr(self.comms, com)
+                                    result = f(self, r[1:])
+                            result = str(result)
+                            try:
+                                s.send(result + '\n')
+                            except:
+                                print 'Send fails'
+                        else:
+                            s.close()
+                            inputs.remove(s)
+                            self.clients.pop(s)
+                    except Exception, err:
+                        print 'Error in recv', err
                         inputs.remove(s)
                         self.clients.pop(s)
                         
