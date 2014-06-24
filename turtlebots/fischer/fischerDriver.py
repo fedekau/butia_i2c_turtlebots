@@ -91,7 +91,7 @@ def getValueSensor(idSensor):
     conectSensor(ret)
     return sensors[idSensor]
 
-#def conectController():
+#def conectController(): #FIXME why this is commented?
 
 # find our device
 dev = usb.core.find(idVendor=FISCHER_LT_DEVICE_NUMBER, idProduct=FISCHER_LT_PRODUCT_NUMBER)
