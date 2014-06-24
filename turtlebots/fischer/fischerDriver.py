@@ -25,6 +25,11 @@ import time
 import struct
 import thread
 
+FISCHER_LT_DEVICE_NUMBER  = 0x146a
+FISCHER_LT_PRODUCT_NUMBER = 0x000a
+
+OUT_ENDPOINT =  0X01
+IN_ENDPOINT  =  0X81
 ACTUADOR_M1  =  1 
 ACTUADOR_M2  =  2
 ACTUADORES = [ACTUADOR_M1,ACTUADOR_M2]
@@ -36,70 +41,70 @@ dev = usb.core.find()
 
 
 def createActuatorMsg(num):
-	if num == ACTUADOR_M1:
-		msg = [0xa5,  0x01, 0x8d , 0x01 , 0x3f , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00] 
-		return msg
-	elif num == ACTUADOR_M2:
-		msg = [0xa5,  0x01, 0x8d , 0x04 , 0xc0 , 0x0f , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00] 
-		return msg
-	else:#ambos
-		msg = [0xa5,  0x01, 0x8d , 0x05 , 0xff , 0x0f , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00] 
-		return msg
+    if num == ACTUADOR_M1:
+        msg = [0xa5,  0x01, 0x8d , 0x01 , 0x3f , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00] 
+        return msg
+    elif num == ACTUADOR_M2:
+        msg = [0xa5,  0x01, 0x8d , 0x04 , 0xc0 , 0x0f , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00] 
+        return msg
+    else:#ambos
+        msg = [0xa5,  0x01, 0x8d , 0x05 , 0xff , 0x0f , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x0f , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00] 
+        return msg
 
 
 def conectSensor(msg):
-	sensors[0] = sensors[2] = sensors[1] = 0 
-	if msg[3]==2 and msg[11]==83:#I2
-		sensors[1] = 1 
-	elif msg[3]==1 and msg[11]==92:#I1
-		sensors[0] = 1
-	elif msg[3]==4 and msg[11]==79:#I3
-		sensors[2] = 1
-	elif msg[3]==3 and msg[11]==80:#I1 e I2
-		sensors[0] = 1
-		sensors[1] = 1
-	elif msg[3]==6 and msg[11]==67:#I2 e I3
-		sensors[1] = 1
-		sensors[2] = 1
-	elif msg[3]==5 and msg[11]==76:#I1 e I3
-		sensors[0] = 1
-		sensors[2] = 1
-	elif msg[3]==7 and msg[11]==64:#all
-		sensors[0] = 1
-		sensors[1] = 1
-		sensors[2] = 1
+    sensors[0] = sensors[2] = sensors[1] = 0 
+    if msg[3]==2 and msg[11]==83:#I2
+        sensors[1] = 1 
+    elif msg[3]==1 and msg[11]==92:#I1
+        sensors[0] = 1
+    elif msg[3]==4 and msg[11]==79:#I3
+        sensors[2] = 1
+    elif msg[3]==3 and msg[11]==80:#I1 e I2
+        sensors[0] = 1
+        sensors[1] = 1
+    elif msg[3]==6 and msg[11]==67:#I2 e I3
+        sensors[1] = 1
+        sensors[2] = 1
+    elif msg[3]==5 and msg[11]==76:#I1 e I3
+        sensors[0] = 1
+        sensors[2] = 1
+    elif msg[3]==7 and msg[11]==64:#all
+        sensors[0] = 1
+        sensors[1] = 1
+        sensors[2] = 1
 
 def ActuatorOn(msg):
-	while True:
-		dev.write(0x01, msg, 0)
+    while True:
+        dev.write(OUT_ENDPOINT, msg, 0)
 
-def turnOnActuator(idActuator):	
-	msg = createActuatorMsg(idActuator)
-	#thread.start_new_thread(ActuatorOn, (msg,))
-	dev.write(0x01, msg, 0) #crear hilo		
+def turnOnActuator(idActuator):    
+    msg = createActuatorMsg(idActuator)
+    #thread.start_new_thread(ActuatorOn, (msg,))
+    dev.write(OUT_ENDPOINT, msg, 0) #crear hilo        
 
 #def turnOffActuator(idActuator):
-	#matar hilo
+    #matar hilo
 
 def getValueSensor(idSensor):
-	ret = dev.read(0x81,98, 0)
-	conectSensor(ret)
-	return sensors[idSensor]
+    ret = dev.read(IN_ENDPOINT,98, 0) #FIXME change 98 for a constant that represent that number!
+    conectSensor(ret)
+    return sensors[idSensor]
 
 #def conectController():
 
 # find our device
-dev = usb.core.find(idVendor=0x146a, idProduct=0x000a)
+dev = usb.core.find(idVendor=FISCHER_LT_DEVICE_NUMBER, idProduct=FISCHER_LT_PRODUCT_NUMBER)
 # was it found?
 if dev is None: 
     raise ValueError('Device not found')
-print "Conect"
+print "Connected"
 # set the active configuration.
 dev.set_configuration()
 
-#conectController()	
+#conectController()    
 while True:
-	#print getValueSensor(0)
-	turnOnActuator(1)
-	time.sleep(1)
+    #print getValueSensor(0)
+    turnOnActuator(1)
+    time.sleep(1)
 
