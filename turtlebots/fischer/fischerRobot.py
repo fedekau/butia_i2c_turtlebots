@@ -23,16 +23,6 @@
 
 ACTUADOR_M1  =  1 
 ACTUADOR_M2  =  2
-ACTUADORES = [ACTUADOR_M1, ACTUADOR_M2]
-ON    =  1
-OFF   =  0
-sensors = [OFF, OFF, OFF]
-
-#act1 + act2 = act ambos
-#byte 4
-#0x01 + 0x04 = 0x05
-#byte 5
-#0x3f + 0xc0 = 0xff
 
 BAS_MSG = [0xa5, 0x01, 0x8d]
 MID_MSG = [0x0f, 0x00, 0x00, 0x00, 0x00]
@@ -42,44 +32,13 @@ ACT_1_MSG = BAS_MSG + [0x01, 0x3f, 0x00, 0x00] + MID_MSG * 4 + END_MSG
 ACT_2_MSG = BAS_MSG + [0x04, 0xc0, 0x0f, 0x00] + MID_MSG * 4 + END_MSG
 ACT_B_MSG = BAS_MSG + [0x05, 0xff, 0x0f, 0x00] + MID_MSG * 4 + END_MSG
 
-def createActuatorMsg(num):
-    if num == ACTUADOR_M1:
-        return ACT_1_MSG
-    elif num == ACTUADOR_M2:
-        return ACT_2_MSG
-    else:
-        return ACT_B_MSG
-
-def conectSensor(msg):
-    sensors[0] = 0
-    sensors[1] = 0
-    sensors[2] = 0
-    if msg[3]==2 and msg[11]==83:#I2
-        sensors[1] = 1 
-    elif msg[3]==1 and msg[11]==92:#I1
-        sensors[0] = 1
-    elif msg[3]==4 and msg[11]==79:#I3
-        sensors[2] = 1
-    elif msg[3]==3 and msg[11]==80:#I1 e I2
-        sensors[0] = 1
-        sensors[1] = 1
-    elif msg[3]==6 and msg[11]==67:#I2 e I3
-        sensors[1] = 1
-        sensors[2] = 1
-    elif msg[3]==5 and msg[11]==76:#I1 e I3
-        sensors[0] = 1
-        sensors[2] = 1
-    elif msg[3]==7 and msg[11]==64:#all
-        sensors[0] = 1
-        sensors[1] = 1
-        sensors[2] = 1
-
 
 class FischerRobot():
 
     def __init__(self, dev, debug=False):
         self.dev = dev
         self.debug = debug
+        self.sensors = [0, 0, 0]
 
     def _debug(self, message, err=''):
         if self.debug:
@@ -105,10 +64,42 @@ class FischerRobot():
 
     def getSensor(self, idSensor):
         ret = self.dev.read(98)
-        conectSensor(ret)
-        return sensors[idSensor]
+        self._conectSensor(ret)
+        return self.sensors[idSensor]
 
     def turnActuator(self, idActuator):
-        msg = createActuatorMsg(idActuator)
+        msg = self._createActuatorMsg(idActuator)
         self.dev.write(msg)
+
+    def _createActuatorMsg(self, num):
+        if num == ACTUADOR_M1:
+            return ACT_1_MSG
+        elif num == ACTUADOR_M2:
+            return ACT_2_MSG
+        else:
+            return ACT_B_MSG
+
+    def _conectSensor(self, msg):
+        self.sensors[0] = 0
+        self.sensors[1] = 0
+        self.sensors[2] = 0
+        if msg[3]==2 and msg[11]==83:#I2
+            self.sensors[1] = 1 
+        elif msg[3]==1 and msg[11]==92:#I1
+            self.sensors[0] = 1
+        elif msg[3]==4 and msg[11]==79:#I3
+            self.sensors[2] = 1
+        elif msg[3]==3 and msg[11]==80:#I1 e I2
+            self.sensors[0] = 1
+            self.sensors[1] = 1
+        elif msg[3]==6 and msg[11]==67:#I2 e I3
+            self.sensors[1] = 1
+            self.sensors[2] = 1
+        elif msg[3]==5 and msg[11]==76:#I1 e I3
+            self.sensors[0] = 1
+            self.sensors[2] = 1
+        elif msg[3]==7 and msg[11]==64:#all
+            self.sensors[0] = 1
+            self.sensors[1] = 1
+            self.sensors[2] = 1
 
