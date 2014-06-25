@@ -32,7 +32,7 @@ from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_blocks
 from TurtleArt.talogo import logoerror
-from TurtleArt.taconstants import BLACK, WHITE, CONSTANTS
+from TurtleArt.taconstants import CONSTANTS
 from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
 from TurtleArt.tatype import TYPE_INT, TYPE_STRING, TYPE_NUMBER
 
@@ -149,7 +149,7 @@ class Fischer(Plugin):
                 port = int(port)
             except:
                 pass
-            if (port in FT_MOTOR_PORTS):
+            if (port in FT_ACTUATOR_PORTS):
                 if not(power in [0, 1]):
                     try:
                         f = self._fischers[self.active_fischer]

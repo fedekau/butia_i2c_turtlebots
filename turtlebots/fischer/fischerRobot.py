@@ -103,12 +103,12 @@ class FischerRobot():
         """
         return self.dev.get_info()
 
-    def getSensor(idSensor):
+    def getSensor(self, idSensor):
         ret = self.dev.read(98)
         conectSensor(ret)
         return sensors[idSensor]
 
-    def turnActuator(idActuator):    
+    def turnActuator(self, idActuator):
         msg = createActuatorMsg(idActuator)
         self.dev.write(msg)
 
