@@ -3,6 +3,9 @@
 #
 # Fischer abstraction
 #
+# Copyright (c) 2014 Andrés Aguirre <aaguirre@fing.edu.uy>
+# Copyright (c) 2014 Mercedes Marzoa <mmarzoa@fing.edu.uy>
+# Copyright (C) 2014 Alan Aguiar <alanjas@hotmail.com>
 # Copyright (c) 2014 Butiá Team butia@fing.edu.uy 
 # Butia is a free and open robotic platform
 # www.fing.edu.uy/inco/proyectos/butia

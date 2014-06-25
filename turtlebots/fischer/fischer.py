@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+# Copyright (c) 2014 Andrés Aguirre <aaguirre@fing.edu.uy>
+# Copyright (c) 2014 Mercedes Marzoa <mmarzoa@fing.edu.uy>
 # Copyright (C) 2014 Alan Aguiar <alanjas@hotmail.com>
 # Copyright (C) 2014 Butiá Team butia@fing.edu.uy 
 # Butia is a free open plataform for robotics projects
