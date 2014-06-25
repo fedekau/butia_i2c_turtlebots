@@ -164,6 +164,7 @@ apply_localization: sourceGIT mktmpfolder
 apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp -rLf butia                 $(BUILDDIR)/plugins/
 	cp -rLf sumtia                $(BUILDDIR)/plugins/
+	cp -rLf fischer               $(BUILDDIR)/plugins/
 	cp -rLf followme              $(BUILDDIR)/plugins/
 	cp -rLf nxt_plugin            $(BUILDDIR)/plugins/
 	cp -rLf rodi                  $(BUILDDIR)/plugins/
@@ -211,6 +212,7 @@ apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
 	ln -s `pwd`/butia                  $(BUILDDIR)/plugins/butia
 	ln -s `pwd`/sumtia                 $(BUILDDIR)/plugins/sumtia
+	ln -s `pwd`/fischer                $(BUILDDIR)/plugins/fischer
 	ln -s `pwd`/followme               $(BUILDDIR)/plugins/followme
 	ln -s `pwd`/nxt_plugin             $(BUILDDIR)/plugins/nxt_plugin
 	ln -s `pwd`/WeDoMore/wedo_plugin   $(BUILDDIR)/plugins/wedo_plugin
@@ -244,6 +246,12 @@ plugin-butia: apply_hard_plugins
 	(cd $(BUILDDIR)/plugins && tar -czvf butia_plugin.tar.gz butia/* plugin.info)
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/butia_plugin.tar.gz .
+
+plugin-fischer: apply_hard_plugins
+	cp stagin/plugins/fischer/plugin.info $(BUILDDIR)/plugins
+	(cd $(BUILDDIR)/plugins && tar -czvf fischer_plugin.tar.gz followme/* plugin.info)
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/fischer_plugin.tar.gz .
 
 plugin-followme: apply_hard_plugins
 	cp stagin/plugins/followme/plugin.info $(BUILDDIR)/plugins
@@ -380,4 +388,4 @@ clean-plugins:
  install install-strip \
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
- dev pattern_detection_compile plugin-arduino plugin-rodi
+ dev pattern_detection_compile plugin-arduino plugin-rodi plugin-fischer
