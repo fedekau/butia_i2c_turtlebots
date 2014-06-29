@@ -151,13 +151,17 @@ class Fischer(Plugin):
                 port = int(port)
             except:
                 pass
+            try:
+                power = int(power)
+            except:
+                pass
             if (port in FT_ACTUATOR_PORTS):
-                if not(power in [0, 1]):
+                if (power in [0, 1]):
                     try:
                         f = self._fischers[self.active_fischer]
                         if power == 1:
                             f.turnActuator(port)
-                        elif power == 0:
+                        else:
                             f.offActuator(port)
                     except:
                         raise logoerror(ERROR_GENERIC)
@@ -260,7 +264,7 @@ class Fischer(Plugin):
         for dev in com_usb.find():
             b = FischerRobot(dev)
             try:
-                b = dev.open_ft()
+                b.open_ft()
                 self._fischers.append(b)
             except:
                 pass
