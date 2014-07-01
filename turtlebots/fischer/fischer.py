@@ -182,7 +182,7 @@ class Fischer(Plugin):
                 res = ERROR
                 try:
                     f = self._fischers[self.active_fischer]
-                    res = f.getSensor(port)
+                    res = f.getSensor(port-1)
                 except:
                     pass
                 return res
@@ -201,7 +201,7 @@ class Fischer(Plugin):
                 res = ERROR
                 try:
                     f = self._fischers[self.active_fischer]
-                    res = f.getSensor(port)
+                    res = f.getSensor(port-1)
                 except:
                     pass
                 return res
