@@ -43,7 +43,7 @@ class FischerRobot():
         self.dev = dev
         self.debug = debug
         self.sensors = [0, 0, 0]
-		self.actuators = [0,0]
+        self.actuators = [0, 0]
 
     def _debug(self, message, err=''):
         if self.debug:
@@ -72,20 +72,20 @@ class FischerRobot():
         self._conectSensor(ret)
         return self.sensors[idSensor]
 
-	def actuatorOn(self,msg,idActuator):
-		while self.actuators[idActuator]:	
-			self.dev.write(msg)
+    def actuatorOn(self, msg, idActuator):
+        while self.actuators[idActuator]:
+            self.dev.write(msg)
 
-	def turnActuator(self, idActuator):
-        msg = self._createActuatorMsg(idActuator)	
-		idActuator = idActuator - 1	
-		self.actuators[idActuator] = 1
-		t = threading.Thread(target=self.actuatorOn, args=(msg,idActuator,))
-        t.start()	
+    def turnActuator(self, idActuator):
+        msg = self._createActuatorMsg(idActuator)
+        idActuator = idActuator - 1
+        self.actuators[idActuator] = 1
+        t = threading.Thread(target=self.actuatorOn, args=(msg, idActuator))
+        t.start()
 
     def offActuator(self, idActuator):
-		idActuator = idActuator - 1	
-		self.actuators[idActuator] = 0
+        idActuator = idActuator - 1
+        self.actuators[idActuator] = 0
 
     def _createActuatorMsg(self, num):
         if num == ACTUADOR_M1:
