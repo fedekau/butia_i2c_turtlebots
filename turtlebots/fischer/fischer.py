@@ -159,10 +159,7 @@ class Fischer(Plugin):
                 if (power in [0, 1]):
                     try:
                         f = self._fischers[self.active_fischer]
-                        if power == 1:
-                            f.turnActuator(port)
-                        else:
-                            f.offActuator(port)
+                        f.turnActuator(port,power)
                     except:
                         raise logoerror(ERROR_GENERIC)
                 else:

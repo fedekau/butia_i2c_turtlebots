@@ -24,9 +24,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 import threading
- 
+
 ACTUADOR_M1  =  1 
 ACTUADOR_M2  =  2
+ACTUADOR_MB  =  3
 
 BAS_MSG = [0xa5, 0x01, 0x8d]
 MID_MSG = [0x0f, 0x00, 0x00, 0x00, 0x00]
@@ -72,19 +73,21 @@ class FischerRobot():
         self._conectSensor(ret)
         return self.sensors[idSensor]
 
-    def actuatorOn(self, msg, idActuator):
+    def turnActuator(self, idActuator, powerOn):
+        idActuator = idActuator - 1
+        if powerOn == 1:        
+            msg = self._createActuatorMsg(idActuator+1)
+            self.actuators[idActuator] = 1
+            t = threading.Thread(target=self._actuatorOn, args=(msg, idActuator))
+            t.start()
+        else:
+            self._actuatorOff(idActuator)
+
+    def _actuatorOn(self, msg, idActuator):
         while self.actuators[idActuator]:
             self.dev.write(msg)
 
-    def turnActuator(self, idActuator):
-        msg = self._createActuatorMsg(idActuator)
-        idActuator = idActuator - 1
-        self.actuators[idActuator] = 1
-        t = threading.Thread(target=self.actuatorOn, args=(msg, idActuator))
-        t.start()
-
-    def offActuator(self, idActuator):
-        idActuator = idActuator - 1
+    def _actuatorOff(self, idActuator):        
         self.actuators[idActuator] = 0
 
     def _createActuatorMsg(self, num):
@@ -94,6 +97,67 @@ class FischerRobot():
             return ACT_2_MSG
         else:
             return ACT_B_MSG
+        #Si reversa llamar a __modifyReverse
+        #Si cambia de potencia llamar a _modifyPower
+
+    def _modifyReverse(self, num, msg, onPower):
+        if onPower == ACTUADOR_MB:
+            if num == ACTUADOR_M1:
+                msg[4] = 0x06
+            elif num == ACTUADOR_M2:
+                msg[4] = 0x09
+            elif num == ACTUADOR_MB:
+                msg[4] = 0x0a
+        else:
+            if num == ACTUADOR_M1:
+                msg[4] = 0x02
+            elif num == ACTUADOR_M2:
+                msg[4] = 0x08
+        return msg
+
+    def _modifyPower(self, num, msg, onPower, power):
+        if power == 40 or power == 70:
+            power = power - 10
+
+        if onPower == ACTUADOR_M1:
+            power = _calculatePower(11,power)
+        elif onPower == ACTUADOR_M2:
+            power = _calculatePower(100,power)
+            msg[5] = _byteFive(power)
+        else:
+            power = calculatePower(11,power)+calculatePower(100,power)
+            msg[5] = _byteFive(power)
+
+        msg[4]=hex(int(str(power),8))                      
+        return msg
+
+    def _byteFive(power):
+        if power == 10:
+            b = 0x00
+        if power == 20:
+            b = 0x02
+        if power == 30 or power == 40:
+            b = 0x04
+        if power == 50:
+            b = 0x06
+        if power == 60 or power == 70:
+            b = 0x00
+        if power == 80:
+            b = 0x0b
+        if power == 90:
+            b = 0x0d
+        if power == 100:
+            b = 0x0f 
+        return b
+
+    def _calculatePower(x,power):
+        if power >= 0 and power <= 30:
+            power = x*((power-10)/10)                
+        elif power >= 50 and power <= 60:
+            power = x*(power-20)/10
+        else:
+            power = x*(power-30)/10
+        return power
 
     def _conectSensor(self, msg):
         self.sensors[0] = 0
