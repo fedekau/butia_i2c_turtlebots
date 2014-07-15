@@ -120,37 +120,35 @@ class FischerRobot():
             power = power - 10
 
         if onPower == ACTUADOR_M1:
-            power = _calculatePower(11,power)
+            power = self._calculatePower(11, power)
         elif onPower == ACTUADOR_M2:
-            power = _calculatePower(100,power)
-            msg[5] = _byteFive(power)
+            power = self._calculatePower(100, power)
+            msg[5] = self._byteFive(power)
         else:
-            power = calculatePower(11,power)+calculatePower(100,power)
-            msg[5] = _byteFive(power)
+            power = self._calculatePower(11, power) + self._calculatePower(100, power)
+            msg[5] = self._byteFive(power)
 
         msg[4]=hex(int(str(power),8))                      
         return msg
 
-    def _byteFive(power):
-        if power == 10:
+    def _byteFive(self, power):
+        if power == 10 or power = 60 or power == 70:
             b = 0x00
-        if power == 20:
+        elif power == 20:
             b = 0x02
-        if power == 30 or power == 40:
+        elif power == 30 or power == 40:
             b = 0x04
-        if power == 50:
+        elif power == 50:
             b = 0x06
-        if power == 60 or power == 70:
-            b = 0x00
-        if power == 80:
+        elif power == 80:
             b = 0x0b
-        if power == 90:
+        elif power == 90:
             b = 0x0d
-        if power == 100:
+        else:
             b = 0x0f 
         return b
 
-    def _calculatePower(x,power):
+    def _calculatePower(self, x, power):
         if power >= 0 and power <= 30:
             power = x*((power-10)/10)                
         elif power >= 50 and power <= 60:
