@@ -16,10 +16,10 @@ def getVersion(dev):
     return raw[1]
 
 def send(dev, data):
-    msg = [MESSAGE] + dev.to_ord(data[0])
+    msg = [MESSAGE] + dev._to_ord(data[0])
     dev.send(msg)
     raw = dev.read(len(msg))
-    return dev.to_text(raw[1:])
+    return dev._to_text(raw[1:])
 
 def reset(dev):
     dev.send([RESET])

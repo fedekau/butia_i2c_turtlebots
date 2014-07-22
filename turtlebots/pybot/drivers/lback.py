@@ -8,8 +8,8 @@ def getVersion(dev):
     return raw[1] + raw[2] * 256
 
 def send(dev, data):
-    msg = [SEND_DATA] + dev.to_ord(data[0])
+    msg = [SEND_DATA] + dev._to_ord(data[0])
     dev.send(msg)
     raw = dev.read(len(msg))
-    return dev.to_text(raw[1:])
+    return dev._to_text(raw[1:])
 

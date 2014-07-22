@@ -3,8 +3,8 @@
 #
 # Device abstraction for USB4butia
 #
-# Copyright (c) 2012-2013 Alan Aguiar alanjas@hotmail.com
-# Copyright (c) 2012-2013 Butiá Team butia@fing.edu.uy 
+# Copyright (c) 2012-2014 Alan Aguiar alanjas@hotmail.com
+# Copyright (c) 2012-2014 Butiá Team butia@fing.edu.uy
 # Butia is a free and open robotic platform
 # www.fing.edu.uy/inco/proyectos/butia
 # Facultad de Ingeniería - Universidad de la República - Uruguay
@@ -71,7 +71,7 @@ class Device():
         Open this device. Return the handler
         """
         if self.openable:
-            module_name = self.to_ord(self.name)
+            module_name = self._to_ord(self.name)
             module_name.append(NULL_BYTE)
 
             w = [ADMIN_HANDLER_SEND_COMMAND]
@@ -123,7 +123,7 @@ class Device():
             else:
                 return f(self, *par)
 
-    def to_ord(self, string):
+    def _to_ord(self, string):
         """
         Useful function to convert characters into ordinal Unicode
         """
@@ -134,7 +134,7 @@ class Device():
                 s.append(o)
         return s
 
-    def to_text(self, raw):
+    def _to_text(self, raw):
         """
         Useful function to convert ordinal Unicode into text
         """
