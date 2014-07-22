@@ -3,8 +3,8 @@
 #
 # Chotox utility for debug
 #
-# Copyright (c) 2012-2013 Alan Aguiar alanjas@hotmail.com
-# Copyright (c) 2012-2013 Butiá Team butia@fing.edu.uy 
+# Copyright (c) 2012-2014 Alan Aguiar alanjas@hotmail.com
+# Copyright (c) 2012-2014 Butiá Team butia@fing.edu.uy
 # Butia is a free and open robotic platform
 # www.fing.edu.uy/inco/proyectos/butia
 # Facultad de Ingeniería - Universidad de la República - Uruguay
@@ -84,8 +84,6 @@ class Chotox(USB4Butia):
         """
         board = self._bb[0]
         self._open_or_validate(modulename, board)
-
-        #print modulename, function
 
         if modulename == 'butia' and function == 'getVolt':
             return 10.5

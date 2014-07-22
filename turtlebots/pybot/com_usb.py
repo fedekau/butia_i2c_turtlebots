@@ -3,8 +3,8 @@
 #
 # USB comunication with USB4butia (USB4all) board
 #
-# Copyright (c) 2012-2013 Alan Aguiar alanjas@hotmail.com
-# Copyright (c) 2012-2013 Butiá Team butia@fing.edu.uy 
+# Copyright (c) 2012-2014 Alan Aguiar alanjas@hotmail.com
+# Copyright (c) 2012-2014 Butiá Team butia@fing.edu.uy
 # Butia is a free and open robotic platform
 # www.fing.edu.uy/inco/proyectos/butia
 # Facultad de Ingeniería - Universidad de la República - Uruguay
