@@ -3,8 +3,8 @@
 #
 # Pybot server
 #
-# Copyright (c) 2012-2013 Alan Aguiar alanjas@hotmail.com
-# Copyright (c) 2012-2013 Butiá Team butia@fing.edu.uy 
+# Copyright (c) 2012-2014 Alan Aguiar alanjas@hotmail.com
+# Copyright (c) 2012-2014 Butiá Team butia@fing.edu.uy
 # Butia is a free and open robotic platform
 # www.fing.edu.uy/inco/proyectos/butia
 # Facultad de Ingeniería - Universidad de la República - Uruguay
@@ -82,10 +82,7 @@ class Server():
                                     f = getattr(self.comms, com)
                                     result = f(self, r[1:])
                             result = str(result)
-                            try:
-                                s.send(result + '\n')
-                            except:
-                                print 'Send fails'
+                            s.send(result + '\n')
                         else:
                             s.close()
                             inputs.remove(s)
