@@ -24,6 +24,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 import threading
+from time import sleep, time
 
 ACTUADOR_M1  =  1 
 ACTUADOR_M2  =  2
@@ -45,6 +46,11 @@ class FischerRobot():
         self.debug = debug
         self.sensors = [0, 0, 0]
         self.actuators = [0, 0]
+        self.pollSensor = [time(),time(),time()]
+        self.both = False
+        self.msg_to_send = []
+        self.lock = threading.Lock()
+        self.threadOff = True                       
 
     def _debug(self, message, err=''):
         if self.debug:
@@ -69,36 +75,86 @@ class FischerRobot():
         return self.dev.get_info()
 
     def getSensor(self, idSensor):
-        ret = self.dev.read(98)
-        self._conectSensor(ret)
+        now = time()
+        if self.pollSensor[idSensor]+0.50 < now:
+            ret = self.dev.read(98)
+            ret = self.dev.read(98)
+            self._conectSensor(ret)              
+            self.pollSensor[idSensor] = now
         return self.sensors[idSensor]
 
     def turnActuator(self, idActuator, powerOn):
-        idActuator = idActuator - 1
-        if powerOn == 1:        
-            msg = self._createActuatorMsg(idActuator+1)
-            self.actuators[idActuator] = 1
-            t = threading.Thread(target=self._actuatorOn, args=(msg, idActuator))
+        if  self.threadOff:
+            t = threading.Thread(target=self._sendMsg)
             t.start()
+            self.threadOff = False
+        idActuator = idActuator - 1
+        if powerOn == 1:
+            if self.both == False: 
+                self.actuators[idActuator] = 1
+                if ((idActuator != ACTUADOR_M1-1 and self.actuators[ACTUADOR_M1-1] == 1) 
+                    or (idActuator != ACTUADOR_M2-1 and self.actuators[ACTUADOR_M2-1] == 1)):
+                    self.both = True
+                    msg = self._createActuatorMsg(ACTUADOR_MB)
+                else:
+                    msg = self._createActuatorMsg(idActuator+1)            
+                self._actuatorOn(msg, idActuator)      
         else:
             self._actuatorOff(idActuator)
 
+    def quit(self):      
+        self.threadOff = True
+
     def _actuatorOn(self, msg, idActuator):
-        while self.actuators[idActuator]:
-            self.dev.write(msg)
+        if self.both == True:
+            if idActuator == ACTUADOR_M1-1: 
+                msgAux = self._createActuatorMsg(ACTUADOR_M2)
+            else:
+                msgAux = self._createActuatorMsg(ACTUADOR_M1)              
+            msgAux[3] = 0x00
+            self.lock.acquire()
+            self.msg_to_send = msgAux 
+            self.lock.release()	
+        self.lock.acquire()
+        self.msg_to_send = msg
+        self.lock.release()
 
-    def _actuatorOff(self, idActuator):        
-        self.actuators[idActuator] = 0
-
+    def _actuatorOff(self, idActuator):    
+        if self.actuators[idActuator] == 1:
+            self.actuators[idActuator] = 0       
+            if self.both:
+                msg = self._createActuatorMsg( ACTUADOR_MB)        
+                msg[3]=0x00
+                self.lock.acquire()
+                self.msg_to_send = msg
+                self.lock.release()	
+                self.both = False
+                if  idActuator != ACTUADOR_M1-1: 
+                    idActuator = ACTUADOR_M1
+                else:
+                    idActuator = ACTUADOR_M2                
+                msg = self._createActuatorMsg(idActuator)
+                self._actuatorOn(msg, idActuator-1)
+            else:                
+                msg = self._createActuatorMsg(idActuator+1)            
+                msg[3]=0x00
+                self.lock.acquire()
+                self.msg_to_send = msg
+                self.lock.release()
+            
     def _createActuatorMsg(self, num):
         if num == ACTUADOR_M1:
-            return ACT_1_MSG
+            return ACT_1_MSG[:]
         elif num == ACTUADOR_M2:
-            return ACT_2_MSG
+            return ACT_2_MSG[:]
         else:
-            return ACT_B_MSG
+            return ACT_B_MSG[:]
         #Si reversa llamar a __modifyReverse
         #Si cambia de potencia llamar a _modifyPower
+
+    def _sendMsg(self):
+        while self.threadOff == False:
+            self.dev.write(self.msg_to_send)
 
     def _modifyReverse(self, num, msg, onPower):
         if onPower == ACTUADOR_MB:
@@ -132,7 +188,7 @@ class FischerRobot():
         return msg
 
     def _byteFive(self, power):
-        if power == 10 or power = 60 or power == 70:
+        if power == 10 or power == 60 or power == 70:
             b = 0x00
         elif power == 20:
             b = 0x02
