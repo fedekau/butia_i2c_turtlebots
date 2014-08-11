@@ -249,11 +249,8 @@ class Fischer(Plugin):
             self.tw.regenerate_palette(index)
 
     def _close_fischers(self):
-        for b in self._fischers:
-            try:
-                b.__del__()
-            except:
-                pass
+        for f in self._fischers:
+            f.close_ft()
         self._fischers = []
         self.active_fischer = 0
 
