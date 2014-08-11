@@ -84,7 +84,7 @@ class FischerRobot():
         return self.sensors[idSensor]
 
     def turnActuator(self, idActuator, powerOn):
-        if  self.threadOff:
+        if self.threadOff:
             t = threading.Thread(target=self._sendMsg)
             t.start()
             self.threadOff = False
