@@ -107,8 +107,8 @@ class Fischer(Plugin):
 
         palette.add_block('ftturnactuator',
                     style='basic-style-2arg',
-                    label=[_('turn actuator'), _('port'), _('on/off')],
-                    default=[1, 1],
+                    label=[_('turn actuator'), _('port'), _('power')],
+                    default=[1, 100],
                     help_string=_('turn an actuator'),
                     prim_name='ftturnactuator')
         self.tw.lc.def_prim('ftturnactuator', 2,
@@ -157,7 +157,7 @@ class Fischer(Plugin):
             except:
                 pass
             if (port in FT_ACTUATOR_PORTS):
-                if (power in [0, 1]):
+                if (power in [-100,100]):
                     try:
                         f = self._fischers[self.active_fischer]
                         f.turnActuator(port,power)
