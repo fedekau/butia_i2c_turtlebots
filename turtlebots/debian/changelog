@@ -1,3 +1,34 @@
+turtlebots (26) unstable; urgency=low
+
+  * uses TurtleBlocks v207
+  * use close function
+  * remove unused fischerDriver file
+  * stop all fischers when stop and exit
+  * Add polling control, close threads and fix problems
+  * update PyUSB and Rodi commits
+  * update copyright
+  * remove double error check
+  * to_ord and to_text are private
+  * convert function to class functions
+  * update stagin to v26
+  * add distanc complement
+  * update legacy
+  * add power support and change turn on/off function
+  * update TB and PyUSB
+  * replace tabs for spaces
+  * fix errors and add function to turn off actuators
+  * fix fischer open function
+  * add usb library to fischer
+  * adding credits
+  * each FT have their own sensors
+  * basic fischer plugin
+  * some comments
+  * some clean-up
+  * update commits of nxt and tb
+  * check socket recv function
+
+ -- AlanJAS <alanjas@hotmail.com>  Sat, 16 Aug 2014 19:09:01 -0300
+
 turtlebots (25) unstable; urgency=low
 
   * uses TurtleBlocks v205
