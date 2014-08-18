@@ -1,6 +1,9 @@
 turtlebots (26) unstable; urgency=low
 
   * uses TurtleBlocks v207
+  * autosave
+  * default yes option for save
+  * setxy fix
   * use close function
   * remove unused fischerDriver file
   * stop all fischers when stop and exit
