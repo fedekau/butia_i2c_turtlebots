@@ -50,7 +50,7 @@ COLOR_PRESENT = ["#00FF00","#008000"]
 ERROR_BRICK = _('Please check the connection with the fischer')
 ERROR_PORT_M = _("Invalid port '%s'. Port must be: PORT 1 or 2")
 ERROR_PORT_S = _("Invalid port '%s'. Port must be: PORT 1, 2 or 3")
-ERROR_POWER = _('The value of power must be 0 or 1')
+ERROR_POWER = _('The value of power must be an integer between -100 to 100')
 ERROR_NO_NUMBER = _("The parameter must be a integer, not '%s'")
 ERROR_UNKNOW_SENSOR = ("Unknow '%s' sensor")
 ERROR_GENERIC = _('An error has occurred: check all connections and try to reconnect')
@@ -157,10 +157,10 @@ class Fischer(Plugin):
             except:
                 pass
             if (port in FT_ACTUATOR_PORTS):
-                if (power in [-100,100]):
+                if (power >= -100) and (power <= 100):
                     try:
                         f = self._fischers[self.active_fischer]
-                        f.turnActuator(port,power)
+                        f.turnActuator(port, power)
                     except:
                         raise logoerror(ERROR_GENERIC)
                 else:
