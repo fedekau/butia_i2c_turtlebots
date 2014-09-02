@@ -776,10 +776,10 @@ class Butia(Plugin):
             value = int(value)
         except:
             value = ERROR
-        if (value < 0) or (value > 1):
-            raise logoerror(ERROR_PIN_VALUE)
-        else:
+        if value in [0, 1]:
             self.butia.setLed(port, value, board)
+        else:
+            raise logoerror(ERROR_PIN_VALUE)
 
     ################################ Extras ################################
 
@@ -817,10 +817,10 @@ class Butia(Plugin):
                         value = int(value)
                     except:
                         value = ERROR
-                    if (value < 0) or (value > 1):
-                        raise logoerror(ERROR_PIN_VALUE)
-                    else:
+                    if value in [0, 1]:
                         self.butia.setHack(pin, value)
+                    else:
+                        raise logoerror(ERROR_PIN_VALUE)
 
     def getPin(self, pin):
         if not(self.use_cc):
@@ -866,13 +866,34 @@ class Butia(Plugin):
             raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_c_f)
 
     def setActA(self, value, sensorid=0, boardid=0):
-        self.butia.setModuleA(sensorid, value, boardid)
+        try:
+            value = int(value)
+        except:
+            value = ERROR
+        if value in [0, 1]:
+            self.butia.setModuleA(sensorid, value, boardid)
+        else:
+            raise logoerror(ERROR_PIN_VALUE)
 
     def setActB(self, value, sensorid=0, boardid=0):
-        self.butia.setModuleB(sensorid, value, boardid)
+        try:
+            value = int(value)
+        except:
+            value = ERROR
+        if value in [0, 1]:
+            self.butia.setModuleB(sensorid, value, boardid)
+        else:
+            raise logoerror(ERROR_PIN_VALUE)
 
     def setActC(self, value, sensorid=0, boardid=0):
-        self.butia.setModuleC(sensorid, value, boardid)
+        try:
+            value = int(value)
+        except:
+            value = ERROR
+        if value in [0, 1]:
+            self.butia.setModuleC(sensorid, value, boardid)
+        else:
+            raise logoerror(ERROR_PIN_VALUE)
 
     def init_gconf(self):
         try:
