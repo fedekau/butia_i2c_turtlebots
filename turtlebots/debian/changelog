@@ -3,6 +3,7 @@ turtlebots (26) unstable; urgency=low
   * uses TurtleBlocks v207
   * autosave
   * default yes option for save
+  * fix generic actuators in butia plugin
   * setxy fix
   * use close function
   * remove unused fischerDriver file
