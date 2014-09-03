@@ -136,13 +136,13 @@ class Fischer(Plugin):
 
 
     ############################### Turtle signals ############################
+
     def stop(self):
         for f in self._fischers:
             f.quit()
 
     def quit(self):
-        for f in self._fischers:
-            f.quit()
+        self._close_fischers()
 
     ################################# Primitives ##############################
 
@@ -250,6 +250,7 @@ class Fischer(Plugin):
 
     def _close_fischers(self):
         for f in self._fischers:
+            f.quit()
             f.close_ft()
         self._fischers = []
         self.active_fischer = 0
