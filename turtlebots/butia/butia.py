@@ -126,9 +126,13 @@ label_name_from_device_id['modActC'] = _('actuator c')
 #dict of every function in the code
 d = {}
 
-refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led', 'resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC', 'modActA', 'modActB', 'modActC']
-static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia', 'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
-extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia', 'lowButia', 'inputButia', 'outputButia']
+refreshable_block_list = ['light', 'gray', 'distance', 'button', 'led',
+'resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC',
+'modActA', 'modActB', 'modActC']
+static_block_list = ['forwardButia', 'backwardButia', 'leftButia', 'rightButia',
+'stopButia', 'speedButia', 'batterychargeButia', 'moveButia']
+extras_block_list = ['setpinButia', 'getpinButia', 'pinmodeButia', 'highButia',
+'lowButia', 'inputButia', 'outputButia']
 
 class Butia(Plugin):
     
@@ -489,6 +493,15 @@ class Butia(Plugin):
             Primitive(self.prim_change_ipButia, arg_descs=[ArgSlot(TYPE_STRING)]))
         special_block_colors['changeIpButia'] = COLOR_PRESENT[:]
 
+        palette3.add_block('firmwareButia',
+                     style='box-style',
+                     label=_('firmware Butia'),
+                     prim_name='firmwareButia',
+                     help_string=_('returns the Firmware version of butia robot'))
+        self.tw.lc.def_prim('firmwareButia', 0,
+            Primitive(self.getFirmware, TYPE_FLOAT))
+        special_block_colors['firmwareButia'] = COLOR_PRESENT[:]
+
     ################################ Turtle calls ################################
 
     def start(self):
@@ -582,14 +595,13 @@ class Butia(Plugin):
                 if (blk.name in static_block_list):
                     if change_statics_blocks:
                         if (blk.name == 'batterychargeButia'):
-                            special_block_colors[blk.name] = self.battery_color[:]
-                        else:
-                            special_block_colors[blk.name] = self.statics_color[:]
-                        if (blk.name == 'batterychargeButia'):
                             if self.use_cc:
                                 blk.set_visibility(False)
                             else:
                                 blk.set_visibility(True)
+                            special_block_colors[blk.name] = self.battery_color[:]
+                        else:
+                            special_block_colors[blk.name] = self.statics_color[:]
                         blk.refresh()
                 elif (blk.name in extras_block_list):
                     if change_extras_blocks:
@@ -749,6 +761,9 @@ class Butia(Plugin):
             return 255
         else:
             return self.butia.getBatteryCharge()
+
+    def getFirmware(self):
+        return self.butia.getFirmwareVersion()
 
     def getButton(self, port='0', board='0'):
         return self.butia.getButton(port, board)
