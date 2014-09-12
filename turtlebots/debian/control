@@ -16,8 +16,8 @@ Recommends: python-pycurl, libgstreamer0.10-0, python-bluez
 Replaces: sugar-activity-turtlebots, sugar-default-activities
 Description: TurtleBlocks with robotic plugins
  TurtleBots is a modified version of TurtleBlocks, it includes several plugins 
- to manage robotic kits such as Butia, Sumbot, Lego NXT and Lego WeDo,
- Arduino boards, and FischerTechnik LT.
+ to manage robotic kits such as Butia, Sumbot, Lego NXT, Lego WeDo, Arduino
+ boards, and FischerTechnik ROBO LT.
  Also includes two plugins for vision: FollowMe and Pattern detection.
  If you have another robotic kit feel free to make a new plugin, and if you
  want you can send us the code so we can add your plugin to TurtleBots! :-)
