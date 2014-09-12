@@ -31,6 +31,8 @@ turtlebots (26) unstable; urgency=low
   * some clean-up
   * update commits of nxt and tb
   * check socket recv function
+  * fixes a major issue for analog sensors in RoDI
+  * add definitions for missing sensors in RoDI
 
  -- AlanJAS <alanjas@hotmail.com>  Sat, 16 Aug 2014 19:09:01 -0300
 
