@@ -499,7 +499,7 @@ class Butia(Plugin):
                      prim_name='firmwareButia',
                      help_string=_('returns the Firmware version of butia robot'))
         self.tw.lc.def_prim('firmwareButia', 0,
-            Primitive(self.getFirmware, TYPE_FLOAT))
+            Primitive(self.getFirmware, TYPE_INT))
         special_block_colors['firmwareButia'] = COLOR_PRESENT[:]
 
     ################################ Turtle calls ################################
