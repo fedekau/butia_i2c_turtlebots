@@ -8,4 +8,4 @@ icon = turtlebots
 show_launcher = yes
 website = http://www.fing.edu.uy/inco/proyectos/butia
 mime_types = application/x-turtle-art
-summary = TurtleBlocks with Butia, Lego NxT, WeDo, Arduino, FollowMe plugins
+summary = TurtleBlocks with robotic plugins
