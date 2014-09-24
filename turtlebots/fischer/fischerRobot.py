@@ -97,6 +97,10 @@ class FischerRobot():
             t.start()
 
         idActuator = idActuator - 1
+
+        if self.actuators[idActuator] == power:
+            return
+
         self.actuators[idActuator] = power
 
         if power != 0:
