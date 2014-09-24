@@ -191,6 +191,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
 	cp -rLf $(BUILDDIR)/plugins/butia/pybot/usb $(BUILDDIR)/plugins/nxt_plugin/
 	cp -rLf $(BUILDDIR)/plugins/butia/pybot/usb $(BUILDDIR)/plugins/wedo_plugin/
+	cp -rLf $(BUILDDIR)/plugins/butia/pybot/usb $(BUILDDIR)/plugins/fischer/
 	cp WeDoMore/README.rst $(BUILDDIR)/plugins/wedo_plugin/
 	cp WeDoMore/LICENSE $(BUILDDIR)/plugins/wedo_plugin/
 	# put pattern_examples into turtle examples folder
