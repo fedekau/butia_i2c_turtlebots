@@ -45,7 +45,7 @@ from fischerRobot import FischerRobot
 
 
 COLOR_NOTPRESENT = ["#A0A0A0","#808080"]
-COLOR_PRESENT = ["#00FF00","#008000"]
+COLOR_PRESENT = ["#FF6060", "#A06060"]
 
 ERROR_BRICK = _('Please check the connection with the fischer')
 ERROR_PORT_M = _("Invalid port '%s'. Port must be: PORT 1 or 2")
@@ -105,15 +105,6 @@ class Fischer(Plugin):
         self.tw.lc.def_prim('ftcount', 0,
             Primitive(self.count, TYPE_INT))
 
-        palette.add_block('ftturnactuator',
-                    style='basic-style-2arg',
-                    label=[_('turn actuator'), _('port'), _('on/off')],
-                    default=[1, 1],
-                    help_string=_('turn an actuator'),
-                    prim_name='ftturnactuator')
-        self.tw.lc.def_prim('ftturnactuator', 2,
-            Primitive(self.turnactuator, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
-
         CONSTANTS['light'] = _('light')
         palette.add_block('ftlight',
                     style='number-style-1arg',
@@ -134,12 +125,20 @@ class Fischer(Plugin):
         self.tw.lc.def_prim('ftbutton', 1,
             Primitive(self.getButton, TYPE_INT, [ArgSlot(TYPE_INT)]))
 
+        palette.add_block('ftturnactuator',
+                    style='basic-style-2arg',
+                    label=[_('turn actuator'), _('port'), _('on/off')],
+                    default=[1, 1],
+                    help_string=_('turn an actuator'),
+                    prim_name='ftturnactuator')
+        self.tw.lc.def_prim('ftturnactuator', 2,
+            Primitive(self.turnactuator, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
+
 
     ############################### Turtle signals ############################
 
     def stop(self):
-        for f in self._fischers:
-            f.quit()
+        self._stopActuators()
 
     def quit(self):
         self._close_fischers()
@@ -248,7 +247,13 @@ class Fischer(Plugin):
                         block.refresh()
             self.tw.regenerate_palette(index)
 
+    def _stopActuators(self):
+        for f in self._fischers:
+            f.turnActuator(1, 0)
+            f.turnActuator(2, 0)
+
     def _close_fischers(self):
+        self._stopActuators()
         for f in self._fischers:
             f.quit()
             f.close_ft()
@@ -262,6 +267,7 @@ class Fischer(Plugin):
             try:
                 b.open_ft()
                 self._fischers.append(b)
+                b._mes_init()
             except:
                 pass
 
