@@ -265,7 +265,6 @@ class Fischer(Plugin):
             try:
                 b.open_ft()
                 self._fischers.append(b)
-                b._mes_init()
             except:
                 pass
 
