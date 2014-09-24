@@ -45,7 +45,7 @@ class FischerRobot():
         self.dev = dev
         self.debug = debug
         self.sensors = [0, 0, 0]
-        self.actuators = [0, 0]
+        #self.actuators = [0, 0]
         self.actuators_reverse = [False, False]
         self.actuators_power = [0, 0]
         self.pollSensor = [time(),time(),time()]
@@ -100,13 +100,11 @@ class FischerRobot():
 
         if power != 0:
             if self.both == False: 
-                self.actuators[idActuator] = 1
-                if ((idActuator != ACTUADOR_M1-1 and self.actuators[ACTUADOR_M1-1] == 1) 
-                    or (idActuator != ACTUADOR_M2-1 and self.actuators[ACTUADOR_M2-1] == 1)):
+                if (self.actuators_power[0] == 0) or (self.actuators_power[1] == 0):
+                    msg = self._createActuatorMsg(idActuator + 1, power)
+                else:
                     self.both = True
                     msg = self._createActuatorMsg(ACTUADOR_MB, power)
-                else:
-                    msg = self._createActuatorMsg(idActuator + 1, power)
                 self._actuatorOn(msg)
             else:
                 msg = self._createActuatorMsg(ACTUADOR_MB, power)
@@ -123,28 +121,28 @@ class FischerRobot():
         self.lock.release()
 
     def _actuatorOff(self, idActuator):
-        if self.actuators[idActuator] == 1:
-            self.actuators[idActuator] = 0
-            #self.actuators_power[idActuator] = 0
-            if self.both:
-                power = 0
-                msg = self._createActuatorMsg(ACTUADOR_MB, power)
-                msg[3]=0x00
-                self._actuatorOn(msg)
-                self.both = False
+        #if not(self.actuators_power[idActuator] == 0):
+        #self.actuators_power[idActuator] = 0
+        power = 0
+        if self.both:
+            
+            msg = self._createActuatorMsg(ACTUADOR_MB, power)
+            msg[3]=0x00
+            self._actuatorOn(msg)
+            self.both = False
 
-                if  idActuator != (ACTUADOR_M1-1):
-                    idActuator = ACTUADOR_M1
-                else:
-                    idActuator = ACTUADOR_M2
-
-                power = self.actuators_power[idActuator-1]
-                msg = self._createActuatorMsg(idActuator, power)
-                self._actuatorOn(msg)
+            if  idActuator != (ACTUADOR_M1-1):
+                idActuator = ACTUADOR_M1
             else:
-                msg = self._createActuatorMsg(idActuator+1, power)
-                msg[3]=0x00
-                self._actuatorOn(msg)
+                idActuator = ACTUADOR_M2
+
+            power = self.actuators_power[idActuator-1]
+            msg = self._createActuatorMsg(idActuator, power)
+            self._actuatorOn(msg)
+        else:
+            msg = self._createActuatorMsg(idActuator+1, power)
+            msg[3]=0x00
+            self._actuatorOn(msg)
             
     def _createActuatorMsg(self, num, power):
         if num == ACTUADOR_M1:
