@@ -45,9 +45,7 @@ class FischerRobot():
         self.dev = dev
         self.debug = debug
         self.sensors = [0, 0, 0]
-        #self.actuators = [0, 0]
-        #self.actuators_reverse = [False, False]
-        self.actuators_power = [0, 0]
+        self.actuators = [0, 0]
         self.pollSensor = [time(),time(),time()]
         self.both = False
         self.msg_to_send = []
@@ -92,11 +90,11 @@ class FischerRobot():
             t.start()
 
         idActuator = idActuator - 1
-        self.actuators_power[idActuator] = power
+        self.actuators[idActuator] = power
 
         if power != 0:
             if self.both == False: 
-                if (self.actuators_power[0] == 0) or (self.actuators_power[1] == 0):
+                if (self.actuators[0] == 0) or (self.actuators[1] == 0):
                     msg = self._createActuatorMsg(idActuator + 1, power)
                 else:
                     self.both = True
@@ -117,8 +115,6 @@ class FischerRobot():
         self.lock.release()
 
     def _actuatorOff(self, idActuator):
-        #if not(self.actuators_power[idActuator] == 0):
-        #self.actuators_power[idActuator] = 0
         power = 0
         if self.both:
             
@@ -132,7 +128,7 @@ class FischerRobot():
             else:
                 idActuator = ACTUADOR_M2
 
-            power = self.actuators_power[idActuator-1]
+            power = self.actuators[idActuator-1]
             msg = self._createActuatorMsg(idActuator, power)
             self._actuatorOn(msg)
         else:
@@ -157,8 +153,8 @@ class FischerRobot():
         return msg
 
     def _modifyReverse(self, msg):
-        a1_reverse = self.actuators_power[0] < 0
-        a2_reverse = self.actuators_power[1] < 0
+        a1_reverse = self.actuators[0] < 0
+        a2_reverse = self.actuators[1] < 0
 
         if self.both:
             if a1_reverse:
