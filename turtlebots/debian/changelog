@@ -2,7 +2,11 @@ turtlebots (27) unstable; urgency=low
 
   * uses TurtleBlocks v208+
   * fix fischer refresh function
+  * add fischer speed control
+  * stop fischer actuators on stop and exit
   * update NxT plugin
+  * update WeDo plugin
+  * update RoDI plugin
   * update extras commit
 
  -- AlanJAS <alanjas@hotmail.com>  Tue, 23 Sep 2014 21:18:14 -0300
