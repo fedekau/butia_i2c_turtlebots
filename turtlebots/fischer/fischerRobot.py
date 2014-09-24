@@ -23,12 +23,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 import threading
 from time import sleep, time
 
-ACTUADOR_M1  =  1 
-ACTUADOR_M2  =  2
-ACTUADOR_MB  =  3
+ACTUADOR_M1 = 1
+ACTUADOR_M2 = 2
+ACTUADOR_MB = 3
 
 BAS_MSG = [0xa5, 0x01, 0x00]
 MID_MSG = [0x0f, 0x00, 0x00, 0x00, 0x00]
@@ -74,9 +75,15 @@ class FischerRobot():
         """
         return self.dev.get_info()
 
+    def _mes_init(self):
+        msg = self._createActuatorMsg(1)
+        self.dev.write(msg)
+        msg[3]=0x00
+        self.dev.write(msg)
+
     def getSensor(self, idSensor):
         now = time()
-        if self.pollSensor[idSensor]+0.50 < now:
+        if (self.pollSensor[idSensor] + 0.50) < now:
             ret = self.dev.read(98)
             ret = self.dev.read(98)
             self._conectSensor(ret)
@@ -107,7 +114,9 @@ class FischerRobot():
             self._actuatorOff(idActuator)
 
     def quit(self):
+        self.lock.acquire()
         self.threadOff = True
+        self.lock.release()
 
     def _actuatorOn(self, msg):
         self.lock.acquire()

@@ -23,13 +23,13 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = 7f6605a4179cc3d58d5f1d055044ef2888959b98
-EXTRAS_VERSION = 6a136d15af15f859c820db795019c5f307d1e6ee
-NXT_VERSION = 73b67d515c240e7ff1d37b0bb780d8687dc4c52a
+TURTLEBLOCKS_VERSION = 907c9907cef718ed8ba15db3ff6b49b296906680
+EXTRAS_VERSION = c502a8fc6c169a0bc63779412fd93d654e12596b
+NXT_VERSION = bb0fa1a897b44260005033bcea51d61ded55939b
 WEDO_VERSION = fece7f612ee8379315e85a6f173710b2b380a3f4
 ARDUINO_VERSION = a1b900c4a649c3a3364a4be0f7a3e65fb6ddf020
-PYUSB_VERSION = 56409440486aa3166df158d79265ac8054207f1b
-RODI_VERSION = 463e9f0a9dab540d73e91cc7f0a6eaa654f89c89
+PYUSB_VERSION = 80f81ef34363e8b2841c8d82ce139707222563fc
+RODI_VERSION = 7773c9bf9df09d12cab1baef8c5a308814cfe87d
 
 SHELL = /bin/sh
 # check work in "sh" instad of bash, make it more portable!!!
@@ -191,6 +191,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp pyusb/TODO               $(BUILDDIR)/plugins/butia/pybot/usb
 	cp -rLf $(BUILDDIR)/plugins/butia/pybot/usb $(BUILDDIR)/plugins/nxt_plugin/
 	cp -rLf $(BUILDDIR)/plugins/butia/pybot/usb $(BUILDDIR)/plugins/wedo_plugin/
+	cp -rLf $(BUILDDIR)/plugins/butia/pybot/usb $(BUILDDIR)/plugins/fischer/
 	cp WeDoMore/README.rst $(BUILDDIR)/plugins/wedo_plugin/
 	cp WeDoMore/LICENSE $(BUILDDIR)/plugins/wedo_plugin/
 	# put pattern_examples into turtle examples folder

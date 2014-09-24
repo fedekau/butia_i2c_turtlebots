@@ -1,6 +1,6 @@
 [Activity]
 name = TurtleBots
-activity_version = 26
+activity_version = 27
 license = MIT
 bundle_id = org.laptop.TurtleArtButia
 exec = sugar-activity TurtleArtActivity.TurtleArtActivity
@@ -8,4 +8,5 @@ icon = turtlebots
 show_launcher = yes
 website = http://www.fing.edu.uy/inco/proyectos/butia
 mime_types = application/x-turtle-art
-summary = TurtleBlocks with Butia, Lego NxT, WeDo, Arduino, FollowMe plugins
+categories = programming art
+summary = TurtleBlocks with robotic plugins

@@ -57,13 +57,15 @@ class usb_device():
             self.dev.set_configuration(FISCHER_LT_CONFIGURATION)
         except usb.USBError, err:
             self._debug('ERROR:com_usb:open_device', err)
-            raise
 
     def close_device(self):
         """
         Close the comunication with the baseboard
         """
-        self.dev.__del__()
+        try:
+            self.dev.__del__()
+        except Exception, err:
+            self._debug('ERROR:com_usb:close_device', err)
         self.dev = None
 
     def read(self, size):
@@ -74,7 +76,6 @@ class usb_device():
             return self.dev.read(IN_ENDPOINT, size, TIMEOUT)
         except Exception, err:
             self._debug('ERROR:com_usb:read', err)
-            raise
  
     def write(self, data):
         """
@@ -84,7 +85,6 @@ class usb_device():
             return self.dev.write(OUT_ENDPOINT, data, TIMEOUT)
         except Exception, err:
             self._debug('ERROR:com_usb:write', err)
-            raise
 
     def get_address(self):
         """
@@ -106,7 +106,6 @@ class usb_device():
             return [names, copy, sn]
         except Exception, err:
             self._debug('ERROR:com_usb:get_info', err)
-            raise
 
 def find():
     """
