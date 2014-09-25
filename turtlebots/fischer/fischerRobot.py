@@ -62,6 +62,10 @@ class FischerRobot():
         Open the comunication
         """
         self.dev.open_device()
+        msg = self._createActuatorMsg(1, 0)
+        self.dev.write(msg)
+        msg[3]=0x00
+        self.dev.write(msg)
 
     def close_ft(self):
         """
@@ -74,12 +78,6 @@ class FischerRobot():
         Get Fischer info: manufacture..
         """
         return self.dev.get_info()
-
-    def _mes_init(self):
-        msg = self._createActuatorMsg(1)
-        self.dev.write(msg)
-        msg[3]=0x00
-        self.dev.write(msg)
 
     def getSensor(self, idSensor):
         now = time()
