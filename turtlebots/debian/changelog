@@ -4,6 +4,7 @@ turtlebots (27) unstable; urgency=low
   * fix fischer refresh function
   * add fischer speed control
   * stop fischer actuators on stop and exit
+  * change color of fischer blocks
   * update NxT plugin
   * update WeDo plugin
   * update RoDI plugin
