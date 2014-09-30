@@ -88,6 +88,9 @@ class FischerRobot():
             self.pollSensor[idSensor] = now
         return self.sensors[idSensor]
 
+    def getActuator(self, idActuator):
+        return self.actuators[idActuator - 1]
+
     def turnActuator(self, idActuator, power):
         if self.threadOff:
             self.threadOff = False
