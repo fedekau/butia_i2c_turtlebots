@@ -143,9 +143,8 @@ class Butia(Plugin):
         power_manager_off(True)
         self.butia = pybot_client.robot(auto_connect=False)
         self.actualSpeed = [600, 600]
-        self.hack_states = {}
-        for i in range(1, 9):
-            self.hack_states[i] = 1
+        self.active_butia = 0
+        self.butia_count = 0
         self.pollthread = None
         self.pollrun = True
         self.bobot = None
@@ -502,6 +501,17 @@ class Butia(Plugin):
             Primitive(self.getFirmware, TYPE_INT))
         special_block_colors['firmwareButia'] = COLOR_PRESENT[:]
 
+        palette3.add_block('selectButia',
+                          style='basic-style-1arg',
+                          default=1,
+                          label=_('Butia'),
+                          help_string=_('set current Butia robot'),
+                          prim_name = 'selectButia')
+        self.tw.lc.def_prim('selectButia', 1,
+            Primitive(self.selectButia, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+        special_block_colors['selectButia'] = COLOR_PRESENT[:]
+
+
     ################################ Turtle calls ################################
 
     def start(self):
@@ -532,7 +542,7 @@ class Butia(Plugin):
             self.use_cc = True
             self.battery_color = BATTERY_ORANGE[:]
             self.statics_color = COLOR_PRESENT[:]
-            self.extras_color = None
+            self.extras_color = COLOR_NOTPRESENT[:]
         else:
             self.use_cc = False
             self.battery_value = self.butia.getBatteryCharge()
@@ -583,7 +593,7 @@ class Butia(Plugin):
                     _list.append((module + str(n), (t[0], t[2])))
         self.match_dict = dict(_list)
 
-    def change_butia_palette_colors(self, force_refresh, change_statics_blocks, change_extras_blocks, boards_present):
+    def change_butia_palette_colors(self, force_refresh, change_statics_blocks, change_extras_blocks):
 
         self.make_match_dict()
 
@@ -605,11 +615,7 @@ class Butia(Plugin):
                         blk.refresh()
                 elif (blk.name in extras_block_list):
                     if change_extras_blocks:
-                        if self.use_cc:
-                            blk.set_visibility(False)
-                        else:
-                            special_block_colors[blk.name] = self.extras_color[:]
-                            blk.set_visibility(True)
+                        special_block_colors[blk.name] = self.extras_color[:]
                         blk.refresh()
                 else:
                     blk_name, blk_index = self.block_2_index_and_name(blk.name)
@@ -635,7 +641,7 @@ class Butia(Plugin):
                                 value = val[0]
                                 board = val[1]
                                 label = label + ':' + val[0] + ' ' + _('Butia')
-                                if boards_present > 1:
+                                if self.butia_count > 1:
                                     label = label + ' ' + val[1]
                                 if blk.type == 'proto': # don't has sense to change the visibility of a block in the program area
                                     blk.set_visibility(True)
@@ -678,10 +684,10 @@ class Butia(Plugin):
          then it change the color of the blocks corresponding to the device """
         old_list_connected_device_module = self.list_connected_device_module[:]
         self.list_connected_device_module = self.butia.getModulesList()
-        boards_present = self.butia.getButiaCount()
+        self.butia_count = self.butia.getButiaCount()
         self.update_colors()
         if force_refresh:
-            self.change_butia_palette_colors(True, True, True, boards_present)
+            self.change_butia_palette_colors(True, True, True)
         else:
             if not(old_list_connected_device_module == self.list_connected_device_module):
                 set_old_connected_device_module = set(old_list_connected_device_module)
@@ -703,7 +709,7 @@ class Butia(Plugin):
             else:
                 change_extras_blocks = False
             if not(self.modules_changed == []) or change_statics_blocks or change_extras_blocks:
-                self.change_butia_palette_colors(False, change_statics_blocks, change_extras_blocks, boards_present)
+                self.change_butia_palette_colors(False, change_statics_blocks, change_extras_blocks)
 
     ################################ Movement calls ################################
 
@@ -716,7 +722,7 @@ class Butia(Plugin):
             sentRight = '0'
         else:
             sentRight = '1'
-        self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)))
+        self.butia.set2MotorSpeed(sentLeft, str(abs(left)), sentRight, str(abs(right)), self.active_butia)
 
     def move(self, left, right):
         try:
@@ -757,13 +763,10 @@ class Butia(Plugin):
     ################################ Sensors calls ################################
 
     def getBatteryCharge(self):
-        if self.use_cc:
-            return 255
-        else:
-            return self.butia.getBatteryCharge()
+        return self.butia.getBatteryCharge(self.active_butia)
 
     def getFirmware(self):
-        return self.butia.getFirmwareVersion()
+        return self.butia.getFirmwareVersion(self.active_butia)
 
     def getButton(self, port='0', board='0'):
         return self.butia.getButton(port, board)
@@ -799,57 +802,63 @@ class Butia(Plugin):
     ################################ Extras ################################
 
     def pinMode(self, pin, mode):
-        if not(self.use_cc):
-            try:
-                pin = int(pin)
-            except:
-                pin = ERROR
-            if (pin < 1) or (pin > 8):
-                raise logoerror(ERROR_PIN_NUMBER)
+        try:
+            pin = int(pin)
+        except:
+            pin = ERROR
+        if (pin < 1) or (pin > 8):
+            raise logoerror(ERROR_PIN_NUMBER)
+        else:
+            if mode == _('INPUT'):
+                self.butia.setModeHack(pin, 1, self.active_butia)
+            elif mode == _('OUTPUT'):
+                self.butia.setModeHack(pin, 0, self.active_butia)
             else:
-                if mode == _('INPUT'):
-                    self.hack_states[pin] = 1
-                    self.butia.modeHack(pin, 1)
-                elif mode == _('OUTPUT'):
-                    self.hack_states[pin] = 0
-                    self.butia.modeHack(pin, 0)
-                else:
-                    raise logoerror(ERROR_PIN_MODE)
+                raise logoerror(ERROR_PIN_MODE)
 
     def setPin(self, pin, value):
-        if not(self.use_cc):
-            try:
-                pin = int(pin)
-            except:
-                pin = ERROR
-            if (pin < 1) or (pin > 8):
-                raise logoerror(ERROR_PIN_NUMBER)
+        try:
+            pin = int(pin)
+        except:
+            pin = ERROR
+        if (pin < 1) or (pin > 8):
+            raise logoerror(ERROR_PIN_NUMBER)
+        else:
+            if self.butia.getModeHack(pin, self.active_butia) == 1:
+                raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.') % pin)
             else:
-                if self.hack_states[pin] == 1:
-                    raise logoerror(_('ERROR: The pin %s must be in OUTPUT mode.') % pin)
+                try:
+                    value = int(value)
+                except:
+                    value = ERROR
+                if value in [0, 1]:
+                    self.butia.setModeHack(pin, value, self.active_butia)
                 else:
-                    try:
-                        value = int(value)
-                    except:
-                        value = ERROR
-                    if value in [0, 1]:
-                        self.butia.setHack(pin, value)
-                    else:
-                        raise logoerror(ERROR_PIN_VALUE)
+                    raise logoerror(ERROR_PIN_VALUE)
 
     def getPin(self, pin):
-        if not(self.use_cc):
-            try:
-                pin = int(pin)
-            except:
-                pin = ERROR
-            if (pin < 1) or (pin > 8):
-                raise logoerror(ERROR_PIN_NUMBER)
+        try:
+            pin = int(pin)
+        except:
+            pin = ERROR
+        if (pin < 1) or (pin > 8):
+            raise logoerror(ERROR_PIN_NUMBER)
+        else:
+            if self.butia.getModeHack(pin, self.active_butia) == 0:
+                raise logoerror(_('ERROR: The pin %s must be in INPUT mode.') % pin)
             else:
-                if self.hack_states[pin] == 0:
-                    raise logoerror(_('ERROR: The pin %s must be in INPUT mode.') % pin)
-                else:
-                    return self.butia.getHack(pin)
+                return self.butia.getHack(pin, self.active_butia)
+
+    def selectButia(self, i):
+        try:
+            i = int(i)
+        except:
+            raise logoerror(_('The device must be an integer'))
+        i = i - 1
+        if (i < self.butia_count) and (i >= 0):
+            self.active_butia = i
+        else:
+            raise logoerror(_('Not found Butia %s') % (i + 1))
 
     ################################ Custom modules ################################
 
