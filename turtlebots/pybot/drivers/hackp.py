@@ -17,7 +17,11 @@ def setMode(dev, pin, mode):
     msg = [SET_MODE, pin, mode]
     dev.send(msg)
     raw = dev.read(1)
+    dev.baseboard.set_hack_state(pin + 1, mode)
     return raw[0]
+
+def getMode(dev, pin):
+    return dev.baseboard.get_hack_state(pin)
 
 def read(dev, pin):
     pin = pin - 1
