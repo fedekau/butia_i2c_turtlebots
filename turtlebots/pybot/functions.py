@@ -194,12 +194,18 @@ class ButiaFunctions:
 
     ################################ Extras ################################
 
-    def modeHack(self, pin, mode, board='0'):
+    def setModeHack(self, pin, mode, board='0'):
         """
-        Sets the mode of hack pin. If mode 0 = input, mode 1 = output
+        Sets the mode of hack pin. If mode 0 = output, mode 1 = input
         """
         msg = [str(pin), str(mode)]
         return self.callModule('hackp', str(board), '0', 'setMode', msg)
+
+    def getModeHack(self, pin, board='0'):
+        """
+        Get the mode of hack pin. If mode 0 = output, mode 1 = input
+        """
+        return self.callModule('hackp', str(board), '0', 'getMode', [str(pin)])
 
     def setHack(self, pin, value, board='0'):
         """
