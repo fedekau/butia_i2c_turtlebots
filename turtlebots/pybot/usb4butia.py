@@ -276,12 +276,8 @@ class USB4Butia(ButiaFunctions):
         if self._drivers_loaded.has_key(mod):
             driver = self._drivers_loaded[mod]
             a = dir(driver)
-            flag = False
-            for p in a:
-                if flag:
-                    funcs.append(p)
-                if p == '__package__':
-                    flag = True
+            if '__package__' in a:
+                funcs = a[a.index('__package__') + 1:]
             for f in funcs:
                 h = getattr(driver, f)
                 try:
