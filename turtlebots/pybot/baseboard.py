@@ -51,6 +51,9 @@ class Baseboard():
         self.listi = {}
         self.devices = {}
         self.openables_loaded = []
+        self.hack_states = {}
+        for i in range(1, 9):
+            self.hack_states[i] = 1
 
     def _debug(self, message, err=''):
         if self.debug:
@@ -133,6 +136,14 @@ class Baseboard():
         except:
             self.listi = {}
             self._debug('ERROR:baseboard listi')
+
+    def set_hack_state(self, hack, state):
+        if hack in self.hack_states:
+            self.hack_states[hack] = state
+
+    def get_hack_state(self, hack):
+        if hack in self.hack_states:
+            return self.hack_states[hack]
 
     def get_device_handler(self, name):
         """
