@@ -25,9 +25,6 @@
 
 NULL_BYTE = 0x00
 
-ADMIN_MODULE_IN_ENDPOINT   = 0x01
-ADMIN_MODULE_OUT_ENDPOINT  = 0x81
-
 DEFAULT_PACKET_SIZE               = 0x04
 GET_USER_MODULES_SIZE_COMMAND     = 0x05
 GET_USER_MODULE_LINE_COMMAND      = 0x06
@@ -95,7 +92,6 @@ class Baseboard():
             if dev.openable:
                 if dev.name in self.openables_loaded:
                     self.openables_loaded.remove(dev.name)
-            dev = None
 
     def reset_device_list(self):
         """
@@ -121,10 +117,10 @@ class Baseboard():
         opened (or pnp module opens)
         """
         if (self.listi == {}) or force:
-            self.generate_listi()
+            self._generate_listi()
         return self.listi
 
-    def generate_listi(self):
+    def _generate_listi(self):
         """
         Generate the listi: the list of modules present in the board that can be
         opened (or pnp module opens)
