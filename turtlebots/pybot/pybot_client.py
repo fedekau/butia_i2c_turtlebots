@@ -61,17 +61,18 @@ class robot(ButiaFunctions):
             ret = self._client.recv(1024)
             ret = ret[:-1]
         except Exception, e:
-            if hasattr(e, 'errno'):
-                if e.errno == errno.EPIPE:
-                    self.reconnect()
-            self._lock.release()
-            return ERROR
+            self._process_error(e)
         try:
             ret = ret_type(ret)
         except:
             ret = ERROR
         self._lock.release()
         return ret
+
+    def _process_error(self, e):
+        if hasattr(e, 'errno'):
+            if e.errno == errno.EPIPE:
+                self.reconnect()
 
     def reconnect(self):
         """
@@ -95,12 +96,13 @@ class robot(ButiaFunctions):
         """
         close the comunication with pybot
         """
+        ret = 0
         try:
             self._client.close()
-            self._client = None
         except:
-            return ERROR
-        return 0
+            ret = ERROR
+        self._client = None
+        return ret
 
     def callModule(self, modulename, board_number, number, function, params = [], ret_type = int):
         """
