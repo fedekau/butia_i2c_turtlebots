@@ -149,6 +149,8 @@ class FischerRobot():
             msg = self._createActuatorMsg(idActuator+1, power)
             msg[3]=0x00
             self._actuatorOn(msg)
+            sleep(0.1)
+            self.quit()
             
     def _createActuatorMsg(self, num, power):
         if num == ACTUADOR_M1:
