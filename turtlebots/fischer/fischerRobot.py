@@ -133,7 +133,6 @@ class FischerRobot():
         if self.both:
             
             msg = self._createActuatorMsg(ACTUADOR_MB, power)
-            msg[3]=0x00
             self._actuatorOn(msg)
             self.both = False
 
@@ -147,7 +146,6 @@ class FischerRobot():
             self._actuatorOn(msg)
         else:
             msg = self._createActuatorMsg(idActuator+1, power)
-            msg[3]=0x00
             self._actuatorOn(msg)
             sleep(0.1)
             self.quit()
@@ -161,6 +159,7 @@ class FischerRobot():
             msg = ACT_B_MSG[:]
 
         if power == 0:
+            msg[3]=0x00
             return msg
 
         msg = self._modifyPower(num, msg, power)
