@@ -232,13 +232,28 @@ class FischerRobot():
         return b
 
     def _calculatePower(self, x, power):
-        if power >= 0 and power <= 30:
-            power = x*((power-10)/10)
-        elif power >= 50 and power <= 60:
-            power = x*(power-20)/10
-        else:
-            power = x*(power-30)/10
-        return abs(power)
+        if power <= 10:
+            p = 0
+        elif power > 10 and power <= 20:
+            p = 1
+        elif power > 20 and power <= 30:
+            p = 2
+        elif power > 30 and power <= 40:
+            p = 2
+        elif power > 40 and power <= 50:
+            p = 3
+        elif power > 50 and power <= 60:
+            p = 4
+        elif power > 60 and power <= 70:
+            p = 4
+        elif power > 70 and power <= 80:
+            p = 5
+        elif power > 80 and power <= 90:
+            p = 6
+        elif power > 90:
+            p = 7
+
+        return x * p
 
     def _conectSensor(self, msg):
         self.sensors[0] = 0
