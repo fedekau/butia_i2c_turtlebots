@@ -482,15 +482,14 @@ class Butia(Plugin):
             Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator c')]))
         special_block_colors['const_act_cButia'] = COLOR_PRESENT[:]
 
-        palette3.add_block('changeIpButia',
-                        style='basic-style-1arg',
-                        label=_('Butia IP'),
-                        default='localhost',
-                        help_string=_('change the ip of butia robot'),
-                        prim_name='changeIpButia')
-        self.tw.lc.def_prim('changeIpButia', 1,
-            Primitive(self.prim_change_ipButia, arg_descs=[ArgSlot(TYPE_STRING)]))
-        special_block_colors['changeIpButia'] = COLOR_PRESENT[:]
+        palette3.add_block('firmwareButia',
+                     style='box-style',
+                     label=_('firmware Butia'),
+                     prim_name='firmwareButia',
+                     help_string=_('returns the Firmware version of butia robot'))
+        self.tw.lc.def_prim('firmwareButia', 0,
+            Primitive(self.getFirmware, TYPE_INT))
+        special_block_colors['firmwareButia'] = COLOR_PRESENT[:]
 
         palette3.add_block('actualIpButia',
                      style='box-style',
@@ -501,14 +500,15 @@ class Butia(Plugin):
             Primitive(self.getActualIP, TYPE_INT))
         special_block_colors['actualIpButia'] = COLOR_PRESENT[:]
 
-        palette3.add_block('firmwareButia',
-                     style='box-style',
-                     label=_('firmware Butia'),
-                     prim_name='firmwareButia',
-                     help_string=_('returns the Firmware version of butia robot'))
-        self.tw.lc.def_prim('firmwareButia', 0,
-            Primitive(self.getFirmware, TYPE_INT))
-        special_block_colors['firmwareButia'] = COLOR_PRESENT[:]
+        palette3.add_block('changeIpButia',
+                        style='basic-style-1arg',
+                        label=_('Butia IP'),
+                        default='localhost',
+                        help_string=_('change the ip of butia robot'),
+                        prim_name='changeIpButia')
+        self.tw.lc.def_prim('changeIpButia', 1,
+            Primitive(self.prim_change_ipButia, arg_descs=[ArgSlot(TYPE_STRING)]))
+        special_block_colors['changeIpButia'] = COLOR_PRESENT[:]
 
         palette3.add_block('selectButia',
                           style='basic-style-1arg',
