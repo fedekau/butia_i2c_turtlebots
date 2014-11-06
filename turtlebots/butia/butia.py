@@ -492,6 +492,15 @@ class Butia(Plugin):
             Primitive(self.prim_change_ipButia, arg_descs=[ArgSlot(TYPE_STRING)]))
         special_block_colors['changeIpButia'] = COLOR_PRESENT[:]
 
+        palette3.add_block('actualIpButia',
+                     style='box-style',
+                     label=_('get IP'),
+                     prim_name='actualIpButia',
+                     help_string=_('returns the current IP of the computer'))
+        self.tw.lc.def_prim('actualIpButia', 0,
+            Primitive(self.getActualIP, TYPE_INT))
+        special_block_colors['actualIpButia'] = COLOR_PRESENT[:]
+
         palette3.add_block('firmwareButia',
                      style='box-style',
                      label=_('firmware Butia'),
@@ -1040,6 +1049,9 @@ class Butia(Plugin):
             self.butia = pybot_client.robot(host=ip)
         else:
             raise logoerror(_("ERROR: Invalid IP '%s'") % ip)
+
+    def getActualIP(self):
+        return '192.168.1.1'
 
     def _validate_ip(self, ip):
         if ip == 'localhost':
