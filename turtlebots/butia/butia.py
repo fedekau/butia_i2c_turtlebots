@@ -24,6 +24,9 @@ import threading
 import re
 import subprocess
 import gconf
+import socket
+import fcntl
+import struct
 from pybot import pybot_client
 
 from TurtleArt.tapalette import special_block_colors
@@ -492,12 +495,13 @@ class Butia(Plugin):
         special_block_colors['firmwareButia'] = COLOR_PRESENT[:]
 
         palette3.add_block('actualIpButia',
-                     style='box-style',
+                     style='number-style-1arg',
                      label=_('get IP'),
+                     default='wlan',
                      prim_name='actualIpButia',
                      help_string=_('returns the current IP of the computer'))
-        self.tw.lc.def_prim('actualIpButia', 0,
-            Primitive(self.getActualIP, TYPE_INT))
+        self.tw.lc.def_prim('actualIpButia', 1,
+            Primitive(self.getActualIP, TYPE_INT, [ArgSlot(TYPE_STRING)]))
         special_block_colors['actualIpButia'] = COLOR_PRESENT[:]
 
         palette3.add_block('changeIpButia',
@@ -1050,8 +1054,19 @@ class Butia(Plugin):
         else:
             raise logoerror(_("ERROR: Invalid IP '%s'") % ip)
 
-    def getActualIP(self):
-        return '192.168.1.1'
+    def getActualIP(self, ifname):
+        #ifname = 'wlan', 'eth0'
+        ip = -1
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            ip = socket.inet_ntoa(fcntl.ioctl(
+                s.fileno(),
+                0x8915,  # SIOCGIFADDR
+                struct.pack('256s', ifname[:15])
+                )[20:24])
+        except:
+            pass
+        return ip
 
     def _validate_ip(self, ip):
         if ip == 'localhost':
