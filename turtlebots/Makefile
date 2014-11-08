@@ -166,6 +166,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp -rLf sumtia                $(BUILDDIR)/plugins/
 	cp -rLf fischer               $(BUILDDIR)/plugins/
 	cp -rLf followme              $(BUILDDIR)/plugins/
+	cp -rLf colorview             $(BUILDDIR)/plugins/
 	cp -rLf nxt_plugin            $(BUILDDIR)/plugins/
 	cp -rLf rodi                  $(BUILDDIR)/plugins/
 	cp -rLf WeDoMore/wedo_plugin  $(BUILDDIR)/plugins/
@@ -215,6 +216,7 @@ apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	ln -s `pwd`/sumtia                 $(BUILDDIR)/plugins/sumtia
 	ln -s `pwd`/fischer                $(BUILDDIR)/plugins/fischer
 	ln -s `pwd`/followme               $(BUILDDIR)/plugins/followme
+	ln -s `pwd`/colorview              $(BUILDDIR)/plugins/colorview
 	ln -s `pwd`/nxt_plugin             $(BUILDDIR)/plugins/nxt_plugin
 	ln -s `pwd`/WeDoMore/wedo_plugin   $(BUILDDIR)/plugins/wedo_plugin
 	ln -s `pwd`/arduino                $(BUILDDIR)/plugins/arduino
@@ -260,6 +262,12 @@ plugin-followme: apply_hard_plugins
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/followme_plugin.tar.gz .
 
+plugin-colorview: apply_hard_plugins
+	cp stagin/plugins/colorview/plugin.info $(BUILDDIR)/plugins
+	(cd $(BUILDDIR)/plugins && tar -czvf colorview_plugin.tar.gz followme/* plugin.info)
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/colorview_plugin.tar.gz .
+
 plugin-nxt: apply_hard_plugins
 	cp stagin/plugins/nxt_plugin/plugin.info $(BUILDDIR)/plugins
 	cd $(BUILDDIR)/plugins && tar -czvf nxt_plugin.tar.gz nxt_plugin/* plugin.info
@@ -290,7 +298,7 @@ plugin-rodi: apply_hard_plugins
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/rodi_plugin.tar.gz .
 
-plugins: plugin-butia plugin-followme plugin-nxt plugin-wedo plugin-marcas plugin-arduino plugin-rodi
+plugins: plugin-butia plugin-followme plugin-colorview plugin-nxt plugin-wedo plugin-marcas plugin-arduino plugin-rodi
 
 plugin-all: plugins
 
@@ -389,4 +397,6 @@ clean-plugins:
  install install-strip \
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
- dev pattern_detection_compile plugin-arduino plugin-rodi plugin-fischer
+ dev pattern_detection_compile plugin-arduino plugin-rodi plugin-fischer \
+ plugin-colorview
+

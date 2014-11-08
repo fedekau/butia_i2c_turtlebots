@@ -87,7 +87,7 @@ class Colorview(Plugin):
         self.lcamaras = pygame.camera.list_cameras()
         if self.lcamaras:
             self.cam = pygame.camera.Camera(self.lcamaras[0], self.tamanioc, mode)
-        try:
+            try:
                 self.cam.start()
                 self.set_camera_flags()
                 self.cam.stop()
@@ -115,7 +115,6 @@ class Colorview(Plugin):
             self.y_m = int(self.tamanioc[1] / 2.0)
 
     def stop_camera(self):
-        print 'camera off'
         if (self.cam_present and self.cam_on):
             try:
                 self.cam.stop()
@@ -124,7 +123,6 @@ class Colorview(Plugin):
                 print _('Error stopping camera')
 
     def start_camera(self):
-        print 'camera on'
         if not(self.cam_init and self.cam_present):
             self.camera_init()
             self.change_color_blocks()
@@ -169,11 +167,9 @@ class Colorview(Plugin):
     ############################### Turtle signals ############################
 
     def stop(self):
-        print 'camera off'
         self.stop_camera()
 
     def quit(self):
-        print 'camera off'
         self.stop_camera()
 
     ###########################################################################
@@ -220,10 +216,10 @@ class Colorview(Plugin):
             rgb2 = numpy.array(d[color.name])
             distancia = self.ColorDistance(rgb1,rgb2)
         
-            print 'RGB1 (Color que estoy viendo) = ' + str(rgb1)
-            print 'RGB2 (Color que quiero ver) = ' + str(rgb2)
-            print 'DISTANCIA = ' + str(distancia) + ' ||  TOLERANCIA = ' + str(self.tolerance)
-            self.stop_camera()
+            #print 'RGB1 (Color que estoy viendo) = ' + str(rgb1)
+            #print 'RGB2 (Color que quiero ver) = ' + str(rgb2)
+            #print 'DISTANCIA = ' + str(distancia) + ' ||  TOLERANCIA = ' + str(self.tolerance)
+            #self.stop_camera()
 
             if (distancia < self.tolerance):
                 return True
@@ -246,11 +242,9 @@ class Colorview(Plugin):
 
     def set_tolerance(self,valor):
         self.tolerance = (int(valor) * 100)
-        print 'Se ha actualizado la tolerancia, el nuevo valor es = ' + str(valor)
 
     def set_brightness(self,valor):
         self.brightness = int(valor)
-        print 'Se ha actualizado el brillo, el nuevo valor del brillo es = ' + str(valor)
 
     def mostrar(self):
         self.colorc = (255, 255, 255)
