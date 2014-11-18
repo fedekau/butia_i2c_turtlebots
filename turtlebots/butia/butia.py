@@ -514,6 +514,26 @@ class Butia(Plugin):
             Primitive(self.prim_change_ipButia, arg_descs=[ArgSlot(TYPE_STRING)]))
         special_block_colors['changeIpButia'] = COLOR_PRESENT[:]
 
+        CONSTANTS['wireless network'] = 'wlan0'
+        palette3.add_block('const_wirelessButia',
+                  style='box-style',
+                  label=_('wireless'),
+                  help_string=_('wireless network'),
+                  prim_name='const_wirelessButia')
+        self.tw.lc.def_prim('const_wirelessButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('wireless network')]))
+        special_block_colors['const_wirelessButia'] = COLOR_PRESENT[:]
+
+        CONSTANTS['wired network'] = 'eth0'
+        palette3.add_block('const_wiredButia',
+                  style='box-style',
+                  label=_('wired'),
+                  help_string=_('wired network'),
+                  prim_name='const_wiredButia')
+        self.tw.lc.def_prim('const_wiredButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('wired network')]))
+        special_block_colors['const_wiredButia'] = COLOR_PRESENT[:]
+
         palette3.add_block('selectButia',
                           style='basic-style-1arg',
                           default=1,
