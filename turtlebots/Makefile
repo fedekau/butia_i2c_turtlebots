@@ -172,6 +172,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp -rLf WeDoMore/wedo_plugin  $(BUILDDIR)/plugins/
 	cp -rLf arduino               $(BUILDDIR)/plugins/
 	cp -rLf pattern_detection     $(BUILDDIR)/plugins/
+	cp -rLf xevents               $(BUILDDIR)/plugins/
 	# remove nxt trash
 	rm -rf $(BUILDDIR)/plugins/nxt_plugin/.git
 	rm -f $(BUILDDIR)/plugins/nxt_plugin/.gitignore
@@ -222,6 +223,7 @@ apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	ln -s `pwd`/arduino                $(BUILDDIR)/plugins/arduino
 	ln -s `pwd`/pattern_detection      $(BUILDDIR)/plugins/pattern_detection
 	ln -s `pwd`/rodi                   $(BUILDDIR)/plugins/rodi
+	ln -s `pwd`/xevents                $(BUILDDIR)/plugins/xevents
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
@@ -298,7 +300,14 @@ plugin-rodi: apply_hard_plugins
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/rodi_plugin.tar.gz .
 
-plugins: plugin-butia plugin-followme plugin-colorview plugin-nxt plugin-wedo plugin-marcas plugin-arduino plugin-rodi
+plugin-xevents: apply_hard_plugins
+	cp stagin/plugins/xevents/plugin.info $(BUILDDIR)/plugins
+	cd $(BUILDDIR)/plugins && tar -czvf xevents_plugin.tar.gz rodi/* plugin.info
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/xevents_plugin.tar.gz .
+
+plugins: plugin-butia plugin-followme plugin-colorview plugin-nxt plugin-wedo \
+         plugin-marcas plugin-arduino plugin-rodi plugin-xevents
 
 plugin-all: plugins
 
@@ -319,7 +328,6 @@ install: all
 	$(INSTALL_DATA) stagin/activity/turtlebots.svg $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/
 	mkdir -p $(DESTDIR)$(datadir)/applications
 	$(INSTALL_DATA) $(BUILDDIR)/turtlebots.desktop $(DESTDIR)$(datadir)/applications/
-	#mv $(DESTDIR)/usr/share/sugar/activities/tmp $(DESTDIR)/usr/share/sugar/activities/TurtleBots.activity
 
 install-strip: install
 	#strip $(DESTDIR) file...
@@ -398,5 +406,5 @@ clean-plugins:
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
  dev pattern_detection_compile plugin-arduino plugin-rodi plugin-fischer \
- plugin-colorview
+ plugin-colorview plugin-xevents
 
