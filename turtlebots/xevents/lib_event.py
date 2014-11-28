@@ -21,13 +21,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from plugins.Xevents.Xlib import X
-from plugins.Xevents.Xlib import display
-from plugins.Xevents.Xlib import ext
-from plugins.Xevents.Xlib.ext import record
-from plugins.Xevents.Xlib.ext import xtest
-from plugins.Xevents.Xlib.ext import shape
-from plugins.Xevents.Xlib.ext import xinerama
+from Xlib import X
+from Xlib import display
+from Xlib import ext
+from Xlib.ext import record
+from Xlib.ext import xtest
+from Xlib.ext import shape
+from Xlib.ext import xinerama
 import gtk
 
 DISPLAY = display.Display()

@@ -35,8 +35,12 @@ from TurtleArt.tatype import TYPE_NUMBER
 from TurtleArt.tatype import TYPE_COLOR
 import logging
 LOGGER = logging.getLogger('turtleart-activity x11 events plugin')
-sys.path.append(os.path.abspath('./plugins/Xevents'))
-import plugins.Xevents.lib_event as lib_event
+
+sys.path.append(os.path.abspath('./plugins/xevents'))
+
+#import plugins.Xevents.lib_event as lib_event
+
+import lib_event
 
 
 class Xevents(Plugin):
