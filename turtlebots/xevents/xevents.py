@@ -33,6 +33,7 @@ from TurtleArt.taprimitive import Primitive, ArgSlot
 from TurtleArt.tatype import TYPE_INT
 from TurtleArt.tatype import TYPE_NUMBER
 from TurtleArt.tatype import TYPE_COLOR
+from TurtleArt.taconstants import MACROS
 import logging
 LOGGER = logging.getLogger('turtleart-activity x11 events plugin')
 
@@ -162,12 +163,18 @@ class Xevents(Plugin):
                           prim_name='freeze')
 
         palette.add_block('setLineColorRGB',
+                          hidden=True,
                           style='basic-style-3arg',
                           label=_('setLineColorRGB'),
                           value_block=True,
                           default=[0, 0, 0],
                           help_string=_('set line color from rgb value'),
                           prim_name='set_line_color_rgb')
+
+        palette.add_block('setLineColorRGBmacro',
+                          style='basic-style-extended-vertical',
+                          label=_('setLineColorRGB'),
+                          help_string=_('set line color from rgb value'))
 
         palette.add_block('setLineColor',
                           style='basic-style-1arg',
@@ -189,8 +196,7 @@ class Xevents(Plugin):
                           label=_('showLine'),
                           value_block=True,
                           default=[1],
-                          help_string=_('show vertical line ' +
-                                        'over mouse'),
+                          help_string=_('show vertical line over mouse'),
                           prim_name='show_line')
 
         palette.add_block('setLineWidth',
@@ -198,8 +204,7 @@ class Xevents(Plugin):
                           label=_('setLineWidth'),
                           value_block=True,
                           default=[0],
-                          help_string=_('width of vertical' +
-                                        ' line over mouse'),
+                          help_string=_('width of vertical line over mouse'),
                           prim_name='set_line_width')
 
         palette.add_block('setLineHeight',
@@ -207,18 +212,22 @@ class Xevents(Plugin):
                           label=_('setLineHeight'),
                           value_block=True,
                           default=[0],
-                          help_string=_('height of vertical' +
-                                        ' line over mouse'),
+                          help_string=_('height of vertical line over mouse'),
                           prim_name='set_line_height')
 
         palette.add_block('setLineWidthAndHeigth',
+                          hidden=True,
                           style='basic-style-2arg',
                           label=_('setLineWidthAndHeigth'),
                           value_block=True,
                           default=[0, 0],
-                          help_string=_('set width and height' +
-                                        'of line over mouse'),
+                          help_string=_('set width and height of line over mouse'),
                           prim_name='set_line_width_and_heigth')
+
+        palette.add_block('setLineWidthAndHeigthmacro',
+                          style='basic-style-extended-vertical',
+                          label=_('setLineWidthAndHeigth'),
+                          help_string=_('set width and height of line over mouse'))
 
         self._parent.lc.def_prim(
             'set_x11_mouse', 2,
@@ -293,7 +302,18 @@ class Xevents(Plugin):
             Primitive(lambda tt, x: lib_event.set_line_opacity(x),
                       arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
-    # Block primitives
+        global MACROS
+        MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
+                                          [1, ['number', 0], 0, 0, [0, None]],
+                                          [2, ['number', 0], 0, 0, [0, None]],
+                                          [3, ['number', 0], 0, 0, [0, None]]
+                                         ]
+
+        MACROS['setLineWidthAndHeigthmacro'] = [[0, 'setLineWidthAndHeigth', 0, 0, [None, 1, 2, None]],
+                                                [1, ['number', 0], 0, 0, [0, None]],
+                                                [2, ['number', 0], 0, 0, [0, None]]
+                                               ]
+
 
     def set_x11_mouse(self, xcoord, ycoord):
         lib_event.create_absolute_mouse_event(int(xcoord), int(ycoord), self.getPause())
