@@ -1,9 +1,9 @@
 [submodule "turtlebots/mainline"]
 	path = turtlebots/mainline
-	url = https://github.com/walterbender/turtleart.git
+	url = git://github.com/walterbender/turtleart.git
 [submodule "turtlebots/nxt_plugin"]
 	path = turtlebots/nxt_plugin
-	url = git://git.sugarlabs.org/nxt_plugin/mainline.git
+	url = git://github.com/AlanJAS/nxt.git
 [submodule "turtlebots/WeDoMore"]
 	path = turtlebots/WeDoMore
 	url = git://github.com/AlanJAS/WeDoMore.git
@@ -12,7 +12,7 @@
 	url = git://git.sugarlabs.org/turtleart-extras/turtleart-extras.git
 [submodule "turtlebots/arduino"]
 	path = turtlebots/arduino
-	url = git://git.sugarlabs.org/arduino/mainline.git
+	url = git://github.com/AlanJAS/arduino.git
 [submodule "turtlebots/pyusb"]
 	path = turtlebots/pyusb
 	url = git://github.com/walac/pyusb.git
