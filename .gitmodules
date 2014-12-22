@@ -1,15 +1,15 @@
 [submodule "turtlebots/mainline"]
 	path = turtlebots/mainline
 	url = git://github.com/walterbender/turtleart.git
+[submodule "turtlebots/turtle-extras"]
+	path = turtlebots/turtle-extras
+	url = git://github.com/walterbender/turtleextras.git
 [submodule "turtlebots/nxt_plugin"]
 	path = turtlebots/nxt_plugin
 	url = git://github.com/AlanJAS/nxt.git
 [submodule "turtlebots/WeDoMore"]
 	path = turtlebots/WeDoMore
 	url = git://github.com/AlanJAS/WeDoMore.git
-[submodule "turtlebots/turtle-extras"]
-	path = turtlebots/turtle-extras
-	url = git://git.sugarlabs.org/turtleart-extras/turtleart-extras.git
 [submodule "turtlebots/arduino"]
 	path = turtlebots/arduino
 	url = git://github.com/AlanJAS/arduino.git
