@@ -155,11 +155,9 @@ def click_button(button):
 
     ddisplay = display.Display()
     # press button 1, for middle mouse button use 2, for opposite button use 3
-    try:
-        WINDOW.destroy()
-        print "destroyed"
-    except:
-        print "not destroyed"
+    gtk.gdk.flush()
+    WINDOW.hide()
+    gtk.gdk.flush()
     ext.xtest.fake_input(ddisplay, X.ButtonPress, button)
     ddisplay.sync()
     # to make click we need to release the same button
