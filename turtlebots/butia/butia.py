@@ -286,76 +286,78 @@ class Butia(Plugin):
         palette2 = make_palette('butia-extra', COLOR_NOTPRESENT, _('Butia Robot extra blocks'),
                                  init_on_start=True, translation=_('butia-extra'))
 
-        palette2.add_block('pinmodeButia',
-                  style='basic-style-2arg',
-                  label=[_('pin mode Butia'),_('pin'),_('mode')],
-                  help_string=_('Select the pin function (INPUT, OUTPUT).'),
-                  default=[1],
-                  prim_name='pinmodeButia')
-        self.tw.lc.def_prim('pinmodeButia', 2,
-            Primitive(self.pinMode, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_STRING)]))
-        special_block_colors['pinmodeButia'] = COLOR_NOTPRESENT[:]
+        # cast blocks
+        palette2.add_block('castButia',
+                  style='basic-style-3arg',
+                  label=[_('CAST\n'), _('new name'), _('original'), _('f(x)=')],
+                  default=[_('name'), '', 'x'],
+                  help_string=_('Cast a new block'),
+                  prim_name='castButia')
+        self.tw.lc.def_prim('castButia', 3,
+            Primitive(self.castButia, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)]))
+        special_block_colors['castButia'] = COLOR_PRESENT[:]
 
-        palette2.add_block('getpinButia',
-                     style='number-style-1arg',
-                     label=[_('read pin Butia')],
-                     prim_name='getpinButia',
-                     default=1,
-                     help_string=_('read the value of a pin'))
-        self.tw.lc.def_prim('getpinButia', 1,
-            Primitive(self.getPin, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
-        special_block_colors['getpinButia'] = COLOR_NOTPRESENT[:]
-
-        palette2.add_block('setpinButia',
-                     style='basic-style-2arg',
-                     label=[_('write pin Butia'), _('pin'), _('value')],
-                     prim_name='setpinButia',
-                     default=[1, 0],
-                     help_string=_('set a hack pin to 0 or 1'))
-        self.tw.lc.def_prim('setpinButia', 2,
-            Primitive(self.setPin, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
-        special_block_colors['setpinButia'] = COLOR_NOTPRESENT[:]
-
-        global CONSTANTS
-        CONSTANTS['INPUT'] = _('INPUT')
-        palette2.add_block('inputButia',
+        # const of sensors
+        CONSTANTS['sensor a'] = _('sensor a')
+        palette2.add_block('const_sen_aButia',
                   style='box-style',
-                  label=_('INPUT'),
-                  help_string=_('Configure hack pin for digital input.'),
-                  prim_name='inputButia')
-        self.tw.lc.def_prim('inputButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('INPUT')]))
-        special_block_colors['inputButia'] = COLOR_NOTPRESENT[:]
+                  label=_('sensor a'),
+                  help_string=_('generic module %s') % _('sensor a'),
+                  prim_name='const_sen_aButia')
+        self.tw.lc.def_prim('const_sen_aButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor a')]))
+        special_block_colors['const_sen_aButia'] = COLOR_PRESENT[:]
 
-        CONSTANTS['HIGH'] = 1
-        palette2.add_block('highButia',
+        CONSTANTS['sensor b'] = _('sensor b')
+        palette2.add_block('const_sen_bButia',
                   style='box-style',
-                  label=_('HIGH'),
-                  help_string=_('Set HIGH value for digital pin.'),
-                  prim_name='highButia')
-        self.tw.lc.def_prim('highButia', 0,
-            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('HIGH')]))
-        special_block_colors['highButia'] = COLOR_NOTPRESENT[:]
+                  label=_('sensor b'),
+                  help_string=_('generic module %s') % _('sensor b'),
+                  prim_name='const_sen_bButia')
+        self.tw.lc.def_prim('const_sen_bButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor b')]))
+        special_block_colors['const_sen_bButia'] = COLOR_PRESENT[:]
 
-        CONSTANTS['LOW'] = 0
-        palette2.add_block('lowButia',
+        CONSTANTS['sensor c'] = _('sensor c')
+        palette2.add_block('const_sen_cButia',
                   style='box-style',
-                  label=_('LOW'),
-                  help_string=_('Set LOW value for digital port.'),
-                  prim_name='lowButia')
-        self.tw.lc.def_prim('lowButia', 0,
-            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('LOW')]))
-        special_block_colors['lowButia'] = COLOR_NOTPRESENT[:]
+                  label=_('sensor c'),
+                  help_string=_('generic module %s') % _('sensor c'),
+                  prim_name='const_sen_cButia')
+        self.tw.lc.def_prim('const_sen_cButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor c')]))
+        special_block_colors['const_sen_cButia'] = COLOR_PRESENT[:]
 
-        CONSTANTS['OUTPUT'] = _('OUTPUT')
-        palette2.add_block('outputButia',
+        # const of actuators
+        CONSTANTS['actuator a'] = _('actuator a')
+        palette2.add_block('const_act_aButia',
                   style='box-style',
-                  label=_('OUTPUT'),
-                  help_string=_('Configure hack port for digital output.'),
-                  prim_name='outputButia')
-        self.tw.lc.def_prim('outputButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('OUTPUT')]))
-        special_block_colors['outputButia'] = COLOR_NOTPRESENT[:]
+                  label=_('actuator a'),
+                  help_string=_('generic module %s') % _('actuator a'),
+                  prim_name='const_act_aButia')
+        self.tw.lc.def_prim('const_act_aButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator a')]))
+        special_block_colors['const_act_aButia'] = COLOR_PRESENT[:]
+
+        CONSTANTS['actuator b'] = _('actuator b')
+        palette2.add_block('const_act_bButia',
+                  style='box-style',
+                  label=_('actuator b'),
+                  help_string=_('generic module %s') % _('actuator b'),
+                  prim_name='const_act_bButia')
+        self.tw.lc.def_prim('const_act_bButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator b')]))
+        special_block_colors['const_act_bButia'] = COLOR_PRESENT[:]
+
+        CONSTANTS['actuator c'] = _('actuator c')
+        palette2.add_block('const_act_cButia',
+                  style='box-style',
+                  label=_('actuator c'),
+                  help_string=_('generic module %s') % _('actuator c'),
+                  prim_name='const_act_cButia')
+        self.tw.lc.def_prim('const_act_cButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator c')]))
+        special_block_colors['const_act_cButia'] = COLOR_PRESENT[:]
 
         # Cast palette
         palette3 = make_palette('butia-cast', COLOR_NOTPRESENT, _('Butia Robot cast blocks'),
@@ -363,7 +365,7 @@ class Butia(Plugin):
 
         for j in ['led', 'modActA', 'modActB', 'modActC']:
             if (j in ['modActA', 'modActB', 'modActC']):
-                pal = palette3
+                pal = palette2
             else:
                 pal = palette
             for m in range(MAX_SENSOR_PER_TYPE):
@@ -387,10 +389,8 @@ class Butia(Plugin):
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
         for j in ['button', 'gray', 'light', 'distance', 'resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC']:
-            if (j in ['resistanceB', 'voltageB', 'temperature']):
+            if (j in ['resistanceB', 'voltageB', 'temperature', 'modSenA', 'modSenB', 'modSenC']):
                 pal = palette2
-            elif (j in ['modSenA', 'modSenB', 'modSenC']):
-                pal = palette3
             else:
                 pal = palette
             for m in range(MAX_SENSOR_PER_TYPE):
@@ -412,78 +412,78 @@ class Butia(Plugin):
                     Primitive(d[j], TYPE_INT, [ConstantArg(k)]))
                 special_block_colors[block_name] = COLOR_NOTPRESENT[:]
 
-        # cast blocks
-        palette3.add_block('castButia',
-                  style='basic-style-3arg',
-                  label=[_('CAST\n'), _('new name'), _('original'), _('f(x)=')],
-                  default=[_('name'), '', 'x'],
-                  help_string=_('Cast a new block'),
-                  prim_name='castButia')
-        self.tw.lc.def_prim('castButia', 3,
-            Primitive(self.castButia, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)]))
-        special_block_colors['castButia'] = COLOR_PRESENT[:]
+        # hack pines
 
-        # const of sensors
-        CONSTANTS['sensor a'] = _('sensor a')
-        palette3.add_block('const_sen_aButia',
-                  style='box-style',
-                  label=_('sensor a'),
-                  help_string=_('generic module %s') % _('sensor a'),
-                  prim_name='const_sen_aButia')
-        self.tw.lc.def_prim('const_sen_aButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor a')]))
-        special_block_colors['const_sen_aButia'] = COLOR_PRESENT[:]
+        palette3.add_block('pinmodeButia',
+                  style='basic-style-2arg',
+                  label=[_('pin mode Butia'),_('pin'),_('mode')],
+                  help_string=_('Select the pin function (INPUT, OUTPUT).'),
+                  default=[1],
+                  prim_name='pinmodeButia')
+        self.tw.lc.def_prim('pinmodeButia', 2,
+            Primitive(self.pinMode, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_STRING)]))
+        special_block_colors['pinmodeButia'] = COLOR_NOTPRESENT[:]
 
-        CONSTANTS['sensor b'] = _('sensor b')
-        palette3.add_block('const_sen_bButia',
-                  style='box-style',
-                  label=_('sensor b'),
-                  help_string=_('generic module %s') % _('sensor b'),
-                  prim_name='const_sen_bButia')
-        self.tw.lc.def_prim('const_sen_bButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor b')]))
-        special_block_colors['const_sen_bButia'] = COLOR_PRESENT[:]
+        palette3.add_block('getpinButia',
+                     style='number-style-1arg',
+                     label=[_('read pin Butia')],
+                     prim_name='getpinButia',
+                     default=1,
+                     help_string=_('read the value of a pin'))
+        self.tw.lc.def_prim('getpinButia', 1,
+            Primitive(self.getPin, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
+        special_block_colors['getpinButia'] = COLOR_NOTPRESENT[:]
 
-        CONSTANTS['sensor c'] = _('sensor c')
-        palette3.add_block('const_sen_cButia',
-                  style='box-style',
-                  label=_('sensor c'),
-                  help_string=_('generic module %s') % _('sensor c'),
-                  prim_name='const_sen_cButia')
-        self.tw.lc.def_prim('const_sen_cButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor c')]))
-        special_block_colors['const_sen_cButia'] = COLOR_PRESENT[:]
+        palette3.add_block('setpinButia',
+                     style='basic-style-2arg',
+                     label=[_('write pin Butia'), _('pin'), _('value')],
+                     prim_name='setpinButia',
+                     default=[1, 0],
+                     help_string=_('set a hack pin to 0 or 1'))
+        self.tw.lc.def_prim('setpinButia', 2,
+            Primitive(self.setPin, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
+        special_block_colors['setpinButia'] = COLOR_NOTPRESENT[:]
 
-        # const of actuators
-        CONSTANTS['actuator a'] = _('actuator a')
-        palette3.add_block('const_act_aButia',
+        global CONSTANTS
+        CONSTANTS['INPUT'] = _('INPUT')
+        palette3.add_block('inputButia',
                   style='box-style',
-                  label=_('actuator a'),
-                  help_string=_('generic module %s') % _('actuator a'),
-                  prim_name='const_act_aButia')
-        self.tw.lc.def_prim('const_act_aButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator a')]))
-        special_block_colors['const_act_aButia'] = COLOR_PRESENT[:]
+                  label=_('INPUT'),
+                  help_string=_('Configure hack pin for digital input.'),
+                  prim_name='inputButia')
+        self.tw.lc.def_prim('inputButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('INPUT')]))
+        special_block_colors['inputButia'] = COLOR_NOTPRESENT[:]
 
-        CONSTANTS['actuator b'] = _('actuator b')
-        palette3.add_block('const_act_bButia',
+        CONSTANTS['HIGH'] = 1
+        palette3.add_block('highButia',
                   style='box-style',
-                  label=_('actuator b'),
-                  help_string=_('generic module %s') % _('actuator b'),
-                  prim_name='const_act_bButia')
-        self.tw.lc.def_prim('const_act_bButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator b')]))
-        special_block_colors['const_act_bButia'] = COLOR_PRESENT[:]
+                  label=_('HIGH'),
+                  help_string=_('Set HIGH value for digital pin.'),
+                  prim_name='highButia')
+        self.tw.lc.def_prim('highButia', 0,
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('HIGH')]))
+        special_block_colors['highButia'] = COLOR_NOTPRESENT[:]
 
-        CONSTANTS['actuator c'] = _('actuator c')
-        palette3.add_block('const_act_cButia',
+        CONSTANTS['LOW'] = 0
+        palette3.add_block('lowButia',
                   style='box-style',
-                  label=_('actuator c'),
-                  help_string=_('generic module %s') % _('actuator c'),
-                  prim_name='const_act_cButia')
-        self.tw.lc.def_prim('const_act_cButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator c')]))
-        special_block_colors['const_act_cButia'] = COLOR_PRESENT[:]
+                  label=_('LOW'),
+                  help_string=_('Set LOW value for digital port.'),
+                  prim_name='lowButia')
+        self.tw.lc.def_prim('lowButia', 0,
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('LOW')]))
+        special_block_colors['lowButia'] = COLOR_NOTPRESENT[:]
+
+        CONSTANTS['OUTPUT'] = _('OUTPUT')
+        palette3.add_block('outputButia',
+                  style='box-style',
+                  label=_('OUTPUT'),
+                  help_string=_('Configure hack port for digital output.'),
+                  prim_name='outputButia')
+        self.tw.lc.def_prim('outputButia', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('OUTPUT')]))
+        special_block_colors['outputButia'] = COLOR_NOTPRESENT[:]
 
         palette3.add_block('firmwareButia',
                      style='box-style',
