@@ -241,16 +241,16 @@ class Xevents(Plugin):
             Primitive(self.get_x11_mouse_y, TYPE_INT))
         self._parent.lc.def_prim(
             'left_click', 0,
-            Primitive(lambda x: 1, TYPE_INT))
+            Primitive(ConstantArg(1), TYPE_INT))
         self._parent.lc.def_prim(
             'right_click', 0,
-            Primitive(lambda x: 2, TYPE_INT))
+            Primitive(ConstantArg(2), TYPE_INT))
         self._parent.lc.def_prim(
             'true', 0,
-            Primitive(lambda x: 1, TYPE_INT))
+            Primitive(ConstantArg(1), TYPE_INT))
         self._parent.lc.def_prim(
             'false', 0,
-            Primitive(lambda x: 0, TYPE_INT))
+            Primitive(ConstantArg(0), TYPE_INT))
         self._parent.lc.def_prim(
             'click', 1,
             Primitive(self.click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
