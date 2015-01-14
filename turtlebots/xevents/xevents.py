@@ -29,11 +29,11 @@ from gettext import gettext as _
 
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
-from TurtleArt.taprimitive import Primitive, ArgSlot
+from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
 from TurtleArt.tatype import TYPE_INT
 from TurtleArt.tatype import TYPE_NUMBER
 from TurtleArt.tatype import TYPE_COLOR
-from TurtleArt.taconstants import MACROS
+from TurtleArt.taconstants import MACROS, CONSTANTS
 import logging
 LOGGER = logging.getLogger('turtleart-activity x11 events plugin')
 
@@ -239,18 +239,23 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'get_x11_mouse_y', 0,
             Primitive(self.get_x11_mouse_y, TYPE_INT))
+        global CONSTANTS
+        CONSTANTS['left_click'] = 1
         self._parent.lc.def_prim(
             'left_click', 0,
-            Primitive(ConstantArg(1), TYPE_INT))
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('left_click')]))
+        CONSTANTS['right_click'] = 2
         self._parent.lc.def_prim(
             'right_click', 0,
-            Primitive(ConstantArg(2), TYPE_INT))
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('right_click')]))
+        CONSTANTS['TRUE'] = True
         self._parent.lc.def_prim(
             'true', 0,
-            Primitive(ConstantArg(1), TYPE_INT))
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('TRUE')]))
+        CONSTANTS['FALSE'] = False
         self._parent.lc.def_prim(
             'false', 0,
-            Primitive(ConstantArg(0), TYPE_INT))
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('FALSE')]))
         self._parent.lc.def_prim(
             'click', 1,
             Primitive(self.click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
@@ -318,54 +323,43 @@ class Xevents(Plugin):
     def set_x11_mouse(self, xcoord, ycoord):
         lib_event.create_absolute_mouse_event(int(xcoord), int(ycoord), self.getPause())
 
-    @staticmethod
-    def get_x11_mouse_x():
+    def get_x11_mouse_x(self):
         xcoord = lib_event.get_mouse_position()[0]
         return xcoord
 
-    @staticmethod
-    def get_x11_mouse_y():
+    def get_x11_mouse_y(self):
         ycoord = lib_event.get_mouse_position()[1]
         return ycoord
 
-    @staticmethod
-    def get_screen_width():
+    def get_screen_width(self):
         xcoord = lib_event.get_screen_resolution()[0]
         return xcoord
 
-    @staticmethod
-    def get_screen_height():
+    def get_screen_height(self):
         ycoord = lib_event.get_screen_resolution()[1]
         return ycoord
 
-    @staticmethod
-    def click(button):
+    def click(self, button):
         lib_event.click_button(button)
 
-    @staticmethod
-    def press_button(button):
+    def press_button(self, button):
         lib_event.press_button(button)
 
-    @staticmethod
-    def release_button(button):
+    def release_button(self, button):
         lib_event.release_button(button)
 
-    @staticmethod
-    def set_line_color(colorname):
+    def set_line_color(self, colorname):
         lib_event.set_line_color(colorname)
 
-    @staticmethod
-    def set_line_color_rgb(red, green, blue):
+    def set_line_color_rgb(self, red, green, blue):
         lib_event.set_line_color_rgb(red, green, blue)
 
-    @staticmethod
-    def set_line_width(width):
+    def set_line_width(self, width):
         lib_event.set_line_width(width)
 
-    @staticmethod
-    def set_line_height(height):
+    def set_line_height(self, height):
         lib_event.set_line_height(height)
 
-    @staticmethod
-    def set_line_width_and_heigth(width, height):
+    def set_line_width_and_heigth(self, width, height):
         lib_event.set_line_width_and_heigth(width, height)
+
