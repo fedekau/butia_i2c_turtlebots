@@ -34,7 +34,7 @@ from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import make_palette
 from TurtleArt.talogo import logoerror
 from TurtleArt.tautils import debug_output, power_manager_off
-from TurtleArt.taconstants import CONSTANTS
+from TurtleArt.taconstants import CONSTANTS, MACROS
 from TurtleArt.tawindow import block_names
 from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
 from TurtleArt.tatype import TYPE_INT, TYPE_FLOAT, TYPE_STRING, TYPE_NUMBER
@@ -286,78 +286,52 @@ class Butia(Plugin):
         palette2 = make_palette('butia-extra', COLOR_NOTPRESENT, _('Butia Robot extra blocks'),
                                  init_on_start=True, translation=_('butia-extra'))
 
-        # cast blocks
-        palette2.add_block('castButia',
+        # cast sensor block
+        palette2.add_block('castSenButia',
                   style='basic-style-3arg',
-                  label=[_('CAST\n'), _('new name'), _('original'), _('f(x)=')],
-                  default=[_('name'), '', 'x'],
-                  help_string=_('Cast a new block'),
-                  prim_name='castButia')
-        self.tw.lc.def_prim('castButia', 3,
-            Primitive(self.castButia, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)]))
-        special_block_colors['castButia'] = COLOR_PRESENT[:]
+                  hidden=True,
+                  label=[_('CAST\nsensor'), _('new name'), _('original'), _('f(x)=')],
+                  default=[_('name'), 'A', 'x'],
+                  help_string=_('Cast a new sensor block'),
+                  prim_name='castSenButia')
+        self.tw.lc.def_prim('castSenButia', 3,
+            Primitive(self.castSenButia, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)]))
+        special_block_colors['castSenButia'] = COLOR_PRESENT[:]
 
-        # const of sensors
-        CONSTANTS['sensor a'] = _('sensor a')
-        palette2.add_block('const_sen_aButia',
-                  style='box-style',
-                  label=_('sensor a'),
-                  help_string=_('generic module %s') % _('sensor a'),
-                  prim_name='const_sen_aButia')
-        self.tw.lc.def_prim('const_sen_aButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor a')]))
-        special_block_colors['const_sen_aButia'] = COLOR_PRESENT[:]
+        palette2.add_block('castSenButiaMacro',
+                          style='basic-style-extended-vertical',
+                          label=  _('CAST sensor'),
+                          help_string=_('Cast a new actuator block'))
 
-        CONSTANTS['sensor b'] = _('sensor b')
-        palette2.add_block('const_sen_bButia',
-                  style='box-style',
-                  label=_('sensor b'),
-                  help_string=_('generic module %s') % _('sensor b'),
-                  prim_name='const_sen_bButia')
-        self.tw.lc.def_prim('const_sen_bButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor b')]))
-        special_block_colors['const_sen_bButia'] = COLOR_PRESENT[:]
+        global MACROS
+        MACROS['castSenButiaMacro'] = [[0, 'castSenButia', 0, 0, [None, 1, 2, 3, None]],
+                                          [1, ['string', _('name')], 0, 0, [0, None]],
+                                          [2, ['number', 0], 0, 0, [0, None]],
+                                          [3, ['string', 'x'], 0, 0, [0, None]]
+                                         ]
 
-        CONSTANTS['sensor c'] = _('sensor c')
-        palette2.add_block('const_sen_cButia',
-                  style='box-style',
-                  label=_('sensor c'),
-                  help_string=_('generic module %s') % _('sensor c'),
-                  prim_name='const_sen_cButia')
-        self.tw.lc.def_prim('const_sen_cButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('sensor c')]))
-        special_block_colors['const_sen_cButia'] = COLOR_PRESENT[:]
+        # cast actuator block
+        palette2.add_block('castActButia',
+                  style='basic-style-2arg',
+                  hidden=True,
+                  label=[_('CAST\nactuator'), _('new name'), _('original')],
+                  default=[_('name'), 'A'],
+                  help_string=_('Cast a new actuator block'),
+                  prim_name='castActButia')
+        self.tw.lc.def_prim('castActButia', 2,
+            Primitive(self.castSenButia, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)]))
+        special_block_colors['castActButia'] = COLOR_PRESENT[:]
 
-        # const of actuators
-        CONSTANTS['actuator a'] = _('actuator a')
-        palette2.add_block('const_act_aButia',
-                  style='box-style',
-                  label=_('actuator a'),
-                  help_string=_('generic module %s') % _('actuator a'),
-                  prim_name='const_act_aButia')
-        self.tw.lc.def_prim('const_act_aButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator a')]))
-        special_block_colors['const_act_aButia'] = COLOR_PRESENT[:]
+        palette2.add_block('castActButiaMacro',
+                          style='basic-style-extended-vertical',
+                          label=  _('CAST actuator'),
+                          help_string=_('Cast a new actuator block'))
 
-        CONSTANTS['actuator b'] = _('actuator b')
-        palette2.add_block('const_act_bButia',
-                  style='box-style',
-                  label=_('actuator b'),
-                  help_string=_('generic module %s') % _('actuator b'),
-                  prim_name='const_act_bButia')
-        self.tw.lc.def_prim('const_act_bButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator b')]))
-        special_block_colors['const_act_bButia'] = COLOR_PRESENT[:]
+        MACROS['castActButiaMacro'] = [[0, 'castActButia', 0, 0, [None, 1, 2, None]],
+                                          [1, ['string', _('name')], 0, 0, [0, None]],
+                                          [2, ['string', 'x'], 0, 0, [0, None]]
+                                         ]
 
-        CONSTANTS['actuator c'] = _('actuator c')
-        palette2.add_block('const_act_cButia',
-                  style='box-style',
-                  label=_('actuator c'),
-                  help_string=_('generic module %s') % _('actuator c'),
-                  prim_name='const_act_cButia')
-        self.tw.lc.def_prim('const_act_cButia', 0,
-            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('actuator c')]))
-        special_block_colors['const_act_cButia'] = COLOR_PRESENT[:]
 
         # Cast palette
         palette3 = make_palette('butia-cast', COLOR_NOTPRESENT, _('Butia Robot cast blocks'),
@@ -1018,7 +992,7 @@ class Butia(Plugin):
             res = _('actuator c')
         label_name_from_device_id['modActC'] = res
 
-    def castButia(self, new_name, original, function):
+    def castSenButia(self, new_name, original, function):
         global label_name_from_device_id
         new_name = str(new_name)
         function = str(function)
