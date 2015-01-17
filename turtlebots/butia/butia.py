@@ -290,7 +290,7 @@ class Butia(Plugin):
         palette2.add_block('castSenButia',
                   style='basic-style-3arg',
                   hidden=True,
-                  label=[_('CAST\nsensor'), _('new name'), _('original'), _('f(x)=')],
+                  label=[_('CAST\nsensor'), _('name'), _('original'), _('f(x)=')],
                   default=[_('name'), 'A', 'x'],
                   help_string=_('Cast a new sensor block'),
                   prim_name='castSenButia')
@@ -306,7 +306,7 @@ class Butia(Plugin):
         global MACROS
         MACROS['castSenButiaMacro'] = [[0, 'castSenButia', 0, 0, [None, 1, 2, 3, None]],
                                           [1, ['string', _('name')], 0, 0, [0, None]],
-                                          [2, ['number', 0], 0, 0, [0, None]],
+                                          [2, ['string', 'A'], 0, 0, [0, None]],
                                           [3, ['string', 'x'], 0, 0, [0, None]]
                                          ]
 
@@ -314,7 +314,7 @@ class Butia(Plugin):
         palette2.add_block('castActButia',
                   style='basic-style-2arg',
                   hidden=True,
-                  label=[_('CAST\nactuator'), _('new name'), _('original')],
+                  label=[_('CAST\nactuator'), _('name'), _('original')],
                   default=[_('name'), 'A'],
                   help_string=_('Cast a new actuator block'),
                   prim_name='castActButia')
@@ -329,7 +329,7 @@ class Butia(Plugin):
 
         MACROS['castActButiaMacro'] = [[0, 'castActButia', 0, 0, [None, 1, 2, None]],
                                           [1, ['string', _('name')], 0, 0, [0, None]],
-                                          [2, ['string', 'x'], 0, 0, [0, None]]
+                                          [2, ['string', 'A'], 0, 0, [0, None]]
                                          ]
 
 
