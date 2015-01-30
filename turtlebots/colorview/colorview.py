@@ -138,31 +138,40 @@ class Colorview(Plugin):
 
         palette = make_palette('colorview', COLOR_NOTPRESENT, _('Paletacamara'), translation=_('Detector de colores'))
 
-        palette.add_block('comparar_color', style='boolean-1arg-block-style',
-                label=_('comparar color'), prim_name='comparar_color',
-                help_string=_('compara con la paleta.'))
+        palette.add_block('color_compare',
+                style='boolean-1arg-block-style',
+                label=_('color compare'),
+                prim_name='color_compare',
+                help_string=_('compares a color with the palette'))
+        self.tw.lc.def_prim('color_compare', 1, 
+            Primitive(self.color_compare, TYPE_BOOL, arg_descs=[ArgSlot(TYPE_COLOR)]))
 
-        palette.add_block('set_tolerance', style='basic-style-1arg',
-            label=_('Setear tolerancia'), default='8', prim_name='set_tolerance',
-            help_string=_('Setear la tolerancia entre colores, por defecto 10'))
-
-        palette.add_block('set_brightness', style='basic-style-1arg',
-            label=_('Setear brillo'), default='128', prim_name='set_brightness',
-            help_string=_('Setear el brillo de la camara, por defecto 128'))
-
-        palette.add_block('mostrar', style='basic-style', label=_('ver camara'), 
-            prim_name='mostrar', help_string=_('ver en vivo la camara'))
-
-        self.tw.lc.def_prim('comparar_color', 1, 
-            Primitive(self.comparar_color, TYPE_BOOL, arg_descs=[ArgSlot(TYPE_COLOR)]))
+        palette.add_block('set_tolerance',
+                style='basic-style-1arg',
+                label=_('set tolerance'),
+                default='8',
+                prim_name='set_tolerance',
+                help_string=_('sets the tolerance between colors'))
         self.tw.lc.def_prim('set_tolerance', 1,
              Primitive(self.set_tolerance, arg_descs=[ArgSlot(TYPE_STRING)]))
+
+        palette.add_block('set_brightness',
+                style='basic-style-1arg',
+                label=_('set brightness'),
+                default='128',
+                prim_name='set_brightness',
+                help_string=_('sets the brightness of the camera'))
         self.tw.lc.def_prim('set_brightness', 1,
              Primitive(self.set_brightness, arg_descs=[ArgSlot(TYPE_STRING)]))
 
-        self.tw.lc.def_prim('mostrar', 0, Primitive(self.mostrar))
+        palette.add_block('view_camera',
+                style='basic-style',
+                label=_('view camera'), 
+                prim_name='view_camera',
+                help_string=_('shows the camera'))
+        self.tw.lc.def_prim('view_camera', 0, Primitive(self.view_camera))
     
-        special_block_colors['comparar_color'] = COLOR_PRESENT[:]
+        #special_block_colors['comparar_color'] = COLOR_PRESENT[:]
 
     ############################### Turtle signals ############################
 
@@ -201,7 +210,7 @@ class Colorview(Plugin):
         distance = sqrt(fabs(sum(ex1*ext2)))
         return distance
 
-    def comparar_color(self,color):
+    def color_compare(self,color):
         x = int((self.tamanioc[0] - 50) / 2.0)
         y = int((self.tamanioc[1] - 50) / 2.0)
 
@@ -246,7 +255,7 @@ class Colorview(Plugin):
     def set_brightness(self,valor):
         self.brightness = int(valor)
 
-    def mostrar(self):
+    def view_camera(self):
         self.colorc = (255, 255, 255)
         if not(self.cam_on):
             self.start_camera()
@@ -274,3 +283,4 @@ class Colorview(Plugin):
                 pygame.display.flip()
             self.screen = pygame.display.quit()
         self.stop_camera()
+
