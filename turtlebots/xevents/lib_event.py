@@ -29,6 +29,7 @@ from Xlib.ext import xtest
 from Xlib.ext import shape
 from Xlib.ext import xinerama
 import gtk
+import sendkey
 
 DISPLAY = display.Display()
 SCREEN = DISPLAY.screen()
@@ -184,3 +185,11 @@ def release_button(button):
     ext.xtest.fake_input(ddisplay, X.ButtonRelease, button)
     ddisplay.sync()
 
+
+def copy_event():
+	sendkey.sendkey("Ctrl C")
+
+
+def paste_event():
+	sendkey.sendkey("Ctrl V")
+	

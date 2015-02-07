@@ -228,6 +228,18 @@ class Xevents(Plugin):
                           style='basic-style-extended-vertical',
                           label=_('setLineWidthAndHeigth'),
                           help_string=_('set width and height of line over mouse'))
+                          
+        palette.add_block('simulateCopy',
+                          style='box-style',
+                          label=_('simulateCopy'),
+                          help_string=_('simulate copy event'),
+                          prim_name='copy_event')
+                          
+        palette.add_block('simulatePaste',
+                          style='box-style',
+                          label=_('simulatePaste'),
+                          help_string=_('simulate paste event'),
+                          prim_name='paste_event')
 
         self._parent.lc.def_prim(
             'set_x11_mouse', 2,
@@ -236,6 +248,12 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'get_x11_mouse_x', 0,
             Primitive(self.get_x11_mouse_x, TYPE_INT))
+        self._parent.lc.def_prim(
+            'copy_event', 0,
+            Primitive(self.copy_event))
+        self._parent.lc.def_prim(
+            'paste_event', 0,
+            Primitive(self.paste_event))
         self._parent.lc.def_prim(
             'get_x11_mouse_y', 0,
             Primitive(self.get_x11_mouse_y, TYPE_INT))
@@ -362,4 +380,9 @@ class Xevents(Plugin):
 
     def set_line_width_and_heigth(self, width, height):
         lib_event.set_line_width_and_heigth(width, height)
-
+        
+    def copy_event(self):
+        lib_event.copy_event()
+    
+    def paste_event(self):
+        lib_event.paste_event()
