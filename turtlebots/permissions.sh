@@ -51,6 +51,7 @@ if [ -e /etc/group ] ; then
     done
     udevadm control --reload-rules
     service udev restart
+    udevadm trigger
 fi ;
 	
 
