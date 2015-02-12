@@ -1,4 +1,4 @@
-turtlebots (28) unstable; urgency=low
+turtlebots (28-beta1) unstable; urgency=low
 
   * uses TurtleBlocks v209+
   * update RoDI plugin
