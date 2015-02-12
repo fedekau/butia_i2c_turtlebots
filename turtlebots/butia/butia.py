@@ -463,7 +463,7 @@ class Butia(Plugin):
                      style='box-style',
                      label=_('firmware Butia'),
                      prim_name='firmwareButia',
-                     help_string=_('returns the Firmware version of butia robot'))
+                     help_string=_('returns the Firmware version of Butia robot'))
         self.tw.lc.def_prim('firmwareButia', 0,
             Primitive(self.getFirmware, TYPE_INT))
         special_block_colors['firmwareButia'] = COLOR_PRESENT[:]
@@ -482,7 +482,7 @@ class Butia(Plugin):
                         style='basic-style-1arg',
                         label=_('Butia IP'),
                         default='localhost',
-                        help_string=_('change the ip of butia robot'),
+                        help_string=_('change the IP of Butia robot'),
                         prim_name='changeIpButia')
         self.tw.lc.def_prim('changeIpButia', 1,
             Primitive(self.prim_change_ipButia, arg_descs=[ArgSlot(TYPE_STRING)]))
@@ -1095,5 +1095,5 @@ class Butia(Plugin):
             self.pollthread = threading.Timer(time, self.bobot_poll)
             self.pollthread.start()
         else:
-            debug_output(_("Ending butia polling"))
+            debug_output(_("Ending Butia polling"))
 

@@ -136,7 +136,7 @@ class Colorview(Plugin):
 
     def setup(self):
 
-        palette = make_palette('colorview', COLOR_NOTPRESENT, _('colorview'), translation=_('Detector de colores'))
+        palette = make_palette('colorview', COLOR_NOTPRESENT, _('colorview'), translation=_('color detector'))
 
         palette.add_block('color_compare',
                 style='boolean-1arg-block-style',
