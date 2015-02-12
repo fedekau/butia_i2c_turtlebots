@@ -1,3 +1,28 @@
+turtlebots (28) unstable; urgency=low
+
+  * uses TurtleBlocks v209+
+  * update RoDI plugin
+  * update extras commit
+  * update pyusb commit
+  * change rodi submodule path
+  * added simulate copy and paste blocks
+  * english strings in color view plugin
+  * better cast labels
+  * allow xevent be exported with export to pythn functionality
+  * update blocks positions in palettes
+  * replaced destroy window to hide window
+  * use macros to fit blocks in palette
+  * add xevents plugin
+  * update pyusb commit
+  * add labels for commons interfaces
+  * new get ip from interface block
+  * update makefile - remove debug prints
+  * add color view plugin
+  * reorder palette blocks
+  * add get ip block
+
+ -- AlanJAS <alanjas@hotmail.com>  Wed, 11 Feb 2015 22:33:23 -0200
+
 turtlebots (27) unstable; urgency=low
 
   * uses TurtleBlocks v208+
