@@ -259,22 +259,22 @@ class FischerRobot():
         self.sensors[0] = 0
         self.sensors[1] = 0
         self.sensors[2] = 0
-        if msg[3]==2 and msg[11]==83:#I2
+        if msg[3]==2:#I2
             self.sensors[1] = 1 
-        elif msg[3]==1 and msg[11]==92:#I1
+        elif msg[3]==1:#I1
             self.sensors[0] = 1
-        elif msg[3]==4 and msg[11]==79:#I3
+        elif msg[3]==4:#I3
             self.sensors[2] = 1
-        elif msg[3]==3 and msg[11]==80:#I1 e I2
+        elif msg[3]==3:#I1 e I2
             self.sensors[0] = 1
             self.sensors[1] = 1
-        elif msg[3]==6 and msg[11]==67:#I2 e I3
+        elif msg[3]==6:#I2 e I3
             self.sensors[1] = 1
             self.sensors[2] = 1
-        elif msg[3]==5 and msg[11]==76:#I1 e I3
+        elif msg[3]==5:#I1 e I3
             self.sensors[0] = 1
             self.sensors[2] = 1
-        elif msg[3]==7 and msg[11]==64:#all
+        elif msg[3]==7:#all
             self.sensors[0] = 1
             self.sensors[1] = 1
             self.sensors[2] = 1
