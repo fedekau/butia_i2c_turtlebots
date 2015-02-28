@@ -20,6 +20,7 @@ turtlebots (28) unstable; urgency=low
   * add labels for commons interfaces
   * new get ip from interface block
   * update makefile - remove debug prints
+  * New blocks for Butiá casting of generic sensors and actuators 
   * add color view plugin
   * reorder palette blocks
   * add get ip block
