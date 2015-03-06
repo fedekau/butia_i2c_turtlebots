@@ -319,7 +319,7 @@ class Butia(Plugin):
                   help_string=_('Cast a new actuator block'),
                   prim_name='castActButia')
         self.tw.lc.def_prim('castActButia', 2,
-            Primitive(self.castSenButia, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)]))
+            Primitive(self.castActButia, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)]))
         special_block_colors['castActButia'] = COLOR_PRESENT[:]
 
         palette2.add_block('castActButiaMacro',
@@ -996,27 +996,61 @@ class Butia(Plugin):
         global label_name_from_device_id
         new_name = str(new_name)
         function = str(function)
-        
-        if original == _('sensor a'):
+        original = str(original)
+        original = original.upper()
+
+        if original == 'A':
             module_block = 'modSenA'
             self.set_gconf(GCONF_CAST + 'modSenA_f', function)
             self.modsen_a_f = function
-        elif original == _('sensor b'):
+        elif original == 'B':
             module_block = 'modSenB'
             self.set_gconf(GCONF_CAST + 'modSenB_f', function)
             self.modsen_b_f = function
-        elif original == _('sensor c'):
+        elif original == 'C':
             module_block = 'modSenB'
             self.set_gconf(GCONF_CAST + 'modSenC_f', function)
             self.modsen_c_f = function
-        elif original == _('actuator a'):
+        else:
+            raise logoerror(_('ERROR: You must cast sensor: A, B or C'))
+
+        self.set_gconf(GCONF_CAST + module_block, new_name)
+        label_name_from_device_id[module_block] = new_name
+
+        for blk in self.tw.block_list.list:
+            if (blk.type in ['proto', 'block']) and blk.name.endswith('Butia'):
+                blk_name, blk_index = self.block_2_index_and_name(blk.name)
+                if (blk_name == module_block):
+                    label = new_name + ' ' + _('Butia')
+                    if blk.type == 'proto':
+                        if blk_index == '0':
+                            blk.set_visibility(True)
+                    blk.spr.set_label(label)
+                    block_names[blk.name][0] = label
+                    blk.refresh()
+        try:
+            index = palette_name_to_index('butia-cast')
+            self.tw.regenerate_palette(index)
+        except:
+            pass
+
+        #TODO: pensar algo mejor
+        self.list_connected_device_module = []
+
+    def castActButia(self, new_name, original):
+        global label_name_from_device_id
+        new_name = str(new_name)
+        original = str(original)
+        original = original.upper()
+
+        if original == 'A':
             module_block = 'modActA'
-        elif original == _('actuator b'):
+        elif original == 'B':
             module_block = 'modActB'
-        elif original == _('actuator c'):
+        elif original == 'C':
             module_block = 'modActC'
         else:
-            raise logoerror(_('ERROR: You must cast Sensor or Actuator: A, B or C'))
+            raise logoerror(_('ERROR: You must cast actuator: A, B or C'))
 
         self.set_gconf(GCONF_CAST + module_block, new_name)
         label_name_from_device_id[module_block] = new_name
