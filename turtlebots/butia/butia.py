@@ -1008,7 +1008,7 @@ class Butia(Plugin):
             self.set_gconf(GCONF_CAST + 'modSenB_f', function)
             self.modsen_b_f = function
         elif original == 'C':
-            module_block = 'modSenB'
+            module_block = 'modSenC'
             self.set_gconf(GCONF_CAST + 'modSenC_f', function)
             self.modsen_c_f = function
         else:
