@@ -29,7 +29,7 @@ from TurtleArt.tapalette import special_block_colors
 from TurtleArt.tapalette import palette_blocks
 from TurtleArt.talogo import logoerror
 from TurtleArt.tawindow import block_names
-from TurtleArt.taconstants import CONSTANTS
+from TurtleArt.taconstants import CONSTANTS, MACROS
 from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg, or_
 from TurtleArt.tatype import TYPE_INT, TYPE_STRING, TYPE_NUMBER
 
@@ -204,14 +204,27 @@ class Followme(Plugin):
         self.tw.lc.def_prim('brightness_f', 1,
             Primitive(self.brightness, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
-        palette.add_block('threshold',
+        palette.add_block('thresholdFollowMe',
                 style='basic-style-3arg',
+                hidden=True,
                 label=[(_('threshold') + '  ' + 'G'), 'R', 'B'],
                 default=[25, 25, 25],
                 help_string=_('set a threshold for a RGB color'),
                 prim_name='threshold')
         self.tw.lc.def_prim('threshold', 3,
-            Primitive(self.threshold, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
+            Primitive(self.set_threshold, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
+
+        palette.add_block('thresholdMacro',
+                          style='basic-style-extended-vertical',
+                          label=_('threshold'),
+                          help_string=_('set a threshold for a RGB color'))
+
+        global MACROS
+        MACROS['thresholdMacro'] = [[0, 'thresholdFollowMe', 0, 0, [None, 1, 2, 3, None]],
+                                    [1, ['number', 25], 0, 0, [0, None]],
+                                    [2, ['number', 25], 0, 0, [0, None]],
+                                    [3, ['number', 25], 0, 0, [0, None]]
+                                   ]
 
         palette.add_block('camera_mode',
                 style='basic-style-1arg',
@@ -363,7 +376,7 @@ class Followme(Plugin):
             for blk in self.tw.block_list.list:
                 #NOTE: blocks types: proto, block, trash, deleted
                 if blk.type in ['proto', 'block']:
-                    if (blk.name == 'threshold'):
+                    if (blk.name == 'thresholdFollowMe'):
                         blk.spr.set_label(label_0, 0)
                         blk.spr.set_label(label_1, 1)
                         blk.spr.set_label(label_2, 2)
@@ -396,7 +409,7 @@ class Followme(Plugin):
         self.brightness = int(x)
         self.set_camera_flags()
             
-    def threshold(self, R, G, B):
+    def set_threshold(self, R, G, B):
         R = int(R)
         G = int(G)
         B = int(B)
