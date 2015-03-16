@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2008 Guillermo Reisch (greisch@fing.edu.uy)
 # Copyright (C) 2010 Andres Aguirre (aaguirre@fing.edu.uy)
-# Copyright (C) 2012, 2013 Alan Aguiar (alanjas@hotmail.com)
+# Copyright (C) 2012, 2015 Alan Aguiar (alanjas@hotmail.com)
 #
 # Butia is a free open plataform for robotics projects
 # http://www.fing.edu.uy/inco/proyectos/butia
@@ -25,7 +25,7 @@
 #versions to checkout before build
 TURTLEBLOCKS_VERSION = 2e5d8c913ceb4b551501a24dce467a9b9dfebcf2
 EXTRAS_VERSION = 59bbfe3050109f2aac58ea9261a1f6484880ce23
-NXT_VERSION = 156b778698f720570d167b41097140f902cd709f
+NXT_VERSION = 8dcfd1b9219e92974498c334e7feb8785915d078
 WEDO_VERSION = 14d0226e6f3f53c661511132110601bbfd659ee4
 ARDUINO_VERSION = ea6ae5b0fb22ab6778fdfc457a51dde8f914e977
 PYUSB_VERSION = 32fe66487abf8655187af81a2c6e1873def3044a

@@ -4,6 +4,7 @@ turtlebots (28) unstable; urgency=low
   * update RoDI plugin
   * update extras commit
   * update pyusb commit
+  * fix cast blocks condition
   * update WeDo plugin without motor labels
   * use WeDo with new PyUSB style
   * change rodi submodule path
@@ -16,6 +17,8 @@ turtlebots (28) unstable; urgency=low
   * use macros to fit blocks in palette
   * add xevents plugin
   * update pyusb commit
+  * new NXT turn motor macro block
+  * new FollowMe threshold macro block
   * change Fischer sensor control
   * add labels for commons interfaces
   * new get ip from interface block
