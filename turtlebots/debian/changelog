@@ -6,6 +6,8 @@ turtlebots (28) unstable; urgency=low
   * update pyusb commit
   * fix cast blocks condition
   * update WeDo plugin without motor labels
+  * fix WeDo sensors IDs
+  * new icon for color plugin
   * use WeDo with new PyUSB style
   * change rodi submodule path
   * added simulate copy and paste blocks
@@ -23,7 +25,7 @@ turtlebots (28) unstable; urgency=low
   * add labels for commons interfaces
   * new get ip from interface block
   * update makefile - remove debug prints
-  * New blocks for Butiá casting of generic sensors and actuators 
+  * new blocks for Butia casting of generic sensors and actuators 
   * add color view plugin
   * reorder palette blocks
   * add get ip block
