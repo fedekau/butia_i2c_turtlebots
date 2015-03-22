@@ -304,8 +304,8 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'show_line', 1,
-            Primitive(lambda tt, x: lib_event.show_line(x),
-                      arg_descs=[ArgSlot(TYPE_NUMBER)]))
+            Primitive(lib_event.show_line, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
         self._parent.lc.def_prim(
             'set_line_width', 1,
             Primitive(self.set_line_width, arg_descs=[ArgSlot(TYPE_NUMBER)]))
