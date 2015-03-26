@@ -22,6 +22,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import os
 import usb
 
 USB4ALL_VENDOR        = 0x04d8
@@ -50,7 +51,7 @@ class usb_device():
         Open the baseboard, configure the interface
         """
         try:
-            if self.dev.is_kernel_driver_active(USB4ALL_INTERFACE):
+            if os.name != 'nt' and self.dev.is_kernel_driver_active(USB4ALL_INTERFACE):
                 self.dev.detach_kernel_driver(USB4ALL_INTERFACE)
             self.dev.set_configuration(USB4ALL_CONFIGURATION)
         except usb.USBError, err:
