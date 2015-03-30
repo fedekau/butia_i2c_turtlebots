@@ -257,6 +257,7 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'get_x11_mouse_y', 0,
             Primitive(self.get_x11_mouse_y, TYPE_INT))
+
         global CONSTANTS
         CONSTANTS['left_click'] = 1
         self._parent.lc.def_prim(
@@ -304,7 +305,7 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'show_line', 1,
-            Primitive(lib_event.show_line, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+            Primitive(self.show_line, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
         self._parent.lc.def_prim(
             'set_line_width', 1,
@@ -322,7 +323,7 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'set_line_opacity', 1,
-            Primitive(lib_event.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+            Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
         global MACROS
         MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
@@ -365,8 +366,14 @@ class Xevents(Plugin):
     def release_button(self, button):
         lib_event.release_button(button)
 
+    def show_line(self, active):
+        lib_event.show_line(active)
+
     def set_line_color(self, colorname):
         lib_event.set_line_color(colorname)
+
+    def set_line_opacity(self, opacity):
+        lib_event.set_line_opacity(opacity)
 
     def set_line_color_rgb(self, red, green, blue):
         lib_event.set_line_color_rgb(red, green, blue)
