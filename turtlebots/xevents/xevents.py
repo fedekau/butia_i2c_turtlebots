@@ -322,8 +322,7 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'set_line_opacity', 1,
-            Primitive(lambda tt, x: lib_event.set_line_opacity(x),
-                      arg_descs=[ArgSlot(TYPE_NUMBER)]))
+            Primitive(lib_event.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
         global MACROS
         MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
