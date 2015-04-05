@@ -130,7 +130,9 @@ def get_mouse_position():
 def create_absolute_mouse_event(xcoord, ycoord, stopped):
     XWINDOW.warp_pointer(xcoord, ycoord)
     if stopped != 1:
+	gtk.gdk.flush()
         WINDOW.move(xcoord, ycoord)
+	gtk.gdk.flush()
         WINDOW.set_keep_above(True)
     DISPLAY.sync()
 
