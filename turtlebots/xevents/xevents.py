@@ -230,13 +230,13 @@ class Xevents(Plugin):
                           help_string=_('set width and height of line over mouse'))
                           
         palette.add_block('simulateCopy',
-                          style='box-style',
+                          style='basic-style',
                           label=_('simulateCopy'),
                           help_string=_('simulate copy event'),
                           prim_name='copy_event')
                           
         palette.add_block('simulatePaste',
-                          style='box-style',
+                          style='basic-style',
                           label=_('simulatePaste'),
                           help_string=_('simulate paste event'),
                           prim_name='paste_event')
