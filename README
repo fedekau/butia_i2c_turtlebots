@@ -1,11 +1,11 @@
-######## ABOUT BUTIA #########
+################################# ABOUT BUTIA #################################
 
 Butia is a free and open robotic platform
 www.fing.edu.uy/inco/proyectos/butia
 Facultad de Ingeniería - Universidad de la República - Uruguay
 Butiá Team (butia@fing.edu.uy)
 
-######## ABOUT BUTIA GIT #########
+############################### ABOUT BUTIA GIT ###############################
 
 Each folder contains a different project.
 In each folder there should be a makefile or script to 
@@ -33,7 +33,7 @@ newPatterns: Activity to add/remove/change the patterns for the TurtleBots
 usb4all: project usb4all, a firmware for PIC microcontrollers,
     compatible with butia.
 
-######### Other remotes projects/sources in git #######
+######################### OTHER PROJECTS/SOURCESIN GIT #########################
 
 libs/lua: lua source
 	requirements: libreadline-dev
@@ -45,6 +45,12 @@ libs/serialcomm: library for using serial
 libs/lualibusb: binding library for using libusb in lua
     requirements-projects: libusb-dev
 
+################################### FIRMWARE ###################################
 
-### Last edited 2013/8/17 by Alan Aguiar <alanjas@hotmail.com> ###
+The Butia robot firmware has their own repository:
+
+http://sourceforge.net/projects/usb4all/
+
+
+######### Last edited 2015/04/30 by Alan Aguiar <alanjas@hotmail.com> #########
 
