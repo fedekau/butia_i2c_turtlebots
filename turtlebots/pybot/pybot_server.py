@@ -81,6 +81,8 @@ class Server():
                                 if hasattr(self.comms, com):
                                     f = getattr(self.comms, com)
                                     result = f(self, r[1:])
+                                else:
+                                    result = "Unknown command '" + com + "'"
                             result = str(result)
                             s.send(result + '\n')
                         else:
