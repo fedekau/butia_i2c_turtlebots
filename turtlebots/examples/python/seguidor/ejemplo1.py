@@ -5,26 +5,15 @@
 import sys
 import os.path
 
-if os.path.exists('/home/olpc/Activities/TurtleBots.activity/plugins/butia/pybot/usb4butia.py'):
+if os.path.exists('/home/olpc/Activities/TurtleBots.activity'):
     sys.path.append("/home/olpc/Activities/TurtleBots.activity/plugins/butia")
 
-
-
-if os.path.exists("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library/patternsAPI.py"):
+if os.path.exists("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library"):
     sys.path.append("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection")
-    from library import patternsAPI
-elif os.path.exists("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library/multiPatternDetectionAPI.py"): #para V19  y anteriores :S
-    sys.path.append("/home/olpc/Activities/TurtleBots.activity/plugins/pattern_detection/library")
-    import multiPatternDetectionAPI as patternsAPI
-else:
-    from library import patternsAPI
-    print "aca"
-
 
 from pybot import usb4butia
-#from pybot import pybot_client
-#import threading
-#import time
+from library import patternsAPI
+
 
 
 def girar_derecha(butia,idDer,negroDer):
