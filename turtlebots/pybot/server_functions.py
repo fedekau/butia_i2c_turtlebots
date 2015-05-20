@@ -102,3 +102,7 @@ def HELP(parent, r):
             return f.__doc__
         return ""
 
+def VERSION(parent, r):
+    """Return the current version of PyBot library"""
+    return parent.robot._get_pybot_version()
+

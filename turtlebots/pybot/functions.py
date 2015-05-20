@@ -279,3 +279,10 @@ class ButiaFunctions:
                 modulename = mbn
         return (number, modulename, board)
 
+    def _get_pybot_version(self):
+        try:
+            import __init__
+            return __init__.__version__
+        except:
+            return 'Unknow'
+
