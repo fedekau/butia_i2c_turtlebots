@@ -124,6 +124,14 @@ class Xevents(Plugin):
                           help_string=_('simulate a mouse click'),
                           prim_name='click')
 
+        palette.add_block('doubleClick',
+                          style='basic-style-1arg',
+                          label=_('double click'),
+                          value_block=True,
+                          default=[1],
+                          help_string=_('simulate a mouse double click'),
+                          prim_name='double_click')
+
         palette.add_block('getScreenWidth',
                           style='box-style',
                           label=_('getScreenWidth'),
@@ -228,13 +236,13 @@ class Xevents(Plugin):
                           style='basic-style-extended-vertical',
                           label=_('setLineWidthAndHeigth'),
                           help_string=_('set width and height of line over mouse'))
-                          
+
         palette.add_block('simulateCopy',
                           style='basic-style',
                           label=_('simulateCopy'),
                           help_string=_('simulate copy event'),
                           prim_name='copy_event')
-                          
+
         palette.add_block('simulatePaste',
                           style='basic-style',
                           label=_('simulatePaste'),
@@ -278,6 +286,9 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'click', 1,
             Primitive(self.click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+        self._parent.lc.def_prim(
+            'double_click', 1,
+            Primitive(self.double_click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
         self._parent.lc.def_prim(
             'get_screen_width', 0,
             Primitive(self.get_screen_width, TYPE_INT))
@@ -360,6 +371,9 @@ class Xevents(Plugin):
     def click(self, button):
         lib_event.click_button(button)
 
+    def double_click(self, button):
+        lib_event.double_click_button(button)
+
     def press_button(self, button):
         lib_event.press_button(button)
 
@@ -386,9 +400,9 @@ class Xevents(Plugin):
 
     def set_line_width_and_heigth(self, width, height):
         lib_event.set_line_width_and_heigth(width, height)
-        
+
     def copy_event(self):
         lib_event.copy_event()
-    
+
     def paste_event(self):
         lib_event.paste_event()

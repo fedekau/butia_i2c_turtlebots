@@ -175,6 +175,42 @@ def click_button(button):
     ddisplay.sync()
 
 
+def double_click_button(button):
+    xcoord, ycoord = get_mouse_position()
+    XWINDOW.warp_pointer(xcoord - 20, ycoord)
+    #XWINDOW.warp_pointer(xcoord, ycoord)
+    WINDOW.set_keep_above(False)
+    WINDOW.set_keep_below(True)
+
+    ddisplay = display.Display()
+    # press button 1, for middle mouse button use 2, for opposite button use 3
+    gtk.gdk.flush()
+    WINDOW.hide()
+    gtk.gdk.flush()
+    ext.xtest.fake_input(ddisplay, X.ButtonPress, button)
+    ddisplay.sync()
+    # to make click we need to release the same button
+    ext.xtest.fake_input(ddisplay, X.ButtonRelease, button)
+    ddisplay.sync()
+
+    ext.xtest.fake_input(ddisplay, X.ButtonPress, button)
+    ddisplay.sync()
+
+    ext.xtest.fake_input(ddisplay, X.ButtonRelease, button)
+    ddisplay.sync()
+    ext.xtest.fake_input(ddisplay, X.ButtonPress, button)
+    ddisplay.sync()
+    # to make click we need to release the same button
+    ext.xtest.fake_input(ddisplay, X.ButtonRelease, button)
+    ddisplay.sync()
+
+    ext.xtest.fake_input(ddisplay, X.ButtonPress, button)
+    ddisplay.sync()
+
+    ext.xtest.fake_input(ddisplay, X.ButtonRelease, button)
+    ddisplay.sync()
+
+
 def press_button(button):
     ddisplay = display.Display()
     # press button 1, for middle mouse button use 2, for opposite button use 3
