@@ -1,5 +1,26 @@
 turtlebots (29) unstable; urgency=low
 
+  * add eeprom pybot module
+  * fix hex version
+  * fix readInfo in functions.py for AX module
+  * use PyUSB with getSpeed fix
+  * fix setHack function
+  * update tb commit with return function
+  * update PyUSB commit
+  * add relay driver
+  * Added double click block
+  * add useful command version
+  * basic unknown command response
+  * update README
+  * remove old firmware folder
+  * Fixed some blocks and changed README
+  * Fixed issues with xevents scrolling speed
+  * more fixes fot python export
+  * fix setLineOpacity
+  * uses TB v210
+  * add cheat for nt systems
+  * fix showLine primitive
+  * update nxt with compass sensor
   * add NXT compass sensor
   * fix showLine primitive in xevents
 
