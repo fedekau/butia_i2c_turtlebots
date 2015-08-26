@@ -19,8 +19,6 @@ turtlebots (29) unstable; urgency=low
   * fix setLineOpacity
   * uses TB v210
   * add cheat for nt systems
-  * fix showLine primitive
-  * update nxt with compass sensor
   * add NXT compass sensor
   * fix showLine primitive in xevents
 
