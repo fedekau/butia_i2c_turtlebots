@@ -839,7 +839,7 @@ class Butia(Plugin):
                 except:
                     value = ERROR
                 if value in [0, 1]:
-                    self.butia.setModeHack(pin, value, self.active_butia)
+                    self.butia.setHack(pin, value, self.active_butia)
                 else:
                     raise logoerror(ERROR_PIN_VALUE)
 
