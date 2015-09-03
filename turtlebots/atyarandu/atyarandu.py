@@ -145,10 +145,10 @@ class Atyarandu(Plugin):
         try:
             archivo = urllib.urlopen('https://www.fing.edu.uy/cluster/eolica/pron_pot_parques/GUASU.txt')
             dato = float (archivo.read())
-            dato =round(dato,2)
+            dato = round(dato, 2)
             archivo.close()
         except:
-            dato = -1
+            dato = ERROR
         return dato
 
     def prim_engmax(self):
@@ -156,10 +156,10 @@ class Atyarandu(Plugin):
         try:
             archivo = urllib.urlopen('https://www.fing.edu.uy/cluster/eolica/pron_pot_parques/GUASUnom.txt')
             dato = float (archivo.read())
-            dato =round(dato,2)
+            dato = round(dato, 2)
             archivo.close()
         except:
-            dato = -1
+            dato = ERROR
         return dato
 
     def prim_engrec(self):
@@ -168,9 +168,9 @@ class Atyarandu(Plugin):
             archivo = urllib.urlopen('https://www.fing.edu.uy/cluster/eolica/pron_pot_parques/EOLO.txt')
             dato = float (archivo.read())
             archivo.close()
-            dato =round(dato,2)
+            dato = round(dato, 2)
         except:
-            dato = -1
+            dato = ERROR
         return dato
 
     def prim_on(self):
@@ -191,9 +191,8 @@ class Atyarandu(Plugin):
             on_off = 0
             msj = 'The relay ' + str(port) + ': OFF'
         else:
-            return 'ERROR: No use ' + str(valor) + ', use ON or OFF' 
-        #port,on_off)
-        self.robot.setRelay(5,on_off)
+            return 'ERROR: No use ' + str(valor) + ', use ON or OFF'
+        self.robot.setRelay(5, on_off)
         return msj
 
 ################################ Turtle calls ################################

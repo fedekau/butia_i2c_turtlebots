@@ -186,11 +186,19 @@ class ButiaFunctions:
         """
         return self.callModule('temp', str(board), str(port), 'getValue', ret_type=float)
 
+    ############################### Actuators calls ###############################
+
     def setLed(self, port, on_off, board='0'):
         """
         Sets on or off the LED connected in port (0 is off, 1 is on)
         """
         return self.callModule('led', str(board), str(port), 'turn', [str(on_off)])
+
+    def setRelay(self, port, on_off, board='0'):
+        """
+        Sets on or off the Relay connected in port (0 is off, 1 is on)
+        """
+        return self.callModule('relay', str(board), str(port), 'turn', [str(on_off)])
 
     ################################ Extras ################################
 
