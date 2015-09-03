@@ -16,6 +16,7 @@ from TurtleArt.tapalette import special_block_colors
 from TurtleArt.taprimitive import Primitive , ArgSlot, ConstantArg
 from TurtleArt.tatype import TYPE_STRING, TYPE_FLOAT, TYPE_NUMBER
 from TurtleArt.tautils import debug_output
+from TurtleArt.tawindow import block_names
 from pybot import pybot_client
 
 #constants definitions
@@ -109,7 +110,7 @@ class Atyarandu(Plugin):
                 prim_name='engoffagh')
         self._parent.lc.def_prim('engoffagh', 0,
                                     Primitive(self.prim_off,return_type=TYPE_STRING))
-
+        global RELAY_PORT
         for m in range(MAX_SENSOR_PER_TYPE):
             if m == 0:
                 ocultar = False
@@ -118,7 +119,7 @@ class Atyarandu(Plugin):
                 n = m
             x = str(m+1)
             nombloque = 'relay' + x + 'agh'
-            RELAY_PORT [nombloque] = 0
+            RELAY_PORT[nombloque] = 0
             palette.add_block(nombloque,
                                 style='basic-style-1arg',
                                 label=_('Relay'),
@@ -206,28 +207,35 @@ class Atyarandu(Plugin):
     def check_for_device(self):
         # if there exists new RELAY connected or disconections to the butia IO board, 
         # then it change the color of the blocks corresponding
-
-        self.robot.reconnect()
+        global RELAY_PORT
+        
         regenerar_paleta = False
-        index = palette_name_to_index('clean-energy')
+        index = palette_name_to_index('atyarandu')
         if index is not None:
             cant_modulos_conectados = 0
             l = self.robot.getModulesList()
             modulos_nuevos = []
-            self.loop += 1
-            if self.loop > 8:
-                self.loop = 0
+            self.modulos_conectados = []
+            mods = []
             for e in l:
                 t = self.robot._split_module(e)
+                #t = ('5', 'relay', '0')
+                print t
                 if t[1] == 'relay':
-                    if not (t[0] in self.modulos_conectados):
-                        self.modulos_conectados.append(t[0])
-                        modulos_nuevos.append(t[0])
-            genera = self.prim_enggen()
-            valor = self.prim_engrec()
+                    self.modulos_conectados.append(t[0])
+                    modulos_nuevos.append(t[0])
+                    mods.append(t[1] + ":" + t[0])
+            print mods
+            print 'mod conectados', self.modulos_conectados
+            modulos_nuevos = self.modulos_conectados[:]
+            #genera = self.prim_enggen()
+            #valor = self.prim_engrec()
+            genera = 68
+            valor = 60
             cont_relay = 0
             for blk in self._parent.block_list.list:
                 if blk.name.endswith('agh'):
+                    #blk.name = 'relay2agh'
                     if blk.name == 'enggenagh':
                         if genera >= 0:
                             if valor >= 0:
@@ -249,35 +257,42 @@ class Atyarandu(Plugin):
                             special_block_colors[blk.name] = COLOR_PRESENT
                         else:
                             special_block_colors[blk.name] = COLOR_NOTPRESENT
+                    
                     elif blk.name[:5] == 'relay':
-                        if RELAY_PORT[blk.name] == 0 :
-                            if len(modulos_nuevos)>0:
-                                RELAY_PORT[blk.name] = modulos_nuevos[0]
-                                tmp = modulos_nuevos[0]
-                                modulos_nuevos.remove(tmp)
-                        tmp = 'relay:' + str(RELAY_PORT[blk.name])
+                        print blk.name
+                        print RELAY_PORT[blk.name]
+                        #if RELAY_PORT[blk.name] == 0:
+                        if len(modulos_nuevos)>0:
+                            RELAY_PORT[blk.name] = modulos_nuevos[0]
+                            tmp = modulos_nuevos[0]
+                            modulos_nuevos.remove(tmp)
 
-                        if self.robot.isPresent(tmp):
+                        tmp = 'relay:' + str(RELAY_PORT[blk.name])
+                        print 'tmp', tmp
+                        if tmp in mods:
                             cant_modulos_conectados += 1
-                            if(blk.type == 'proto'):
+                            if (blk.type == 'proto'):
                                 blk.set_visibility(True)
                                 regenerar_paleta = True
-                            label = 'relay' + str(RELAY_PORT[blk.name])
-                            blk.spr.set_label(label)
+                            label = 'relay:' + str(RELAY_PORT[blk.name])
+                            
                             special_block_colors[blk.name] = COLOR_PRESENT
                         else:
+                            label = 'relay'
                             if(blk.type == 'proto'):
                                 regenerar_paleta = True
-                                if (RELAY_PORT[blk.name] == 0) | (blk.name == 'relay5agh'):
-                                    if cant_modulos_conectados == 0:
-                                        if len(modulos_nuevos) == 0:
-                                            cant_modulos_conectados = -1
-                                            blk.spr.set_label('relay')
-                                            if not blk.get_visibility():
-                                                blk.set_visibility(True)
+                                if (RELAY_PORT[blk.name] <> 0) | (blk.name == 'relay0agh'):
+                                    #if cant_modulos_conectados == 0:
+                                        #if len(modulos_nuevos) == 0:
+                                            #cant_modulos_conectados = -1
+                                    
+                                    if not blk.get_visibility():
+                                        blk.set_visibility(True)
                                 else:
                                     blk.set_visibility(False)
                             special_block_colors[blk.name] = COLOR_NOTPRESENT
+                        blk.spr.set_label(label)
+                        block_names[blk.name][0] = label
                     blk.refresh()
         if regenerar_paleta:
             self._parent.regenerate_palette(index)
@@ -290,3 +305,4 @@ class Atyarandu(Plugin):
                 self.check_for_device()
         self.pollthread = threading.Timer(3, self.refresh)
         self.pollthread.start()
+
