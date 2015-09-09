@@ -193,7 +193,7 @@ class Atyarandu(Plugin):
             msj = 'The relay ' + str(port) + ': OFF'
         else:
             return 'ERROR: No use ' + str(valor) + ', use ON or OFF'
-        self.robot.setRelay(5, on_off)
+        self.robot.setRelay(port, on_off)
         return msj
 
 ################################ Turtle calls ################################
@@ -220,13 +220,13 @@ class Atyarandu(Plugin):
             for e in l:
                 t = self.robot._split_module(e)
                 #t = ('5', 'relay', '0')
-                print t
+                #print t
                 if t[1] == 'relay':
                     self.modulos_conectados.append(t[0])
                     modulos_nuevos.append(t[0])
                     mods.append(t[1] + ":" + t[0])
-            print mods
-            print 'mod conectados', self.modulos_conectados
+            #print mods
+            #print 'mod conectados', self.modulos_conectados
             modulos_nuevos = self.modulos_conectados[:]
             #genera = self.prim_enggen()
             #valor = self.prim_engrec()
@@ -259,8 +259,8 @@ class Atyarandu(Plugin):
                             special_block_colors[blk.name] = COLOR_NOTPRESENT
                     
                     elif blk.name[:5] == 'relay':
-                        print blk.name
-                        print RELAY_PORT[blk.name]
+                        #print blk.name
+                        #print RELAY_PORT[blk.name]
                         #if RELAY_PORT[blk.name] == 0:
                         if len(modulos_nuevos)>0:
                             RELAY_PORT[blk.name] = modulos_nuevos[0]
@@ -268,7 +268,7 @@ class Atyarandu(Plugin):
                             modulos_nuevos.remove(tmp)
 
                         tmp = 'relay:' + str(RELAY_PORT[blk.name])
-                        print 'tmp', tmp
+                        #print 'tmp', tmp
                         if tmp in mods:
                             cant_modulos_conectados += 1
                             if (blk.type == 'proto'):
