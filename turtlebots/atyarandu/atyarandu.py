@@ -281,7 +281,8 @@ class Atyarandu(Plugin):
                             label = 'relay'
                             if(blk.type == 'proto'):
                                 regenerar_paleta = True
-                                if (RELAY_PORT[blk.name] <> 0) | (blk.name == 'relay0agh'):
+                                #print 'tengo un proto', blk.name
+                                if (RELAY_PORT[blk.name] <> 0) | (blk.name == 'relay1agh'):
                                     #if cant_modulos_conectados == 0:
                                         #if len(modulos_nuevos) == 0:
                                             #cant_modulos_conectados = -1
