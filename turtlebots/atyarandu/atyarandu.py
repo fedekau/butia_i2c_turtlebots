@@ -299,9 +299,9 @@ class Atyarandu(Plugin):
             self._parent.regenerate_palette(index)
 
     def refresh (self):
-        debug_output('refresh')
+        #debug_output('refresh')
         if self._parent.get_init_complete():
-            debug_output('Refresh')
+            #debug_output('Refresh')
             if self.actualizable:
                 self.check_for_device()
         self.pollthread = threading.Timer(3, self.refresh)
