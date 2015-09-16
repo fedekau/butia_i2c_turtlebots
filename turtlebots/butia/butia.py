@@ -471,7 +471,7 @@ class Butia(Plugin):
         palette3.add_block('actualIpButia',
                      style='number-style-1arg',
                      label=_('get IP'),
-                     default='wlan',
+                     default='wlan0',
                      prim_name='actualIpButia',
                      help_string=_('returns the current IP of the computer'))
         self.tw.lc.def_prim('actualIpButia', 1,

@@ -5,8 +5,7 @@ from gettext import gettext as _
 from plugins.plugin import Plugin
 
 import sys
-
-sys.path.insert(0, '/usr/share/sugar/activities/TurtleBots.activity/plugins/butia')
+sys.path.insert(0, os.path.abspath('./plugins/butia'))
 
 from pybot import pybot_client
 
@@ -70,7 +69,7 @@ class Ax12(Plugin):
 
         palette.add_block('getAxPosition',
                 style='number-style-1arg',
-                label=[_('get Position           '), _('idMotor')],
+                label=[_('get position')],
                 prim_name='getAxPosition',
                 default=1,
                 help_string=_('get the position of the AX-12 motors'))
@@ -80,7 +79,7 @@ class Ax12(Plugin):
 
         palette.add_block('setAxPosition',
             style='basic-style-2arg',
-            label=[_('set Position'), _('idMotor'), _('grados')],
+            label=[_('set position'), _('idMotor'), _('degrees')],
             prim_name='setAxPosition',
             default=[1,0],
             help_string=_('set the position of the AX-12 motors'))
@@ -90,7 +89,7 @@ class Ax12(Plugin):
 
         palette.add_block('setAxSpeed',
             style='basic-style-2arg',
-            label=[_('set Speed'), _('idMotor'), _('speed')],
+            label=[_('set speed'), _('idMotor'), _('speed')],
             prim_name='setAxSpeed',
             default=[1,0],
             help_string=_('set the speed of the AX-12 motors'))
@@ -100,7 +99,7 @@ class Ax12(Plugin):
 
         palette.add_block('stopAx',
             style='basic-style-1arg',
-            label=[_('stop            '), _('idMotor')],
+            label=[_('stop')],
             prim_name='stopAx',
             default=[1],
             help_string=_('stop the AX-12 motors '))
@@ -110,7 +109,7 @@ class Ax12(Plugin):
 
         palette.add_block('getAxTemperature',
                 style='number-style-1arg',
-                label=[_('get Temperature           '), _('idMotor')],
+                label=[_('get temperature')],
                 prim_name='getAxTemperature',
                 default=1,
                 help_string=_('get the temperature of the AX-12 motors'))
@@ -120,7 +119,7 @@ class Ax12(Plugin):
 
         palette.add_block('getAxVoltage',
                 style='number-style-1arg',
-                label=[_('get Voltage           '), _('idMotor')],
+                label=[_('get voltage')],
                 prim_name='getAxVoltage',
                 default=1,
                 help_string=_('get the voltage of the AX-12 motors'))
@@ -130,10 +129,10 @@ class Ax12(Plugin):
 
         palette.add_block('setAxLed',
             style='basic-style-2arg',
-            label=[_('set Led           '), _('idMotor'), _('action')],
+            label=[_('set led'), _('idMotor'), _('action')],
             prim_name='setAxLed',
             default=[1,0],
-            help_string=_('turns on the AX led of the motor with id idMotor when acion = 1, turns it off if acition = 0'))
+            help_string=_('turns the AX led motor with id idMotor when action = 1, turn off if action = 0'))
         self.tw.lc.def_prim('setAxLed', 2,
             Primitive(self.axLed,arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
         special_block_colors['setAxLed'] = COLOR_NOTPRESENT[:]
@@ -242,3 +241,4 @@ class Ax12(Plugin):
         parte1 = a % 256
         parte2 = a / 256
         return (parte1 * 256 + parte2)
+

@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.abspath('./plugins/butia'))
 
 from gettext import gettext as _
 from plugins.plugin import Plugin
+from TurtleArt.talogo import logoerror
 from TurtleArt.tapalette import make_palette
 from TurtleArt.tapalette import palette_name_to_index
 from TurtleArt.tapalette import palette_blocks
@@ -47,7 +48,7 @@ class Atyarandu(Plugin):
 
         palette.add_block('engrefreshagh',
                 style='basic-style',
-                label=_('Refresh Energy'),
+                label=_('refresh Energy'),
                 value_block=True,
                 help_string=\
                     _('updates the status of the pallet and the Energy blocks'),
@@ -58,10 +59,10 @@ class Atyarandu(Plugin):
 
         palette.add_block('enggenagh',
                 style='box-style',
-                label=_('Energy Generated'),
+                label=_('energy generated'),
                 value_block=True,
                 help_string=\
-                    _('Estimated value of renewable energy ( MW ) to generate in the next hour in Uruguay'),
+                    _('Estimated value of renewable energy (MW) to generate in the next hour in Uruguay'),
                 prim_name='enggenagh')
         self._parent.lc.def_prim('enggenagh', 0,
                 Primitive(self.prim_enggen,
@@ -69,10 +70,10 @@ class Atyarandu(Plugin):
 
         palette.add_block('engmaxagh',
                 style='box-style',
-                label=_('Max Energy'),
+                label=_('max energy'),
                 value_block=True,
                 help_string=\
-                    _('Nominal value of renewable energy ( MW ) that can be generated in Uruguay'),
+                    _('Nominal value of renewable energy (MW) that can be generated in Uruguay'),
                 prim_name='engmaxagh')
         self._parent.lc.def_prim('engmaxagh', 0,
                 Primitive(self.prim_engmax,
@@ -80,10 +81,10 @@ class Atyarandu(Plugin):
 
         palette.add_block('engrecagh',
                 style='box-style',
-                label=_('Recommended Energy'),
+                label=_('recommended energy'),
                 value_block=True,
                 help_string=\
-                    _('The preferred value of renewable energy ( MW ) for use'),
+                    _('The preferred value of renewable energy (MW) for use'),
                 prim_name='engrecagh')
         self._parent.lc.def_prim('engrecagh', 0,
                 Primitive(self.prim_engrec,
@@ -91,25 +92,23 @@ class Atyarandu(Plugin):
 
         palette.add_block('engoncagh',
                 style='box-style',
-                label=_('On'),
+                label=_('ON'),
                 value_block='On',
-                help_string=\
-                    _('Power on'),
+                help_string= _('Power on'),
                 colors = COLOR_PRESENT,
                 prim_name='engonagh')
         self._parent.lc.def_prim('engonagh', 0,
-                                    Primitive(self.prim_on,return_type=TYPE_STRING))
+                                    Primitive(self.prim_on, return_type=TYPE_NUMBER))
             
         palette.add_block('engoffcagh',
                 style='box-style',
-                label=_('Off'),
+                label=_('OFF'),
                 value_block='Off',
                 colors = COLOR_RED,
-                help_string=\
-                    _('Power off'),
+                help_string= _('Power off'),
                 prim_name='engoffagh')
         self._parent.lc.def_prim('engoffagh', 0,
-                                    Primitive(self.prim_off,return_type=TYPE_STRING))
+                                    Primitive(self.prim_off, return_type=TYPE_NUMBER))
         global RELAY_PORT
         for m in range(MAX_SENSOR_PER_TYPE):
             if m == 0:
@@ -122,17 +121,15 @@ class Atyarandu(Plugin):
             RELAY_PORT[nombloque] = 0
             palette.add_block(nombloque,
                                 style='basic-style-1arg',
-                                label=_('Relay'),
+                                label=_('relay'),
                                 prim_name=nombloque,
-                                default = 'On',
+                                default = 1,
                                 hidden = ocultar,
                                 colors = COLOR_PRESENT,
-                                help_string=\
-                                    _('power on/off the relay, on/off'))
+                                help_string= _('power on/off the relay'))
             self._parent.lc.def_prim(nombloque, 1,
                                     Primitive(self.prim_control,
-                                            return_type=TYPE_STRING,
-                                            arg_descs=[ArgSlot(TYPE_STRING),ConstantArg(nombloque)]))
+                                            arg_descs=[ArgSlot(TYPE_NUMBER),ConstantArg(nombloque)]))
             special_block_colors[nombloque] = COLOR_NOTPRESENT
 
 ################################  Functions  ################################
@@ -176,25 +173,25 @@ class Atyarandu(Plugin):
 
     def prim_on(self):
         #Signal ON relay
-        return 'ON'
+        return 1
 
     def prim_off(self):
         #Signal Off relay
-        return 'OFF'
+        return 0
 
-    def prim_control(self,valor,nom):
+    def prim_control(self, valor, nom):
         #Turns RELAY on and off: 1 means on, 0 means off
         port = RELAY_PORT[nom]
-        if valor.upper() == 'ON':
-            on_off = 1
-            msj = 'The relay ' + str(port) + ': ON'
-        elif valor.upper() == 'OFF':
-            on_off = 0
-            msj = 'The relay ' + str(port) + ': OFF'
+        try:
+            valor = int(valor)
+        except:
+            pass
+        if valor in [0, 1]:
+            self.robot.setRelay(port, valor)
         else:
-            return 'ERROR: No use ' + str(valor) + ', use ON or OFF'
-        self.robot.setRelay(port, on_off)
-        return msj
+            msj = _('ERROR: Use 0 or 1, not %s')
+            raise logoerror(msj % valor)
+
 
 ################################ Turtle calls ################################
 

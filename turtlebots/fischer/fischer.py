@@ -125,7 +125,7 @@ class Fischer(Plugin):
 
         palette.add_block('ftturnactuator',
                     style='basic-style-2arg',
-                    label=[_('turn actuator'), _('port'), _('power')],
+                    label=[_('actuator'), _('port'), _('power')],
                     default=[1, 100],
                     help_string=_('turn an actuator'),
                     prim_name='ftturnactuator')
