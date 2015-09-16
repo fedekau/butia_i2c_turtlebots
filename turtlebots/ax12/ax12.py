@@ -67,15 +67,15 @@ class Ax12(Plugin):
             Primitive(self.getID))
         special_block_colors['getID'] = COLOR_NOTPRESENT[:]
 
-        palette.add_block('getAxPosition',
-                style='number-style-1arg',
-                label=[_('get position')],
-                prim_name='getAxPosition',
-                default=1,
-                help_string=_('get the position of the AX-12 motors'))
-        self.tw.lc.def_prim('getAxPosition', 1,
-                Primitive(self.gPosition, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
-        special_block_colors['getAxPosition'] = COLOR_NOTPRESENT[:]
+        palette.add_block('stopAx',
+            style='basic-style-1arg',
+            label=[_('stop')],
+            prim_name='stopAx',
+            default=[1],
+            help_string=_('stop the AX-12 motors '))
+        self.tw.lc.def_prim('stopAx', 1,
+            Primitive(self.stpSpeed, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+        special_block_colors['stopAx'] = COLOR_NOTPRESENT[:]
 
         palette.add_block('setAxPosition',
             style='basic-style-2arg',
@@ -87,6 +87,16 @@ class Ax12(Plugin):
             Primitive(self.sPosition, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
         special_block_colors['setAxPosition'] = COLOR_NOTPRESENT[:]
 
+        palette.add_block('getAxPosition',
+                style='number-style-1arg',
+                label=[_('get position')],
+                prim_name='getAxPosition',
+                default=1,
+                help_string=_('get the position of the AX-12 motors'))
+        self.tw.lc.def_prim('getAxPosition', 1,
+                Primitive(self.gPosition, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
+        special_block_colors['getAxPosition'] = COLOR_NOTPRESENT[:]
+
         palette.add_block('setAxSpeed',
             style='basic-style-2arg',
             label=[_('set speed'), _('idMotor'), _('speed')],
@@ -96,16 +106,6 @@ class Ax12(Plugin):
         self.tw.lc.def_prim('setAxSpeed', 2,
             Primitive(self.sSpeed, arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
         special_block_colors['setAxSpeed'] = COLOR_NOTPRESENT[:]
-
-        palette.add_block('stopAx',
-            style='basic-style-1arg',
-            label=[_('stop')],
-            prim_name='stopAx',
-            default=[1],
-            help_string=_('stop the AX-12 motors '))
-        self.tw.lc.def_prim('stopAx', 1,
-            Primitive(self.stpSpeed, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-        special_block_colors['stopAx'] = COLOR_NOTPRESENT[:]
 
         palette.add_block('getAxTemperature',
                 style='number-style-1arg',
@@ -117,16 +117,6 @@ class Ax12(Plugin):
                 Primitive(self.gTemp, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
         special_block_colors['getAxTemperature'] = COLOR_NOTPRESENT[:]
 
-        palette.add_block('getAxVoltage',
-                style='number-style-1arg',
-                label=[_('get voltage')],
-                prim_name='getAxVoltage',
-                default=1,
-                help_string=_('get the voltage of the AX-12 motors'))
-        self.tw.lc.def_prim('getAxVoltage', 1,
-                Primitive(self.gVolt, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
-        special_block_colors['getAxVoltage'] = COLOR_NOTPRESENT[:]
-
         palette.add_block('setAxLed',
             style='basic-style-2arg',
             label=[_('set led'), _('idMotor'), _('action')],
@@ -136,6 +126,16 @@ class Ax12(Plugin):
         self.tw.lc.def_prim('setAxLed', 2,
             Primitive(self.axLed,arg_descs=[ArgSlot(TYPE_NUMBER), ArgSlot(TYPE_NUMBER)]))
         special_block_colors['setAxLed'] = COLOR_NOTPRESENT[:]
+
+        palette.add_block('getAxVoltage',
+                style='number-style-1arg',
+                label=[_('get voltage')],
+                prim_name='getAxVoltage',
+                default=1,
+                help_string=_('get the voltage of the AX-12 motors'))
+        self.tw.lc.def_prim('getAxVoltage', 1,
+                Primitive(self.gVolt, TYPE_INT, [ArgSlot(TYPE_NUMBER)]))
+        special_block_colors['getAxVoltage'] = COLOR_NOTPRESENT[:]
 
     def gPosition(self, idMotor):
         idMotor = int(idMotor)
