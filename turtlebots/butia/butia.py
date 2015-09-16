@@ -151,6 +151,7 @@ class Butia(Plugin):
         self.pollthread = None
         self.pollrun = True
         self.bobot = None
+        self._auto_refresh = False
         self.use_cc = False
         self.modsen_a_f = 'x'
         self.modsen_b_f = 'x'
@@ -531,7 +532,8 @@ class Butia(Plugin):
 
     def quit(self):
         self.pollrun = False
-        self.pollthread.cancel()
+        if self.pollthread:
+            self.pollthread.cancel()
         self.butia.closeService()
         self.butia.close()
         if self.bobot:
@@ -543,6 +545,9 @@ class Butia(Plugin):
     def refresh(self):
         self.butia.refresh()
         self.check_for_device_change(True)
+        if not(self._auto_refresh):
+            self._auto_refresh = True
+            self.bobot_poll()
 
     def update_colors(self):
         if self.butia.getMotorType() == 2:
@@ -1116,8 +1121,6 @@ class Butia(Plugin):
                 debug_output(_('ERROR creating PyBot server'))
         else:
             debug_output(_('PyBot is alive!'))
-        self.pollthread=threading.Timer(1, self.bobot_poll)
-        self.pollthread.start()
 
     def bobot_poll(self):
         if self.pollrun:

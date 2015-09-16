@@ -36,9 +36,9 @@ class Atyarandu(Plugin):
         self._parent = parent
         self._status = True
         self.robot = pybot_client.robot()
-        self.loop = 0
+        self.pollthread = None
         self.actualizable = True
-        self.refresh()
+        self._auto_refresh = False
         self.modulos_conectados = []
 
     def setup(self):
@@ -137,6 +137,9 @@ class Atyarandu(Plugin):
     def prim_refresh(self):
         #Refresh
         self.check_for_device()
+        if not(self._auto_refresh):
+            self._auto_refresh = True
+            self.refresh()
 
     def prim_enggen(self):
         #Returns the estimated value (MW) of renewable energy generation for the next hour in Uruguay
@@ -197,7 +200,8 @@ class Atyarandu(Plugin):
 
     def quit(self):
         self.actualizable = False
-        self.pollthread.cancel()
+        if self.pollthread:
+            self.pollthread.cancel()
 
 ################################             ################################
 
@@ -295,10 +299,8 @@ class Atyarandu(Plugin):
         if regenerar_paleta:
             self._parent.regenerate_palette(index)
 
-    def refresh (self):
-        #debug_output('refresh')
+    def refresh(self):
         if self._parent.get_init_complete():
-            #debug_output('Refresh')
             if self.actualizable:
                 self.check_for_device()
         self.pollthread = threading.Timer(3, self.refresh)
