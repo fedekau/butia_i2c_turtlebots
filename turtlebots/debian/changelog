@@ -1,5 +1,7 @@
 turtlebots (29) unstable; urgency=low
 
+  * add atyarandu plugin
+  * add ax-12 plugin
   * add eeprom pybot module
   * fix hex version
   * fix readInfo in functions.py for AX module
@@ -21,6 +23,7 @@ turtlebots (29) unstable; urgency=low
   * add cheat for nt systems
   * add NXT compass sensor
   * fix showLine primitive in xevents
+  * update turtle extras
 
  -- AlanJAS <alanjas@hotmail.com>  Sun, 22 Mar 2015 20:42:30 -0300
 
