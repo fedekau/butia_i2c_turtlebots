@@ -40,6 +40,7 @@ class Atyarandu(Plugin):
         self.actualizable = True
         self._auto_refresh = False
         self.modulos_conectados = []
+        self._list_connected_device_module = []
 
     def setup(self):
         palette = make_palette('atyarandu',
@@ -136,7 +137,7 @@ class Atyarandu(Plugin):
 
     def prim_refresh(self):
         #Refresh
-        self.check_for_device()
+        self.check_for_device_change(True)
         if not(self._auto_refresh):
             self._auto_refresh = True
             self.refresh()
@@ -205,104 +206,117 @@ class Atyarandu(Plugin):
 
 ################################             ################################
 
-    def check_for_device(self):
+    def check_for_device_change(self, force_refresh=False):
+        """ if there exists new devices connected or disconections to the butia IO board, 
+         then it change the color of the blocks corresponding to the device """
+        old_list_connected_device_module = self._list_connected_device_module[:]
+        self._list_connected_device_module = self.robot.getModulesList()
+
+        if force_refresh:
+            self.update_palette_colors(True)
+        else:
+            if not(old_list_connected_device_module == self._list_connected_device_module):
+                self.update_palette_colors(False)
+
+    def update_palette_colors(self, flag):
         # if there exists new RELAY connected or disconections to the butia IO board, 
         # then it change the color of the blocks corresponding
         global RELAY_PORT
-        
+        #print 'refreshing'
         regenerar_paleta = False
-        index = palette_name_to_index('atyarandu')
-        if index is not None:
-            cant_modulos_conectados = 0
-            l = self.robot.getModulesList()
-            modulos_nuevos = []
-            self.modulos_conectados = []
-            mods = []
-            for e in l:
-                t = self.robot._split_module(e)
-                #t = ('5', 'relay', '0')
-                #print t
-                if t[1] == 'relay':
-                    self.modulos_conectados.append(t[0])
-                    modulos_nuevos.append(t[0])
-                    mods.append(t[1] + ":" + t[0])
-            #print mods
-            #print 'mod conectados', self.modulos_conectados
-            modulos_nuevos = self.modulos_conectados[:]
-            #genera = self.prim_enggen()
-            #valor = self.prim_engrec()
-            genera = 68
-            valor = 60
-            cont_relay = 0
-            for blk in self._parent.block_list.list:
-                if blk.name.endswith('agh'):
-                    #blk.name = 'relay2agh'
-                    if blk.name == 'enggenagh':
-                        if genera >= 0:
-                            if valor >= 0:
-                                if genera >= valor:
-                                    special_block_colors[blk.name] = COLOR_PRESENT
-                                else:
-                                    special_block_colors[blk.name] = COLOR_RED
+        
+        cant_modulos_conectados = 0
+        l = self._list_connected_device_module[:]
+        modulos_nuevos = []
+        self.modulos_conectados = []
+        mods = []
+        for e in l:
+            t = self.robot._split_module(e)
+            #t = ('5', 'relay', '0')
+            #print t
+            if t[1] == 'relay':
+                self.modulos_conectados.append(t[0])
+                modulos_nuevos.append(t[0])
+                mods.append(t[1] + ":" + t[0])
+        #print mods
+        #print 'mod conectados', self.modulos_conectados
+        modulos_nuevos = self.modulos_conectados[:]
+        #genera = self.prim_enggen()
+        #valor = self.prim_engrec()
+        genera = 68
+        valor = 60
+        cont_relay = 0
+        for blk in self._parent.block_list.list:
+            if blk.name.endswith('agh'):
+                #blk.name = 'relay2agh'
+                if blk.name == 'enggenagh':
+                    if genera >= 0:
+                        if valor >= 0:
+                            if genera >= valor:
+                                special_block_colors[blk.name] = COLOR_PRESENT
                             else:
-                                special_block_colors[blk.name] = COLOR_NOTPRESENT
+                                special_block_colors[blk.name] = COLOR_RED
                         else:
                             special_block_colors[blk.name] = COLOR_NOTPRESENT
-                    elif blk.name == 'engrecagh':
-                        if valor >= 0:
-                            special_block_colors[blk.name] = COLOR_PRESENT
-                        else:
-                            special_block_colors[blk.name] = COLOR_NOTPRESENT
-                    elif blk.name == 'engmaxagh':
-                        if valor >= 0:
-                            special_block_colors[blk.name] = COLOR_PRESENT
-                        else:
-                            special_block_colors[blk.name] = COLOR_NOTPRESENT
-                    
-                    elif blk.name[:5] == 'relay':
-                        #print blk.name
-                        #print RELAY_PORT[blk.name]
-                        #if RELAY_PORT[blk.name] == 0:
-                        if len(modulos_nuevos)>0:
-                            RELAY_PORT[blk.name] = modulos_nuevos[0]
-                            tmp = modulos_nuevos[0]
-                            modulos_nuevos.remove(tmp)
+                    else:
+                        special_block_colors[blk.name] = COLOR_NOTPRESENT
+                elif blk.name == 'engrecagh':
+                    if valor >= 0:
+                        special_block_colors[blk.name] = COLOR_PRESENT
+                    else:
+                        special_block_colors[blk.name] = COLOR_NOTPRESENT
+                elif blk.name == 'engmaxagh':
+                    if valor >= 0:
+                        special_block_colors[blk.name] = COLOR_PRESENT
+                    else:
+                        special_block_colors[blk.name] = COLOR_NOTPRESENT
+                
+                elif blk.name[:5] == 'relay':
+                    #print blk.name
+                    #print RELAY_PORT[blk.name]
+                    #if RELAY_PORT[blk.name] == 0:
+                    if len(modulos_nuevos)>0:
+                        RELAY_PORT[blk.name] = modulos_nuevos[0]
+                        tmp = modulos_nuevos[0]
+                        modulos_nuevos.remove(tmp)
 
-                        tmp = 'relay:' + str(RELAY_PORT[blk.name])
-                        #print 'tmp', tmp
-                        if tmp in mods:
-                            cant_modulos_conectados += 1
-                            if (blk.type == 'proto'):
-                                blk.set_visibility(True)
-                                regenerar_paleta = True
-                            label = 'relay:' + str(RELAY_PORT[blk.name])
-                            
-                            special_block_colors[blk.name] = COLOR_PRESENT
-                        else:
-                            label = 'relay'
-                            if(blk.type == 'proto'):
-                                regenerar_paleta = True
-                                #print 'tengo un proto', blk.name
-                                if (RELAY_PORT[blk.name] <> 0) | (blk.name == 'relay1agh'):
-                                    #if cant_modulos_conectados == 0:
-                                        #if len(modulos_nuevos) == 0:
-                                            #cant_modulos_conectados = -1
-                                    
-                                    if not blk.get_visibility():
-                                        blk.set_visibility(True)
-                                else:
-                                    blk.set_visibility(False)
-                            special_block_colors[blk.name] = COLOR_NOTPRESENT
-                        blk.spr.set_label(label)
-                        block_names[blk.name][0] = label
-                    blk.refresh()
+                    tmp = 'relay:' + str(RELAY_PORT[blk.name])
+                    #print 'tmp', tmp
+                    if tmp in mods:
+                        cant_modulos_conectados += 1
+                        if (blk.type == 'proto'):
+                            blk.set_visibility(True)
+                            regenerar_paleta = True
+                        label = 'relay:' + str(RELAY_PORT[blk.name])
+                        
+                        special_block_colors[blk.name] = COLOR_PRESENT
+                    else:
+                        label = 'relay'
+                        if(blk.type == 'proto'):
+                            regenerar_paleta = True
+                            #print 'tengo un proto', blk.name
+                            if (RELAY_PORT[blk.name] <> 0) | (blk.name == 'relay1agh'):
+                                #if cant_modulos_conectados == 0:
+                                    #if len(modulos_nuevos) == 0:
+                                        #cant_modulos_conectados = -1
+                                
+                                if not blk.get_visibility():
+                                    blk.set_visibility(True)
+                            else:
+                                blk.set_visibility(False)
+                        special_block_colors[blk.name] = COLOR_NOTPRESENT
+                    blk.spr.set_label(label)
+                    block_names[blk.name][0] = label
+                blk.refresh()
         if regenerar_paleta:
-            self._parent.regenerate_palette(index)
+            index = palette_name_to_index('atyarandu')
+            if index is not None:
+                self._parent.regenerate_palette(index)
 
     def refresh(self):
         if self._parent.get_init_complete():
             if self.actualizable:
-                self.check_for_device()
+                self.check_for_device_change()
         self.pollthread = threading.Timer(3, self.refresh)
         self.pollthread.start()
 
