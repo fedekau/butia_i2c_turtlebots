@@ -47,7 +47,7 @@ class Ax12(Plugin):
 
     def setup(self):
        
-        palette = make_palette('ax12',COLOR_NOTPRESENT,_('AX-12 Motors functions'), translation=_('ax12'))
+        palette = make_palette('ax12', COLOR_NOTPRESENT,_('AX-12 Motors functions'), translation=_('ax12'))
 
         palette.add_block('refresh Ax',
                      style='basic-style',
