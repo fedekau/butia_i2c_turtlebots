@@ -1,3 +1,9 @@
+turtlebots (30) unstable; urgency=low
+
+  * add ArDrone plugin
+
+ -- AlanJAS <alanjas@hotmail.com>  Sun, 20 Sep 2015 22:54:32 -0300
+
 turtlebots (29) unstable; urgency=low
 
   * add atyarandu plugin

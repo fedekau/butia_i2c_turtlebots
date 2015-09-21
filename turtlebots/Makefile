@@ -162,6 +162,7 @@ apply_localization: sourceGIT mktmpfolder
 	(cd $(BUILDDIR) && python setup.py build)
 
 apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
+	cp -rLf ardrone               $(BUILDDIR)/plugins/
 	cp -rLf atyarandu             $(BUILDDIR)/plugins/
 	cp -rLf ax12                  $(BUILDDIR)/plugins/
 	cp -rLf butia                 $(BUILDDIR)/plugins/
@@ -215,6 +216,7 @@ pattern_detection_compile:
 
 apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	# let's make symlinks, it lets you, edit and try, more easily!
+	ln -s `pwd`/ardrone                $(BUILDDIR)/plugins/ardrone
 	ln -s `pwd`/atyarandu              $(BUILDDIR)/plugins/atyarandu
 	ln -s `pwd`/ax12                   $(BUILDDIR)/plugins/ax12
 	ln -s `pwd`/butia                  $(BUILDDIR)/plugins/butia
@@ -249,6 +251,12 @@ dev: apply_sym_plugins
 
 
 ################################## Plugins #####################################
+
+plugin-ardrone: apply_hard_plugins
+	cp stagin/plugins/ardrone/plugin.info $(BUILDDIR)/plugins
+	(cd $(BUILDDIR)/plugins && tar -czvf ardrone_plugin.tar.gz ardrone/* plugin.info)
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/ardrone_plugin.tar.gz .
 
 plugin-atyarandu: apply_hard_plugins
 	cp stagin/plugins/atyarandu/plugin.info $(BUILDDIR)/plugins
@@ -422,5 +430,5 @@ clean-plugins:
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
  dev pattern_detection_compile plugin-arduino plugin-rodi plugin-fischer \
- plugin-colorview plugin-xevents plugin-ax12 plugin-atyarandu
+ plugin-colorview plugin-xevents plugin-ax12 plugin-atyarandu plugin-ardrone
 

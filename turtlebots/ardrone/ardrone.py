@@ -54,7 +54,7 @@ class Ardrone(Plugin):
         
     def setup(self):
 
-        paletteardrone = make_palette('ardrone', COLOR_NOTPRESENT, _('ArDrone'), init_on_start=True, translation=_('ardrone'))
+        paletteardrone = make_palette('ardrone', COLOR_NOTPRESENT, _('ArDrone'), translation=_('ardrone'))
 
         paletteardrone.add_block('emergenciaDrone',
                     style='basic-style',
