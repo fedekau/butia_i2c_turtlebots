@@ -153,9 +153,7 @@ class Butia(Plugin):
         self.bobot = None
         self._auto_refresh = False
         self.use_cc = False
-        self.modsen_a_f = 'x'
-        self.modsen_b_f = 'x'
-        self.modsen_c_f = 'x'
+        self.modsen_f = {'a': 'x', 'b': 'x', 'c': 'x'}
         self.getCastButia()
         self.m_d = {}
         self.match_dict = {}
@@ -876,7 +874,7 @@ class Butia(Plugin):
         if x == ERROR:
             return ERROR
         try:
-            return eval(self.modsen_a_f)
+            return eval(self.modsen_p['a'])
         except:
             raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_a_f)
 
@@ -885,7 +883,7 @@ class Butia(Plugin):
         if x == ERROR:
             return ERROR
         try:
-            return eval(self.modsen_b_f)
+            return eval(self.modsen_p['b'])
         except:
             raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_b_f)
 
@@ -894,7 +892,7 @@ class Butia(Plugin):
         if x == ERROR:
             return ERROR
         try:
-            return eval(self.modsen_c_f)
+            return eval(self.modsen_p['c'])
         except:
             raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_c_f)
 
@@ -1001,18 +999,10 @@ class Butia(Plugin):
         original = str(original)
         original = original.upper()
 
-        if original == 'A':
-            module_block = 'modSenA'
-            self.set_gconf(GCONF_CAST + 'modSenA_f', function)
-            self.modsen_a_f = function
-        elif original == 'B':
-            module_block = 'modSenB'
-            self.set_gconf(GCONF_CAST + 'modSenB_f', function)
-            self.modsen_b_f = function
-        elif original == 'C':
-            module_block = 'modSenC'
-            self.set_gconf(GCONF_CAST + 'modSenC_f', function)
-            self.modsen_c_f = function
+        if original == 'A' or original == 'B' or original == 'C':
+            module_block = 'modSen' + original
+            self.set_gconf(GCONF_CAST + 'modSen' + original + '_f', function)
+            self.modsen_f[original.lower()] = function
         else:
             raise logoerror(_('ERROR: You must cast sensor: A, B or C'))
 
