@@ -151,7 +151,6 @@ class Butia(Plugin):
         self.pollthread = None
         self.pollrun = True
         self.bobot = None
-        self._auto_refresh = False
         self.use_cc = False
         self.modsen_f = {'a': 'x', 'b': 'x', 'c': 'x'}
         self.getCastButia()
@@ -194,7 +193,7 @@ class Butia(Plugin):
     def setup(self):
         """ Setup is called once, when the Turtle Window is created. """
         palette = make_palette('butia', COLOR_NOTPRESENT, _('Butia Robot'),
-                               init_on_start=False, translation=_('butia'))
+                               init_on_start=True, translation=_('butia'))
 
         #add block about movement of butia, this blocks don't allow multiple instances
 
@@ -283,7 +282,7 @@ class Butia(Plugin):
 
         # Extra palette
         palette2 = make_palette('butia-extra', COLOR_NOTPRESENT, _('Butia Robot extra blocks'),
-                                 init_on_start=False, translation=_('butia-extra'))
+                                 init_on_start=True, translation=_('butia-extra'))
 
         # cast sensor block
         palette2.add_block('castSenButia',
@@ -334,7 +333,7 @@ class Butia(Plugin):
 
         # Cast palette
         palette3 = make_palette('butia-cast', COLOR_NOTPRESENT, _('Butia Robot cast blocks'),
-                                 init_on_start=False, translation=_('butia-cast'))
+                                 init_on_start=True, translation=_('butia-cast'))
 
         for j in ['led', 'modActA', 'modActB', 'modActC']:
             if (j in ['modActA', 'modActB', 'modActC']):
@@ -543,9 +542,6 @@ class Butia(Plugin):
     def refresh(self):
         self.butia.refresh()
         self.check_for_device_change(True)
-        if not(self._auto_refresh):
-            self._auto_refresh = True
-            self.bobot_poll()
 
     def update_colors(self):
         if self.butia.getMotorType() == 2:
@@ -1108,6 +1104,8 @@ class Butia(Plugin):
                 debug_output(_('ERROR creating PyBot server'))
         else:
             debug_output(_('PyBot is alive!'))
+        self.pollthread=threading.Timer(1, self.bobot_poll)
+        self.pollthread.start()
 
     def bobot_poll(self):
         if self.pollrun:
