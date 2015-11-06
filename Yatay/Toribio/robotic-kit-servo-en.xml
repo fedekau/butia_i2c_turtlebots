@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--<devices from="bobot" except="bb-butia, bb-ax, bb-admin, bb-hackp, bb-port, bb-pnp">-->
+<devices from="xml" except="bb-butia, bb-ax, bb-admin, bb-hackp, bb-port, bb-pnp, bb-motors">
+	<device device_type="sensor" name="bb-distanc:5">
+		<function name="getValue" alias="distance." params="0" ret="1" />
+	</device>
+	<device device_type="sensor" name="bb-grey:2">
+		<function name="getValue" alias="grey" params="0" ret="1" />
+	</device>
+	<device device_type="sensor" name="bb-grey:3">
+		<function name="getValue" alias="grey" params="0" ret="1" />
+	</device>
+
+	<device device_type="actuator" name="butia_skid">
+		<function name="set_vel" alias="move forward" params="2" ret="0" values="Yatay.vel,-Yatay.vel"/>
+		<function name="set_vel" alias="move back" params="2" ret="0" values="-Yatay.vel,Yatay.vel"/>
+		<function name="set_vel" alias="stop" params="2" ret="0" values="0,0"/>
+		<function name="set_vel" alias="turn right" params="2" ret="0" values="-Yatay.vel,-Yatay.vel"/>
+        <function name="set_vel" alias="turn left" params="2" ret="0" values="Yatay.vel,Yatay.vel"/>
+		<function name="set_vel_2" alias="move" params="2" ret="0"/>
+	</device>
+	<!-- Generic definition must be at the end-->
+	<device device_type="generic">
+		<function name="getVersion" disabled="yes" />
+		<function name="getType" disabled="yes" />
+		<function name="testMotors" disabled="yes" />
+		<function name="dev" disabled="yes" />
+	</device>
+</devices>
