@@ -23,7 +23,7 @@
 
 
 #versions to checkout before build
-TURTLEBLOCKS_VERSION = 2d09fd387928079f71b0d55db3db4d56a3578b80
+TURTLEBLOCKS_VERSION = 76436b56b1e85cd1db14459f46475993db7bceb6
 EXTRAS_VERSION = f6065a3a08a678006ae0b90e9164172e3a4d758e
 NXT_VERSION = a0d05fc5c241cc292d55393e64bf5c4f0befbc20
 WEDO_VERSION = ad432528d5883a39e6c9dcfb5e5dc9a353fa5761
@@ -151,8 +151,9 @@ mktmpfolder:
 	rm -f  $(BUILDDIR)/setup.py
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity $(BUILDDIR)/
-	cp -rLf stagin/turtlebots.desktop $(BUILDDIR)/
-	cp -rLf stagin/bundlebuilder.py $(BUILDDIR)/setup.py
+	cp -f stagin/turtlebots $(BUILDDIR)/
+	cp -f stagin/turtlebots.desktop $(BUILDDIR)/
+	cp -f stagin/bundlebuilder.py $(BUILDDIR)/setup.py
 
 apply_localization: sourceGIT mktmpfolder
 	# let's add localization (if is not already in taextras.py)
