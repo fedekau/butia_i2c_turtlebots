@@ -19,12 +19,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import sys
+import os
 
-TAPATH = '/usr/share/sugar/activities/TurtleBots.activity'
+mydir = os.path.dirname(os.path.abspath(__file__))
+if os.path.exists(os.path.join(mydir, "activity", "activity.info")):
+    # Running from git checkout
+    libdir = mydir
+    sharedir = mydir
+else:
+    # Running as installed package
+    TAPATH = '/usr/share/sugar/activities/TurtleBots.activity'
+    import sys
+    sys.path.insert(0, TAPATH)
+    from TurtleArt import turtleblocks
+    libdir = TAPATH
+    sharedir = TAPATH
 
-sys.path.insert(0, TAPATH)
-
-from TurtleArt import turtleblocks
-turtleblocks.TurtleMain(TAPATH, TAPATH)
+turtleblocks.TurtleMain(libdir, sharedir)
 
