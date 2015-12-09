@@ -31,9 +31,9 @@ else:
     TAPATH = '/usr/share/sugar/activities/TurtleBots.activity'
     import sys
     sys.path.insert(0, TAPATH)
-    from TurtleArt import turtleblocks
     libdir = TAPATH
     sharedir = TAPATH
 
+from TurtleArt import turtleblocks
 turtleblocks.TurtleMain(libdir, sharedir)
 
