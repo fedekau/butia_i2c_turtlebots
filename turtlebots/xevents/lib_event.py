@@ -47,7 +47,6 @@ WINDOW.add_events(gtk.gdk.KEY_PRESS_MASK |
                   gtk.gdk.BUTTON_PRESS_MASK |
                   gtk.gdk.SCROLL_MASK)
 
-
 def get_screen_resolution():
     ddisplay = display.Display()
     resolution = ddisplay.screen().root.get_geometry()

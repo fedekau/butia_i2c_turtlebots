@@ -63,7 +63,7 @@ class Events:
 
 
         self._screen = self._display.screen()
-        self._xwindow = self._screen.root
+        self._x = self._screen.root
         self._window = gtk.Window(gtk.WINDOW_POPUP)
         self._window.set_keep_above(True)
         self._window.set_opacity(1)
@@ -73,7 +73,6 @@ class Events:
                                 gtk.gdk.POINTER_MOTION_MASK |
                                 gtk.gdk.BUTTON_PRESS_MASK |
                                 gtk.gdk.SCROLL_MASK)
-
 
     def get_screen_resolution(self):
         """Returns the screen resolution """
@@ -156,8 +155,7 @@ class Events:
 
     def create_absolute_mouse_event(self, x, y, stopped):
 
-        self._window.warp_pointer(x, y)
-
+        self._x.warp_pointer(x, y)
         if stopped != 1:
             gtk.gdk.flush()
             self._window.move(x, y)
@@ -195,7 +193,7 @@ class Events:
         """Simulates clicking a button"""
 
         x, y = self.get_mouse_position()
-        self._window.warp_pointer(x - 20, y)
+        self._x.warp_pointer(x - 20, y)
         self._window.set_keep_above(False)
         self._window.set_keep_below(True)
 
@@ -211,7 +209,7 @@ class Events:
         """Simulates double clicking a button"""
 
         x, y = self.get_mouse_position()
-        self._window.warp_pointer(x - 20, y)
+        self._x.warp_pointer(x - 20, y)
         self._window.set_keep_above(False)
         self._window.set_keep_below(True)
 

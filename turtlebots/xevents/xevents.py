@@ -37,11 +37,11 @@ from TurtleArt.tatype import TYPE_NUMBER
 from TurtleArt.tatype import TYPE_COLOR
 from TurtleArt.tatype import TYPE_STRING
 from events import Events
-from events import CONSTANTS
+from TurtleArt.taconstants import CONSTANTS
+#from events import CONSTANTS
 
 import logging
 LOGGER = logging.getLogger('turtleart-activity x11 events plugin')
-
 
 class Xevents(Plugin):
 
@@ -61,6 +61,11 @@ class Xevents(Plugin):
 
     def setup(self):
         # set up X11 events specific blocks
+        global CONSTANTS
+        CONSTANTS['left_click'] = 1
+        CONSTANTS['right_click'] = 2
+        CONSTANTS['TRUE'] = True
+        CONSTANTS['FALSE'] = False
         palette = make_palette('xlib-bots',
                                colors=["#FF6060", "#A06060"],
                                help_string=_('Palette of X11 event blocks'))
@@ -279,6 +284,7 @@ class Xevents(Plugin):
             'write_text', 1,
             Primitive(self.write_text, arg_descs=[ArgSlot(TYPE_STRING)]))
 
+
         self._parent.lc.def_prim(
             'left_click', 0,
             Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('left_click')]))
@@ -356,7 +362,7 @@ class Xevents(Plugin):
             'set_line_opacity', 1,
             Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
-        '''
+
         global MACROS
         MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
                                           [1, ['number', 0], 0, 0, [0, None]],
@@ -368,11 +374,13 @@ class Xevents(Plugin):
                                                 [1, ['number', 0], 0, 0, [0, None]],
                                                 [2, ['number', 0], 0, 0, [0, None]]
                                                ]
-        '''
+
+
+
+    ################################# Primitives ##############################
 
     def write_text(self, text):
         self._events.write_text(text)
-
 
     def set_x11_mouse(self, x, y):
         self._events.create_absolute_mouse_event(int(x), int(y), self.getPause())

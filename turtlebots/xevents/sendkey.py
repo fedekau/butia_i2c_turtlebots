@@ -109,6 +109,7 @@ class SendKey:
     @classmethod
     def send_key(cls,key):
 
+
         k = cls._char_to_keycode(key)
 
         ext.xtest.fake_input(cls._display, X.KeyPress, k)
