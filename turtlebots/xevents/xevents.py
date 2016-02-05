@@ -25,6 +25,8 @@
 import os
 import sys
 
+sys.path.append(os.path.abspath('./plugins/xevents'))
+
 from gettext import gettext as _
 
 from plugins.plugin import Plugin
@@ -33,15 +35,12 @@ from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
 from TurtleArt.tatype import TYPE_INT
 from TurtleArt.tatype import TYPE_NUMBER
 from TurtleArt.tatype import TYPE_COLOR
-from TurtleArt.taconstants import MACROS, CONSTANTS
+from TurtleArt.tatype import TYPE_STRING
+from events import Events
+from events import CONSTANTS
+
 import logging
 LOGGER = logging.getLogger('turtleart-activity x11 events plugin')
-
-sys.path.append(os.path.abspath('./plugins/xevents'))
-
-#import plugins.Xevents.lib_event as lib_event
-
-import lib_event
 
 
 class Xevents(Plugin):
@@ -52,6 +51,7 @@ class Xevents(Plugin):
         self.running_sugar = self._parent.running_sugar
         self._status = True
         self.pause = 0
+        self._events = Events()
 
     def setPause(self, arg):
         self.pause = arg
@@ -223,18 +223,18 @@ class Xevents(Plugin):
                           help_string=_('height of vertical line over mouse'),
                           prim_name='set_line_height')
 
-        palette.add_block('setLineWidthAndHeigth',
+        palette.add_block('setLineWidthAndHeight',
                           hidden=True,
                           style='basic-style-2arg',
-                          label=_('setLineWidthAndHeigth'),
+                          label=_('setLineWidthAndHeight'),
                           value_block=True,
                           default=[0, 0],
                           help_string=_('set width and height of line over mouse'),
-                          prim_name='set_line_width_and_heigth')
+                          prim_name='set_line_width_and_height')
 
-        palette.add_block('setLineWidthAndHeigthmacro',
+        palette.add_block('setLineWidthAndHeightmacro',
                           style='basic-style-extended-vertical',
-                          label=_('setLineWidthAndHeigth'),
+                          label=_('setLineWidthAndHeight'),
                           help_string=_('set width and height of line over mouse'))
 
         palette.add_block('simulateCopy',
@@ -249,6 +249,12 @@ class Xevents(Plugin):
                           help_string=_('simulate paste event'),
                           prim_name='paste_event')
 
+        palette.add_block('writeText',
+                          style='basic-style-1arg',
+                          label=_('writeText'),
+                          help_string=_('simulates writing a text'),
+                          prim_name='write_text')
+
         self._parent.lc.def_prim(
             'set_x11_mouse', 2,
             Primitive(self.set_x11_mouse, arg_descs=[ArgSlot(TYPE_NUMBER),
@@ -256,57 +262,71 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'get_x11_mouse_x', 0,
             Primitive(self.get_x11_mouse_x, TYPE_INT))
+
         self._parent.lc.def_prim(
             'copy_event', 0,
             Primitive(self.copy_event))
+
         self._parent.lc.def_prim(
             'paste_event', 0,
             Primitive(self.paste_event))
+
         self._parent.lc.def_prim(
             'get_x11_mouse_y', 0,
             Primitive(self.get_x11_mouse_y, TYPE_INT))
 
-        global CONSTANTS
-        CONSTANTS['left_click'] = 1
+        self._parent.lc.def_prim(
+            'write_text', 1,
+            Primitive(self.write_text, arg_descs=[ArgSlot(TYPE_STRING)]))
+
         self._parent.lc.def_prim(
             'left_click', 0,
             Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('left_click')]))
-        CONSTANTS['right_click'] = 2
+
         self._parent.lc.def_prim(
             'right_click', 0,
             Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('right_click')]))
-        CONSTANTS['TRUE'] = True
+
         self._parent.lc.def_prim(
             'true', 0,
             Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('TRUE')]))
-        CONSTANTS['FALSE'] = False
+
         self._parent.lc.def_prim(
             'false', 0,
             Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('FALSE')]))
+
         self._parent.lc.def_prim(
             'click', 1,
             Primitive(self.click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
         self._parent.lc.def_prim(
             'double_click', 1,
             Primitive(self.double_click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
         self._parent.lc.def_prim(
             'get_screen_width', 0,
             Primitive(self.get_screen_width, TYPE_INT))
+
         self._parent.lc.def_prim(
             'get_screen_height', 0,
             Primitive(self.get_screen_height, TYPE_INT))
+
         self._parent.lc.def_prim(
             'press_button', 1,
             Primitive(self.press_button, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
         self._parent.lc.def_prim(
             'release_button', 1,
             Primitive(self.release_button, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
         self._parent.lc.def_prim(
             'set_line_color', 1,
             Primitive(self.set_line_color, arg_descs=[ArgSlot(TYPE_COLOR)]))
+
         self._parent.lc.def_prim(
             'freeze', 1,
             Primitive(self.setPause, arg_descs=[ArgSlot(TYPE_INT)]))
+
         self._parent.lc.def_prim(
             'set_line_color_rgb', 3,
             Primitive(self.set_line_color_rgb,
@@ -328,7 +348,7 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'set_line_width_and_heigth', 2,
-            Primitive(self.set_line_width_and_heigth,
+            Primitive(self.set_line_width_and_height,
                       arg_descs=[ArgSlot(TYPE_NUMBER),
                                  ArgSlot(TYPE_NUMBER)]))
 
@@ -336,6 +356,7 @@ class Xevents(Plugin):
             'set_line_opacity', 1,
             Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
+        '''
         global MACROS
         MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
                                           [1, ['number', 0], 0, 0, [0, None]],
@@ -347,62 +368,62 @@ class Xevents(Plugin):
                                                 [1, ['number', 0], 0, 0, [0, None]],
                                                 [2, ['number', 0], 0, 0, [0, None]]
                                                ]
+        '''
+
+    def write_text(self, text):
+        self._events.write_text(text)
 
 
-    def set_x11_mouse(self, xcoord, ycoord):
-        lib_event.create_absolute_mouse_event(int(xcoord), int(ycoord), self.getPause())
+    def set_x11_mouse(self, x, y):
+        self._events.create_absolute_mouse_event(int(x), int(y), self.getPause())
 
     def get_x11_mouse_x(self):
-        xcoord = lib_event.get_mouse_position()[0]
-        return xcoord
+        return self._events.get_mouse_position()[0]
 
     def get_x11_mouse_y(self):
-        ycoord = lib_event.get_mouse_position()[1]
-        return ycoord
+        return self._events.get_mouse_position()[1]
 
     def get_screen_width(self):
-        xcoord = lib_event.get_screen_resolution()[0]
-        return xcoord
+        return self._events.get_screen_resolution()[0]
 
     def get_screen_height(self):
-        ycoord = lib_event.get_screen_resolution()[1]
-        return ycoord
+        return self._events.get_screen_resolution()[1]
 
     def click(self, button):
-        lib_event.click_button(button)
+       self._events.click_button(button)
 
     def double_click(self, button):
-        lib_event.double_click_button(button)
+        self._events.double_click_button(button)
 
     def press_button(self, button):
-        lib_event.press_button(button)
+        self._events.press_button(button)
 
     def release_button(self, button):
-        lib_event.release_button(button)
+        self._events.release_button(button)
 
     def show_line(self, active):
-        lib_event.show_line(active)
+        self._events.show_line(active)
 
-    def set_line_color(self, colorname):
-        lib_event.set_line_color(colorname)
+    def set_line_color(self, color_name):
+        self._events.set_line_color(color_name)
 
     def set_line_opacity(self, opacity):
-        lib_event.set_line_opacity(opacity)
+        self._events.set_line_opacity(opacity)
 
     def set_line_color_rgb(self, red, green, blue):
-        lib_event.set_line_color_rgb(red, green, blue)
+        self._events.set_line_color_rgb(red, green, blue)
 
     def set_line_width(self, width):
-        lib_event.set_line_width(width)
+        self._events.set_line_width(width)
 
     def set_line_height(self, height):
-        lib_event.set_line_height(height)
+        self._events.set_line_height(height)
 
-    def set_line_width_and_heigth(self, width, height):
-        lib_event.set_line_width_and_heigth(width, height)
+    def set_line_width_and_height(self, width, height):
+        self._events.set_line_width_and_height(width, height)
 
     def copy_event(self):
-        lib_event.copy_event()
+        self._events.copy_event()
 
     def paste_event(self):
-        lib_event.paste_event()
+        self._events.paste_event()

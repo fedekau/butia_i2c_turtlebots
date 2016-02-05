@@ -4,7 +4,7 @@
 # .DS_Store
 # /trunk/arduino/file.file
 
-# or you can use comodins
+# or you can use wildcars
 *~
 *.swp
 *.o
@@ -51,4 +51,3 @@ butialo/Butialo.activity/locale
 changeid/BAX12ID.activity/locale
 firmware/ButiaFirmware.activity/locale
 newPatterns/NewPatterns.activity/locale
-

@@ -1,114 +1,117 @@
-#Fuente: http://ubuntueasysetuper.googlecode.com/svn/trunk/FutureWork/sendkey.py
+# Fuente: http://ubuntueasysetuper.googlecode.com/svn/trunk/FutureWork/sendkey.py
 
-try:
-	import Xlib
-except:
-	import os
-	print "Run 'sudo apt-get install python-xlib -y'"
-	os.system('sudo apt-get install python-xlib -y')
-	try:
-		import Xlib
-	except:
-		sys.exit(0)
-import Xlib.display
-import Xlib.X
-import Xlib.XK
-import Xlib.protocol.event
-import Xlib.ext.xtest
+import Xlib
+from Xlib import display
+from Xlib import XK
+from Xlib import X
+from Xlib import ext
+from Xlib.ext import xtest
 
-display = Xlib.display.Display()
+class SendKey:
 
-special_X_keysyms = {
-	' ' : "space",
-	'\t' : "Tab",
-	'\n' : "Return",  # for some reason this needs to be cr, not lf
-	'\r' : "Return",
-	'\e' : "Escape",
-	'!' : "exclam",
-	'#' : "numbersign",
-	'%' : "percent",
-	'$' : "dollar",
-	'&' : "ampersand",
-	'"' : "quotedbl",
-	'\'' : "apostrophe",
-	'(' : "parenleft",
-	')' : "parenright",
-	'*' : "asterisk",
-	'=' : "equal",
-	'+' : "plus",
-	',' : "comma",
-	'-' : "minus",
-	'.' : "period",
-	'/' : "slash",
-	':' : "colon",
-	';' : "semicolon",
-	'<' : "less",
-	'>' : "greater",
-	'?' : "question",
-	'@' : "at",
-	'[' : "bracketleft",
-	']' : "bracketright",
-	'\\' : "backslash",
-	'^' : "asciicircum",
-	'_' : "underscore",
-	'`' : "grave",
-	'{' : "braceleft",
-	'|' : "bar",
-	'}' : "braceright",
-	'~' : "asciitilde"
-}
+    _special_X_keysyms = {' ': "space",
+                                   '\t': "Tab",
+                                   '\n': "Return",  # for some reason this needs to be cr, not lf
+                                   '\r': "Return",
+                                   '\e': "Escape",
+                                   '!': "exclam",
+                                   '#': "numbersign",
+                                   '%': "percent",
+                                   '$': "dollar",
+                                   '&': "ampersand",
+                                   '"': "quotedbl",
+                                   '\'': "apostrophe",
+                                   '(': "parenleft",
+                                   ')': "parenright",
+                                   '*': "asterisk",
+                                   '=': "equal",
+                                   '+': "plus",
+                                   ',': "comma",
+                                   '-': "minus",
+                                   '.': "period",
+                                   '/': "slash",
+                                   ':': "colon",
+                                   ';': "semicolon",
+                                   '<': "less",
+                                   '>': "greater",
+                                   '?': "question",
+                                   '@': "at",
+                                   '[': "bracketleft",
+                                   ']': "bracketright",
+                                   '\\': "backslash",
+                                   '^': "asciicircum",
+                                   '_': "underscore",
+                                   '`': "grave",
+                                   '{': "braceleft",
+                                   '|': "bar",
+                                   '}': "braceright",
+                                   '~': "asciitilde"}
+
+    _display = display.Display()
+    _screen = _display.screen()
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def _get_keysym(cls, ch):
+
+        keysym = XK.string_to_keysym(ch)
+        if keysym == 0:
+            # Unfortunately, although this works to get the correct keysym
+            # i.e. keysym for '#' is returned as "numbersign"
+            # the subsequent display.keysym_to_keycode("numbersign") is 0.
+            keysym = XK.string_to_keysym(cls._special_X_keysyms[ch])
+        return keysym
+
+    @classmethod
+    def _char_to_keycode(cls,ch):
+
+        keysym = cls._get_keysym(ch)
+        #	print keysym
+        keycode = cls._display.keysym_to_keycode(keysym)
+        #	if keycode == 0 :
+        #		print "Sorry, can't map", ch
+        #	print keycode
+        return keycode
 
 
-def get_keysym(ch) :
-	keysym = Xlib.XK.string_to_keysym(ch)
-	if keysym == 0 :
-		# Unfortunately, although this works to get the correct keysym
-		# i.e. keysym for '#' is returned as "numbersign"
-		# the subsequent display.keysym_to_keycode("numbersign") is 0.
-		keysym = Xlib.XK.string_to_keysym(special_X_keysyms[ch])
-	return keysym
+    @classmethod
+    def send_special_key(cls,keystroke):
 
-def char_to_keycode(ch) :
-	keysym = get_keysym(ch)
-#	print keysym
-	keycode = display.keysym_to_keycode(keysym)
-#	if keycode == 0 :
-#		print "Sorry, can't map", ch
-#	print keycode
-	return keycode
+        special_key = ""
+        key = ""
 
-ctrlkey=display.keysym_to_keycode(Xlib.XK.XK_Control_L)
-altkey=display.keysym_to_keycode(Xlib.XK.XK_Alt_L)
-shiftkey=display.keysym_to_keycode(Xlib.XK.XK_Shift_L)
+        splitted = keystroke.split(" ")
 
-def sendkey(keystroke):
-	ctrl = alt = shift = 0
-	key = ""
-	splitted = keystroke.split(" ")
-	for stroke in splitted:
-		if stroke == "Ctrl":
-			ctrl = 1
-		elif stroke == "Shift":
-			shift = 1
-		elif stroke == "Alt":
-			alt = 1
-		elif stroke == "Space": 
-			key = char_to_keycode(" ")
-		else: # an ordinary key
-			key = char_to_keycode(stroke)
-	if ctrl==1:
-		Xlib.ext.xtest.fake_input(display, Xlib.X.KeyPress, ctrlkey)
-	if alt==1:
-		Xlib.ext.xtest.fake_input(display, Xlib.X.KeyPress, altkey)
-	if shift==1:
-		Xlib.ext.xtest.fake_input(display, Xlib.X.KeyPress, shiftkey)
-	Xlib.ext.xtest.fake_input(display, Xlib.X.KeyPress, key)
-	Xlib.ext.xtest.fake_input(display, Xlib.X.KeyRelease, key)
-	if ctrl==1:
-		Xlib.ext.xtest.fake_input(display, Xlib.X.KeyRelease, ctrlkey)
-	if alt==1:
-		Xlib.ext.xtest.fake_input(display, Xlib.X.KeyRelease, altkey)
-	if shift==1:
-		Xlib.ext.xtest.fake_input(display, Xlib.X.KeyRelease, shiftkey)
-	display.sync()
+        for stroke in splitted:
+            if stroke == "Ctrl":
+                special_key = cls._display.keysym_to_keycode(Xlib.XK.XK_Control_L)
+            elif stroke == "Shift":
+                special_key = cls._display.keysym_to_keycode(Xlib.XK.XK_Shift_L)
+            elif stroke == "Alt":
+                special_key = cls._display.keysym_to_keycode(Xlib.XK.XK_Alt_L)
+            elif stroke == "Space":
+                key = cls._char_to_keycode(" ")
+            else:  # an ordinary key
+                key = cls._char_to_keycode(stroke)
 
+        ext.xtest.fake_input(cls._display, X.KeyPress, special_key)
+
+        ext.xtest.fake_input(cls._display, X.KeyPress, key)
+        ext.xtest.fake_input(cls._display, X.KeyRelease, key)
+
+        ext.xtest.fake_input(cls._display, X.KeyRelease, special_key)
+
+        cls._display.sync()
+
+
+    @classmethod
+    def send_key(cls,key):
+
+        k = cls._char_to_keycode(key)
+
+        ext.xtest.fake_input(cls._display, X.KeyPress, k)
+        ext.xtest.fake_input(cls._display, X.KeyRelease, k)
+
+        cls._display.sync()
