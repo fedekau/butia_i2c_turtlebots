@@ -109,8 +109,17 @@ class SendKey:
     @classmethod
     def send_key(cls,key):
 
-
-        k = cls._char_to_keycode(key)
+        k = ""
+        if (key == "Left"):
+            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Left)
+        elif (key == "Right"):
+            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Right)
+        elif (key == "Up"):
+            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Up)
+        elif (key == "Down"):
+            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Down)
+        else:
+            k = cls._char_to_keycode(key)
 
         ext.xtest.fake_input(cls._display, X.KeyPress, k)
         ext.xtest.fake_input(cls._display, X.KeyRelease, k)

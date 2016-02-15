@@ -66,6 +66,7 @@ class Xevents(Plugin):
         CONSTANTS['right_click'] = 2
         CONSTANTS['TRUE'] = True
         CONSTANTS['FALSE'] = False
+
         palette = make_palette('xlib-bots',
                                colors=["#FF6060", "#A06060"],
                                help_string=_('Palette of X11 event blocks'))
@@ -260,6 +261,36 @@ class Xevents(Plugin):
                           help_string=_('simulates writing a text'),
                           prim_name='write_text')
 
+        palette.add_block('simulateSpaceBar',
+                  style='basic-style',
+                  label=_('simulateSpaceBar'),
+                  help_string=_('simulate spacebar event'),
+                  prim_name='spacebar_event')
+
+        palette.add_block('simulateLeftArrow',
+                  style='basic-style',
+                  label=_('simulateLeftArrow'),
+                  help_string=_('simulate left arrow event'),
+                  prim_name='left_arrow_event')
+
+        palette.add_block('simulateRightArrow',
+                  style='basic-style',
+                  label=_('simulateRightArrow'),
+                  help_string=_('simulate right arrow event'),
+                  prim_name='right_arrow_event')
+
+        palette.add_block('simulateUpArrow',
+                  style='basic-style',
+                  label=_('simulateUpArrow'),
+                  help_string=_('simulate up arrow event'),
+                  prim_name='up_arrow_event')
+
+        palette.add_block('simulateDownArrow',
+                  style='basic-style',
+                  label=_('simulateDownArrow'),
+                  help_string=_('simulate down arrow event'),
+                  prim_name='down_arrow_event')
+
         self._parent.lc.def_prim(
             'set_x11_mouse', 2,
             Primitive(self.set_x11_mouse, arg_descs=[ArgSlot(TYPE_NUMBER),
@@ -275,6 +306,26 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'paste_event', 0,
             Primitive(self.paste_event))
+
+        self._parent.lc.def_prim(
+            'spacebar_event', 0,
+            Primitive(self.spacebar_event))
+
+        self._parent.lc.def_prim(
+            'left_arrow_event', 0,
+            Primitive(self.left_arrow_event))
+
+        self._parent.lc.def_prim(
+            'right_arrow_event', 0,
+            Primitive(self.right_arrow_event))
+
+        self._parent.lc.def_prim(
+            'up_arrow_event', 0,
+            Primitive(self.up_arrow_event))
+
+        self._parent.lc.def_prim(
+            'down_arrow_event', 0,
+            Primitive(self.down_arrow_event))
 
         self._parent.lc.def_prim(
             'get_x11_mouse_y', 0,
@@ -435,3 +486,18 @@ class Xevents(Plugin):
 
     def paste_event(self):
         self._events.paste_event()
+
+    def spacebar_event(self):
+        self._events.spacebar_event()
+
+    def left_arrow_event(self):
+        self._events.left_arrow_event()
+
+    def right_arrow_event(self):
+        self._events.right_arrow_event()
+
+    def up_arrow_event(self):
+        self._events.up_arrow_event()
+
+    def down_arrow_event(self):
+        self._events.down_arrow_event()

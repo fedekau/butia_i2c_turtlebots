@@ -46,11 +46,7 @@ COLORS = {'red': "#E61B00",
           'white': "#FFFFFF",
           'black': "#000000"}
 
-CONSTANTS = {'left_click': 1,
-             'right_click': 2}
-
 class Events:
-
 
     def __init__(self, debug=True):
 
@@ -230,6 +226,31 @@ class Events:
     def paste_event(self):
 
         SendKey.send_special_key("Ctrl V")
+
+
+    def spacebar_event(self):
+
+        SendKey.send_key(" ")
+
+
+    def left_arrow_event(self):
+
+        SendKey.send_key("Left")
+
+
+    def right_arrow_event(self):
+
+        SendKey.send_key("Right")
+
+
+    def up_arrow_event(self):
+
+        SendKey.send_key("Up")
+
+
+    def down_arrow_event(self):
+
+        SendKey.send_key("Down")
 
 
     def write_text(self, text):
