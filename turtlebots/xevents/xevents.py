@@ -38,7 +38,7 @@ from TurtleArt.tatype import TYPE_COLOR
 from TurtleArt.tatype import TYPE_STRING
 from events import Events
 from TurtleArt.taconstants import CONSTANTS
-#from events import CONSTANTS
+from TurtleArt.taconstants import MACROS
 
 import logging
 LOGGER = logging.getLogger('turtleart-activity x11 events plugin')
@@ -66,6 +66,19 @@ class Xevents(Plugin):
         CONSTANTS['right_click'] = 2
         CONSTANTS['TRUE'] = True
         CONSTANTS['FALSE'] = False
+
+        global MACROS
+        MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
+                                          [1, ['number', 0], 0, 0, [0, None]],
+                                          [2, ['number', 0], 0, 0, [0, None]],
+                                          [3, ['number', 0], 0, 0, [0, None]]
+                                         ]
+
+        MACROS['setLineWidthAndHeightmacro'] = [[0, 'setLineWidthAndHeight', 0, 0, [None, 1, 2, None]],
+                                                [1, ['number', 0], 0, 0, [0, None]],
+                                                [2, ['number', 0], 0, 0, [0, None]]
+                                               ]
+
 
         palette = make_palette('xlib-bots',
                                colors=["#FF6060", "#A06060"],
@@ -412,20 +425,6 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'set_line_opacity', 1,
             Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
-
-        global MACROS
-        MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
-                                          [1, ['number', 0], 0, 0, [0, None]],
-                                          [2, ['number', 0], 0, 0, [0, None]],
-                                          [3, ['number', 0], 0, 0, [0, None]]
-                                         ]
-
-        MACROS['setLineWidthAndHeigthmacro'] = [[0, 'setLineWidthAndHeigth', 0, 0, [None, 1, 2, None]],
-                                                [1, ['number', 0], 0, 0, [0, None]],
-                                                [2, ['number', 0], 0, 0, [0, None]]
-                                               ]
-
 
 
     ################################# Primitives ##############################
