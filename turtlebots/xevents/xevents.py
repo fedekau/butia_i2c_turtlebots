@@ -409,6 +409,10 @@ class Xevents(Plugin):
             Primitive(self.show_line, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
         self._parent.lc.def_prim(
+            'set_line_opacity', 1,
+            Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+        
+        self._parent.lc.def_prim(
             'set_line_width', 1,
             Primitive(self.set_line_width, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
@@ -417,14 +421,11 @@ class Xevents(Plugin):
             Primitive(self.set_line_height, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
         self._parent.lc.def_prim(
-            'set_line_width_and_heigth', 2,
+            'set_line_width_and_height', 2,
             Primitive(self.set_line_width_and_height,
                       arg_descs=[ArgSlot(TYPE_NUMBER),
                                  ArgSlot(TYPE_NUMBER)]))
 
-        self._parent.lc.def_prim(
-            'set_line_opacity', 1,
-            Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
 
     ################################# Primitives ##############################

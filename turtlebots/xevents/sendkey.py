@@ -57,11 +57,14 @@ class SendKey:
     def _get_keysym(cls, ch):
 
         keysym = XK.string_to_keysym(ch)
+        print "a:" + str(keysym)
         if keysym == 0:
             # Unfortunately, although this works to get the correct keysym
             # i.e. keysym for '#' is returned as "numbersign"
             # the subsequent display.keysym_to_keycode("numbersign") is 0.
             keysym = XK.string_to_keysym(cls._special_X_keysyms[ch])
+            print "b:" + cls._special_X_keysyms[ch]
+            print "c:" + str(keysym)
         return keysym
 
     @classmethod
@@ -73,8 +76,18 @@ class SendKey:
         #	if keycode == 0 :
         #		print "Sorry, can't map", ch
         #	print keycode
-        return keycode
+        if cls._is_shifted(ch):
+          shift_mask = X.ShiftMask
+        else:
+          shift_mask = 0  
 
+        return keycode, shift_mask
+
+    @classmethod
+    def _is_shifted(cls,ch):
+      
+      return ch.isupper() or ("!\"$%&/()=".find(ch) >= 0)
+      
 
     @classmethod
     def send_special_key(cls,keystroke):
@@ -94,7 +107,7 @@ class SendKey:
             elif stroke == "Space":
                 key = cls._char_to_keycode(" ")
             else:  # an ordinary key
-                key = cls._char_to_keycode(stroke)
+                key,shift_mask = cls._char_to_keycode(stroke)
 
         ext.xtest.fake_input(cls._display, X.KeyPress, special_key)
 
@@ -110,6 +123,8 @@ class SendKey:
     def send_key(cls,key):
 
         k = ""
+        shift_mask = 0
+
         if (key == "Left"):
             k = cls._display.keysym_to_keycode(Xlib.XK.XK_Left)
         elif (key == "Right"):
@@ -117,11 +132,20 @@ class SendKey:
         elif (key == "Up"):
             k = cls._display.keysym_to_keycode(Xlib.XK.XK_Up)
         elif (key == "Down"):
-            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Down)
+            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Down)  
         else:
-            k = cls._char_to_keycode(key)
+            k, shift_mask = cls._char_to_keycode(key)
+
+
+        shift_keycode = cls._display.keysym_to_keycode(Xlib.XK.XK_Shift_L)
+
+        if shift_mask != 0:
+          ext.xtest.fake_input(cls._display, X.KeyPress, shift_keycode)
 
         ext.xtest.fake_input(cls._display, X.KeyPress, k)
-        ext.xtest.fake_input(cls._display, X.KeyRelease, k)
+        ext.xtest.fake_input(cls._display, X.KeyRelease,k)
+
+        if shift_mask != 0:
+          ext.xtest.fake_input(cls._display, X.KeyRelease, shift_keycode)
 
         cls._display.sync()

@@ -1,7 +1,7 @@
 [[0, ["start", 383], 354, 69, [null, 29]],
 [1, "showLine", 611, 154, [19, 2, 11]],
 [2, ["number", 1], 693, 154, [1, null]],
-[3, ["setLineWidthAndHeigth", 0], 611, 280, [13, 57, 4, null]],
+[3, ["setLineWidthAndHeight", 0], 611, 280, [13, 57, 4, null]],
 [4, "getScreenHeight", 802, 322, [3, null]],
 [5, ["setX11mouse", 40], 1072, 311, [22, 9, 16, null]],
 [6, "getX11mouseX", 1244, 311, [7, null]],
