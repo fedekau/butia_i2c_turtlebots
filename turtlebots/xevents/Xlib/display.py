@@ -692,8 +692,7 @@ class Display:
     def get_keyboard_mapping(self, first_keycode, count):
         """Return the current keyboard mapping as a list of tuples,
         starting at first_keycount and no more than count."""
-        r = request.GetKe1234567890-    qwertyuiop[]
-        asdfghjkl;'`\zxcvbnm,./* yboardMapping(display = self.display,
+        r = request.GetKeyboardMapping(display = self.display,
                                        first_keycode = first_keycode,
                                        count = count)
         return r.keysyms
