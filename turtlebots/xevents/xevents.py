@@ -423,7 +423,16 @@ class Xevents(Plugin):
                       arg_descs=[ArgSlot(TYPE_NUMBER),
                                  ArgSlot(TYPE_NUMBER)]))
 
+    ############################# Turtle calls ################################
 
+    def start(self):
+        pass
+
+    def stop(self):
+        self._events.show_line(False)
+
+    def quit(self):
+        pass
 
     ################################# Primitives ##############################
 
@@ -446,7 +455,7 @@ class Xevents(Plugin):
         return self._events.get_screen_resolution()[1]
 
     def click(self, button):
-       self._events.click_button(button)
+        self._events.click_button(button)
 
     def double_click(self, button):
         self._events.double_click_button(button)
@@ -498,3 +507,4 @@ class Xevents(Plugin):
 
     def down_arrow_event(self):
         self._events.down_arrow_event()
+
