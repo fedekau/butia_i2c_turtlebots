@@ -32,13 +32,10 @@ from gettext import gettext as _
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
 from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
-from TurtleArt.tatype import TYPE_INT
-from TurtleArt.tatype import TYPE_NUMBER
-from TurtleArt.tatype import TYPE_COLOR
-from TurtleArt.tatype import TYPE_STRING
+from TurtleArt.tatype import TYPE_INT, TYPE_NUMBER, TYPE_COLOR, TYPE_STRING
 from events import Events
-from TurtleArt.taconstants import CONSTANTS
-from TurtleArt.taconstants import MACROS
+from TurtleArt.taconstants import CONSTANTS, MACROS
+
 
 import logging
 LOGGER = logging.getLogger('turtleart-activity x11 events plugin')
@@ -51,7 +48,7 @@ class Xevents(Plugin):
         self.running_sugar = self._parent.running_sugar
         self._status = True
         self.pause = 0
-        self._events = Events()
+        self._events = Events(False)
 
     def setPause(self, arg):
         self.pause = arg

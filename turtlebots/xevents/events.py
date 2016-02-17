@@ -36,6 +36,8 @@ import logging
 
 from sendkey import SendKey
 
+import time
+
 COLORS = {'red': "#E61B00",
           'orange': "#FF9201",
           'yellow': "#FFE900",
@@ -46,9 +48,11 @@ COLORS = {'red': "#E61B00",
           'white': "#FFFFFF",
           'black': "#000000"}
 
+CALL_DELAY = 200
+
 class Events:
 
-    def __init__(self, debug=True):
+    def __init__(self, debug=False):
 
         self._debug = debug
 
@@ -69,6 +73,9 @@ class Events:
                                 gtk.gdk.POINTER_MOTION_MASK |
                                 gtk.gdk.BUTTON_PRESS_MASK |
                                 gtk.gdk.SCROLL_MASK)
+
+        self._last_call_time = 0
+
 
     def get_screen_resolution(self):
         """Returns the screen resolution """
@@ -221,44 +228,82 @@ class Events:
     def copy_event(self):
 
         SendKey.send_special_key("Ctrl C")
+        if self._debug:
+            print "copy event called"
 
 
     def paste_event(self):
 
         SendKey.send_special_key("Ctrl V")
 
+        if self._debug:
+            print "paste event called"
+
+
+    def _allow_event(self):
+        """Checks if the event is not called too fast"""
+
+        current_time = int(round(time.time()*1000))
+        if (current_time - self._last_call_time) > CALL_DELAY:
+            self._last_call_time = current_time
+            return True
+        else:
+            return False
+
 
     def spacebar_event(self):
+        """Simulates pressing spacebar key"""
 
-        SendKey.send_key(" ")
-
+        if self._allow_event():
+            SendKey.send_key(" ")
+            if self._debug:
+                print "spacebar action called"
+ 
 
     def left_arrow_event(self):
+        """Simulates pressing left arrow key"""
 
-        SendKey.send_key("Left")
+        if self._allow_event():
+            SendKey.send_key("Left")
+            if self._debug:
+                print "left arrow action called"
 
 
     def right_arrow_event(self):
-
-        SendKey.send_key("Right")
+        """Simulates pressing right arrow key"""
+        
+        if self._allow_event():  
+            SendKey.send_key("Right")
+            if self._debug:
+                print "right arrow action called"           
 
 
     def up_arrow_event(self):
+        """Simulates pressing up arrow key"""
 
-        SendKey.send_key("Up")
+        if self._allow_event():
+            SendKey.send_key("Up")
+            if self._debug:
+                print "up arrow action called"        
 
 
     def down_arrow_event(self):
+        """Simulates pressing down arrow key"""
 
-        SendKey.send_key("Down")
+        if self._allow_event():
+            SendKey.send_key("Down")
+            if self._debug:
+                print "down arrow action called"
 
 
     def write_text(self, text):
+        """Simulates writing some text"""
 
-        if self._debug:
-            logging.debug(text)
+        if self._allow_event():
+            if self._debug:
+                logging.debug(text)
 
-        splitted_text = list(text)
+            splitted_text = list(text)
 
-        for key in splitted_text:
-            SendKey.send_key(key)
+            for key in splitted_text:
+                SendKey.send_key(key)

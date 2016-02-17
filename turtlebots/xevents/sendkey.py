@@ -57,14 +57,13 @@ class SendKey:
     def _get_keysym(cls, ch):
 
         keysym = XK.string_to_keysym(ch)
-        print "a:" + str(keysym)
         if keysym == 0:
             # Unfortunately, although this works to get the correct keysym
             # i.e. keysym for '#' is returned as "numbersign"
             # the subsequent display.keysym_to_keycode("numbersign") is 0.
+            #print "b:" + cls._special_X_keysyms[ch]
             keysym = XK.string_to_keysym(cls._special_X_keysyms[ch])
-            print "b:" + cls._special_X_keysyms[ch]
-            print "c:" + str(keysym)
+            #print "keysim:" + str(keysym)
         return keysym
 
     @classmethod
@@ -125,6 +124,16 @@ class SendKey:
         k = ""
         shift_mask = 0
 
+        '''xx = XK.string_to_keysym("asterisk")
+        xxx = cls._display.keysym_to_keycode(xx)
+        print "xx" + str(xx)
+        print "xxx" + str(xxx)
+
+        print cls._display.keycode_to_keysym(63,0)
+        print cls._display.keycode_to_keysym(63,1)
+        print cls._display.keycode_to_keysym(63,2)
+        print cls._display.keycode_to_keysym(63,3)'''
+
         if (key == "Left"):
             k = cls._display.keysym_to_keycode(Xlib.XK.XK_Left)
         elif (key == "Right"):
@@ -132,7 +141,22 @@ class SendKey:
         elif (key == "Up"):
             k = cls._display.keysym_to_keycode(Xlib.XK.XK_Up)
         elif (key == "Down"):
-            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Down)  
+            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Down)
+            '''elif (key == "/"):
+                k = cls._display.keysym_to_keycode(Xlib.XK.XK_question)
+                print "keysim :" + str(Xlib.XK.XK_question)
+                print "keycode:" + str(k)
+
+                k2 = cls._display.keysym_to_keycodes(Xlib.XK.XK_question)
+                print "k2:"
+                for i in k2:
+                  print i
+
+                mapping = cls._display.get_keyboard_mapping(40,100)
+                print "mapping:"
+                for j in mapping:
+                  print j
+            '''      
         else:
             k, shift_mask = cls._char_to_keycode(key)
 
@@ -141,7 +165,9 @@ class SendKey:
 
         if shift_mask != 0:
           ext.xtest.fake_input(cls._display, X.KeyPress, shift_keycode)
+          #print "apreto shift"
 
+        #print k
         ext.xtest.fake_input(cls._display, X.KeyPress, k)
         ext.xtest.fake_input(cls._display, X.KeyRelease,k)
 
