@@ -1,0 +1,22 @@
+<svg width="55" height="55" xmlns="http://www.w3.org/2000/svg">
+ <metadata id="metadata15">image/svg+xml</metadata>
+
+ <g>
+  <title>Layer 1</title>
+  <rect fill="#ffd200" fill-rule="nonzero" id="rect3269" y="0" x="0" height="55" width="55"/>
+  <g id="g4054">
+   <line fill="#000000" stroke="#ff0000" stroke-width="3.047755" stroke-linecap="round" id="line3076" y2="35.822665" y1="43.177332" x2="18.056748" x1="18.056748"/>
+   <line fill="#ff0000" stroke="#ff0000" stroke-width="3.047755" stroke-linecap="round" id="line3078" y2="39.499128" y1="39.499128" x2="33.705664" x1="29.089619"/>
+   <rect fill="#ff0000" stroke="#ff0000" stroke-width="1.959271" stroke-linecap="round" id="rect3080" y="36.100446" x="39.991877" height="6.617111" width="8.528488"/>
+   <path fill="none" stroke="#ff0000" stroke-width="3.047755" stroke-linecap="round" stroke-linejoin="round" id="path3082" d="m18.056747,35.822666c0,-2.032421 -1.647532,-3.6782 -3.678201,-3.6782c-2.03068,0 -3.67734,1.644909 -3.67734,3.6782"/>
+   <path fill="none" stroke="#ff0000" stroke-width="3.047755" stroke-linecap="round" stroke-linejoin="round" id="path3084" d="m25.411417,43.177334c0,2.032413 -1.64666,3.678204 -3.678211,3.678204c-2.030668,0 -3.67733,-1.64579 -3.67733,-3.678204"/>
+   <path fill="#000000" stroke="#ff0000" stroke-width="3.047755" stroke-linecap="round" stroke-linejoin="round" id="path3086" d="m25.411417,43.177334c0,-2.030678 1.648399,-3.679947 3.6782,-3.679947"/>
+   <path fill="#000000" stroke="#ff0000" stroke-width="3.047755" stroke-linecap="round" stroke-linejoin="round" id="path3088" d="m10.701207,35.822666c0,2.03067 -1.647531,3.67646 -3.67733,3.67646"/>
+   <rect fill="#ff0000" stroke="#ff0000" stroke-width="3.047755" stroke-linecap="round" stroke-linejoin="round" id="rect3090" y="34.468591" x="31.099396" height="9.883433" width="12.606384"/>
+  </g>
+  <text font-size="48.227024px" font-style="normal" font-weight="normal" fill="#ff0000" font-family="Sans" transform="scale(1.0116699934005737,0.9884645938873291) " id="text3029" y="29.942862" x="14.723262" xml:space="preserve">
+   <tspan y="29.942862" x="14.723262" id="tspan3031">x</tspan>
+  </text>
+  <text font-weight="bold" xml:space="preserve" text-anchor="middle" font-family="Sans-serif" font-size="10" id="svg_1" y="10.555556" x="45.277778" stroke-width="0" stroke="#000000" fill="#ff0000">E</text>
+ </g>
+</svg>

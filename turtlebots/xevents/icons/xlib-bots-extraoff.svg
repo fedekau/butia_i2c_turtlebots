@@ -1,0 +1,24 @@
+<svg width="55" height="55" xmlns="http://www.w3.org/2000/svg">
+ <metadata id="metadata15">image/svg+xml</metadata>
+
+ <g>
+  <title>Layer 1</title>
+  <rect fill="#282828" stroke="#282828" stroke-width="2.236075" stroke-linecap="round" stroke-miterlimit="4" id="rect2986" y="6.118038" x="6.118038" height="42.763924" width="42.763924"/>
+  <g display="block" id="network-wired_1_" transform="matrix(0.87078705,0,0,0.87078705,3.2821055,14.929873) ">
+   <g id="network-wired">
+    <line fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" x1="16.966999" x2="16.966999" y1="32.438999" y2="23.993" id="line3076"/>
+    <line fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" x1="29.636999" x2="34.938" y1="28.215" y2="28.215" id="line3078"/>
+    <rect fill="#ffffff" stroke="#ffffff" stroke-width="2.25" stroke-linecap="round" id="rect3080" y="24.312" x="42.157001" height="7.599" width="9.794"/>
+    <path fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" id="path3082" d="m16.967001,23.993c0,-2.334 -1.892001,-4.224001 -4.224001,-4.224001c-2.332,0 -4.223,1.889002 -4.223,4.224001"/>
+    <path fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" id="path3084" d="m25.413,32.438999c0,2.334 -1.891001,4.223999 -4.224001,4.223999c-2.331999,0 -4.223,-1.889999 -4.223,-4.223999"/>
+    <path fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" id="path3086" d="m25.413,32.438999c0,-2.331999 1.893,-4.226 4.223999,-4.226"/>
+    <path fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" id="path3088" d="m8.52,23.993c0,2.332001 -1.892001,4.222 -4.223001,4.222"/>
+    <rect fill="#ffffff" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" id="rect3090" y="22.438" x="31.945" height="11.35" width="14.477"/>
+   </g>
+  </g>
+  <text font-size="45.281384px" font-style="normal" font-weight="normal" fill="#f2f2f2" font-family="Sans" transform="scale(1.019973635673523,0.9804175496101379) " id="text3039" y="32.126133" x="15.645947" xml:space="preserve">
+   <tspan y="32.126133" x="15.645947" id="tspan3041">x</tspan>
+  </text>
+  <text stroke-opacity="0" font-weight="bold" xml:space="preserve" text-anchor="middle" font-family="Sans-serif" font-size="10" id="svg_1" y="14.222222" x="45.111115" stroke="#000000" fill="#ffffff">E</text>
+ </g>
+</svg>

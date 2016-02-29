@@ -83,6 +83,10 @@ class Xevents(Plugin):
         palette = make_palette('xlib-bots',
                                colors=["#FF6060", "#A06060"],
                                help_string=_('Palette of X11 event blocks'))
+        # Extra palette
+        palette2 = make_palette('xlib-bots-extra', 
+                                colors=["#FF6060", "#A06060"], 
+                                help_string=_('Palette of X11 extra event blocks'))
 
         palette.add_block('setX11mouse',
                           style='basic-style-2arg',
@@ -256,49 +260,49 @@ class Xevents(Plugin):
                           label=_('setLineWidthAndHeight'),
                           help_string=_('set width and height of line over mouse'))
 
-        palette.add_block('simulateCopy',
+        palette2.add_block('simulateCopy',
                           style='basic-style',
                           label=_('simulateCopy'),
                           help_string=_('simulate copy event'),
                           prim_name='copy_event')
 
-        palette.add_block('simulatePaste',
+        palette2.add_block('simulatePaste',
                           style='basic-style',
                           label=_('simulatePaste'),
                           help_string=_('simulate paste event'),
                           prim_name='paste_event')
 
-        palette.add_block('writeText',
+        palette2.add_block('writeText',
                           style='basic-style-1arg',
                           label=_('writeText'),
                           help_string=_('simulates writing a text'),
                           prim_name='write_text')
 
-        palette.add_block('simulateSpaceBar',
+        palette2.add_block('simulateSpaceBar',
                   style='basic-style',
                   label=_('simulateSpaceBar'),
                   help_string=_('simulate spacebar event'),
                   prim_name='spacebar_event')
 
-        palette.add_block('simulateLeftArrow',
+        palette2.add_block('simulateLeftArrow',
                   style='basic-style',
                   label=_('simulateLeftArrow'),
                   help_string=_('simulate left arrow event'),
                   prim_name='left_arrow_event')
 
-        palette.add_block('simulateRightArrow',
+        palette2.add_block('simulateRightArrow',
                   style='basic-style',
                   label=_('simulateRightArrow'),
                   help_string=_('simulate right arrow event'),
                   prim_name='right_arrow_event')
 
-        palette.add_block('simulateUpArrow',
+        palette2.add_block('simulateUpArrow',
                   style='basic-style',
                   label=_('simulateUpArrow'),
                   help_string=_('simulate up arrow event'),
                   prim_name='up_arrow_event')
 
-        palette.add_block('simulateDownArrow',
+        palette2.add_block('simulateDownArrow',
                   style='basic-style',
                   label=_('simulateDownArrow'),
                   help_string=_('simulate down arrow event'),
@@ -425,6 +429,7 @@ class Xevents(Plugin):
             Primitive(self.set_line_width_and_height,
                       arg_descs=[ArgSlot(TYPE_NUMBER),
                                  ArgSlot(TYPE_NUMBER)]))
+
 
     ############################# Turtle calls ################################
 
