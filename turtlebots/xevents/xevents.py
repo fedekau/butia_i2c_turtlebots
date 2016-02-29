@@ -275,6 +275,7 @@ class Xevents(Plugin):
         palette2.add_block('writeText',
                           style='basic-style-1arg',
                           label=_('writeText'),
+		          default=[_("Write your text")],
                           help_string=_('simulates writing a text'),
                           prim_name='write_text')
 
