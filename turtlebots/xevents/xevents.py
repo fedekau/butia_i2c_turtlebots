@@ -48,13 +48,16 @@ class Xevents(Plugin):
         self.running_sugar = self._parent.running_sugar
         self._status = True
         self.pause = 0
-        self._events = Events(False)
+        self._events = Events()
 
     def setPause(self, arg):
         self.pause = arg
 
     def getPause(self):
         return self.pause
+        
+    def stop(self):
+      pass  
 
     def setup(self):
         # set up X11 events specific blocks
