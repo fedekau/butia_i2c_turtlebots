@@ -450,9 +450,31 @@ class Xevents(Plugin):
             Primitive(self.down_arrow_event))
 
 
+        palette2.add_block('scrollUp',
+                  style='basic-style',
+                  label=_('scrollUp'),
+                  help_string=_('simulate mouse scroll up event'),
+                  prim_name='scroll_up')
+
+        self._parent.lc.def_prim(
+            'scroll_up', 0,
+            Primitive(self.scroll_up))
+
+
+        palette2.add_block('scrollDown',
+                  style='basic-style',
+                  label=_('scrollDown'),
+                  help_string=_('simulate mouse scroll down event'),
+                  prim_name='scroll_down')
+
+        self._parent.lc.def_prim(
+            'scroll_down', 0,
+            Primitive(self.scroll_down))
+
+
         palette2.add_block('debounce',
                         style='number-style-block',
-                        label=[_('debounce'), _('button'), _('unique_name')],
+                        label=[_('debounce'), _('unique_name'), _('button') ],
                         default=["unique name"],
                         help_string=_('debounce'),
                         prim_name='debounce')
@@ -551,6 +573,12 @@ class Xevents(Plugin):
 
     def down_arrow_event(self):
         self._events.down_arrow_event()
+
+    def scroll_up(self):
+        self._events.scroll_up()
+
+    def scroll_down(self):
+        self._events.scroll_down()
 
     def _listMode(self, l):
 

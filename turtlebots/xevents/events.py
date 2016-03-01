@@ -313,3 +313,28 @@ class Events:
     def browser(self,url):
 
         webbrowser.open(url, new=0, autoraise=True)
+
+
+    def _scroll(self, button):
+
+        """Simulates scrolling
+           for scrolling up press button 4
+           for scrolling down press button 5 """
+
+        print button
+
+        self.press_button(button)
+        self.release_button(button)
+
+        #ext.xtest.fake_input(self._display, X.ButtonPress, button)
+        #self._display.sync()
+
+
+    def scroll_up(self):
+        
+        self._scroll(4)
+
+
+    def scroll_down(self):
+        
+        self._scroll(5)
