@@ -28,6 +28,7 @@ import sys
 sys.path.append(os.path.abspath('./plugins/xevents'))
 
 from gettext import gettext as _
+from collections import Counter
 
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
@@ -66,6 +67,7 @@ class Xevents(Plugin):
         CONSTANTS['right_click'] = 2
         CONSTANTS['TRUE'] = True
         CONSTANTS['FALSE'] = False
+        CONSTANTS['xe_buffer_size'] = 10
 
         global MACROS
         MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
@@ -438,6 +440,19 @@ class Xevents(Plugin):
             Primitive(self.down_arrow_event))
 
 
+        palette2.add_block('debounce',
+                        style='number-style-block',
+                        label=[_('debounce'), _('button'), _('unique_name')],
+                        default=[None, "unique name"],
+                        help_string=_('debounce'),
+                        prim_name='debounce')
+
+        self._parent.lc.def_prim(
+          'debounce', 2,
+          Primitive(self.debounce, arg_descs=[ArgSlot(TYPE_NUMBER),
+                                              ArgSlot(TYPE_STRING)]))
+
+
     ############################# Turtle calls ################################
 
     def start(self):
@@ -523,3 +538,36 @@ class Xevents(Plugin):
     def down_arrow_event(self):
         self._events.down_arrow_event()
 
+    def listMode(self, l):
+
+      data = Counter(l)
+      if len(data) > 0:
+        data.most_common() # Returns all unique items and their counts
+        return data.most_common(1)[0][0] # Returns the highest occurring item
+      else:
+        return 0
+          
+    def debounce(self, buttonState, buttonName):
+              
+      #deboucing - recolectar lecturas en cierto tiempo y evaluar la cantidad de 0 y 1's
+      #self.buttons -> key:[]
+      if not self._buttons.has_key(buttonName):
+        self._buttons[buttonName] = []
+        
+      self._buttons[buttonName].append(buttonState)
+        
+        
+      if len(self._buttons[buttonName]) > CONSTANTS['xe_buffer_size']:
+        self._buttons[buttonName].pop(0)
+        
+      if buttonState == 0 and self.listMode(self._buttons[buttonName]) == 1:
+        print buttonState
+        print buttonName
+        print self._buttons[buttonName]
+        print 1
+          
+        return 1
+          
+      else:
+        #print 0
+        return 0
