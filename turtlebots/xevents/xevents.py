@@ -55,8 +55,11 @@ class Xevents(Plugin):
         self._buttons = {} #previous values from buttons {key:[value, lastDebounceTime]}
 
 
-    def setPause(self, arg):
-        self.pause = arg
+    def setPause(self):
+        self.pause = True
+
+    def unsetPause(self):
+        self.pause = False    
 
     def getPause(self):
         return self.pause
@@ -89,6 +92,12 @@ class Xevents(Plugin):
                                           [2, ['number', 0], 0, 0, [0, None]],
                                           [3, ['number', 0], 0, 0, [0, None]]
                                          ]
+
+        MACROS['setLineWidthAndHeightmacro'] = [[0, 'setLineWidthAndHeight', 0, 0, [None, 1, 2, None]],
+                                                [1, ['number', 0], 0, 0, [0, None]],
+                                                [2, ['number', 0], 0, 0, [0, None]]
+                                               ]
+
 
         palette = make_palette('xlib-bots',
                                colors=["#FF6060", "#A06060"],
@@ -246,8 +255,23 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'freeze', 0,
-            Primitive(self.setPause, True))
+            Primitive(self.setPause))
 
+
+        '''
+
+        palette.add_block('freeze',
+                          style='basic-style-1arg',
+                          label=_('freeze bar'),
+                          value_block=True,
+                          default=[0],
+                          help_string=_('freeze the bar'),
+                          prim_name='freeze')
+
+        self._parent.lc.def_prim(
+            'freeze', 1,
+            Primitive(self.setPause, arg_descs=[ArgSlot(TYPE_INT)]))
+        '''
 
         palette.add_block('unfreeze',
                           style='basic-style',
@@ -258,7 +282,7 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'unfreeze', 0,
-            Primitive(self.setPause, False))
+            Primitive(self.unsetPause))
 
 
         palette.add_block('showLine',
@@ -279,6 +303,10 @@ class Xevents(Plugin):
                           value_block=True,
                           help_string=_('hide vertical line over mouse'),
                           prim_name='hide_line')
+
+        self._parent.lc.def_prim(
+            'hide_line', 0,
+            Primitive(self.hide_line))
 
 
         palette.add_block('setLineColorRGB',
@@ -329,9 +357,20 @@ class Xevents(Plugin):
             Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
 
+        palette.add_block('setLineWidthAndHeight',
+                          hidden=True,
+                          style='basic-style-2arg',
+                          label=_('setLineWidthAndHeight'),
+                          value_block=True,
+                          default=[0, 0],
+                          help_string=_('set width and height of line over mouse'),
+                          prim_name='set_line_width_and_height')
+
         self._parent.lc.def_prim(
-            'hide_line', 0,
-            Primitive(self.hide_line))
+            'set_line_width_and_height', 2,
+            Primitive(self.set_line_width_and_height,
+                      arg_descs=[ArgSlot(TYPE_NUMBER),
+                                 ArgSlot(TYPE_NUMBER)]))
 
 
         palette.add_block('setLineWidth',

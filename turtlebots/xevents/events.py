@@ -94,7 +94,7 @@ class Events:
         self._window.set_size_request(int(width), self._window.get_screen().get_height())
 
         if self._debug:
-            print width
+            print "width:%s" % width
             print self._window.get_size_request()
 
 
