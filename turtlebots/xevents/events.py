@@ -252,7 +252,7 @@ class Events:
             return False
 
 
-    def spacebar_event(self):
+    '''def spacebar_event(self):
         """Simulates pressing spacebar key"""
 
         if self._allow_event():
@@ -308,6 +308,25 @@ class Events:
 
             for key in splitted_text:
                 SendKey.send_key(key)
+
+    '''
+
+    def simulate_key(self, text):
+
+        if self._allow_event():
+
+            #It's a special key 
+            if ("xe_" in text):
+                SendKey.send_key(text)
+            #It's a text    
+            else:
+                splitted_text = list(text)
+
+                for key in splitted_text:
+                    SendKey.send_key(key)
+
+            if self._debug:
+                print "Simulate Key: " + text
 
 
     def browser(self,url):

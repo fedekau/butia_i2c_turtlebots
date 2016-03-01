@@ -71,7 +71,17 @@ class Xevents(Plugin):
         CONSTANTS['right_click'] = 2
         CONSTANTS['TRUE'] = True
         CONSTANTS['FALSE'] = False
+
         CONSTANTS['xe_buffer_size'] = 10
+        CONSTANTS['xe_spacebar'] = " "
+        CONSTANTS['xe_left_arrow'] = "xe_left_arrow"
+        CONSTANTS['xe_right_arrow'] = "xe_right_arrow"
+        CONSTANTS['xe_up_arrow'] = "xe_up_arrow"
+        CONSTANTS['xe_down_arrow'] = "xe_down_arrow"
+        CONSTANTS['xe_tab'] = "\t"
+        CONSTANTS['xe_return'] = "\r"
+        CONSTANTS['xe_escape'] =  "\e"
+        CONSTANTS['xe_enter'] =  "\n"
 
         global MACROS
         MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
@@ -361,6 +371,17 @@ class Xevents(Plugin):
             Primitive(self.browser, arg_descs=[ArgSlot(TYPE_STRING)]))
 
 
+        palette2.add_block('simulateKey',
+                          style='basic-style-1arg',
+                          label=_('simulateKey'),
+                          help_string=_('simulates pressing a key'),
+                          prim_name='simulate_key')
+
+        self._parent.lc.def_prim(
+            'simulate_key', 1,
+            Primitive(self.simulate_key, arg_descs=[ArgSlot(TYPE_STRING)]))
+
+
         palette2.add_block('simulateCopy',
                           style='basic-style',
                           label=_('simulateCopy'),
@@ -383,7 +404,7 @@ class Xevents(Plugin):
             Primitive(self.paste_event))
 
 
-        palette2.add_block('writeText',
+        '''palette2.add_block('writeText',
                           style='basic-style-1arg',
                           label=_('writeText'),
 		                      default=[_("Write your text")],
@@ -393,8 +414,117 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'write_text', 1,
             Primitive(self.write_text, arg_descs=[ArgSlot(TYPE_STRING)]))
+        '''
+
+        palette2.add_block('spaceBar',
+                          style='box-style',
+                          label=_('spaceBar'),
+                          value_block=True,
+                          help_string=_('space bar'),
+                          prim_name='spacebar')
+
+        self._parent.lc.def_prim(
+            'spacebar', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_spacebar')]))
 
 
+        palette2.add_block('leftArrow',
+                          style='box-style',
+                          label=_('leftArrow'),
+                          value_block=True,
+                          help_string=_('left arrow'),
+                          prim_name='left_arrow')
+
+        self._parent.lc.def_prim(
+            'left_arrow', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_left_arrow')]))
+
+
+        palette2.add_block('rightArrow',
+                          style='box-style',
+                          label=_('rightArrow'),
+                          value_block=True,
+                          help_string=_('right arrow'),
+                          prim_name='right_arrow')
+
+        self._parent.lc.def_prim(
+            'right_arrow', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_right_arrow')]))
+
+
+        palette2.add_block('upArrow',
+                          style='box-style',
+                          label=_('upArrow'),
+                          value_block=True,
+                          help_string=_('up arrow'),
+                          prim_name='up_arrow')
+
+        self._parent.lc.def_prim(
+            'up_arrow', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_up_arrow')]))
+
+
+        palette2.add_block('downArrow',
+                          style='box-style',
+                          label=_('downArrow'),
+                          value_block=True,
+                          help_string=_('down arrow'),
+                          prim_name='down_arrow')
+
+        self._parent.lc.def_prim(
+            'down_arrow', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_down_arrow')]))
+
+
+        palette2.add_block('tabKey',
+                          style='box-style',
+                          label=_('tabKey'),
+                          value_block=True,
+                          help_string=_('tab key'),
+                          prim_name='tab_key')
+
+        self._parent.lc.def_prim(
+            'tab_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_tab')]))
+
+
+        palette2.add_block('returnKey',
+                          style='box-style',
+                          label=_('returnKey'),
+                          value_block=True,
+                          help_string=_('return key'),
+                          prim_name='return_key')
+
+        self._parent.lc.def_prim(
+            'return_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_return')]))
+
+
+        palette2.add_block('escapeKey',
+                          style='box-style',
+                          label=_('escapeKey'),
+                          value_block=True,
+                          help_string=_('escape key'),
+                          prim_name='escape_key')
+
+        self._parent.lc.def_prim(
+            'escape_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_escape')]))
+
+
+        palette2.add_block('enterKey',
+                          style='box-style',
+                          label=_('enterKey'),
+                          value_block=True,
+                          help_string=_('enter key'),
+                          prim_name='enter_key')
+
+        self._parent.lc.def_prim(
+            'enter_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_enter')]))
+
+
+        '''
         palette2.add_block('simulateSpaceBar',
                   style='basic-style',
                   label=_('simulateSpaceBar'),
@@ -449,6 +579,7 @@ class Xevents(Plugin):
             'down_arrow_event', 0,
             Primitive(self.down_arrow_event))
 
+        '''
 
         palette2.add_block('scrollUp',
                   style='basic-style',
@@ -499,8 +630,10 @@ class Xevents(Plugin):
 
     ################################# Primitives ##############################
 
-    def write_text(self, text):
+    '''
+      def write_text(self, text):
         self._events.write_text(text)
+    '''
 
     def set_x11_mouse(self, x, y):
         self._events.create_absolute_mouse_event(int(x), int(y), self.getPause())
@@ -559,6 +692,7 @@ class Xevents(Plugin):
     def paste_event(self):
         self._events.paste_event()
 
+    '''
     def spacebar_event(self):
         self._events.spacebar_event()
 
@@ -573,12 +707,16 @@ class Xevents(Plugin):
 
     def down_arrow_event(self):
         self._events.down_arrow_event()
+    '''
 
     def scroll_up(self):
         self._events.scroll_up()
 
     def scroll_down(self):
         self._events.scroll_down()
+
+    def simulate_key(self,key):
+        self._events.simulate_key(key)
 
     def _listMode(self, l):
 

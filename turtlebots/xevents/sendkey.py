@@ -134,13 +134,13 @@ class SendKey:
         print cls._display.keycode_to_keysym(63,2)
         print cls._display.keycode_to_keysym(63,3)'''
 
-        if (key == "Left"):
+        if (key == "xe_left_arrow"):
             k = cls._display.keysym_to_keycode(Xlib.XK.XK_Left)
-        elif (key == "Right"):
+        elif (key == "xe_right_arrow"):
             k = cls._display.keysym_to_keycode(Xlib.XK.XK_Right)
-        elif (key == "Up"):
+        elif (key == "xe_up_arrow"):
             k = cls._display.keysym_to_keycode(Xlib.XK.XK_Up)
-        elif (key == "Down"):
+        elif (key == "xe_down_arrow"):
             k = cls._display.keysym_to_keycode(Xlib.XK.XK_Down)
             '''elif (key == "/"):
                 k = cls._display.keysym_to_keycode(Xlib.XK.XK_question)
