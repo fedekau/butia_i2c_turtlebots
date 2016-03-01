@@ -33,6 +33,7 @@ from Xlib.ext import shape
 from Xlib.ext import xinerama
 import gtk
 import logging
+import webbrowser
 
 from sendkey import SendKey
 
@@ -307,3 +308,8 @@ class Events:
 
             for key in splitted_text:
                 SendKey.send_key(key)
+
+
+    def browser(self,url):
+
+        webbrowser.open(url, new=0, autoraise=True)

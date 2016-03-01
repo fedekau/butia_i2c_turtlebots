@@ -349,6 +349,18 @@ class Xevents(Plugin):
             Primitive(self.set_line_height, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
 
+        palette.add_block('webBrowser',
+                          style='basic-style-1arg',
+                          label=_('webBrowser'),
+                          default=[_("http://www.example.com")],
+                          help_string=_('simulates opening a web browser'),
+                          prim_name='browser')
+
+        self._parent.lc.def_prim(
+            'browser', 1,
+            Primitive(self.browser, arg_descs=[ArgSlot(TYPE_STRING)]))
+
+
         palette2.add_block('simulateCopy',
                           style='basic-style',
                           label=_('simulateCopy'),
@@ -573,3 +585,8 @@ class Xevents(Plugin):
       else:
         #print 0
         return 0
+
+
+    def browser(self, url):
+
+      self._events.browser(url)
