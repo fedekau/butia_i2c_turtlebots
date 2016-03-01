@@ -88,6 +88,7 @@ class Xevents(Plugin):
                                 colors=["#FF6060", "#A06060"], 
                                 help_string=_('Palette of X11 extra event blocks'))
 
+
         palette.add_block('setX11mouse',
                           style='basic-style-2arg',
                           label=_('setXY'),
@@ -97,12 +98,22 @@ class Xevents(Plugin):
                                         'x y coordinates'),
                           prim_name='set_x11_mouse')
 
+        self._parent.lc.def_prim(
+            'set_x11_mouse', 2,
+            Primitive(self.set_x11_mouse, arg_descs=[ArgSlot(TYPE_NUMBER),
+                                                     ArgSlot(TYPE_NUMBER)]))
+
         palette.add_block('getX11mouseX',
                           style='box-style',
                           label=_('getMouseX'),
                           value_block=True,
                           help_string=_('get the mouse pointer x coordinate'),
                           prim_name='get_x11_mouse_x')
+
+        self._parent.lc.def_prim(
+            'get_x11_mouse_x', 0,
+            Primitive(self.get_x11_mouse_x, TYPE_INT))
+
 
         palette.add_block('getX11mouseY',
                           style='box-style',
@@ -111,12 +122,22 @@ class Xevents(Plugin):
                           help_string=_('get the mouse pointer y coordinate'),
                           prim_name='get_x11_mouse_y')
 
+        self._parent.lc.def_prim(
+            'get_x11_mouse_y', 0,
+            Primitive(self.get_x11_mouse_y, TYPE_INT))
+
+
         palette.add_block('leftClick',
                           style='box-style',
                           label=_('leftClick'),
                           value_block=True,
                           help_string=_('click left click'),
                           prim_name='left_click')
+
+        self._parent.lc.def_prim(
+            'left_click', 0,
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('left_click')]))
+
 
         palette.add_block('rightClick',
                           style='box-style',
@@ -125,19 +146,10 @@ class Xevents(Plugin):
                           help_string=_('click right click'),
                           prim_name='right_click')
 
-        palette.add_block('true',
-                          style='box-style',
-                          label=_('true'),
-                          value_block=True,
-                          help_string=_('true'),
-                          prim_name='true')
+        self._parent.lc.def_prim(
+            'right_click', 0,
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('right_click')]))
 
-        palette.add_block('false',
-                          style='box-style',
-                          label=_('false'),
-                          value_block=True,
-                          help_string=_('false'),
-                          prim_name='false')
 
         palette.add_block('click',
                           style='basic-style-1arg',
@@ -147,6 +159,11 @@ class Xevents(Plugin):
                           help_string=_('simulate a mouse click'),
                           prim_name='click')
 
+        self._parent.lc.def_prim(
+            'click', 1,
+            Primitive(self.click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
+
         palette.add_block('doubleClick',
                           style='basic-style-1arg',
                           label=_('double click'),
@@ -155,6 +172,11 @@ class Xevents(Plugin):
                           help_string=_('simulate a mouse double click'),
                           prim_name='double_click')
 
+        self._parent.lc.def_prim(
+            'double_click', 1,
+            Primitive(self.double_click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
+
         palette.add_block('getScreenWidth',
                           style='box-style',
                           label=_('getScreenWidth'),
@@ -162,12 +184,22 @@ class Xevents(Plugin):
                           help_string=_('get the screen width'),
                           prim_name='get_screen_width')
 
+        self._parent.lc.def_prim(
+            'get_screen_width', 0,
+            Primitive(self.get_screen_width, TYPE_INT))
+
+
         palette.add_block('getScreenHeight',
                           style='box-style',
                           label=_('getScreenHeight'),
                           value_block=True,
                           help_string=_('get the screen height'),
                           prim_name='get_screen_height')
+
+        self._parent.lc.def_prim(
+            'get_screen_height', 0,
+            Primitive(self.get_screen_height, TYPE_INT))
+
 
         palette.add_block('pressButton',
                           style='basic-style-1arg',
@@ -177,6 +209,11 @@ class Xevents(Plugin):
                           help_string=_('keeps button pressed'),
                           prim_name='press_button')
 
+        self._parent.lc.def_prim(
+            'press_button', 1,
+            Primitive(self.press_button, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
+
         palette.add_block('releaseButton',
                           style='basic-style-1arg',
                           label=_('releaseButton'),
@@ -185,6 +222,11 @@ class Xevents(Plugin):
                           help_string=_('releases button'),
                           prim_name='release_button')
 
+        self._parent.lc.def_prim(
+            'release_button', 1,
+            Primitive(self.release_button, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
+
         palette.add_block('freeze',
                           style='basic-style-1arg',
                           label=_('freeze bar'),
@@ -192,6 +234,11 @@ class Xevents(Plugin):
                           default=[0],
                           help_string=_('freeze the bar'),
                           prim_name='freeze')
+
+        self._parent.lc.def_prim(
+            'freeze', 1,
+            Primitive(self.setPause, arg_descs=[ArgSlot(TYPE_INT)]))
+
 
         palette.add_block('setLineColorRGB',
                           hidden=True,
@@ -202,10 +249,19 @@ class Xevents(Plugin):
                           help_string=_('set line color from rgb value'),
                           prim_name='set_line_color_rgb')
 
+        self._parent.lc.def_prim(
+            'set_line_color_rgb', 3,
+            Primitive(self.set_line_color_rgb,
+                      arg_descs=[ArgSlot(TYPE_INT),
+                                 ArgSlot(TYPE_INT),
+                                 ArgSlot(TYPE_INT)]))
+
+
         palette.add_block('setLineColorRGBmacro',
                           style='basic-style-extended-vertical',
                           label=_('setLineColorRGB'),
                           help_string=_('set line color from rgb value'))
+
 
         palette.add_block('setLineColor',
                           style='basic-style-1arg',
@@ -213,6 +269,11 @@ class Xevents(Plugin):
                           value_block=True,
                           help_string=_('set line color'),
                           prim_name='set_line_color')
+
+        self._parent.lc.def_prim(
+            'set_line_color', 1,
+            Primitive(self.set_line_color, arg_descs=[ArgSlot(TYPE_COLOR)]))
+
 
         palette.add_block('setLineOpacity',
                           style='basic-style-1arg',
@@ -222,6 +283,11 @@ class Xevents(Plugin):
                           help_string=_('set line opacity'),
                           prim_name='set_line_opacity')
 
+        self._parent.lc.def_prim(
+            'set_line_opacity', 1,
+            Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
+
         palette.add_block('showLine',
                           style='basic-style-1arg',
                           label=_('showLine'),
@@ -229,6 +295,11 @@ class Xevents(Plugin):
                           default=[1],
                           help_string=_('show vertical line over mouse'),
                           prim_name='show_line')
+
+        self._parent.lc.def_prim(
+            'show_line', 1,
+            Primitive(self.show_line, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
 
         palette.add_block('setLineWidth',
                           style='basic-style-1arg',
@@ -238,6 +309,11 @@ class Xevents(Plugin):
                           help_string=_('width of vertical line over mouse'),
                           prim_name='set_line_width')
 
+        self._parent.lc.def_prim(
+            'set_line_width', 1,
+            Primitive(self.set_line_width, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
+
         palette.add_block('setLineHeight',
                           style='basic-style-1arg',
                           label=_('setLineHeight'),
@@ -245,6 +321,11 @@ class Xevents(Plugin):
                           default=[0],
                           help_string=_('height of vertical line over mouse'),
                           prim_name='set_line_height')
+
+        self._parent.lc.def_prim(
+            'set_line_height', 1,
+            Primitive(self.set_line_height, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
 
         palette.add_block('setLineWidthAndHeight',
                           hidden=True,
@@ -255,10 +336,18 @@ class Xevents(Plugin):
                           help_string=_('set width and height of line over mouse'),
                           prim_name='set_line_width_and_height')
 
+        self._parent.lc.def_prim(
+            'set_line_width_and_height', 2,
+            Primitive(self.set_line_width_and_height,
+                      arg_descs=[ArgSlot(TYPE_NUMBER),
+                                 ArgSlot(TYPE_NUMBER)]))
+
+
         palette.add_block('setLineWidthAndHeightmacro',
                           style='basic-style-extended-vertical',
                           label=_('setLineWidthAndHeight'),
                           help_string=_('set width and height of line over mouse'))
+
 
         palette2.add_block('simulateCopy',
                           style='basic-style',
@@ -266,18 +355,33 @@ class Xevents(Plugin):
                           help_string=_('simulate copy event'),
                           prim_name='copy_event')
 
+        self._parent.lc.def_prim(
+            'copy_event', 0,
+            Primitive(self.copy_event))
+
+
         palette2.add_block('simulatePaste',
                           style='basic-style',
                           label=_('simulatePaste'),
                           help_string=_('simulate paste event'),
                           prim_name='paste_event')
 
+        self._parent.lc.def_prim(
+            'paste_event', 0,
+            Primitive(self.paste_event))
+
+
         palette2.add_block('writeText',
                           style='basic-style-1arg',
                           label=_('writeText'),
-		          default=[_("Write your text")],
+		                      default=[_("Write your text")],
                           help_string=_('simulates writing a text'),
                           prim_name='write_text')
+
+        self._parent.lc.def_prim(
+            'write_text', 1,
+            Primitive(self.write_text, arg_descs=[ArgSlot(TYPE_STRING)]))
+
 
         palette2.add_block('simulateSpaceBar',
                   style='basic-style',
@@ -285,11 +389,21 @@ class Xevents(Plugin):
                   help_string=_('simulate spacebar event'),
                   prim_name='spacebar_event')
 
+        self._parent.lc.def_prim(
+            'spacebar_event', 0,
+            Primitive(self.spacebar_event))
+
+
         palette2.add_block('simulateLeftArrow',
                   style='basic-style',
                   label=_('simulateLeftArrow'),
                   help_string=_('simulate left arrow event'),
                   prim_name='left_arrow_event')
+
+        self._parent.lc.def_prim(
+            'left_arrow_event', 0,
+            Primitive(self.left_arrow_event))
+
 
         palette2.add_block('simulateRightArrow',
                   style='basic-style',
@@ -297,11 +411,21 @@ class Xevents(Plugin):
                   help_string=_('simulate right arrow event'),
                   prim_name='right_arrow_event')
 
+        self._parent.lc.def_prim(
+            'right_arrow_event', 0,
+            Primitive(self.right_arrow_event))
+
+
         palette2.add_block('simulateUpArrow',
                   style='basic-style',
                   label=_('simulateUpArrow'),
                   help_string=_('simulate up arrow event'),
                   prim_name='up_arrow_event')
+
+        self._parent.lc.def_prim(
+            'up_arrow_event', 0,
+            Primitive(self.up_arrow_event))
+
 
         palette2.add_block('simulateDownArrow',
                   style='basic-style',
@@ -310,126 +434,8 @@ class Xevents(Plugin):
                   prim_name='down_arrow_event')
 
         self._parent.lc.def_prim(
-            'set_x11_mouse', 2,
-            Primitive(self.set_x11_mouse, arg_descs=[ArgSlot(TYPE_NUMBER),
-                                                     ArgSlot(TYPE_NUMBER)]))
-        self._parent.lc.def_prim(
-            'get_x11_mouse_x', 0,
-            Primitive(self.get_x11_mouse_x, TYPE_INT))
-
-        self._parent.lc.def_prim(
-            'copy_event', 0,
-            Primitive(self.copy_event))
-
-        self._parent.lc.def_prim(
-            'paste_event', 0,
-            Primitive(self.paste_event))
-
-        self._parent.lc.def_prim(
-            'spacebar_event', 0,
-            Primitive(self.spacebar_event))
-
-        self._parent.lc.def_prim(
-            'left_arrow_event', 0,
-            Primitive(self.left_arrow_event))
-
-        self._parent.lc.def_prim(
-            'right_arrow_event', 0,
-            Primitive(self.right_arrow_event))
-
-        self._parent.lc.def_prim(
-            'up_arrow_event', 0,
-            Primitive(self.up_arrow_event))
-
-        self._parent.lc.def_prim(
             'down_arrow_event', 0,
             Primitive(self.down_arrow_event))
-
-        self._parent.lc.def_prim(
-            'get_x11_mouse_y', 0,
-            Primitive(self.get_x11_mouse_y, TYPE_INT))
-
-        self._parent.lc.def_prim(
-            'write_text', 1,
-            Primitive(self.write_text, arg_descs=[ArgSlot(TYPE_STRING)]))
-
-
-        self._parent.lc.def_prim(
-            'left_click', 0,
-            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('left_click')]))
-
-        self._parent.lc.def_prim(
-            'right_click', 0,
-            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('right_click')]))
-
-        self._parent.lc.def_prim(
-            'true', 0,
-            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('TRUE')]))
-
-        self._parent.lc.def_prim(
-            'false', 0,
-            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('FALSE')]))
-
-        self._parent.lc.def_prim(
-            'click', 1,
-            Primitive(self.click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
-        self._parent.lc.def_prim(
-            'double_click', 1,
-            Primitive(self.double_click, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
-        self._parent.lc.def_prim(
-            'get_screen_width', 0,
-            Primitive(self.get_screen_width, TYPE_INT))
-
-        self._parent.lc.def_prim(
-            'get_screen_height', 0,
-            Primitive(self.get_screen_height, TYPE_INT))
-
-        self._parent.lc.def_prim(
-            'press_button', 1,
-            Primitive(self.press_button, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
-        self._parent.lc.def_prim(
-            'release_button', 1,
-            Primitive(self.release_button, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
-        self._parent.lc.def_prim(
-            'set_line_color', 1,
-            Primitive(self.set_line_color, arg_descs=[ArgSlot(TYPE_COLOR)]))
-
-        self._parent.lc.def_prim(
-            'freeze', 1,
-            Primitive(self.setPause, arg_descs=[ArgSlot(TYPE_INT)]))
-
-        self._parent.lc.def_prim(
-            'set_line_color_rgb', 3,
-            Primitive(self.set_line_color_rgb,
-                      arg_descs=[ArgSlot(TYPE_INT),
-                                 ArgSlot(TYPE_INT),
-                                 ArgSlot(TYPE_INT)]))
-
-        self._parent.lc.def_prim(
-            'show_line', 1,
-            Primitive(self.show_line, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
-        self._parent.lc.def_prim(
-            'set_line_opacity', 1,
-            Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-        
-        self._parent.lc.def_prim(
-            'set_line_width', 1,
-            Primitive(self.set_line_width, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
-        self._parent.lc.def_prim(
-            'set_line_height', 1,
-            Primitive(self.set_line_height, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
-        self._parent.lc.def_prim(
-            'set_line_width_and_height', 2,
-            Primitive(self.set_line_width_and_height,
-                      arg_descs=[ArgSlot(TYPE_NUMBER),
-                                 ArgSlot(TYPE_NUMBER)]))
 
 
     ############################# Turtle calls ################################
