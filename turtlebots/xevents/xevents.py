@@ -53,6 +53,7 @@ class Xevents(Plugin):
         self.pause = 0
         self._events = Events()
         self._buttons = {} #previous values from buttons {key:[value, lastDebounceTime]}
+        self._last_event = 0
 
 
     def setPause(self):
@@ -75,7 +76,7 @@ class Xevents(Plugin):
         CONSTANTS['TRUE'] = True
         CONSTANTS['FALSE'] = False
 
-        CONSTANTS['xe_buffer_size'] = 10
+        CONSTANTS['xe_buffer_size'] = 30
         CONSTANTS['xe_spacebar'] = " "
         CONSTANTS['xe_left_arrow'] = "xe_left_arrow"
         CONSTANTS['xe_right_arrow'] = "xe_right_arrow"
@@ -93,11 +94,12 @@ class Xevents(Plugin):
                                           [3, ['number', 0], 0, 0, [0, None]]
                                          ]
 
+        '''
         MACROS['setLineWidthAndHeightmacro'] = [[0, 'setLineWidthAndHeight', 0, 0, [None, 1, 2, None]],
                                                 [1, ['number', 0], 0, 0, [0, None]],
                                                 [2, ['number', 0], 0, 0, [0, None]]
                                                ]
-
+        '''
 
         palette = make_palette('xlib-bots',
                                colors=["#FF6060", "#A06060"],
@@ -357,6 +359,7 @@ class Xevents(Plugin):
             Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
 
+        '''
         palette.add_block('setLineWidthAndHeight',
                           hidden=True,
                           style='basic-style-2arg',
@@ -377,6 +380,7 @@ class Xevents(Plugin):
                           label=_('setLineWidthAndHeight'),
                           help_string=_('set width and height of line over mouse'))
 
+        '''
 
         palette.add_block('setLineWidth',
                           style='basic-style-1arg',
@@ -727,8 +731,11 @@ class Xevents(Plugin):
     def set_line_height(self, height):
         self._events.set_line_height(height)
 
-    def set_line_width_and_height(self, width, height):
+    '''
+    def selfet_line_width_and_height(self, width, height):
         self._events.set_line_width_and_height(width, height)
+
+    '''
 
     def copy_event(self):
         self._events.copy_event()
@@ -762,6 +769,10 @@ class Xevents(Plugin):
     def simulate_key(self,key):
         self._events.simulate_key(key)
 
+    def browser(self, url):
+
+      self._events.browser(url)
+
     def _listMode(self, l):
 
       data = Counter(l)
@@ -771,20 +782,29 @@ class Xevents(Plugin):
       else:
         return 0
           
-    def debounce(self, buttonState, buttonName):
-              
+    def debounce(self, buttonName, buttonState):
+      
+      
+      current_time = int(round(time.time()*1000))
+      #print current_time - self._last_event
+      self._last_event = current_time
+
       #deboucing - recolectar lecturas en cierto tiempo y evaluar la cantidad de 0 y 1's
       #self.buttons -> key:[]
       if not self._buttons.has_key(buttonName):
         self._buttons[buttonName] = []
-        
+      
       self._buttons[buttonName].append(buttonState)
-        
-        
+
+      #Keep the buffer at xe_buffer_size
       if len(self._buttons[buttonName]) > CONSTANTS['xe_buffer_size']:
         self._buttons[buttonName].pop(0)
+
+      #print self._buttons[buttonName]
+
         
-      if buttonState == 0 and self._listMode(self._buttons[buttonName]) == 1:
+      #if buttonState == 0 and self._listMode(self._buttons[buttonName]) == 1:
+      if self._listMode(self._buttons[buttonName]) == 1:
         #print buttonState
         #print buttonName
         #print self._buttons[buttonName]
@@ -795,8 +815,3 @@ class Xevents(Plugin):
       else:
         #print 0
         return 0
-
-
-    def browser(self, url):
-
-      self._events.browser(url)

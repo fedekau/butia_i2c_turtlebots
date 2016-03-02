@@ -356,9 +356,6 @@ class Events:
         self.press_button(button)
         self.release_button(button)
 
-        #ext.xtest.fake_input(self._display, X.ButtonPress, button)
-        #self._display.sync()
-
 
     def scroll_up(self):
         
