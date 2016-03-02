@@ -372,6 +372,11 @@ class Xevents(Plugin):
                       arg_descs=[ArgSlot(TYPE_NUMBER),
                                  ArgSlot(TYPE_NUMBER)]))
 
+        palette.add_block('setLineWidthAndHeightmacro',
+                          style='basic-style-extended-vertical',
+                          label=_('setLineWidthAndHeight'),
+                          help_string=_('set width and height of line over mouse'))
+
 
         palette.add_block('setLineWidth',
                           style='basic-style-1arg',

@@ -91,7 +91,10 @@ class Events:
 
     def set_line_width(self, width):
 
-        self._window.set_size_request(int(width), self._window.get_screen().get_height())
+        #self._window.set_size_request(int(width), self._window.get_screen().get_height())
+
+        w, h = self._window.get_size()
+        self._window.resize(int(width),h)
 
         if self._debug:
             print "width:%s" % width
@@ -100,7 +103,10 @@ class Events:
 
     def set_line_height(self, height):
 
-        self._window.set_size_request(self._window.get_screen().get_width(), int(height))
+        #self._window.set_size_request(self._window.get_screen().get_width(), int(height))
+        w, h = self._window.get_size()
+
+        self._window.resize(w, int(height))
 
         if self._debug:
             print "height:%s" % height
@@ -135,12 +141,17 @@ class Events:
 
     def set_line_color_rgb(self, red, green, blue):
 
-        red_hex = "%s" % hex(int(red)).split("x")[1]
-        green_hex = "%s" % hex(int(green)).split("x")[1]
-        blue_hex = "%s" % hex(int(blue)).split("x")[1]
+        # Numbers must be between 0-255
+        r, g, b = (min(255, max(0, c)) for c in (red, green, blue))
+
+        red_hex = hex(int(r))[2:].zfill(2)
+        green_hex = hex(int(g))[2:].zfill(2)
+        blue_hex = hex(int(b))[2:].zfill(2)
         c_hex = "#%s%s%s" % (red_hex, green_hex, blue_hex)
+
         color = gtk.gdk.color_parse(c_hex)
         self._window.modify_bg(gtk.STATE_NORMAL, color)
+
 
 
     def create_relative_mouse_event(self, dx, dy):
