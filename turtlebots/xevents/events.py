@@ -95,9 +95,10 @@ class Events:
     def set_line_width(self, width):
 
         #self._window.set_size_request(int(width), self._window.get_screen().get_height())
-
         w, h = self._window.get_size()
+
         self._window.resize(int(width),h)
+        #self._window.set_size_request(int(width), h)
 
         if self._debug:
             print "width:%s" % width
@@ -266,65 +267,6 @@ class Events:
             return False
 
 
-    '''def spacebar_event(self):
-        """Simulates pressing spacebar key"""
-
-        if self._allow_event():
-            SendKey.send_key(" ")
-            if self._debug:
-                print "spacebar action called"
- 
-
-    def left_arrow_event(self):
-        """Simulates pressing left arrow key"""
-
-        if self._allow_event():
-            SendKey.send_key("Left")
-            if self._debug:
-                print "left arrow action called"
-
-
-    def right_arrow_event(self):
-        """Simulates pressing right arrow key"""
-        
-        if self._allow_event():  
-            SendKey.send_key("Right")
-            if self._debug:
-                print "right arrow action called"           
-
-
-    def up_arrow_event(self):
-        """Simulates pressing up arrow key"""
-
-        if self._allow_event():
-            SendKey.send_key("Up")
-            if self._debug:
-                print "up arrow action called"        
-
-
-    def down_arrow_event(self):
-        """Simulates pressing down arrow key"""
-
-        if self._allow_event():
-            SendKey.send_key("Down")
-            if self._debug:
-                print "down arrow action called"
-
-
-    def write_text(self, text):
-        """Simulates writing some text"""
-
-        if self._allow_event():
-            if self._debug:
-                logging.debug(text)
-
-            splitted_text = list(text)
-
-            for key in splitted_text:
-                SendKey.send_key(key)
-
-    '''
-
     def simulate_key(self, text):
 
         if self._allow_event():
@@ -377,7 +319,7 @@ class Events:
             command = "{0} {1}".format(program, arguments)
             #os.system(command)
             #subprocess.call(command,shell=True)
-            subprocess.check_output(command,stderr=subprocess.STDOUT, shell=True)
+            subprocess.call(command,stderr=subprocess.STDOUT, shell=True)
 
         #except OSError:
         except subprocess.CalledProcessError:

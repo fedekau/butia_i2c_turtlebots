@@ -94,12 +94,12 @@ class Xevents(Plugin):
                                           [3, ['number', 0], 0, 0, [0, None]]
                                          ]
 
-        '''
+        
         MACROS['setLineWidthAndHeightmacro'] = [[0, 'setLineWidthAndHeight', 0, 0, [None, 1, 2, None]],
                                                 [1, ['number', 0], 0, 0, [0, None]],
                                                 [2, ['number', 0], 0, 0, [0, None]]
                                                ]
-        '''
+        
 
         palette = make_palette('xlib-bots',
                                colors=["#FF6060", "#A06060"],
@@ -261,7 +261,6 @@ class Xevents(Plugin):
 
 
         '''
-
         palette.add_block('freeze',
                           style='basic-style-1arg',
                           label=_('freeze bar'),
@@ -359,7 +358,6 @@ class Xevents(Plugin):
             Primitive(self.set_line_opacity, arg_descs=[ArgSlot(TYPE_NUMBER)]))
 
 
-        '''
         palette.add_block('setLineWidthAndHeight',
                           hidden=True,
                           style='basic-style-2arg',
@@ -380,7 +378,7 @@ class Xevents(Plugin):
                           label=_('setLineWidthAndHeight'),
                           help_string=_('set width and height of line over mouse'))
 
-        '''
+
 
         palette.add_block('setLineWidth',
                           style='basic-style-1arg',
@@ -440,18 +438,6 @@ class Xevents(Plugin):
             'paste_event', 0,
             Primitive(self.paste_event))
 
-
-        '''palette2.add_block('writeText',
-                          style='basic-style-1arg',
-                          label=_('writeText'),
-		                      default=[_("Write your text")],
-                          help_string=_('simulates writing a text'),
-                          prim_name='write_text')
-
-        self._parent.lc.def_prim(
-            'write_text', 1,
-            Primitive(self.write_text, arg_descs=[ArgSlot(TYPE_STRING)]))
-        '''
 
         palette2.add_block('spaceBar',
                           style='box-style',
@@ -560,63 +546,6 @@ class Xevents(Plugin):
             'enter_key', 0,
             Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_enter')]))
 
-
-        '''
-        palette2.add_block('simulateSpaceBar',
-                  style='basic-style',
-                  label=_('simulateSpaceBar'),
-                  help_string=_('simulate spacebar event'),
-                  prim_name='spacebar_event')
-
-        self._parent.lc.def_prim(
-            'spacebar_event', 0,
-            Primitive(self.spacebar_event))
-
-
-        palette2.add_block('simulateLeftArrow',
-                  style='basic-style',
-                  label=_('simulateLeftArrow'),
-                  help_string=_('simulate left arrow event'),
-                  prim_name='left_arrow_event')
-
-        self._parent.lc.def_prim(
-            'left_arrow_event', 0,
-            Primitive(self.left_arrow_event))
-
-
-        palette2.add_block('simulateRightArrow',
-                  style='basic-style',
-                  label=_('simulateRightArrow'),
-                  help_string=_('simulate right arrow event'),
-                  prim_name='right_arrow_event')
-
-        self._parent.lc.def_prim(
-            'right_arrow_event', 0,
-            Primitive(self.right_arrow_event))
-
-
-        palette2.add_block('simulateUpArrow',
-                  style='basic-style',
-                  label=_('simulateUpArrow'),
-                  help_string=_('simulate up arrow event'),
-                  prim_name='up_arrow_event')
-
-        self._parent.lc.def_prim(
-            'up_arrow_event', 0,
-            Primitive(self.up_arrow_event))
-
-
-        palette2.add_block('simulateDownArrow',
-                  style='basic-style',
-                  label=_('simulateDownArrow'),
-                  help_string=_('simulate down arrow event'),
-                  prim_name='down_arrow_event')
-
-        self._parent.lc.def_prim(
-            'down_arrow_event', 0,
-            Primitive(self.down_arrow_event))
-
-        '''
 
         palette2.add_block('scrollUp',
                   style='basic-style',
@@ -743,35 +672,15 @@ class Xevents(Plugin):
 
     def set_line_height(self, height):
         self._events.set_line_height(height)
-
-    '''
-    def selfet_line_width_and_height(self, width, height):
+    
+    def set_line_width_and_height(self, width, height):
         self._events.set_line_width_and_height(width, height)
-
-    '''
 
     def copy_event(self):
         self._events.copy_event()
 
     def paste_event(self):
         self._events.paste_event()
-
-    '''
-    def spacebar_event(self):
-        self._events.spacebar_event()
-
-    def left_arrow_event(self):
-        self._events.left_arrow_event()
-
-    def right_arrow_event(self):
-        self._events.right_arrow_event()
-
-    def up_arrow_event(self):
-        self._events.up_arrow_event()
-
-    def down_arrow_event(self):
-        self._events.down_arrow_event()
-    '''
 
     def scroll_up(self):
         self._events.scroll_up()
