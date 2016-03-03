@@ -369,23 +369,53 @@ class Events:
         
         self._scroll(5)
 
-    def open_program(self, program, arguments):
+    def open_program(self, program):
+
+        arguments = ""
+
         try:
-            os.system("{0} {1}".format(program, arguments))
-            result = subprocess.check_output("{0} {1}".format(program, arguments))
-        except OSError:
-            print "except"
-            searchPath = subprocess.check_output(["locate", program])
-            print searchPath.split("\n")[0]
-            os.chdir(searchPath.split("\n")[0])
-            print "changed!"
-            #find -type f -executable -exec file -i '{}' \; | grep 'x-executable; charset=binary'
-            result = subprocess.Popen("find -type f -executable -exec file -i '{}' \;", shell=True, stdout=subprocess.PIPE).stdout.read()
-            resultfiltered = []
-            print result.split("\n")
-            for file in result.split("\n"):
-                resultfiltered.append(file.split(":")[0])
-            for file in resultfiltered:
-                if re.search(program, file):
-                    print file
-                    os.system("sh {0} {1}".format(file, arguments))
+            command = "{0} {1}".format(program, arguments)
+            #os.system(command)
+            #subprocess.call(command,shell=True)
+            subprocess.check_output(command,stderr=subprocess.STDOUT, shell=True)
+
+        #except OSError:
+        except subprocess.CalledProcessError:
+
+            #print "except"
+
+            #Move to binaries folder
+            os.chdir("/usr/bin")
+            r = subprocess.Popen("find -type f -executable -exec file -i '{}' \;", shell=True, stdout=subprocess.PIPE).stdout.read()
+            results = r.split("\n")
+
+            filtered_results = []
+
+            #Filter results
+            for f in results:
+                filtered_results.append(f.split(":")[0])
+
+
+            if self._debug:
+                print "Retrieving executables list"
+
+            found = False
+            i = 0
+
+            while (not found) and (i < len(filtered_results)):
+                f = filtered_results[i]
+                i += 1
+
+                if self._debug:
+                    print "Processing " + f
+
+                if re.search(program,f):
+                    found = True
+                    if self._debug:
+                        print f + " found"
+            
+            if found:
+                subprocess.call(f, shell=True)
+                #os.system("sh {0} {1}".format(file, arguments))
+                
+

@@ -653,28 +653,28 @@ class Xevents(Plugin):
           Primitive(self.debounce, arg_descs=[ArgSlot(TYPE_STRING),
                                               ArgSlot(TYPE_NUMBER)]))
 
-        palette2.add_block('webBrowser',
+        palette2.add_block('openBrowser',
                           style='basic-style-1arg',
-                          label=_('webBrowser'),
+                          label=_('openBrowser'),
                           default=[_("http://www.example.com")],
                           help_string=_('simulates opening a web browser'),
                           prim_name='browser')
-
-        palette2.add_block('openProgram',
-                           style='basic-style-2arg',
-                           label=[_("openProgram"), _("program"), _("args")],
-                           default=['', ''],
-                           help_string=_('open program'),
-                           prim_name='open_program'
-                           )
 
         self._parent.lc.def_prim(
             'browser', 1,
             Primitive(self.browser, arg_descs=[ArgSlot(TYPE_STRING)]))
 
+        palette2.add_block('openProgram',
+                           style='basic-style-1arg',
+                           label=_("openProgram"),
+                           default=[_("name")],
+                           help_string=_('open program'),
+                           prim_name='open_program'
+                           )
+
         self._parent.lc.def_prim(
-            'open_program', 2,
-            Primitive(self.open_program, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)])
+            'open_program', 1,
+            Primitive(self.open_program, arg_descs=[ArgSlot(TYPE_STRING)])
         )
 
 
@@ -796,8 +796,7 @@ class Xevents(Plugin):
         return 0
           
     def debounce(self, buttonName, buttonState):
-      
-      
+       
       current_time = int(round(time.time()*1000))
       #print current_time - self._last_event
       self._last_event = current_time
@@ -829,7 +828,8 @@ class Xevents(Plugin):
         #print 0
         return 0
 
-    def open_program(self, program, args):
-        self._events.open_program(program, args)
+    def open_program(self, program):
+
+        self._events.open_program(program)
 
 

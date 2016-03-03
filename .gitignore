@@ -51,3 +51,8 @@ butialo/Butialo.activity/locale
 changeid/BAX12ID.activity/locale
 firmware/ButiaFirmware.activity/locale
 newPatterns/NewPatterns.activity/locale
+
+#ignore idea files
+.idea/*
+
+
