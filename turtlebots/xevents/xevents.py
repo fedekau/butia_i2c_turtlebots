@@ -660,9 +660,22 @@ class Xevents(Plugin):
                           help_string=_('simulates opening a web browser'),
                           prim_name='browser')
 
+        palette2.add_block('openProgram',
+                           style='basic-style-2arg',
+                           label=[_("openProgram"), _("program"), _("args")],
+                           default=['', ''],
+                           help_string=_('open program'),
+                           prim_name='open_program'
+                           )
+
         self._parent.lc.def_prim(
             'browser', 1,
             Primitive(self.browser, arg_descs=[ArgSlot(TYPE_STRING)]))
+
+        self._parent.lc.def_prim(
+            'open_program', 2,
+            Primitive(self.open_program, arg_descs=[ArgSlot(TYPE_STRING), ArgSlot(TYPE_STRING)])
+        )
 
 
     ############################# Turtle calls ################################
@@ -815,3 +828,8 @@ class Xevents(Plugin):
       else:
         #print 0
         return 0
+
+    def open_program(self, program, args):
+        self._events.open_program(program, args)
+
+

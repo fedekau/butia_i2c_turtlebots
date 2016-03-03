@@ -32,8 +32,11 @@ from Xlib.ext import record
 from Xlib.ext import shape
 from Xlib.ext import xinerama
 import gtk
+import os
+import subprocess
 import logging
 import webbrowser
+import re
 
 from sendkey import SendKey
 
@@ -365,3 +368,24 @@ class Events:
     def scroll_down(self):
         
         self._scroll(5)
+
+    def open_program(self, program, arguments):
+        try:
+            os.system("{0} {1}".format(program, arguments))
+            result = subprocess.check_output("{0} {1}".format(program, arguments))
+        except OSError:
+            print "except"
+            searchPath = subprocess.check_output(["locate", program])
+            print searchPath.split("\n")[0]
+            os.chdir(searchPath.split("\n")[0])
+            print "changed!"
+            #find -type f -executable -exec file -i '{}' \; | grep 'x-executable; charset=binary'
+            result = subprocess.Popen("find -type f -executable -exec file -i '{}' \;", shell=True, stdout=subprocess.PIPE).stdout.read()
+            resultfiltered = []
+            print result.split("\n")
+            for file in result.split("\n"):
+                resultfiltered.append(file.split(":")[0])
+            for file in resultfiltered:
+                if re.search(program, file):
+                    print file
+                    os.system("sh {0} {1}".format(file, arguments))
