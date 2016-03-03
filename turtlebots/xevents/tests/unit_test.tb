@@ -27,7 +27,7 @@
 [26, "print", 1021, 332, [96, 8, null]],
 [27, ["hat", 0], 1033, 1097, [null, 28, 82]],
 [28, ["string", "EstablecerAncho"], 1092, 1109, [27, null]],
-[29, "webBrowser", 1026, 616, [98, 30, null]],
+[29, "openBrowser", 1026, 616, [98, 30, null]],
 [30, ["string", "http://www.fing.edu.uy"], 1133, 616, [29, null]],
 [31, ["hat", 0], 1025, 510, [null, 32, 33]],
 [32, ["string", "TestBrowser"], 1084, 522, [31, null]],
