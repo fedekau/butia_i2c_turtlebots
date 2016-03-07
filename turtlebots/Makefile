@@ -327,7 +327,7 @@ plugin-rodi: apply_hard_plugins
 
 plugin-xevents: apply_hard_plugins
 	cp stagin/plugins/xevents/plugin.info $(BUILDDIR)/plugins
-	cd $(BUILDDIR)/plugins && tar -czvf xevents_plugin.tar.gz rodi/* plugin.info
+	cd $(BUILDDIR)/plugins && tar -czvf xevents_plugin.tar.gz xevents/* plugin.info
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/xevents_plugin.tar.gz .
 
