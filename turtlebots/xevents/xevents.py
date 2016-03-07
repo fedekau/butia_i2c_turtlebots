@@ -379,7 +379,7 @@ class Xevents(Plugin):
                           help_string=_('set width and height of line over mouse'))
 
 
-
+        '''
         palette.add_block('setLineWidth',
                           style='basic-style-1arg',
                           label=_('setLineWidth'),
@@ -404,7 +404,7 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'set_line_height', 1,
             Primitive(self.set_line_height, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
+        '''
 
         palette2.add_block('simulateKey',
                           style='basic-style-1arg',
@@ -667,12 +667,14 @@ class Xevents(Plugin):
     def set_line_color_rgb(self, red, green, blue):
         self._events.set_line_color_rgb(red, green, blue)
 
+    '''
     def set_line_width(self, width):
         self._events.set_line_width(width)
 
     def set_line_height(self, height):
         self._events.set_line_height(height)
-    
+    '''
+
     def set_line_width_and_height(self, width, height):
         self._events.set_line_width_and_height(width, height)
 
