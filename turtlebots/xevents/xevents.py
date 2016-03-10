@@ -72,7 +72,7 @@ class Xevents(Plugin):
         # set up X11 events specific blocks
         global CONSTANTS
         CONSTANTS['left_click'] = 1
-        CONSTANTS['right_click'] = 2
+        CONSTANTS['right_click'] = 3
         CONSTANTS['TRUE'] = True
         CONSTANTS['FALSE'] = False
 
