@@ -52,7 +52,7 @@ class Atyarandu(Plugin):
                 label=_('refresh Energy'),
                 value_block=True,
                 help_string=\
-                    _('updates the status of the pallet and the Energy blocks'),
+                    _('updates the status of the palette and the Energy blocks'),
                 prim_name='engrefreshagh')
         self._parent.lc.def_prim('engrefreshagh', 0,
                 Primitive(self.prim_refresh,

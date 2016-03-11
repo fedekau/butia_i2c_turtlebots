@@ -34,8 +34,8 @@ COLOR_PRESENT = ["#00FF00","#008000"]
 ERROR_DEG_ABS = _('ERROR: The degrees must be between 0 and 300')
 ERROR_SPEED = _('ERROR: The speed must be a value between 0 and 1023')
 ERROR_PIN_VALUE = _('ERROR: The value must be 0 or 1, LOW or HIGH')
-ERROR_NO_CONECTADO = _('ERROR: The board is disconected or the ID is out of range')
-ERROR_ID_NO_VALIDO = _('ERROR: The especified ID is not available')
+ERROR_NO_CONECTADO = _('ERROR: The board is disconnected or the ID is out of range')
+ERROR_ID_NO_VALIDO = _('ERROR: The specified ID is not available')
 
 
 class Ax12(Plugin):
@@ -62,7 +62,7 @@ class Ax12(Plugin):
                      style='box-style',
                      label=_('getID'),
                      prim_name='getID',
-                     help_string=_('return a random ID of the conected AX-motors'))
+                     help_string=_('return a random ID of the connected AX-motors'))
         self.tw.lc.def_prim('getID', 0,
             Primitive(self.getID))
         special_block_colors['getID'] = COLOR_NOTPRESENT[:]

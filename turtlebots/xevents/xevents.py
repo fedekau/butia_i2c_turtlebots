@@ -115,8 +115,7 @@ class Xevents(Plugin):
                           label=_('setXY'),
                           value_block=True,
                           default=[0, 0],
-                          help_string=_('set the mouse pointer to' +
-                                        'x y coordinates'),
+                          help_string=_('set the mouse pointer to x y coordinates'),
                           prim_name='set_x11_mouse')
 
         self._parent.lc.def_prim(
