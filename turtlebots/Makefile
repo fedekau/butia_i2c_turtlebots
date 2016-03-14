@@ -151,7 +151,7 @@ mktmpfolder:
 	rm -f  $(BUILDDIR)/setup.py
 	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity $(BUILDDIR)/
-	cp -f stagin/turtlebots $(BUILDDIR)/
+	#cp -f stagin/turtlebots $(BUILDDIR)/
 	cp -f stagin/turtlebots.desktop $(BUILDDIR)/
 	cp -f stagin/bundlebuilder.py $(BUILDDIR)/setup.py
 
