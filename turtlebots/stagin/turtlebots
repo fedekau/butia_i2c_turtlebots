@@ -29,6 +29,7 @@ if os.path.exists(os.path.join(mydir, "activity", "activity.info")):
 else:
     # Running as installed package
     TAPATH = '/usr/share/sugar/activities/TurtleBots.activity'
+    os.chdir(TAPATH)
     import sys
     sys.path.insert(0, TAPATH)
     libdir = TAPATH
