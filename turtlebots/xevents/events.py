@@ -136,7 +136,7 @@ class Events:
 
     def set_line_color(self, color_name):
 
-        color = gtk.gdk.color_parse(COLORS[color_name.get_number_name()])
+        color = gtk.gdk.color_parse(COLORS[str(color_name)])
         self._window.modify_bg(gtk.STATE_NORMAL, color)
 
         if self._debug:
