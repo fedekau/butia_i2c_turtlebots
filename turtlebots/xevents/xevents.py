@@ -71,8 +71,12 @@ class Xevents(Plugin):
     def setup(self):
         # set up X11 events specific blocks
         global CONSTANTS
-        CONSTANTS['left_click'] = 1
-        CONSTANTS['right_click'] = 3
+
+        CONSTANTS['xe_left_click'] = 1
+        CONSTANTS['xe_right_click'] = 3
+        CONSTANTS['xe_scroll_up'] = 4
+        CONSTANTS['xe_scroll_down'] = 5
+
         CONSTANTS['TRUE'] = True
         CONSTANTS['FALSE'] = False
 
@@ -86,15 +90,21 @@ class Xevents(Plugin):
         CONSTANTS['xe_return'] = "\r"
         CONSTANTS['xe_escape'] =  "\e"
         CONSTANTS['xe_enter'] =  "\n"
+        CONSTANTS['xe_ctrl'] = "xe_ctrl"
+        CONSTANTS['xe_shift'] = "xe_shift"
+        CONSTANTS['xe_alt'] = "xe_alt"
+        CONSTANTS['xe_alt_gr'] = "xe_alt_gr"
+        CONSTANTS['xe_f4'] = "xe_f4"
+        CONSTANTS['xe_f5'] = "xe_f5"
 
         global MACROS
-        MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
+        '''MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],
                                           [1, ['number', 0], 0, 0, [0, None]],
                                           [2, ['number', 0], 0, 0, [0, None]],
                                           [3, ['number', 0], 0, 0, [0, None]]
                                          ]
+        '''
 
-        
         MACROS['setLineWidthAndHeightmacro'] = [[0, 'setLineWidthAndHeight', 0, 0, [None, 1, 2, None]],
                                                 [1, ['number', 0], 0, 0, [0, None]],
                                                 [2, ['number', 0], 0, 0, [0, None]]
@@ -232,7 +242,7 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'left_click', 0,
-            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('left_click')]))
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('xe_left_click')]))
 
 
         palette.add_block('rightClick',
@@ -244,7 +254,31 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'right_click', 0,
-            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('right_click')]))
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('xe_right_click')]))
+
+
+        palette.add_block('scrollUp',
+                          style='box-style',
+                          label=_('scrollUp'),
+                          value_block=True,
+                          help_string=_('simulate mouse scroll up event'),
+                          prim_name='scroll_up')
+
+        self._parent.lc.def_prim(
+            'scroll_up', 0,
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('xe_scroll_up')]))
+
+
+        palette.add_block('scrollDown',
+                          style='box-style',
+                          label=_('scrollDown'),
+                          value_block=True,
+                          help_string=_('simulate mouse scroll down event'),
+                          prim_name='scroll_down')
+
+        self._parent.lc.def_prim(
+            'scroll_down', 0,
+            Primitive(CONSTANTS.get, TYPE_INT, [ConstantArg('xe_scroll_down')]))
 
 
         palette.add_block('freeze',
@@ -309,6 +343,7 @@ class Xevents(Plugin):
             Primitive(self.hide_line))
 
 
+        '''
         palette.add_block('setLineColorRGB',
                           hidden=True,
                           style='basic-style-3arg',
@@ -331,6 +366,7 @@ class Xevents(Plugin):
                           label=_('setLineColorRGB'),
                           help_string=_('set line color from rgb value'))
 
+        '''
 
         palette.add_block('setLineColor',
                           style='basic-style-1arg',
@@ -498,6 +534,54 @@ class Xevents(Plugin):
             Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_down_arrow')]))
 
 
+        palette2.add_block('CtrlKey',
+                          style='box-style',
+                          label=_('ctrlKey'),
+                          value_block=True,
+                          help_string=_('ctrl key'),
+                          prim_name='ctrl_key')
+
+        self._parent.lc.def_prim(
+            'ctrl_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_ctrl')]))
+
+
+        palette2.add_block('ShiftKey',
+                          style='box-style',
+                          label=_('shiftKey'),
+                          value_block=True,
+                          help_string=_('shift key'),
+                          prim_name='shift_key')
+
+        self._parent.lc.def_prim(
+            'shift_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_shift')]))
+
+
+        palette2.add_block('AltKey',
+                          style='box-style',
+                          label=_('altKey'),
+                          value_block=True,
+                          help_string=_('alt key'),
+                          prim_name='alt_key')
+
+        self._parent.lc.def_prim(
+            'alt_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_alt')]))
+
+
+        palette2.add_block('AltGrKey',
+                          style='box-style',
+                          label=_('altGrKey'),
+                          value_block=True,
+                          help_string=_('alt gr key'),
+                          prim_name='altgr_key')
+
+        self._parent.lc.def_prim(
+            'altgr_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_alt_gr')]))
+
+
         palette2.add_block('tabKey',
                           style='box-style',
                           label=_('tabKey'),
@@ -546,6 +630,31 @@ class Xevents(Plugin):
             Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_enter')]))
 
 
+        palette2.add_block('f4Key',
+                          style='box-style',
+                          label=_('f4Key'),
+                          value_block=True,
+                          help_string=_('f4 key'),
+                          prim_name='f4_key')
+
+        self._parent.lc.def_prim(
+            'f4_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_f4')]))
+
+
+        palette2.add_block('f5Key',
+                          style='box-style',
+                          label=_('f5Key'),
+                          value_block=True,
+                          help_string=_('f5 key'),
+                          prim_name='f5_key')
+
+        self._parent.lc.def_prim(
+            'f5_key', 0,
+            Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_f5')]))
+
+
+        '''
         palette2.add_block('scrollUp',
                   style='basic-style',
                   label=_('scrollUp'),
@@ -567,12 +676,13 @@ class Xevents(Plugin):
             'scroll_down', 0,
             Primitive(self.scroll_down))
 
+        '''
 
         palette2.add_block('debounce',
                         style='number-style-block',
-                        label=[_('debounce'), _('unique_name'), _('button') ],
-                        default=["unique name"],
-                        help_string=_('debounce'),
+                        label=[_('debounce'), _('name'), _('button') ],
+                        default=["name"],
+                        help_string=_('Debouncing - The name must be unique'),
                         prim_name='debounce')
         
 
@@ -585,7 +695,7 @@ class Xevents(Plugin):
                           style='basic-style-1arg',
                           label=_('openBrowser'),
                           default=[_("http://www.example.com")],
-                          help_string=_('simulates opening a web browser'),
+                          help_string=_('Simulates opening a web browser'),
                           prim_name='browser')
 
         self._parent.lc.def_prim(
@@ -596,7 +706,7 @@ class Xevents(Plugin):
                            style='basic-style-1arg',
                            label=_("openProgram"),
                            default=[_("name")],
-                           help_string=_('open program'),
+                           help_string=_('Opens a program'),
                            prim_name='open_program'
                            )
 
@@ -605,8 +715,20 @@ class Xevents(Plugin):
             Primitive(self.open_program, arg_descs=[ArgSlot(TYPE_STRING)])
         )
 
+        palette2.add_block('closeProgram',
+                           style='basic-style-1arg',
+                           label=_("closeProgram"),
+                           default=[_("name")],
+                           help_string=_('close a program'),
+                           prim_name='close_program'
+                           )
 
+        self._parent.lc.def_prim(
+            'close_program', 1,
+            Primitive(self.open_program, arg_descs=[ArgSlot(TYPE_STRING)])
+        )
     ############################# Turtle calls ################################
+
 
     def start(self):
         pass
@@ -616,6 +738,7 @@ class Xevents(Plugin):
 
     def quit(self):
         pass
+
 
     ################################# Primitives ##############################
 
@@ -683,11 +806,13 @@ class Xevents(Plugin):
     def paste_event(self):
         self._events.paste_event()
 
+    '''
     def scroll_up(self):
         self._events.scroll_up()
 
     def scroll_down(self):
         self._events.scroll_down()
+    '''
 
     def simulate_key(self,key):
         self._events.simulate_key(key)
@@ -706,7 +831,7 @@ class Xevents(Plugin):
         return 0
           
     def debounce(self, buttonName, buttonState):
-       
+
       current_time = int(round(time.time()*1000))
       #print current_time - self._last_event
       self._last_event = current_time
@@ -741,5 +866,10 @@ class Xevents(Plugin):
     def open_program(self, program):
 
         self._events.open_program(program)
+
+
+    def close_program(self, program):
+
+        self._events.close_program(program)
 
 

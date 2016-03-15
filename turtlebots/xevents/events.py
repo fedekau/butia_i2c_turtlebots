@@ -5,6 +5,7 @@
 # Lucía Carozzi <lucia.carozzi@gmail.com>
 # Maria Eugenia Curi <mauge8@gmail.com>
 # Leonel Peña <lapo26@gmail.com>
+# Andrés Vasilev <andresvasilev@gmail.com>
 #
 # MINA/INCO/UDELAR
 #
@@ -79,6 +80,8 @@ class Events:
                                 gtk.gdk.SCROLL_MASK)
 
         self._last_call_time = 0
+        #Current open program
+        self._p = None
 
 
     def get_screen_resolution(self):
@@ -92,6 +95,7 @@ class Events:
         self._window.set_opacity(opacity)
 
 
+    '''
     def set_line_width(self, width):
 
         #self._window.set_size_request(int(width), self._window.get_screen().get_height())
@@ -115,6 +119,7 @@ class Events:
         if self._debug:
             print "height:%s" % height
             print self._window.get_size_request()
+    '''
 
 
     def set_line_width_and_height(self, width, height):
@@ -143,6 +148,7 @@ class Events:
             print color_name.get_number_name()
 
 
+    '''        
     def set_line_color_rgb(self, red, green, blue):
 
         # Numbers must be between 0-255
@@ -155,7 +161,7 @@ class Events:
 
         color = gtk.gdk.color_parse(c_hex)
         self._window.modify_bg(gtk.STATE_NORMAL, color)
-
+    '''
 
 
     def create_relative_mouse_event(self, dx, dy):
@@ -204,8 +210,8 @@ class Events:
         # to make click we need to release the same button
         self.release_button(button)
 
-        self.press_button(button)
-        self.release_button(button)
+        '''self.press_button(button)
+        self.release_button(button)'''
 
 
     def click_button(self, button):
@@ -243,14 +249,14 @@ class Events:
 
     def copy_event(self):
 
-        SendKey.send_special_key("Ctrl C")
+        SendKey.send_special_key("xe_ctrl C")
         if self._debug:
             print "copy event called"
 
 
     def paste_event(self):
 
-        SendKey.send_special_key("Ctrl V")
+        SendKey.send_special_key("xe_ctrl V")
 
         if self._debug:
             print "paste event called"
@@ -273,7 +279,7 @@ class Events:
 
             #It's a special key 
             if ("xe_" in text):
-                SendKey.send_key(text)
+                SendKey.send_special_key(text)
             #It's a text    
             else:
                 splitted_text = list(text)
@@ -290,26 +296,25 @@ class Events:
         webbrowser.open(url, new=0, autoraise=True)
 
 
-    def _scroll(self, button):
+    '''def _scroll(self, button):
 
         """Simulates scrolling
            for scrolling up press button 4
            for scrolling down press button 5 """
 
-        print button
-
         self.press_button(button)
         self.release_button(button)
 
 
-    def scroll_up(self):
-        
+    def scroll_up(self):   
+
         self._scroll(4)
 
 
     def scroll_down(self):
         
         self._scroll(5)
+    '''
 
     def open_program(self, program):
 
@@ -319,7 +324,7 @@ class Events:
             command = "{0} {1}".format(program, arguments)
             #os.system(command)
             #subprocess.call(command,shell=True)
-            subprocess.call(command,stderr=subprocess.STDOUT, shell=True)
+            self._p = subprocess.call(command,stderr=subprocess.STDOUT, shell=True)
 
         #except OSError:
         except subprocess.CalledProcessError:
@@ -361,3 +366,7 @@ class Events:
                 #os.system("sh {0} {1}".format(file, arguments))
                 
 
+    def close_program(self, program):
+
+        if self._p is not None:
+            p.kill()
