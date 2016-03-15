@@ -1,6 +1,28 @@
 turtlebots (30) unstable; urgency=low
 
   * add ArDrone plugin
+  * added rgb to logo color adapter and fixed xevents set color
+  * Modified make and xevents
+  * fix strings of taextras
+  * uses PyUSB 1.0.0rc1+
+  * update to TB v214
+  * Fixed right_click constant error
+  * Fixed unit tests
+  * Added open program block
+  * Rearrangement of the blocks
+  * Added blocks for most common keys
+  * fixed scrolling
+  * Added browser block
+  * Added unfreeze and hideline blocks
+  * Added debouncing block
+  * Refactoring and removed some blocks
+  * Added an extra xevents palette
+  * Now deletes the scanning line when program is closed
+  * hide line after program stop
+  * Fixed MACROS error in xevents plugin
+  * Added spacebar support
+  * restore auto refresh
+  * use TB with plugin menu
 
  -- AlanJAS <alanjas@hotmail.com>  Sun, 20 Sep 2015 22:54:32 -0300
 
