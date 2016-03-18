@@ -34,6 +34,7 @@ from Xlib.ext import shape
 from Xlib.ext import xinerama
 import gtk
 import os
+import signal
 import subprocess
 import logging
 import webbrowser
@@ -80,8 +81,9 @@ class Events:
                                 gtk.gdk.SCROLL_MASK)
 
         self._last_call_time = 0
-        #Current open program
-        self._p = None
+        #Current open programs
+        self._pids = {}
+        #self._p = None
 
 
     def get_screen_resolution(self):
@@ -316,6 +318,38 @@ class Events:
         self._scroll(5)
     '''
 
+    def _add_pid(self, program, pid):
+
+        if not self._pids.has_key(program):
+            self._pids[program] = []
+      
+        self._pids[program].append(pid)
+
+        print pid
+
+
+    def _remove_pid(self, program):
+
+        self._pids[program].pop(0)
+
+
+    def _pid_exists(self, pid):        
+        """ Check For the existence of a unix pid. """
+        try:
+            os.kill(pid, 0)
+        except OSError:
+            return False
+        else:
+            return True
+
+    def _clean_pids(self, program):
+
+        if self._pids.has_key(program):
+            for p in self._pids[program]:
+                if (not self._pid_exists(p)):
+                    self._remove_pid(p)
+
+
     def open_program(self, program):
 
         arguments = ""
@@ -324,7 +358,9 @@ class Events:
             command = "{0} {1}".format(program, arguments)
             #os.system(command)
             #subprocess.call(command,shell=True)
-            self._p = subprocess.call(command,stderr=subprocess.STDOUT, shell=True)
+            p = subprocess.Popen(command, stderr=subprocess.STDOUT, shell=True,preexec_fn=os.setsid)
+
+            self._add_pid(program,p.pid)
 
         #except OSError:
         except subprocess.CalledProcessError:
@@ -362,11 +398,21 @@ class Events:
                         print f + " found"
             
             if found:
-                subprocess.call(f, shell=True)
+                self._p = subprocess.Popen(f, stderr=subprocess.STDOUT, shell=True,preexec_fn=os.setsid)
+                self._add_pid(program,p.pid)
                 #os.system("sh {0} {1}".format(file, arguments))
                 
 
     def close_program(self, program):
 
-        if self._p is not None:
-            p.kill()
+        if self._pids.has_key(program) and (len(self._pids[program]) > 0):
+
+            self._clean_pids(program)
+            #self._p.kill()
+            #print "close: " + str(self._pids[program][0])
+            try:
+                os.killpg(os.getpgid(self._pids[program][0]), signal.SIGTERM)
+                self._remove_pid(program)
+            except OSError:
+                print "Error: The pid does not exists."
+

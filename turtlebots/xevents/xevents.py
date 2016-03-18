@@ -725,7 +725,7 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
             'close_program', 1,
-            Primitive(self.open_program, arg_descs=[ArgSlot(TYPE_STRING)])
+            Primitive(self.close_program, arg_descs=[ArgSlot(TYPE_STRING)])
         )
     ############################# Turtle calls ################################
 
