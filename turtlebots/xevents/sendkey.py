@@ -47,6 +47,23 @@ class SendKey:
                                    '}': "braceright",
                                    '~': "asciitilde"}
 
+    _special_keys = {'xe_ctrl': Xlib.XK.XK_Control_L,
+                      'xe_shift': Xlib.XK.XK_Shift_L,
+                      'xe_alt': Xlib.XK.XK_Alt_L,
+                      'xe_alt_gr': Xlib.XK.XK_Alt_R,
+                      'xe_f1': Xlib.XK.XK_F1,
+                      'xe_f2': Xlib.XK.XK_F2,
+                      'xe_f3': Xlib.XK.XK_F3,
+                      'xe_f4': Xlib.XK.XK_F4,
+                      'xe_f5': Xlib.XK.XK_F5,
+                      'xe_f6': Xlib.XK.XK_F6,
+                      'xe_f7': Xlib.XK.XK_F7,
+                      'xe_f8': Xlib.XK.XK_F8,
+                      'xe_f9': Xlib.XK.XK_F9,
+                      'xe_f10': Xlib.XK.XK_F10,
+                      'xe_f11': Xlib.XK.XK_F11
+                      }
+
     _display = display.Display()
     _screen = _display.screen()
 
@@ -97,54 +114,22 @@ class SendKey:
         splitted = keystroke.split(" ")
 
         for stroke in splitted:
-
-          if stroke == "xe_ctrl":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_Control_L)
-          elif stroke == "xe_shift":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_Shift_L)
-          elif stroke == "xe_alt":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_Alt_L)
-          elif stroke == "xe_alt_gr":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_Alt_R)
-          elif stroke == "xe_f1":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F1)
-          elif stroke == "xe_f2":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F2)
-          elif stroke == "xe_f3":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F3)
-          elif stroke == "xe_f4":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F4)
-          elif stroke == "xe_f5":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F5)
-          else:  # an ordinary key
-              key,shift_mask = cls._char_to_keycode(stroke)
-
+          stroke.strip()
+          if cls._special_keys.has_key(stroke):
+            key = cls._display.keysym_to_keycode(cls._special_keys[stroke])
+          else:
+            key,shift_mask = cls._char_to_keycode(stroke)
+        
           ext.xtest.fake_input(cls._display, X.KeyPress, key)
 
 
         for stroke in reversed(splitted):
-            
-          if stroke == "xe_ctrl":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_Control_L)
-          elif stroke == "xe_shift":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_Shift_L)
-          elif stroke == "xe_alt":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_Alt_L)
-          elif stroke == "xe_alt_gr":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_Alt_R)
-          elif stroke == "xe_f1":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F1)
-          elif stroke == "xe_f2":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F2)
-          elif stroke == "xe_f3":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F3)
-          elif stroke == "xe_f4":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F4)
-          elif stroke == "xe_f5":
-              key = cls._display.keysym_to_keycode(Xlib.XK.XK_F5)
-          else:  # an ordinary key
-              key,shift_mask = cls._char_to_keycode(stroke)
-
+          stroke.strip()
+          if cls._special_keys.has_key(stroke):
+            key = cls._display.keysym_to_keycode(cls._special_keys[stroke])
+          else:
+            key,shift_mask = cls._char_to_keycode(stroke) 
+          
           ext.xtest.fake_input(cls._display, X.KeyRelease, key)
              
         '''

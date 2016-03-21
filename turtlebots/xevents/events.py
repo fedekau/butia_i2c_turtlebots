@@ -251,14 +251,14 @@ class Events:
 
     def copy_event(self):
 
-        SendKey.send_special_key("xe_ctrl C")
+        SendKey.send_special_key("xe_ctrl c")
         if self._debug:
             print "copy event called"
 
 
     def paste_event(self):
 
-        SendKey.send_special_key("xe_ctrl V")
+        SendKey.send_special_key("xe_ctrl v")
 
         if self._debug:
             print "paste event called"
@@ -279,8 +279,11 @@ class Events:
 
         if self._allow_event():
 
-            #It's a special key 
-            if ("xe_" in text):
+            #It's a special key
+      
+
+            if (("xe_ctrl" in text) or ("xe_shift" in text) or 
+                ("xe_alt" in text) or ("xe_alt_gr" in text)):
                 SendKey.send_special_key(text)
             #It's a text    
             else:

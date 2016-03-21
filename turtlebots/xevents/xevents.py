@@ -90,10 +90,10 @@ class Xevents(Plugin):
         CONSTANTS['xe_return'] = "\r"
         CONSTANTS['xe_escape'] =  "\e"
         CONSTANTS['xe_enter'] =  "\n"
-        CONSTANTS['xe_ctrl'] = "xe_ctrl"
-        CONSTANTS['xe_shift'] = "xe_shift"
-        CONSTANTS['xe_alt'] = "xe_alt"
-        CONSTANTS['xe_alt_gr'] = "xe_alt_gr"
+        CONSTANTS['xe_ctrl'] = "xe_ctrl "
+        CONSTANTS['xe_shift'] = "xe_shift "
+        CONSTANTS['xe_alt'] = "xe_alt "
+        CONSTANTS['xe_alt_gr'] = "xe_alt_gr "
         CONSTANTS['xe_f4'] = "xe_f4"
         CONSTANTS['xe_f5'] = "xe_f5"
 
@@ -678,6 +678,20 @@ class Xevents(Plugin):
 
         '''
 
+        '''
+        palette2.add_block('combineKeys',
+                        style='number-style-block',
+                        label=[_('combine'), _('key1'), _('key2') ],
+                        help_string=_('Combines two keys. e.g : ctrl + c'),
+                        prim_name='combine_keys')
+        
+
+        self._parent.lc.def_prim(
+          'combine_keys', 2,
+          Primitive(self.combine_keys, arg_descs=[ArgSlot(TYPE_STRING),
+                                              ArgSlot(TYPE_STRING)]))
+        '''
+
         palette2.add_block('debounce',
                         style='number-style-block',
                         label=[_('debounce'), _('name'), _('button') ],
@@ -815,8 +829,12 @@ class Xevents(Plugin):
     '''
 
     def simulate_key(self,key):
-        self._events.simulate_key(key)
+      self._events.simulate_key(key)
 
+    '''def combine_keys(self, key1, key2):
+      return (key1 + " " + key2)
+    '''
+    
     def browser(self, url):
 
       self._events.browser(url)
