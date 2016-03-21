@@ -17,11 +17,9 @@ bobot: Contains Bobot-server, a daemon responsible for
     requirements-projects: libs/serialcomm, libs/lualibusb
 
 turtlebots: Implements support of Butia in Turtle Blocks.
-    Uses Turtle Blocks plugin system. In this folder there is a 
-    shell script to make an .xo called TurtleBots, a 
-    TurtleBlocks activity whit the logo changed and the Butia plugin 
-    already instaled. It includes another plugins: FollowMe, Lego NxT,
-    Lego WeDo. 
+    Uses Turtle Blocks plugin system.
+    In this folder there is a Makefile to build TurtleBots XO activity.
+    Use this folder to create a debian package too. 
 
 firmware: Contains the activity for update the firmware of Butia.
 

@@ -74,12 +74,17 @@ help:
 	# if the user not have less command...
 	cat INSTALL
 
-############# init of submodules #################
+############################## Init of submodules ##############################
 
 first:
 	(cd .. && git submodule update --init)
 
-############# initialization of "especific" submodules ###############
+################################ Dependencies ##################################
+
+install-dependencies:
+	sudo apt-get install libglib2.0-dev libgstreamer0.10-dev debhelper python-gtk2 
+
+#################### Initialization of "especific" submodules ##################
 
 mainline/.git:
 	$(MAKE) first
@@ -102,7 +107,8 @@ pyusb/.git:
 rodi/.git:
 	$(MAKE) first
 
-############# checkout a version of submodule ##################
+######################## Checkout a version of submodule #######################
+
 SUBMODULE = mainline
 SUBMODULEVER = master
 
@@ -112,7 +118,7 @@ ifndef NOGIT
 	(cd $(SUBMODULE) && if (git checkout $(SUBMODULEVER) ); then echo OK ; else git fetch ; git checkout $(SUBMODULEVER) ; fi )
 endif
 
-############# checkout a especific version of submodules ##############
+################## Checkout a especific version of submodules ##################
 
 walterGIT: mainline/.git
 	$(MAKE) SUBMODULE=mainline SUBMODULEVER=$(TURTLEBLOCKS_VERSION) checkoutsm
@@ -138,7 +144,7 @@ rodiGIT: rodi/.git
 sourceGIT: walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT pyusbGIT rodiGIT
 	echo sourceGIT
 
-################ Construction...
+################################# Construction #################################
 
 mktmpfolder:
 	#making folders and copying mainline
@@ -149,7 +155,7 @@ mktmpfolder:
 	rm -f  $(BUILDDIR)/turtleblocks
 	rm -f  $(BUILDDIR)/turtleblocks.desktop
 	rm -f  $(BUILDDIR)/setup.py
-	# lets patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
+	# patch the activity.info and add some icons (TurtleBlocks => TurtleBots)
 	cp -rLf stagin/activity $(BUILDDIR)/
 	cp -f stagin/turtlebots $(BUILDDIR)/
 	cp -f stagin/turtlebots.desktop $(BUILDDIR)/
@@ -336,7 +342,7 @@ plugins: plugin-butia plugin-followme plugin-colorview plugin-nxt plugin-wedo \
 
 plugin-all: plugins
 
-############### Install procedures #################
+############################## Install procedures ##############################
 
 install-activity: xo
 	sugar-install-bundle *.xo
@@ -369,7 +375,7 @@ install-rules:
 		./permissions.sh ; \
 	fi ;
 
-############### UNInstall procedures #################
+############################# UNInstall procedures #############################
 
 uninstall-activity:
 	rm -rf ~/Activities/TurtleBots.activity
@@ -379,7 +385,7 @@ uninstall-xo: uninstall-activity
 uninstall-dev: uninstall-activity
 
 uninstall-strip: uninstall
-	#unstrip $(DESTDIR) file... :-P
+	#unstrip $(DESTDIR) file...
 
 uninstall:
 	$(MAKE) prefix= uninstall-rules
@@ -400,8 +406,7 @@ uninstall-rules:
 		if (delgroup --system robots) ; then echo group removed... ; fi ; \
 	fi ;
 
-####### CLEAN STUFF ######
-
+################################# CLEAN STUFF ##################################
 
 clean: clean-tmp clean-plugins clean-xo clean-builddir
 	$(MAKE) -C pattern_detection/library clean
@@ -427,9 +432,8 @@ clean-plugins:
  clean clean-tmp clean-builddir clean-xo clean-plugins \
  first walterGIT extrasGIT wedoGIT nxtGIT arduinoGIT rodiGIT pyusbGIT \
  xo mktmpfolder apply_hard_plugins apply_sym_plugins \
- install install-strip \
+ install install-strip install-dependencies \
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
  dev pattern_detection_compile plugin-arduino plugin-rodi plugin-fischer \
  plugin-colorview plugin-xevents plugin-ax12 plugin-atyarandu plugin-ardrone
-

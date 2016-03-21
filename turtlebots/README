@@ -1,20 +1,4 @@
 This is the top level to create TurtleBots
 
-TurtleBots is a modifiqued version of TurtleBlocks, that include plugins 
-to manage robots kits, this kits include Butia Robot, Sumbot, Lego NXT
- and Lego WeDo. If you have another kit you are free to make a new plugin
-to suport that kill, and if you want... you can send the code sow we add
-your plugin to TurtleBots! :-)
-TurtleBots is part or "Proyecto Butia" - "Sistema robótico constructivo
-programable de bajo costo para uso educativo" (Robotic system programmable
-low cost construction for educational use)
-
-The current version of TurtleBots is the same version of butia plugin (see
-file butia/NEWS).
-
-Changelogs are distributed in each plugins, sow you need to see each plugin
-to undertand the upgrades in TurtleBots. The "core" of TurtleBots is the
-same of TurtleBlocks sow changelog of "core" are in mainline folder
-
-The file INTALL will help you to install process of TurtleBots.
+The file INSTALL will help you to install process of TurtleBots.
 
