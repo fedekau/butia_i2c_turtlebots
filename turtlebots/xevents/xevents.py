@@ -569,7 +569,7 @@ class Xevents(Plugin):
             'alt_key', 0,
             Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_alt')]))
 
-
+        '''
         palette2.add_block('AltGrKey',
                           style='box-style',
                           label=_('altGrKey'),
@@ -577,10 +577,11 @@ class Xevents(Plugin):
                           help_string=_('alt gr key'),
                           prim_name='altgr_key')
 
+        
         self._parent.lc.def_prim(
             'altgr_key', 0,
             Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_alt_gr')]))
-
+        '''
 
         palette2.add_block('tabKey',
                           style='box-style',
@@ -588,6 +589,8 @@ class Xevents(Plugin):
                           value_block=True,
                           help_string=_('tab key'),
                           prim_name='tab_key')
+
+        
 
         self._parent.lc.def_prim(
             'tab_key', 0,
