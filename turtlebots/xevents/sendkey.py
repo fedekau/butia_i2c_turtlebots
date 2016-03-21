@@ -117,8 +117,8 @@ class SendKey:
           stroke.strip()
           if cls._special_keys.has_key(stroke):
             key = cls._display.keysym_to_keycode(cls._special_keys[stroke])
-            print stroke
-            print cls._special_keys[stroke]
+            #print stroke
+            #print cls._special_keys[stroke]
           else:
             key,shift_mask = cls._char_to_keycode(stroke)
           
