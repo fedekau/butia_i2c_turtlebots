@@ -220,7 +220,7 @@ class Events:
         """Simulates clicking a button"""
 
         x, y = self.get_mouse_position()
-        self._x.warp_pointer(x - 20, y)
+        self._x.warp_pointer(x, y)
         self._window.set_keep_above(False)
         self._window.set_keep_below(True)
 
@@ -236,7 +236,7 @@ class Events:
         """Simulates double clicking a button"""
 
         x, y = self.get_mouse_position()
-        self._x.warp_pointer(x - 20, y)
+        self._x.warp_pointer(x, y)
         self._window.set_keep_above(False)
         self._window.set_keep_below(True)
 
