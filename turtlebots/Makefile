@@ -237,6 +237,8 @@ apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	ln -s `pwd`/pattern_detection      $(BUILDDIR)/plugins/pattern_detection
 	ln -s `pwd`/rodi                   $(BUILDDIR)/plugins/rodi
 	ln -s `pwd`/xevents                $(BUILDDIR)/plugins/xevents
+	# add pyusb for wedo
+	ln -s `pwd`/pyusb/usb              $(BUILDDIR)/plugins/wedo_plugin/usb
 
 xo:
 	$(MAKE) BUILDDIR=$(TMPBUILDDIR) apply_hard_plugins
