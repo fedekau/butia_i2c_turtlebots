@@ -10,6 +10,7 @@
 [submodule "turtlebots/WeDoMore"]
 	path = turtlebots/WeDoMore
 	url = git://github.com/AlanJAS/WeDoMore.git
+	ignore = untracked
 [submodule "turtlebots/arduino"]
 	path = turtlebots/arduino
 	url = git://github.com/AlanJAS/arduino.git
