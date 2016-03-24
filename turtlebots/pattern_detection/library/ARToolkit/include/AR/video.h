@@ -156,6 +156,9 @@ AR_DLL_API  int				arVideoDispOption(void);
 int
 arVideoPause();
 
+int
+ar2VideoPause(AR2VideoParamT *vid);
+
 /**
  * \brief open a video source.
  *

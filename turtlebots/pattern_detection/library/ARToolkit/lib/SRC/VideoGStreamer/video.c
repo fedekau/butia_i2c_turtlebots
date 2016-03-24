@@ -7,6 +7,8 @@
  *
  */
 
+#include <glib/gprintf.h>
+
 /* include AR Toolkit*/
 #include <AR/config.h>
 #include <AR/ar.h>
@@ -140,7 +142,7 @@ testing_pad(GstPad *pad)
 int
 arVideoPause() {
    if( gVid != NULL ) {
-        return ar2VideoPause();
+        return ar2VideoPause(gVid);
     }else{
         printf("Device has not been opened!!\n");
         return -1;
@@ -384,6 +386,7 @@ int ar2VideoPause(AR2VideoParamT *vid){
     } else {
         g_print ("libARvideo: GStreamer pipeline is PAUSED!\n");
     }
+    return 0;
 }
 
 int

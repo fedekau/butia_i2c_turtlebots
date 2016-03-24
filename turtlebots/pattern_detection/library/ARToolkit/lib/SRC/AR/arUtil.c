@@ -12,12 +12,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-#ifdef _WIN32
-#include <sys/timeb.h>
-#include <windows.h>
-#else
 #include <sys/time.h>
-#endif
+#include <time.h>
 #include <AR/param.h>
 #include <AR/matrix.h>
 #include <AR/ar.h>
