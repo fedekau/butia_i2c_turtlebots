@@ -870,27 +870,27 @@ class Butia(Plugin):
         if x == ERROR:
             return ERROR
         try:
-            return eval(self.modsen_p['a'])
+            return eval(self.modsen_f['a'])
         except:
-            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_a_f)
+            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_f['a'])
 
     def getSenB(self, sensorid=0, boardid=0):
         x = self.butia.getModuleB(sensorid, boardid)
         if x == ERROR:
             return ERROR
         try:
-            return eval(self.modsen_p['b'])
+            return eval(self.modsen_f['b'])
         except:
-            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_b_f)
+            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_f['b'])
 
     def getSenC(self, sensorid=0, boardid=0):
         x = self.butia.getModuleC(sensorid, boardid)
         if x == ERROR:
             return ERROR
         try:
-            return eval(self.modsen_p['c'])
+            return eval(self.modsen_f['c'])
         except:
-            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_c_f)
+            raise logoerror(_("ERROR: Something wrong with function '%s'") % self.modsen_f['c'])
 
     def setActA(self, value, sensorid=0, boardid=0):
         try:
