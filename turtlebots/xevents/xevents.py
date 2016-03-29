@@ -27,7 +27,7 @@ import os
 import sys
 import time
 
-sys.path.append(os.path.abspath('./plugins/xevents'))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 from gettext import gettext as _
 from collections import Counter
