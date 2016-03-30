@@ -51,6 +51,10 @@ class SendKey:
                       'xe_shift': Xlib.XK.XK_Shift_L,
                       'xe_alt': Xlib.XK.XK_Alt_L,
                       'xe_alt_gr': Xlib.XK.XK_Alt_R,
+                      'xe_left_arrow': Xlib.XK.XK_Left,
+                      'xe_right_arrow': Xlib.XK.XK_Right,
+                      'xe_up_arrow': Xlib.XK.XK_Up,
+                      'xe_down_arrow': Xlib.XK.XK_Down,
                       'xe_f1': Xlib.XK.XK_F1,
                       'xe_f2': Xlib.XK.XK_F2,
                       'xe_f3': Xlib.XK.XK_F3,
@@ -61,7 +65,7 @@ class SendKey:
                       'xe_f8': Xlib.XK.XK_F8,
                       'xe_f9': Xlib.XK.XK_F9,
                       'xe_f10': Xlib.XK.XK_F10,
-                      'xe_f11': Xlib.XK.XK_F11
+                      'xe_f11': Xlib.XK.XK_F11,
                       }
 
     _display = display.Display()
@@ -108,7 +112,6 @@ class SendKey:
     @classmethod
     def send_special_key(cls,keystroke):
 
-        #special_key = ""
         key = ""
 
         splitted = keystroke.split(" ")
@@ -133,15 +136,6 @@ class SendKey:
             key,shift_mask = cls._char_to_keycode(stroke) 
           
           ext.xtest.fake_input(cls._display, X.KeyRelease, key)
-             
-        '''
-        ext.xtest.fake_input(cls._display, X.KeyPress, special_key)
-
-        ext.xtest.fake_input(cls._display, X.KeyPress, key)
-        ext.xtest.fake_input(cls._display, X.KeyRelease, key)
-
-        ext.xtest.fake_input(cls._display, X.KeyRelease, special_key)
-        '''
 
         cls._display.sync()
 
@@ -152,39 +146,11 @@ class SendKey:
         k = ""
         shift_mask = 0
 
-        '''xx = XK.string_to_keysym("asterisk")
-        xxx = cls._display.keysym_to_keycode(xx)
-        print "xx" + str(xx)
-        print "xxx" + str(xxx)
+        if ((key == "xe_left_arrow") or (key == "xe_right_arrow")
+          or (key == "xe_up_arrow") or (key == "xe_down_arrow")):
 
-        print cls._display.keycode_to_keysym(63,0)
-        print cls._display.keycode_to_keysym(63,1)
-        print cls._display.keycode_to_keysym(63,2)
-        print cls._display.keycode_to_keysym(63,3)'''
-
-        if (key == "xe_left_arrow"):
-            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Left)
-        elif (key == "xe_right_arrow"):
-            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Right)
-        elif (key == "xe_up_arrow"):
-            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Up)
-        elif (key == "xe_down_arrow"):
-            k = cls._display.keysym_to_keycode(Xlib.XK.XK_Down)
-            '''elif (key == "/"):
-                k = cls._display.keysym_to_keycode(Xlib.XK.XK_question)
-                print "keysim :" + str(Xlib.XK.XK_question)
-                print "keycode:" + str(k)
-
-                k2 = cls._display.keysym_to_keycodes(Xlib.XK.XK_question)
-                print "k2:"
-                for i in k2:
-                  print i
-
-                mapping = cls._display.get_keyboard_mapping(40,100)
-                print "mapping:"
-                for j in mapping:
-                  print j
-            '''      
+            k = cls._display.keysym_to_keycode(cls._special_keys[key])
+               
         else:
             k, shift_mask = cls._char_to_keycode(key)
 
@@ -193,9 +159,7 @@ class SendKey:
 
         if shift_mask != 0:
           ext.xtest.fake_input(cls._display, X.KeyPress, shift_keycode)
-          #print "apreto shift"
 
-        #print k
         ext.xtest.fake_input(cls._display, X.KeyPress, k)
         ext.xtest.fake_input(cls._display, X.KeyRelease,k)
 

@@ -81,21 +81,22 @@ class Xevents(Plugin):
         CONSTANTS['FALSE'] = False
 
         CONSTANTS['xe_buffer_size'] = 30
-        CONSTANTS['xe_spacebar'] = " "
-        CONSTANTS['xe_left_arrow'] = "xe_left_arrow"
-        CONSTANTS['xe_right_arrow'] = "xe_right_arrow"
-        CONSTANTS['xe_up_arrow'] = "xe_up_arrow"
-        CONSTANTS['xe_down_arrow'] = "xe_down_arrow"
-        CONSTANTS['xe_tab'] = "\t"
-        CONSTANTS['xe_return'] = "\r"
-        CONSTANTS['xe_escape'] =  "\e"
-        CONSTANTS['xe_enter'] =  "\n"
         CONSTANTS['xe_ctrl'] = "xe_ctrl "
         CONSTANTS['xe_shift'] = "xe_shift "
         CONSTANTS['xe_alt'] = "xe_alt "
         CONSTANTS['xe_alt_gr'] = "xe_alt_gr "
+        CONSTANTS['xe_left_arrow'] = "xe_left_arrow"
+        CONSTANTS['xe_right_arrow'] = "xe_right_arrow"
+        CONSTANTS['xe_up_arrow'] = "xe_up_arrow"
+        CONSTANTS['xe_down_arrow'] = "xe_down_arrow"
         CONSTANTS['xe_f4'] = "xe_f4"
         CONSTANTS['xe_f5'] = "xe_f5"
+        CONSTANTS['xe_spacebar'] = " "
+        CONSTANTS['xe_tab'] = "\t"
+        CONSTANTS['xe_return'] = "\r"
+        CONSTANTS['xe_escape'] =  "\e"
+        CONSTANTS['xe_enter'] =  "\n"
+
 
         global MACROS
         '''MACROS['setLineColorRGBmacro'] = [[0, 'setLineColorRGB', 0, 0, [None, 1, 2, 3, None]],

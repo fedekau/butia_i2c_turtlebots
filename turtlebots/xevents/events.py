@@ -86,6 +86,7 @@ class Events:
         #self._p = None
 
 
+
     def get_screen_resolution(self):
         """Returns the screen resolution """
         resolution = self._display.screen().root.get_geometry()
@@ -280,16 +281,18 @@ class Events:
         if self._allow_event():
 
             #It's a special key
-      
-
             if (("xe_ctrl" in text) or ("xe_shift" in text) or 
                 ("xe_alt" in text) or ("xe_alt_gr" in text)):
                 SendKey.send_special_key(text)
-            #It's a text    
+            elif ("xe_" in text):
+                 SendKey.send_key(text)
+            #It's a text
             else:
+
                 splitted_text = list(text)
 
                 for key in splitted_text:
+                    print "key: " + key
                     SendKey.send_key(key)
 
             if self._debug:
