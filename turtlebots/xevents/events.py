@@ -292,7 +292,6 @@ class Events:
                 splitted_text = list(text)
 
                 for key in splitted_text:
-                    print "key: " + key
                     SendKey.send_key(key)
 
             if self._debug:
