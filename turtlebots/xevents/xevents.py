@@ -91,11 +91,11 @@ class Xevents(Plugin):
         CONSTANTS['xe_down_arrow'] = "xe_down_arrow"
         CONSTANTS['xe_f4'] = "xe_f4"
         CONSTANTS['xe_f5'] = "xe_f5"
-        CONSTANTS['xe_spacebar'] = " "
-        CONSTANTS['xe_tab'] = "\t"
-        CONSTANTS['xe_return'] = "\r"
-        CONSTANTS['xe_escape'] =  "\e"
-        CONSTANTS['xe_enter'] =  "\n"
+        CONSTANTS['xe_spacebar'] = "xe_spacebar"
+        CONSTANTS['xe_tab'] = "xe_tab"
+        CONSTANTS['xe_return'] = "xe_return"
+        CONSTANTS['xe_escape'] =  "xe_escape"
+        CONSTANTS['xe_enter'] =  "xe_enter"
 
 
         global MACROS
@@ -415,33 +415,6 @@ class Xevents(Plugin):
                           help_string=_('set width and height of line over mouse'))
 
 
-        '''
-        palette.add_block('setLineWidth',
-                          style='basic-style-1arg',
-                          label=_('setLineWidth'),
-                          value_block=True,
-                          default=[0],
-                          help_string=_('width of vertical line over mouse'),
-                          prim_name='set_line_width')
-
-        self._parent.lc.def_prim(
-            'set_line_width', 1,
-            Primitive(self.set_line_width, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-
-
-        palette.add_block('setLineHeight',
-                          style='basic-style-1arg',
-                          label=_('setLineHeight'),
-                          value_block=True,
-                          default=[0],
-                          help_string=_('height of vertical line over mouse'),
-                          prim_name='set_line_height')
-
-        self._parent.lc.def_prim(
-            'set_line_height', 1,
-            Primitive(self.set_line_height, arg_descs=[ArgSlot(TYPE_NUMBER)]))
-        '''
-
         palette2.add_block('simulateKey',
                           style='basic-style-1arg',
                           label=_('simulateKey'),
@@ -659,30 +632,6 @@ class Xevents(Plugin):
 
 
         '''
-        palette2.add_block('scrollUp',
-                  style='basic-style',
-                  label=_('scrollUp'),
-                  help_string=_('simulate mouse scroll up event'),
-                  prim_name='scroll_up')
-
-        self._parent.lc.def_prim(
-            'scroll_up', 0,
-            Primitive(self.scroll_up))
-
-
-        palette2.add_block('scrollDown',
-                  style='basic-style',
-                  label=_('scrollDown'),
-                  help_string=_('simulate mouse scroll down event'),
-                  prim_name='scroll_down')
-
-        self._parent.lc.def_prim(
-            'scroll_down', 0,
-            Primitive(self.scroll_down))
-
-        '''
-
-        '''
         palette2.add_block('combineKeys',
                         style='number-style-block',
                         label=[_('combine'), _('key1'), _('key2') ],
@@ -806,14 +755,6 @@ class Xevents(Plugin):
 
     def set_line_color_rgb(self, red, green, blue):
         self._events.set_line_color_rgb(red, green, blue)
-
-    '''
-    def set_line_width(self, width):
-        self._events.set_line_width(width)
-
-    def set_line_height(self, height):
-        self._events.set_line_height(height)
-    '''
 
     def set_line_width_and_height(self, width, height):
         self._events.set_line_width_and_height(width, height)

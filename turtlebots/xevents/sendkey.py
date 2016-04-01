@@ -66,6 +66,12 @@ class SendKey:
                       'xe_f9': Xlib.XK.XK_F9,
                       'xe_f10': Xlib.XK.XK_F10,
                       'xe_f11': Xlib.XK.XK_F11,
+                      'xe_spacebar': ' ',
+                      'xe_tab': '\t',
+                      'xe_return': '\r',
+                      'xe_escape': '\e',
+                      'xe_enter': '\n',
+
                       }
 
     _display = display.Display()
@@ -146,16 +152,22 @@ class SendKey:
         k = ""
         shift_mask = 0
 
+
         if ((key == "xe_left_arrow") or (key == "xe_right_arrow")
           or (key == "xe_up_arrow") or (key == "xe_down_arrow")):
 
             k = cls._display.keysym_to_keycode(cls._special_keys[key])
-               
+        elif ((key == "xe_spacebar") or (key == "xe_tab") or 
+              (key == "xe_return") or (key == "xe_escape") or 
+              (key == "xe_enter")):
+
+            k, shift_mask = cls._char_to_keycode(cls._special_keys[key])
+       
         else:
             k, shift_mask = cls._char_to_keycode(key)
 
-
         shift_keycode = cls._display.keysym_to_keycode(Xlib.XK.XK_Shift_L)
+
 
         if shift_mask != 0:
           ext.xtest.fake_input(cls._display, X.KeyPress, shift_keycode)

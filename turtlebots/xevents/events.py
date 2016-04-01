@@ -98,33 +98,6 @@ class Events:
         self._window.set_opacity(opacity)
 
 
-    '''
-    def set_line_width(self, width):
-
-        #self._window.set_size_request(int(width), self._window.get_screen().get_height())
-        w, h = self._window.get_size()
-
-        self._window.resize(int(width),h)
-        #self._window.set_size_request(int(width), h)
-
-        if self._debug:
-            print "width:%s" % width
-            print self._window.get_size_request()
-
-
-    def set_line_height(self, height):
-
-        #self._window.set_size_request(self._window.get_screen().get_width(), int(height))
-        w, h = self._window.get_size()
-
-        self._window.resize(w, int(height))
-
-        if self._debug:
-            print "height:%s" % height
-            print self._window.get_size_request()
-    '''
-
-
     def set_line_width_and_height(self, width, height):
 
         self._window.resize(int(width), int(height))
@@ -302,26 +275,6 @@ class Events:
 
         webbrowser.open(url, new=0, autoraise=True)
 
-
-    '''def _scroll(self, button):
-
-        """Simulates scrolling
-           for scrolling up press button 4
-           for scrolling down press button 5 """
-
-        self.press_button(button)
-        self.release_button(button)
-
-
-    def scroll_up(self):   
-
-        self._scroll(4)
-
-
-    def scroll_down(self):
-        
-        self._scroll(5)
-    '''
 
     def _add_pid(self, program, pid):
 
