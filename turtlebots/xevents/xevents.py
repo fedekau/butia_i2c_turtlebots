@@ -425,7 +425,7 @@ class Xevents(Plugin):
             'simulate_key', 1,
             Primitive(self.simulate_key, arg_descs=[ArgSlot(TYPE_STRING)]))
 
-
+        '''
         palette2.add_block('simulateCopy',
                           style='basic-style',
                           label=_('simulateCopy'),
@@ -446,7 +446,7 @@ class Xevents(Plugin):
         self._parent.lc.def_prim(
             'paste_event', 0,
             Primitive(self.paste_event))
-
+        '''
 
         palette2.add_block('spaceBar',
                           style='box-style',
@@ -694,6 +694,34 @@ class Xevents(Plugin):
             'close_program', 1,
             Primitive(self.close_program, arg_descs=[ArgSlot(TYPE_STRING)])
         )
+
+        palette2.add_block('saveValue',
+                    style='basic-style-2arg',
+                    label=[_('saveValue'), _('key'), _('value') ],
+                    default=["key"],
+                    help_string=_('save value - The key must be unique'),
+                    prim_name='save_value')
+    
+
+        self._parent.lc.def_prim(
+          'save_value', 2,
+          Primitive(self.save_value, arg_descs=[ArgSlot(TYPE_STRING),
+                                              ArgSlot(TYPE_NUMBER)]))
+
+
+        palette2.add_block('getValue',
+                   style='number-style-1arg',
+                   label=_("getValue"),
+                   default=[_("key")],
+                   help_string=_('get a value saved with save value block'),
+                   prim_name='get_value'
+                   )
+
+        self._parent.lc.def_prim(
+            'get_value', 1,
+            Primitive(self.get_value, arg_descs=[ArgSlot(TYPE_STRING)])
+        )
+
     ############################# Turtle calls ################################
 
 
@@ -759,13 +787,14 @@ class Xevents(Plugin):
     def set_line_width_and_height(self, width, height):
         self._events.set_line_width_and_height(width, height)
 
+    '''
     def copy_event(self):
         self._events.copy_event()
 
     def paste_event(self):
         self._events.paste_event()
 
-    '''
+    
     def scroll_up(self):
         self._events.scroll_up()
 
@@ -836,3 +865,11 @@ class Xevents(Plugin):
         self._events.close_program(program)
 
 
+    def save_value(self, key, value):
+
+        self._events.save_value(key, value)
+
+
+    def get_value(self, key):
+
+        return self._events.get_value(key)
