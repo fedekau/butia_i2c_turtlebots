@@ -55,7 +55,6 @@ class Xevents(Plugin):
         self._buttons = {} #previous values from buttons {key:[value, lastDebounceTime]}
         self._last_event = 0
 
-
     def setPause(self):
         self.pause = True
 
@@ -65,9 +64,6 @@ class Xevents(Plugin):
     def getPause(self):
         return self.pause
         
-    def stop(self):
-      pass  
-
     def setup(self):
         # set up X11 events specific blocks
         global CONSTANTS
@@ -803,24 +799,23 @@ class Xevents(Plugin):
     '''
 
     def simulate_key(self,key):
-      self._events.simulate_key(key)
+        self._events.simulate_key(key)
 
     '''def combine_keys(self, key1, key2):
       return (key1 + " " + key2)
     '''
     
     def browser(self, url):
-
-      self._events.browser(url)
+        self._events.browser(url)
 
     def _listMode(self, l):
 
-      data = Counter(l)
-      if len(data) > 0:
-        data.most_common() # Returns all unique items and their counts
-        return data.most_common(1)[0][0] # Returns the highest occurring item
-      else:
-        return 0
+        data = Counter(l)
+        if len(data) > 0:
+            data.most_common() # Returns all unique items and their counts
+            return data.most_common(1)[0][0] # Returns the highest occurring item
+        else:
+            return 0
           
     def debounce(self, buttonName, buttonState):
 
@@ -856,20 +851,14 @@ class Xevents(Plugin):
         return 0
 
     def open_program(self, program):
-
         self._events.open_program(program)
 
-
     def close_program(self, program):
-
         self._events.close_program(program)
 
-
     def save_value(self, key, value):
-
         self._events.save_value(key, value)
 
-
     def get_value(self, key):
-
         return self._events.get_value(key)
+
