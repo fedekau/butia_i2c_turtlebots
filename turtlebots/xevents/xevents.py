@@ -26,6 +26,7 @@
 import os
 import sys
 import time
+import gconf
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
@@ -43,10 +44,13 @@ from TurtleArt.taconstants import CONSTANTS, MACROS
 import logging
 LOGGER = logging.getLogger('turtleart-activity x11 events plugin')
 
+GCONF_XEVENTS = '/desktop/sugar/activities/turtlebots/xevents'
+
 class Xevents(Plugin):
 
     def __init__(self, parent):
         Plugin.__init__(self)
+        self.init_gconf()
         self._parent = parent
         self.running_sugar = self._parent.running_sugar
         self._status = True
@@ -421,28 +425,6 @@ class Xevents(Plugin):
             'simulate_key', 1,
             Primitive(self.simulate_key, arg_descs=[ArgSlot(TYPE_STRING)]))
 
-        '''
-        palette2.add_block('simulateCopy',
-                          style='basic-style',
-                          label=_('simulateCopy'),
-                          help_string=_('simulate copy event'),
-                          prim_name='copy_event')
-
-        self._parent.lc.def_prim(
-            'copy_event', 0,
-            Primitive(self.copy_event))
-
-
-        palette2.add_block('simulatePaste',
-                          style='basic-style',
-                          label=_('simulatePaste'),
-                          help_string=_('simulate paste event'),
-                          prim_name='paste_event')
-
-        self._parent.lc.def_prim(
-            'paste_event', 0,
-            Primitive(self.paste_event))
-        '''
 
         palette2.add_block('spaceBar',
                           style='box-style',
@@ -733,11 +715,6 @@ class Xevents(Plugin):
 
     ################################# Primitives ##############################
 
-    '''
-      def write_text(self, text):
-        self._events.write_text(text)
-    '''
-
     def set_x11_mouse(self, x, y):
         self._events.create_absolute_mouse_event(int(x), int(y), self.getPause())
 
@@ -783,27 +760,8 @@ class Xevents(Plugin):
     def set_line_width_and_height(self, width, height):
         self._events.set_line_width_and_height(width, height)
 
-    '''
-    def copy_event(self):
-        self._events.copy_event()
-
-    def paste_event(self):
-        self._events.paste_event()
-
-    
-    def scroll_up(self):
-        self._events.scroll_up()
-
-    def scroll_down(self):
-        self._events.scroll_down()
-    '''
-
     def simulate_key(self,key):
         self._events.simulate_key(key)
-
-    '''def combine_keys(self, key1, key2):
-      return (key1 + " " + key2)
-    '''
     
     def browser(self, url):
         self._events.browser(url)
@@ -820,7 +778,6 @@ class Xevents(Plugin):
     def debounce(self, buttonName, buttonState):
 
       current_time = int(round(time.time()*1000))
-      #print current_time - self._last_event
       self._last_event = current_time
 
       #deboucing - recolectar lecturas en cierto tiempo y evaluar la cantidad de 0 y 1's
@@ -834,20 +791,9 @@ class Xevents(Plugin):
       if len(self._buttons[buttonName]) > CONSTANTS['xe_buffer_size']:
         self._buttons[buttonName].pop(0)
 
-      #print self._buttons[buttonName]
-
-        
-      #if buttonState == 0 and self._listMode(self._buttons[buttonName]) == 1:
-      if self._listMode(self._buttons[buttonName]) == 1:
-        #print buttonState
-        #print buttonName
-        #print self._buttons[buttonName]
-        #print 1
-          
-        return 1
-          
+      if self._listMode(self._buttons[buttonName]) == 1:    
+        return 1      
       else:
-        #print 0
         return 0
 
     def open_program(self, program):
@@ -856,9 +802,36 @@ class Xevents(Plugin):
     def close_program(self, program):
         self._events.close_program(program)
 
+    def init_gconf(self):
+      
+      try:
+        self.gconf_client = gconf.client_get_default()
+      except Exception, err:
+        debug_output(_('ERROR: cannot init GCONF client: %s') % err)
+        self.gconf_client = None
+      
+
+    def get_gconf(self, key):
+
+        try:
+          res = self.gconf_client.get_float(key)
+        except:
+          return None
+        return res
+
+
+    def set_gconf(self, key, value):
+
+        try:
+          self.gconf_client.set_float(key, value)
+        except:
+          pass
+
     def save_value(self, key, value):
-        self._events.save_value(key, value)
+
+      self.set_gconf(GCONF_XEVENTS + key, value)
 
     def get_value(self, key):
-        return self._events.get_value(key)
+
+      return self.get_gconf(GCONF_XEVENTS + key)
 

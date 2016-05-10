@@ -43,7 +43,7 @@ import re
 from sendkey import SendKey
 
 import time
-import gconf
+#import gconf
 
 COLORS = {'red': "#E61B00",
           'orange': "#FF9201",
@@ -56,7 +56,7 @@ COLORS = {'red': "#E61B00",
           'black': "#000000"}
 
 CALL_DELAY = 200
-ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
+#ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 class Events:
 
@@ -85,10 +85,9 @@ class Events:
         self._last_call_time = 0
         #Current open programs
         self._pids = {}
-        #self._p = None
 
         #GConf
-        self._gc = gconf.client_get_default()
+        #self._gc = gconf.client_get_default()
 
 
 
@@ -319,16 +318,12 @@ class Events:
 
         try:
             command = "{0} {1}".format(program, arguments)
-            #os.system(command)
-            #subprocess.call(command,shell=True)
             p = subprocess.Popen(command, stderr=subprocess.STDOUT, shell=True,preexec_fn=os.setsid)
 
             self._add_pid(program,p.pid)
 
         #except OSError:
         except subprocess.CalledProcessError:
-
-            #print "except"
 
             #Move to binaries folder
             os.chdir("/usr/bin")
@@ -371,15 +366,14 @@ class Events:
         if self._pids.has_key(program) and (len(self._pids[program]) > 0):
 
             self._clean_pids(program)
-            #self._p.kill()
-            #print "close: " + str(self._pids[program][0])
+
             try:
                 os.killpg(os.getpgid(self._pids[program][0]), signal.SIGTERM)
                 self._remove_pid(program)
             except OSError:
                 print "Error: The pid does not exists."
 
-
+    '''
     def save_value(self, key, val):
 
         self._gc.set_float(ROOT_DIR + '/conf/' + key, val)
@@ -388,3 +382,4 @@ class Events:
     def get_value(self,key):
 
         return self._gc.get_float(ROOT_DIR + '/conf/' + key)
+    '''
