@@ -27,6 +27,7 @@ import os
 import sys
 import time
 import gconf
+import types
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
@@ -35,7 +36,7 @@ from collections import Counter
 
 from plugins.plugin import Plugin
 from TurtleArt.tapalette import make_palette
-from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg
+from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg, or_
 from TurtleArt.tatype import TYPE_INT, TYPE_NUMBER, TYPE_COLOR, TYPE_STRING
 from events import Events
 from TurtleArt.taconstants import CONSTANTS, MACROS
@@ -44,7 +45,7 @@ from TurtleArt.taconstants import CONSTANTS, MACROS
 import logging
 LOGGER = logging.getLogger('turtleart-activity x11 events plugin')
 
-GCONF_XEVENTS = '/desktop/sugar/activities/turtlebots/xevents'
+GCONF_XEVENTS_PATH = '/desktop/sugar/activities/turtlebots/xevents'
 
 class Xevents(Plugin):
 
@@ -58,6 +59,8 @@ class Xevents(Plugin):
         self._events = Events()
         self._buttons = {} #previous values from buttons {key:[value, lastDebounceTime]}
         self._last_event = 0
+        self._program_name = ''
+        self._defaults ={} # local default values for conf keys
 
     def setPause(self):
         self.pause = True
@@ -81,10 +84,10 @@ class Xevents(Plugin):
         CONSTANTS['FALSE'] = False
 
         CONSTANTS['xe_buffer_size'] = 30
-        CONSTANTS['xe_ctrl'] = "xe_ctrl "
-        CONSTANTS['xe_shift'] = "xe_shift "
-        CONSTANTS['xe_alt'] = "xe_alt "
-        CONSTANTS['xe_alt_gr'] = "xe_alt_gr "
+        CONSTANTS['xe_ctrl'] = "xe_ctrl"
+        CONSTANTS['xe_shift'] = "xe_shift"
+        CONSTANTS['xe_alt'] = "xe_alt"
+        CONSTANTS['xe_alt_gr'] = "xe_alt_gr"
         CONSTANTS['xe_left_arrow'] = "xe_left_arrow"
         CONSTANTS['xe_right_arrow'] = "xe_right_arrow"
         CONSTANTS['xe_up_arrow'] = "xe_up_arrow"
@@ -293,20 +296,6 @@ class Xevents(Plugin):
             'freeze', 0,
             Primitive(self.setPause))
 
-
-        '''
-        palette.add_block('freeze',
-                          style='basic-style-1arg',
-                          label=_('freeze bar'),
-                          value_block=True,
-                          default=[0],
-                          help_string=_('freeze the bar'),
-                          prim_name='freeze')
-
-        self._parent.lc.def_prim(
-            'freeze', 1,
-            Primitive(self.setPause, arg_descs=[ArgSlot(TYPE_INT)]))
-        '''
 
         palette.add_block('unfreeze',
                           style='basic-style',
@@ -609,7 +598,7 @@ class Xevents(Plugin):
             Primitive(CONSTANTS.get, TYPE_STRING, [ConstantArg('xe_f5')]))
 
 
-        '''
+
         palette2.add_block('combineKeys',
                         style='number-style-block',
                         label=[_('combine'), _('key1'), _('key2') ],
@@ -619,9 +608,8 @@ class Xevents(Plugin):
 
         self._parent.lc.def_prim(
           'combine_keys', 2,
-          Primitive(self.combine_keys, arg_descs=[ArgSlot(TYPE_STRING),
+          Primitive(self.combine_keys,TYPE_STRING, arg_descs=[ArgSlot(TYPE_STRING),
                                               ArgSlot(TYPE_STRING)]))
-        '''
 
         palette2.add_block('debounce',
                         style='number-style-block',
@@ -700,6 +688,43 @@ class Xevents(Plugin):
             Primitive(self.get_value, arg_descs=[ArgSlot(TYPE_STRING)])
         )
 
+
+        palette2.add_block('defaultValue',
+                    style='basic-style-2arg',
+                    label=[_('defaultValue'), _('key'), _('value') ],
+                    default=["key"],
+                    help_string=_('default value - The key must be unique'),
+                    prim_name='default_value')
+    
+
+        self._parent.lc.def_prim(
+          'default_value', 2,
+          #save a color
+          or_(Primitive(self.default_value,
+                          arg_descs=[ArgSlot(TYPE_STRING),
+                                     ArgSlot(TYPE_COLOR)]),
+                # ... or save a number
+                Primitive(self.default_value,
+                          arg_descs=[ArgSlot(TYPE_STRING),
+                                     ArgSlot(TYPE_NUMBER)]),
+                # ... or save a string
+                Primitive(self.default_value,
+                          arg_descs=[ArgSlot(TYPE_STRING),
+                                     ArgSlot(TYPE_STRING)]) ))
+        
+        palette2.add_block('setProgramName',
+                           style='basic-style-1arg',
+                           label=_("setProgramName"),
+                           default=[_("my program")],
+                           help_string=_('name this program'),
+                           prim_name='set_program_name'
+                           )
+
+        self._parent.lc.def_prim(
+            'set_program_name', 1,
+            Primitive(self.set_program_name, arg_descs=[ArgSlot(TYPE_STRING)])
+        )
+        
     ############################# Turtle calls ################################
 
 
@@ -774,7 +799,10 @@ class Xevents(Plugin):
             return data.most_common(1)[0][0] # Returns the highest occurring item
         else:
             return 0
-          
+
+    def combine_keys(self, key1, key2):
+      return key1 + " " + key2 
+
     def debounce(self, buttonName, buttonState):
 
       current_time = int(round(time.time()*1000))
@@ -813,25 +841,94 @@ class Xevents(Plugin):
 
     def get_gconf(self, key):
 
-        try:
-          res = self.gconf_client.get_float(key)
-        except:
-          return None
-        return res
+      casts = {gconf.VALUE_BOOL:   gconf.Value.get_bool,
+               gconf.VALUE_INT:    gconf.Value.get_int,
+               gconf.VALUE_FLOAT:  gconf.Value.get_float,
+               gconf.VALUE_STRING: gconf.Value.get_string}
+ 
+      try:
+        #res = float(self.gconf_client.get_string(key))
+
+        val = self.gconf_client.get(key)
+        if val == None:
+          ret = None
+        res = casts[val.type](val)
+
+      except:
+        return None
+
+      return res
 
 
     def set_gconf(self, key, value):
 
-        try:
-          self.gconf_client.set_float(key, value)
-        except:
-          pass
+      casts = {types.BooleanType: gconf.Client.set_bool,
+              types.IntType:     gconf.Client.set_int,
+              types.FloatType:   gconf.Client.set_float,
+              types.StringType:  gconf.Client.set_string}
+      
+      try:
+        casts[type(value)](self.gconf_client, key, value)
+        #self.gconf_client.set_float(key, value)
+      except:
+        pass
+
 
     def save_value(self, key, value):
 
-      self.set_gconf(GCONF_XEVENTS + key, value)
+      #if value does not exist, create it
+      gconf_key = GCONF_XEVENTS_PATH + "_" + key
+      if (hasattr(self,"_program_name")):
+        gconf_key = GCONF_XEVENTS_PATH + "_" + self._program_name + "_" + key
+
+      self.set_gconf(gconf_key, value)
+      self._defaults[gconf_key] =  value
+      self._parent.lc.prim_set_box( key, value)
+
 
     def get_value(self, key):
 
-      return self.get_gconf(GCONF_XEVENTS + key)
+      #if value does not exist, create it
+      gconf_key = GCONF_XEVENTS_PATH + "_" + key
+      if (hasattr(self,"_program_name")):
+        gconf_key = GCONF_XEVENTS_PATH + "_" + self._program_name + "_" + key
 
+      return self._defaults.get(gconf_key,self.get_gconf(gconf_key))
+
+
+    def default_value(self, key, value):
+
+      #if value does not exist, create it
+      gconf_key = GCONF_XEVENTS_PATH + "_" + key
+
+      if (hasattr(self,"_program_name")):
+        gconf_key = GCONF_XEVENTS_PATH + "_" + self._program_name + "_" + key
+      try:
+        running_from_py =(self._parent.parent.__class__.__name__=='DummyTurtleMain')
+      except:
+        running_from_py = True
+
+      if (running_from_py):
+        if (self.get_gconf(gconf_key ) is not None ) :
+          # There is already a value, using it instead of default
+          value = self.get_gconf(gconf_key)
+        else:
+          # First run, setting gconf
+          self.set_gconf(gconf_key , value)
+      else:
+        self._defaults[gconf_key] =  value
+
+      self._parent.lc.prim_set_box( key, value)
+      self._parent.lc.update_label_value('box', value, label=key)
+        
+    
+    def set_program_name(self, value):
+
+      #Convert name to lowercase
+      value.lower()
+      #Remove whitespace characters at start and end
+      value.strip()
+      #Replace whitespace with underscores
+      value.replace(" ", "_")
+      self._program_name = value
+    
