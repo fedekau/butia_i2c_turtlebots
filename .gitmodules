@@ -3,17 +3,17 @@
 	url = git://github.com/walterbender/turtleart.git
 [submodule "turtlebots/turtle-extras"]
 	path = turtlebots/turtle-extras
-	url = git://github.com/walterbender/turtleextras.git
+	url = git://github.com/sugarlabs/turtleextras.git
 [submodule "turtlebots/nxt_plugin"]
 	path = turtlebots/nxt_plugin
-	url = git://github.com/AlanJAS/nxt.git
+	url = git://github.com/sugarlabs/nxt.git
 [submodule "turtlebots/WeDoMore"]
 	path = turtlebots/WeDoMore
-	url = git://github.com/AlanJAS/WeDoMore.git
+	url = git://github.com/sugarlabs/WeDoMore.git
 	ignore = untracked
 [submodule "turtlebots/arduino"]
 	path = turtlebots/arduino
-	url = git://github.com/AlanJAS/arduino.git
+	url = git://github.com/sugarlabs/arduino.git
 [submodule "turtlebots/pyusb"]
 	path = turtlebots/pyusb
 	url = git://github.com/walac/pyusb.git

@@ -259,7 +259,7 @@ class Ardrone(Plugin):
 
     ############################### Turtle calls ###############################
 
-    def stop(self, butia=False):
+    def stop(self):
         self.flotarDrone()
         
     def quit(self):
