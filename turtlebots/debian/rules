@@ -27,6 +27,7 @@ install:
 	dh_installudev    --name=usb4all    --priority 60
 	dh_installudev    --name=lego-nxt   --priority 60
 	dh_installudev    --name=lego-wedo  --priority 60
+	dh_installudev    --name=fischertechnik  --priority 60
 	dh_auto_install
 	dh_install
 	dh_installdocs
