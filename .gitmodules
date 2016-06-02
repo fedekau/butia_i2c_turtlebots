@@ -1,9 +1,9 @@
 [submodule "turtlebots/mainline"]
 	path = turtlebots/mainline
-	url = git://github.com/walterbender/turtleart.git
+	url = git://github.com/sugarlabs/activity-turtleart-gtk2.git
 [submodule "turtlebots/turtle-extras"]
 	path = turtlebots/turtle-extras
-	url = git://github.com/sugarlabs/turtleextras.git
+	url = git://github.com/sugarlabs/activity-turtleart-extras.git
 [submodule "turtlebots/nxt_plugin"]
 	path = turtlebots/nxt_plugin
 	url = git://github.com/sugarlabs/nxt.git
