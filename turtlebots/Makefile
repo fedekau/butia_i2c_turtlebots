@@ -371,6 +371,7 @@ install-rules:
 	else \
 		cp `pwd`/rules/60-lego-nxt.rules $(DESTDIR)/lib/udev/rules.d; \
 		cp `pwd`/rules/60-usb4all.rules $(DESTDIR)/lib/udev/rules.d; \
+		cp `pwd`/rules/60-fischertechnik.rules $(DESTDIR)/lib/udev/rules.d; \
 		cp `pwd`/rules/60-lego-wedo.rules $(DESTDIR)/lib/udev/rules.d; \
 	fi ;
 	if [ -e $(DESTDIR)/etc/group ] ; then \
@@ -403,6 +404,7 @@ uninstall:
 uninstall-rules:
 	rm -f $(DESTDIR)/lib/udev/rules.d/60-lego-nxt.rules
 	rm -f $(DESTDIR)/lib/udev/rules.d/60-usb4all.rules
+	rm -f $(DESTDIR)/lib/udev/rules.d/60-fischertechnik.rules
 	rm -f $(DESTDIR)/lib/udev/rules.d/60-lego-wedo.rules
 	if [ -e $(DESTDIR)/etc/group ] ; then \
 		if (delgroup --system robots) ; then echo group removed... ; fi ; \

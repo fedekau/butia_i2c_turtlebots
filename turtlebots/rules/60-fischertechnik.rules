@@ -1,0 +1,2 @@
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="146a", GROUP="robots", MODE="0660"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="221d", ATTRS{idProduct}=="1000", RUN+="/sbin/modprobe usbserial vendor=0x221D product=0x1000"
