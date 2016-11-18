@@ -67,14 +67,13 @@ def writeI2C(dev, to_send):
 
 	#msg=[WRITE_I2C, to_send]
 	print "soy el write"
-
+	
 	msg=[WRITE_I2C]
 	dev.send(msg)
 	print "++++"
 	raw = dev.read(1)
 	print "----"
-	#print raw
-	#print "*"
+	print raw
 	return raw
 
 def readI2C(dev):
