@@ -1,0 +1,284 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Federico Kauffman <kauffman.federico@gmail.com>
+# Maximiliano Kotvinsky <maxikotvi@gmail.com>
+# Andrés Vasilev <andresvasilev@gmail.com>
+#
+# MINA/INCO/UDELAR
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+import os
+import sys
+import types
+
+sys.path.append('/usr/share/sugar/activities/TurtleBots.activity/plugins/butia')
+from pybot import pybot_client
+
+from gettext import gettext as _
+from plugins.plugin import Plugin
+from TurtleArt.tapalette import make_palette
+from TurtleArt.taprimitive import Primitive, ArgSlot, ConstantArg, or_
+from TurtleArt.tatype import TYPE_INT, TYPE_NUMBER, TYPE_COLOR, TYPE_STRING
+from TurtleArt.taconstants import CONSTANTS, MACROS
+
+class I2c(Plugin):
+
+	def __init__(self, parent):
+		Plugin.__init__(self)
+		self.tw = parent
+		self.butia = pybot_client.robot(auto_connect=True)
+		self.pause = 0
+
+	
+	def setPause(self):
+		self.pause = True
+
+	def unsetPause(self):
+		self.pause = False
+
+	def getPause(self):
+		return self.pause
+
+	def setup(self):
+
+		palette = make_palette('i2c',
+								colors=["#FF6060", "#A06060"],
+								help_string=_('Palette of i2c'))
+
+		palette.add_block('openI2C',
+					style='basic-style',
+					label=_('openI2C'),
+					value_block=True,
+					help_string=_('opens an i2c connection'),
+					prim_name='openI2C')
+
+		self.tw.lc.def_prim('openI2C', 0,
+			Primitive(self.openI2C))
+
+
+		palette.add_block('startI2C',
+					style='basic-style',
+					label=_('startI2C'),
+					value_block=True,
+					help_string=_('starts an i2c connection'),
+					prim_name='startI2C')
+
+		self.tw.lc.def_prim('startI2C', 0,
+			Primitive(self.startI2C))
+
+
+		palette.add_block('stop',
+					style='basic-style',
+					label=_('stopI2C'),
+					value_block=True,
+					help_string=_('stops an i2c connection'),
+					prim_name='stopI2C')
+
+		self.tw.lc.def_prim('stopI2C', 0,
+			Primitive(self.stopI2C))
+
+
+		palette.add_block('closeI2C',
+					style='basic-style',
+					label=_('closeI2C'),
+					value_block=True,
+					help_string=_('closes an i2c connection'),
+					prim_name='closeI2C')
+
+		self.tw.lc.def_prim('closeI2C', 0,
+			Primitive(self.closeI2C))
+
+
+		palette.add_block('writeI2C',
+					style='basic-style-1arg',
+					label=[_('writeI2C')],
+					default=[""],
+					help_string=_('writeI2C'),
+					prim_name='writeI2C')
+
+		self.tw.lc.def_prim('writeI2C', 1,
+			Primitive(self.writeI2C, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+
+
+		palette.add_block('readI2C',
+					style='box-style',
+					label=_('readI2C'),
+					help_string=_('readI2C'),
+					prim_name='readI2C')
+
+		self.tw.lc.def_prim('readI2C', 0,
+			Primitive(self.readI2C, TYPE_NUMBER))
+
+
+		palette.add_block('idleI2C',
+					style='basic-style',
+					label=_('idleI2C'),
+					value_block=True,
+					help_string=_('idleI2C'),
+					prim_name='idleI2C')
+
+		self.tw.lc.def_prim('idleI2C', 0,
+			Primitive(self.idleI2C))
+
+
+		palette.add_block('ackI2C',
+					style='basic-style',
+					label=_('ackI2C'),
+					value_block=True,
+					help_string=_('ackI2C'),
+					prim_name='ackI2C')
+
+		self.tw.lc.def_prim('ackI2C', 0,
+			Primitive(self.ackI2C))
+
+
+		palette.add_block('notAckI2C',
+					style='basic-style',
+					label=_('notAckI2C'),
+					value_block=True,
+					help_string=_('notAckI2C'),
+					prim_name='notAckI2C')
+
+		self.tw.lc.def_prim('notAckI2C', 0,
+			Primitive(self.notAckI2C))
+
+
+		palette.add_block('restartI2C',
+					style='basic-style',
+					label=_('restartI2C'),
+					value_block=True,
+					help_string=_('restartI2C'),
+					prim_name='restartI2C')
+
+		self.tw.lc.def_prim('restartI2C', 0,
+			Primitive(self.restartI2C))
+
+
+		palette.add_block('putcI2C',
+					style='basic-style-1arg',
+					label=[_('putcI2C')],
+					default=[""],
+					help_string=_('putcI2C'),
+					prim_name='putcI2C')
+
+		self.tw.lc.def_prim('putcI2C', 1,
+			Primitive(self.putcI2C, arg_descs=[ArgSlot(TYPE_STRING)]))
+
+
+		palette.add_block('getcI2C',
+					style='box-style',
+					label=_('getcI2C'),
+					help_string=_('getcI2C'),
+					prim_name='getcI2C')
+
+		self.tw.lc.def_prim('getcI2C', 0,
+			Primitive(self.getcI2C, TYPE_STRING))
+
+
+		palette.add_block('putsI2C',
+					style='basic-style-1arg',
+					label=[_('putsI2C')],
+					default=[""],
+					help_string=_('putsI2C'),
+					prim_name='putsI2C')
+
+		self.tw.lc.def_prim('putsI2C', 1,
+			Primitive(self.putsI2C, arg_descs=[ArgSlot(TYPE_STRING)]))
+
+
+		palette.add_block('getsI2C',
+					style='box-style',
+					label=_('getsI2C'),
+					help_string=_('getsI2C'),
+					prim_name='getsI2C')
+
+		self.tw.lc.def_prim('getsI2C', 0,
+			Primitive(self.getsI2C, TYPE_STRING))
+
+
+	############################# Turtle calls ################################
+
+	def start(self):
+		pass
+
+	def stop(self):
+		pass
+
+	def quit(self):
+		pass
+
+	################################# Primitives ##############################
+
+	def openI2C(self, port='0', board='0'):
+		self.butia.openI2C(port, board)
+
+
+	def startI2C(self, port='0', board='0'):
+		self.butia.startI2C(port, board)
+
+
+	def stopI2C(self, port='0', board='0'):
+		self.butia.stopI2C(port, board)
+
+
+	def closeI2C(self, port='0', board='0'):
+		self.butia.closeI2C(port, board)
+
+
+	def writeI2C(self, value='', port='0', board='0'):
+		self.butia.writeI2C(port, value, board)
+
+
+	def readI2C(self, port='0', board='0'):
+		return self.butia.readI2C(port, board)
+
+
+	def idleI2C(self, port='0', board='0'):
+		self.butia.idleI2C(port, board)
+
+
+	def putcI2C(self, value='', port='0', board='0'):
+		self.butia.putcI2C(port, value, board)
+
+
+	def getcI2C(self, port='0', board='0'):
+		return self.butia.getcI2C(port, board)
+
+
+	def putsI2C(self, value='', port='0', board='0'):
+		self.butia.putsI2C(port,value, board)
+
+	
+	def getsI2C(self, port='0', board='0'):
+		return self.butia.getsI2C(port, board)
+	
+
+	def dataRdyI2C(self, port='0', board='0'):
+		return self.butia.dataRdyI2C(port, board)
+
+
+	def ackI2C(self, port='0', board='0'):
+		self.butia.ackI2C(port, board)
+
+
+	def notAckI2C(self, port='0', board='0'):
+		self.butia.notAckI2C(port, board)
+
+
+	def restartI2C(self, port='0', board='0'):
+		self.butia.restartI2C(port, board)
+
+		
