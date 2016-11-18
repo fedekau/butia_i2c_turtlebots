@@ -29,12 +29,8 @@ def getVersion(dev):
 def openI2C(dev):
 
 	msg=[OPEN_I2C]
-	print "aaaaaaaa"
 	dev.send(msg)
-	print "oooooooo"
 	raw = dev.read(1)
-	print "uuuuuuuu"
-	print raw
 	return raw
 
 
@@ -43,7 +39,6 @@ def startI2C(dev):
 	msg=[START_I2C]
 	dev.send(msg)
 	raw = dev.read(1)
-	print raw
 	return raw
 
 
@@ -66,14 +61,9 @@ def restartI2C(dev):
 def writeI2C(dev, to_send):
 
 	#msg=[WRITE_I2C, to_send]
-	print "soy el write"
-	
 	msg=[WRITE_I2C]
 	dev.send(msg)
-	print "++++"
 	raw = dev.read(1)
-	print "----"
-	print raw
 	return raw
 
 def readI2C(dev):
