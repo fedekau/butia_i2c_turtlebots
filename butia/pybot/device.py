@@ -57,7 +57,6 @@ class Device():
         Send to the device the specifiy call and parameters
         """
         w = [self.shifted, 0x03 + len(msg), NULL_BYTE] + msg
-        print "send:" + str(w)
         self.baseboard.dev.write(w)
 
     def read(self, lenght):
@@ -65,7 +64,6 @@ class Device():
         Read the device data
         """
         raw = self.baseboard.dev.read(0x03 + lenght)
-        print "read:" + str(raw)
         return raw[3:]
 
     def module_open(self):
