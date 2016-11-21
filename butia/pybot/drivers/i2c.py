@@ -60,8 +60,7 @@ def restartI2C(dev):
 
 def writeI2C(dev, to_send):
 
-	#msg=[WRITE_I2C, to_send]
-	msg=[WRITE_I2C]
+	msg=[WRITE_I2C, to_send]
 	dev.send(msg)
 	raw = dev.read(1)
 	return raw

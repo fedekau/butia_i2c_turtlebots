@@ -239,7 +239,7 @@ class I2c(Plugin):
 
 
 	def writeI2C(self, value='', port='0', board='0'):
-		self.butia.writeI2C(port, value, board)
+		self.butia.writeI2C(value, port, board)
 
 
 	def readI2C(self, port='0', board='0'):
