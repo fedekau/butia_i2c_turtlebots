@@ -105,12 +105,12 @@ class I2c(Plugin):
 		palette.add_block('writeI2C',
 					style='basic-style-1arg',
 					label=[_('writeI2C')],
-					default=[""],
+					default=1,
 					help_string=_('writeI2C'),
 					prim_name='writeI2C')
 
 		self.tw.lc.def_prim('writeI2C', 1,
-			Primitive(self.writeI2C, arg_descs=[ArgSlot(TYPE_NUMBER)]))
+			Primitive(self.writeI2C, arg_descs=[ArgSlot(TYPE_INT)]))
 
 
 		palette.add_block('readI2C',
