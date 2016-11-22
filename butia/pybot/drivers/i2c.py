@@ -63,11 +63,10 @@ def writeI2C(dev, to_send):
 	return raw
 
 def readI2C(dev):
-
 	msg=[READ_I2C]
 	dev.send(msg)
 	raw = dev.read(2)
-	return raw
+	return raw[1]
 
 
 def ackI2C(dev):
