@@ -321,40 +321,10 @@ class ButiaFunctions:
         return self.callModule('i2c', str(board), '0', 'readI2C')
 
 
-    def idleI2C(self, port='0', board='0'):
-        self.callModule('i2c', str(board), '0', 'idleI2C')
-
-
-    def putcI2C(self, value='', port='0', board='0'):
-        msg = [str(value)]
-        self.callModule('i2c', str(board), '0', 'putcI2C', msg)
-
-
-    def getcI2C(self, port='0', board='0'):
-        return self.callModule('i2c', str(board), '0', 'getcI2C')
-
-
-    def putsI2C(self, value='', port='0', board='0'):
-        msg = [str(value)]
-        self.callModule('i2c', str(board), '0', 'putsI2C', msg)
-
-
-    def getsI2C(self, port='0', board='0'):
-        return self.callModule('i2c', str(board), '0', 'getsI2C')
-
-
-    def dataRdyI2C(self, port='0', board='0'):
-        return self.callModule('i2c', str(board), '0', 'dataRdyI2C')
-
-
     def ackI2C(self, port='0', board='0'):
         self.callModule('i2c', str(board), '0', 'ackI2C')
 
 
     def notAckI2C(self, port='0', board='0'):
         self.callModule('i2c', str(board), '0', 'notAckI2C')
-
-
-    def restartI2C(self, port='0', board='0'):
-        self.callModule('i2c', str(board), '0', 'restartI2C')
 

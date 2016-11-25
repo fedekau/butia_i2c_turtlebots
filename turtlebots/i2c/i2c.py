@@ -55,8 +55,8 @@ class I2c(Plugin):
 	def setup(self):
 
 		palette = make_palette('i2c',
-								colors=["#FF6060", "#A06060"],
-								help_string=_('Palette of i2c'))
+					colors=["#FF6060", "#A06060"],
+					help_string=_('Palette of i2c'))
 
 		palette.add_block('openI2C',
 					style='basic-style',
@@ -113,27 +113,6 @@ class I2c(Plugin):
 			Primitive(self.writeI2C, arg_descs=[ArgSlot(TYPE_INT)]))
 
 
-		palette.add_block('readI2C',
-					style='box-style',
-					label=_('readI2C'),
-					help_string=_('readI2C'),
-					prim_name='readI2C')
-
-		self.tw.lc.def_prim('readI2C', 0,
-			Primitive(self.readI2C, TYPE_NUMBER))
-
-
-		palette.add_block('idleI2C',
-					style='basic-style',
-					label=_('idleI2C'),
-					value_block=True,
-					help_string=_('idleI2C'),
-					prim_name='idleI2C')
-
-		self.tw.lc.def_prim('idleI2C', 0,
-			Primitive(self.idleI2C))
-
-
 		palette.add_block('ackI2C',
 					style='basic-style',
 					label=_('ackI2C'),
@@ -156,57 +135,15 @@ class I2c(Plugin):
 			Primitive(self.notAckI2C))
 
 
-		palette.add_block('restartI2C',
-					style='basic-style',
-					label=_('restartI2C'),
-					value_block=True,
-					help_string=_('restartI2C'),
-					prim_name='restartI2C')
-
-		self.tw.lc.def_prim('restartI2C', 0,
-			Primitive(self.restartI2C))
-
-
-		palette.add_block('putcI2C',
-					style='basic-style-1arg',
-					label=[_('putcI2C')],
-					default=[""],
-					help_string=_('putcI2C'),
-					prim_name='putcI2C')
-
-		self.tw.lc.def_prim('putcI2C', 1,
-			Primitive(self.putcI2C, arg_descs=[ArgSlot(TYPE_STRING)]))
-
-
-		palette.add_block('getcI2C',
+		palette.add_block('readI2C',
 					style='box-style',
-					label=_('getcI2C'),
-					help_string=_('getcI2C'),
-					prim_name='getcI2C')
+					label=_('readI2C'),
+					help_string=_('readI2C'),
+					prim_name='readI2C')
 
-		self.tw.lc.def_prim('getcI2C', 0,
-			Primitive(self.getcI2C, TYPE_STRING))
+		self.tw.lc.def_prim('readI2C', 0,
+			Primitive(self.readI2C, TYPE_NUMBER))
 
-
-		palette.add_block('putsI2C',
-					style='basic-style-1arg',
-					label=[_('putsI2C')],
-					default=[""],
-					help_string=_('putsI2C'),
-					prim_name='putsI2C')
-
-		self.tw.lc.def_prim('putsI2C', 1,
-			Primitive(self.putsI2C, arg_descs=[ArgSlot(TYPE_STRING)]))
-
-
-		palette.add_block('getsI2C',
-					style='box-style',
-					label=_('getsI2C'),
-					help_string=_('getsI2C'),
-					prim_name='getsI2C')
-
-		self.tw.lc.def_prim('getsI2C', 0,
-			Primitive(self.getsI2C, TYPE_STRING))
 
 
 	############################# Turtle calls ################################
@@ -246,39 +183,11 @@ class I2c(Plugin):
 		return self.butia.readI2C(port, board)
 
 
-	def idleI2C(self, port='0', board='0'):
-		self.butia.idleI2C(port, board)
-
-
-	def putcI2C(self, value='', port='0', board='0'):
-		self.butia.putcI2C(port, value, board)
-
-
-	def getcI2C(self, port='0', board='0'):
-		return self.butia.getcI2C(port, board)
-
-
-	def putsI2C(self, value='', port='0', board='0'):
-		self.butia.putsI2C(port,value, board)
-
-	
-	def getsI2C(self, port='0', board='0'):
-		return self.butia.getsI2C(port, board)
-	
-
-	def dataRdyI2C(self, port='0', board='0'):
-		return self.butia.dataRdyI2C(port, board)
-
-
 	def ackI2C(self, port='0', board='0'):
 		self.butia.ackI2C(port, board)
 
 
 	def notAckI2C(self, port='0', board='0'):
 		self.butia.notAckI2C(port, board)
-
-
-	def restartI2C(self, port='0', board='0'):
-		self.butia.restartI2C(port, board)
 
 		
