@@ -172,6 +172,7 @@ apply_hard_plugins: apply_localization sourceGIT pattern_detection_compile
 	cp -rLf ardrone               $(BUILDDIR)/plugins/
 	cp -rLf atyarandu             $(BUILDDIR)/plugins/
 	cp -rLf ax12                  $(BUILDDIR)/plugins/
+	cp -rLf i2c                   $(BUILDDIR)/plugins/
 	cp -rLf butia                 $(BUILDDIR)/plugins/
 	cp -rLf sumtia                $(BUILDDIR)/plugins/
 	cp -rLf fischer               $(BUILDDIR)/plugins/
@@ -226,6 +227,7 @@ apply_sym_plugins: sourceGIT apply_localization pattern_detection_compile
 	ln -s `pwd`/ardrone                $(BUILDDIR)/plugins/ardrone
 	ln -s `pwd`/atyarandu              $(BUILDDIR)/plugins/atyarandu
 	ln -s `pwd`/ax12                   $(BUILDDIR)/plugins/ax12
+	ln -s `pwd`/i2c                    $(BUILDDIR)/plugins/i2c
 	ln -s `pwd`/butia                  $(BUILDDIR)/plugins/butia
 	ln -s `pwd`/sumtia                 $(BUILDDIR)/plugins/sumtia
 	ln -s `pwd`/fischer                $(BUILDDIR)/plugins/fischer
@@ -278,6 +280,11 @@ plugin-ax12: apply_hard_plugins
 	(cd $(BUILDDIR)/plugins && tar -czvf ax12_plugin.tar.gz ax12/* plugin.info)
 	rm $(BUILDDIR)/plugins/plugin.info
 	mv $(BUILDDIR)/plugins/ax12_plugin.tar.gz .
+plugin-i2c: apply_hard_plugins
+	cp stagin/plugins/i2c/plugin.info $(BUILDDIR)/plugins
+	(cd $(BUILDDIR)/plugins && tar -czvf i2c_plugin.tar.gz i2c/* plugin.info)
+	rm $(BUILDDIR)/plugins/plugin.info
+	mv $(BUILDDIR)/plugins/i2c_plugin.tar.gz .
 
 plugin-butia: apply_hard_plugins
 	cp stagin/plugins/butia/plugin.info $(BUILDDIR)/plugins
@@ -340,7 +347,7 @@ plugin-xevents: apply_hard_plugins
 	mv $(BUILDDIR)/plugins/xevents_plugin.tar.gz .
 
 plugins: plugin-butia plugin-followme plugin-colorview plugin-nxt plugin-wedo \
-         plugin-marcas plugin-arduino plugin-rodi plugin-xevents plugin-ax12
+         plugin-marcas plugin-arduino plugin-rodi plugin-xevents plugin-ax12 plugin-i2c
 
 plugin-all: plugins
 
@@ -440,4 +447,4 @@ clean-plugins:
  uninstall uninstall-strip \
  plugin-butia plugin-followme plugin-nxt plugin-wedo plugins plugin-all \
  dev pattern_detection_compile plugin-arduino plugin-rodi plugin-fischer \
- plugin-colorview plugin-xevents plugin-ax12 plugin-atyarandu plugin-ardrone
+ plugin-colorview plugin-xevents plugin-ax12 plugin-i2c plugin-atyarandu plugin-ardrone
